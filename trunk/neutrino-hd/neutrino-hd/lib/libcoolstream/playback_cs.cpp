@@ -1,0 +1,1712 @@
+/*
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ */
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#include <fcntl.h>
+#include <errno.h>
+
+#include <sys/stat.h>
+
+#include "dmx_cs.h"
+#include "audio_cs.h"
+#include "video_cs.h"
+
+#include "playback_cs.h"
+
+#include <driver/framebuffer.h>
+#include <system/debug.h>
+
+
+static const char * FILENAME = "[playback_cs.cpp]";
+
+
+/*
+1- Open()
+2- Start()
+3- SetPosition()
+4- setSpeed()
+*/
+
+#if defined (ENABLE_PVR)
+static int mp_syncPES(uint8_t *, int);
+static int sync_ts(uint8_t *, int);
+static inline uint16_t get_pid(uint8_t *buf);
+static void *start_playthread(void *c);
+static void playthread_cleanup_handler(void *);
+
+static int dvrfd = -1;
+
+extern cDemux *videoDemux;
+extern cDemux *audioDemux;
+extern cVideo *videoDecoder;
+extern cAudio *audioDecoder;
+#endif
+
+
+cPlayback::cPlayback(int num)
+{ 
+	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);
+	
+#if defined (ENABLE_PVR)	
+	thread_started = false;
+	inbuf = NULL;
+	pesbuf = NULL;
+	filelist.clear();
+	curr_fileno = -1;
+	in_fd = -1;
+#endif
+
+	mAudioStream = 0;
+	mSpeed = 0;
+
+	playing = false;
+	playstate = STATE_STOP;
+}
+
+cPlayback::~cPlayback()
+{  
+	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);
+}
+
+//Used by Fileplay
+bool cPlayback::Open()
+{
+	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__ );
+	
+#if defined (ENABLE_PVR)	
+	thread_started = false;
+	//playMode = mode;
+	filetype = FILETYPE_TS;
+	mSpeed = 1;
+	numPida = 0;
+	memset(&aPids, 0, sizeof(aPids));
+	memset(&AC3flags, 0, sizeof(AC3flags));
+	memset(&cc, 0, 256);
+	
+	videoDecoder->Open();
+	
+	audioDecoder->Open();
+	
+	audioDemux = new cDemux( LIVE_DEMUX );
+	// open audio Demux
+	audioDemux->Open(DMX_AUDIO_CHANNEL, AUDIO_STREAM_BUFFER_SIZE);
+	
+	videoDemux = new cDemux( LIVE_DEMUX );
+	// open Video Demux
+	videoDemux->Open(DMX_VIDEO_CHANNEL, VIDEO_STREAM_BUFFER_SIZE);
+	
+	audioDecoder->setSource(AUDIO_SOURCE_MEMORY);
+	videoDecoder->setSource(VIDEO_SOURCE_MEMORY);
+#endif
+	
+#if defined (ENABLE_LIBEPLAYER3)
+	player = (Context_t*) malloc(sizeof(Context_t));
+
+	//init player
+	if(player) 
+	{
+		player->playback	= &PlaybackHandler;
+		player->output		= &OutputHandler;
+		player->container	= &ContainerHandler;
+		player->manager		= &ManagerHandler;
+
+		//printf("%s\n", player->output->Name);
+	}
+
+	//Registration of output devices
+	if(player && player->output) 
+	{
+		player->output->Command(player,OUTPUT_ADD, (void*)"audio");
+		player->output->Command(player,OUTPUT_ADD, (void*)"video");
+#if defined (ENABLE_LIBASS)		
+		player->output->Command(player,OUTPUT_ADD, (void*)"subtitle");
+#endif		
+	}
+
+	// subtitle
+#if defined (ENABLE_LIBASS)
+	SubtitleOutputDef_t out;
+
+	// for testing ass subtitles
+	out.screen_width = CFrameBuffer::getInstance()->getScreenWidth();
+	out.screen_height = CFrameBuffer::getInstance()->getScreenHeight();
+	out.framebufferFD = CFrameBuffer::getInstance()->getFileHandle();
+	out.destination   = (unsigned char *)CFrameBuffer::getInstance()->getFrameBufferPointer();
+	out.destStride    = CFrameBuffer::getInstance()->getStride();;
+	out.shareFramebuffer = 1;
+    
+	player->output->subtitle->Command(player, (OutputCmd_t)OUTPUT_SET_SUBTITLE_OUTPUT, (void*) &out);
+#endif // libass
+#endif
+
+	return true;
+}
+
+//Used by Fileplay
+void cPlayback::Close(void)
+{  
+	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);
+	
+#if defined (ENABLE_PVR)	
+	playstate = STATE_STOP;
+	
+	if (thread_started)
+	{
+		printf("before pthread_join\n");
+		pthread_join(thread, NULL);
+	}
+	thread_started = false;
+	printf("after pthread_join\n");
+	mf_close();
+	filelist.clear();
+
+	if (inbuf)
+		free(inbuf);
+	inbuf = NULL;
+	if (pesbuf)
+		free(pesbuf);
+	pesbuf = NULL;
+	
+	if (videoDemux)
+	{
+		// stop
+		videoDemux->Stop();
+		
+		//delete
+		delete videoDemux;	//destructor closes dmx
+		
+		videoDemux = NULL;
+	}
+	
+	if (audioDemux)
+	{
+		// stop
+		audioDemux->Stop();
+		
+		delete audioDemux;  //destructor closes dmx
+		
+		audioDemux = NULL;
+	}
+	
+	audioDecoder->Stop();
+	
+	// video decoder stop
+	//videoDecoder->Stop(standby ? false : true);
+	videoDecoder->Stop();
+#else
+	Stop();
+#endif	
+}
+
+// start
+bool cPlayback::Start(char * filename, unsigned short vpid, int vtype, unsigned short apid, bool ac3)
+{
+	printf("%s:%s - filename=%s\n", FILENAME, __FUNCTION__, filename);
+	
+#if defined (ENABLE_PVR)	
+	struct stat s;
+	off_t r;
+	vPid = vpid;
+	aPid = apid;
+	AC3 = ac3;
+	printf("name = '%s' vpid 0x%04hx vtype %d apid 0x%04hx ac3 %d filelist.size: %u\n",filename, vpid, vtype, apid, ac3, filelist.size());
+	
+	if (!filelist.empty())
+	{
+		printf("filelist not empty?\n");
+		return false;
+	}
+	
+	if (stat(filename, &s))
+	{
+		printf("filename does not exist? (%m)\n");
+		return false;
+	}
+	
+	if (!inbuf)
+		inbuf = (uint8_t *)malloc(INBUF_SIZE); /* 256 k */
+		
+	if (!inbuf)
+	{
+		printf("allocating input buffer failed (%m)\n");
+		return false;
+	}
+	
+	if (!pesbuf)
+		pesbuf = (uint8_t *)malloc(INBUF_SIZE / 2); /* 128 k */
+		
+	if (!pesbuf)
+	{
+		printf("allocating PES buffer failed (%m)\n");
+		return false;
+	}
+
+	/* auto file list */
+	filelist_t file;
+	file.Name = std::string(filename);
+	file.Size = s.st_size;
+	filelist.push_back(file);
+	filelist_auto_add();
+	
+	if (mf_open(0) < 0)
+		return false;
+
+	curr_pos = 0;
+	inbuf_pos = 0;
+	inbuf_sync = 0;
+	r = mf_getsize();
+
+	if (r > INBUF_SIZE)
+	{
+		if (mp_seekSync(r - INBUF_SIZE) < 0)
+			return false;
+		inbuf_read();	/* assume that we fill the buffer with one read() */
+		for (r = (inbuf_pos / 188) * 188; r > 0; r -= 188)
+		{
+			pts_end = get_pts(inbuf + r, false);
+			if (pts_end > -1)
+				break;
+		}
+	}
+	else
+		pts_end = -1; /* unknown */
+
+	if (mp_seekSync(0) < 0)
+		return false;
+
+	pesbuf_pos = 0;
+	inbuf_pos = 0;
+	inbuf_sync = 0;
+	
+	while (inbuf_pos < INBUF_SIZE / 2 && inbuf_read() > 0) {};
+	
+	for (r = 0; r < inbuf_pos - 188; r += 188)
+	{
+		pts_start = get_pts(inbuf + r, false);
+		if (pts_start > -1)
+			break;
+	}
+	
+	pts_curr = pts_start;
+	bytes_per_second = -1;
+	int duration = (pts_end - pts_start) / 90000;
+	
+	if (duration > 0)
+		bytes_per_second = mf_getsize() / duration;
+	printf("start: %lld end %lld duration %d bps %lld\n", pts_start, pts_end, duration, bytes_per_second);
+	playstate = STATE_PLAY;
+	if (pthread_create(&thread, 0, start_playthread, this) != 0)
+		printf("pthread_create failed\n");
+#endif
+
+	mAudioStream = 0;
+
+#if defined (ENABLE_LIBEPLAYER3)
+	//create playback path
+	char file[400] = {""};
+	bool isHTTP = false;
+
+	if(!strncmp("http://", filename, 7))
+	{
+	   // printf("http://\n");
+            isHTTP = true;
+	}
+	else if(!strncmp("vlc://", filename, 6))
+	{
+	   // printf("http://\n");
+            isHTTP = true;
+	}
+	else if(!strncmp("file://", filename, 7))
+	{
+	    //printf("file://\n");
+	}
+	else if(!strncmp("upnp://", filename, 7))
+	{
+	    //printf("upnp://\n");
+            isHTTP = true;
+	}
+	else
+	    strcat(file, "file://");
+	
+	strcat(file, filename);
+
+	//open file
+	if(player && player->playback && player->playback->Command(player, PLAYBACK_OPEN, file) >= 0) 
+	{
+		//list audio tracks
+		if(player && player->manager && player->manager->audio) 
+		{
+			char ** TrackList = NULL;
+			player->manager->audio->Command(player, MANAGER_LIST, &TrackList);
+
+			if (TrackList != NULL) 
+			{
+				printf("AudioTrack List\n");
+				int i = 0;
+
+				for (i = 0; TrackList[i] != NULL; i+=2) 
+				{
+					printf("\t%s - %s\n", TrackList[i], TrackList[i+1]);
+
+					free(TrackList[i]);
+					free(TrackList[i+1]);
+				}
+				free(TrackList);
+			}
+        	}
+
+		//list video tracks
+		if(player && player->manager && player->manager->video)
+		{
+			char **TrackList = NULL;
+			player->manager->video->Command(player, MANAGER_LIST, &TrackList);
+
+			if (TrackList != NULL) 
+			{
+				printf("VideoTrack List\n");
+				int i = 0;
+				for (i = 0; TrackList[i] != NULL; i+=2) 
+				{
+					printf("\t%s - %s\n", TrackList[i], TrackList[i+1]);
+					free(TrackList[i]);
+					free(TrackList[i+1]);
+				}
+				free(TrackList);
+			}
+		}
+
+		//list SUB tracks
+#if defined (ENABLE_LIBASS)		
+		if(player && player->manager && player->manager->subtitle) 
+		{
+			char ** TrackList = NULL;
+			player->manager->subtitle->Command(player, MANAGER_LIST, &TrackList);
+
+			if (TrackList != NULL) 
+			{
+				printf("SubtitleTrack List\n");
+				int i = 0;
+				for (i = 0; TrackList[i] != NULL; i+=2) 
+				{
+					printf("\t%s - %s\n", TrackList[i], TrackList[i+1]);
+					free(TrackList[i]);
+					free(TrackList[i+1]);
+				}
+				free(TrackList);
+			}
+		}
+#endif
+
+		/* play it baby  */
+		if(player && player->output && player->playback) 
+		{
+        		player->output->Command(player, OUTPUT_OPEN, NULL);
+			
+			if (player->playback->Command(player, PLAYBACK_PLAY, NULL) == 0 ) // playback.c uses "int = 0" for "true"
+			{
+				playing = true;
+				playstate = STATE_PLAY;
+			}
+		}		
+	}
+#endif
+
+#if defined (ENABLE_GSTREAMER)
+	int argc = 1;
+	int flags = 0x47; //(GST_PLAY_FLAG_VIDEO | GST_PLAY_FLAG_AUDIO | GST_PLAY_FLAG_NATIVE_VIDEO | GST_PLAY_FLAG_TEXT);
+	gchar *uri;
+		
+	gst_init(&argc, &filename);
+	uri = g_filename_to_uri(filename, NULL, NULL);
+	m_gst_playbin = gst_element_factory_make("playbin2", "playbin");
+	g_object_set(G_OBJECT (m_gst_playbin), "uri", uri, NULL);
+	g_object_set(G_OBJECT (m_gst_playbin), "flags", flags, NULL);
+	g_free(uri);
+#endif
+
+	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);	
+
+	return true;
+}
+
+#if defined (ENABLE_PVR)
+static void *start_playthread(void *c)
+{
+	cPlayback *obj = (cPlayback *)c;
+	obj->playthread();
+	return NULL;
+}
+
+void cPlayback::playthread(void)
+{
+	thread_started = true;
+	int ret, towrite;
+	dvrfd = open("/dev/dvb/adapter0/dvr0", O_WRONLY);
+	if (dvrfd < 0)
+	{
+		printf("open tdpvr failed: %m\n");
+		pthread_exit(NULL);
+	}
+
+	pthread_cleanup_push(playthread_cleanup_handler, 0);
+
+	// select source
+	//ioctl(audioDemux->getFD(), DEMUX_SELECT_SOURCE, INPUT_FROM_PVR);
+	if (AC3)
+		audioDecoder->SetStreamType(AUDIO_STREAMTYPE_AC3);
+	else
+		audioDecoder->SetStreamType(AUDIO_STREAMTYPE_MPEG);
+
+	audioDemux->pesFilter(aPid, DMX_IN_DVR);
+	videoDemux->pesFilter(vPid, DMX_IN_DVR);
+
+	audioDemux->Start();
+	videoDemux->Start();
+
+	videoDecoder->setBlank(1);
+	videoDecoder->Start();
+	//audioDecoder->Start();
+
+	while (playstate != STATE_STOP)
+	{
+		if (mSpeed == 0)
+		{
+			playstate = STATE_PAUSE;
+			usleep(1);
+			continue;
+		}
+		
+		if (inbuf_read() < 0)
+			break;
+
+		/* autoselect PID for PLAYMODE_FILE */
+		if (aPid == 0 && numPida > 0)
+		{
+			for (int i = 0; i < numPida; i++)
+			{
+				if (AC3flags[i] == 0)
+				{
+					aPid = aPids[i];
+					printf("setting Audio pid to 0x%04hx\n", aPid);
+					SetAPid(aPid, 0);
+					break;
+				}
+			}
+		}
+
+		towrite = inbuf_pos / 188 * 188; /* TODO: smaller chunks? */
+		if (towrite == 0)
+			continue;
+ retry:
+		ret = write(dvrfd, inbuf, towrite);
+		if (ret < 0)
+		{
+			if (errno == EAGAIN && playstate != STATE_STOP)
+				goto retry;
+			printf("write dvr failed: %m\n");
+			break;
+		}
+		memmove(inbuf, inbuf + ret, inbuf_pos - ret);
+		inbuf_pos -= ret;
+	}
+
+	pthread_cleanup_pop(1);
+	pthread_exit(NULL);
+}
+
+static void playthread_cleanup_handler(void *)
+{
+	//INFO("\n");
+	//ioctl(audioDemux->getFD(), DEMUX_SELECT_SOURCE, INPUT_FROM_CHANNEL0);
+	audioDemux->Stop();
+	videoDemux->Stop();
+	audioDecoder->Stop();
+	videoDecoder->Stop();
+	close(dvrfd);
+	dvrfd = -1;
+}
+#endif
+
+bool cPlayback::Play(void)
+{
+	dprintf(DEBUG_INFO, "%s:%s playing %d\n", FILENAME, __FUNCTION__, playing);	
+
+	if(playing == true) 
+		return true;
+	
+#if defined (ENABLE_LIBEPLAYER3)
+	/* play it baby  */
+	if(player && player->output && player->playback) 
+	{
+        	player->output->Command(player, OUTPUT_OPEN, NULL);
+			
+		if (player->playback->Command(player, PLAYBACK_PLAY, NULL) == 0 ) // playback.c uses "int = 0" for "true"
+		{
+			playing = true;
+			playstate = STATE_PLAY;
+		}
+	}
+#endif	
+
+	return playing;
+}
+
+bool cPlayback::SyncAV(void)
+{
+	dprintf(DEBUG_INFO, "%s:%s playing %d\n", FILENAME, __FUNCTION__, playing);	
+
+	if(playing == false ) 
+		return false;
+	
+#if defined (ENABLE_LIBEPLAYER3)
+	if(player && player->output && player->playback) 
+	{
+        	player->output->Command(player, OUTPUT_AVSYNC, NULL);
+	}
+#endif	
+
+	return true;
+}
+
+bool cPlayback::Stop(void)
+{ 
+	dprintf(DEBUG_INFO, "%s:%s playing %d\n", FILENAME, __FUNCTION__, playing);	
+
+	if(playing == false) 
+		return false;
+
+#if defined (ENABLE_LIBEPLAYER3)
+	if(player && player->playback && player->output) 
+	{
+		player->playback->Command(player, PLAYBACK_STOP, NULL);
+		player->output->Command(player, OUTPUT_CLOSE, NULL);
+	}
+
+	if(player && player->output) 
+	{
+		player->output->Command(player,OUTPUT_DEL, (void*)"audio");
+		player->output->Command(player,OUTPUT_DEL, (void*)"video");
+#if defined (ENABLE_LIBASS)		
+		player->output->Command(player,OUTPUT_DEL, (void*)"subtitle");
+#endif		
+	}
+
+	if(player && player->playback)
+		player->playback->Command(player, PLAYBACK_CLOSE, NULL);
+
+
+	if(player != NULL)
+	{
+		free(player);
+
+		player = NULL;
+	}
+#endif	
+
+#if defined (ENABLE_GSTREAMER)
+	if(m_gst_playbin)
+	{
+		gst_element_set_state(m_gst_playbin, GST_STATE_NULL);
+	}
+#endif
+
+	playing = false;
+	
+	dprintf(DEBUG_INFO, "%s:%s playing %d\n", FILENAME, __FUNCTION__, playing);
+	
+	playstate = STATE_STOP;
+
+	return true;
+}
+
+bool cPlayback::SetAPid(unsigned short pid, bool ac3)
+{
+	dprintf(DEBUG_INFO, "%s:%s curpid:%d nextpid:%d\n", FILENAME, __FUNCTION__, mAudioStream, pid);
+	
+#if defined (ENABLE_PVR)	
+	aPid = pid;
+	AC3 = ac3;
+
+	audioDemux->Stop();
+	audioDecoder->Stop();
+	videoDemux->Stop();
+	videoDecoder->Stop(false);
+
+	if (AC3)
+		audioDecoder->SetStreamType(AUDIO_STREAMTYPE_AC3);
+	else
+		audioDecoder->SetStreamType(AUDIO_STREAMTYPE_MPEG);
+	
+	audioDemux->pesFilter(aPid);
+
+	videoDemux->Start();
+	audioDemux->Start();
+	audioDecoder->Start();
+	videoDecoder->Start();
+#endif
+
+#if defined (ENABLE_LIBEPLAYER3)
+	int track = pid;
+
+	if(pid != mAudioStream)
+	{
+		if(player && player->playback)
+				player->playback->Command(player, PLAYBACK_SWITCH_AUDIO, (void*)&track);
+
+		mAudioStream = pid;
+	}
+#endif	
+
+	return true;
+}
+
+bool cPlayback::SetSpeed(int speed)
+{  
+	dprintf(DEBUG_INFO, "%s:%s speed %d\n", FILENAME, __FUNCTION__, speed);	
+
+	if(playing == false) 
+		return false;
+	
+#if defined (ENABLE_PVR)	
+	if (speed != 0 && mSpeed == 0)
+	{
+		videoDemux->Stop();
+		videoDemux->Start();
+		audioDemux->Start();
+		audioDecoder->Start();
+		videoDecoder->Start();
+		playstate = STATE_PLAY;
+	}
+	
+	mSpeed = speed;
+	if (mSpeed == 0)
+	{
+		audioDecoder->Stop();
+		audioDemux->Stop();
+		videoDecoder->Stop(false);
+	}
+#endif
+	
+#if defined (ENABLE_LIBEPLAYER3)
+	if(player && player->playback) 
+	{
+		if(speed > 1) 		//forwarding
+		{
+			//
+			if (speed > 7) 
+				speed = 7;
+
+			player->playback->Command(player, PLAYBACK_FASTFORWARD, (void*)&speed);
+			playstate = STATE_FF;
+		}
+		else if(speed == 0)	//pausing
+		{
+			player->playback->Command(player, PLAYBACK_PAUSE, NULL);
+			playstate = STATE_PAUSE;
+		}
+		else if (speed < 0)	//backwarding
+		{
+			//
+			if (speed < -7) 
+				speed = -7;
+			
+			player->playback->Command(player, PLAYBACK_FASTBACKWARD, (void*)&speed);
+			playstate = STATE_REW;
+		}
+		else if(speed == 1) 	//continue
+		{
+			player->playback->Command(player, PLAYBACK_CONTINUE, NULL);
+			playstate = STATE_PLAY;
+		}
+	}
+#endif
+
+#if defined (ENABLE_GSTREAMER)
+	if(speed == 0)
+		if(m_gst_playbin)
+			gst_element_set_state(m_gst_playbin, GST_STATE_PAUSED);
+		
+	if(speed == 1)
+		if(m_gst_playbin)
+			gst_element_set_state(m_gst_playbin, GST_STATE_PLAYING);
+#endif
+
+	mSpeed = speed;
+
+	return true;
+}
+
+bool cPlayback::SetSlow(int slow)
+{  
+	dprintf(DEBUG_INFO, "%s:%s playing %d\n", FILENAME, __FUNCTION__, playing);	
+
+	if(playing == false) 
+		return false;
+
+#if defined (ENABLE_LIBEPLAYER3)
+	if(player && player->playback) 
+	{
+		player->playback->Command(player, PLAYBACK_SLOWMOTION, (void*)&slow);
+		playstate = STATE_SLOW;
+	}
+#endif	
+
+	mSpeed = slow;
+
+	return true;
+}
+
+bool cPlayback::GetSpeed(int &speed) const
+{
+	speed = mSpeed;
+
+	return true;
+}
+
+// in milliseconds
+bool cPlayback::GetPosition(int &position, int &duration)
+{
+	if(playing == false) 
+		return false;
+	
+#if defined (ENABLE_PVR)	
+	int64_t tmppts;
+	//DBG("\n");
+	if (pts_end != -1 && pts_start > pts_end) /* should trigger only once ;) */
+		pts_end += 0x200000000ULL;
+
+	if (pts_curr != -1 && pts_curr < pts_start)
+		tmppts = pts_curr + 0x200000000ULL - pts_start;
+	else
+		tmppts = pts_curr - pts_start;
+
+	position = tmppts / 90;
+	duration = (pts_end - pts_start) / 90;
+
+	return (pts_end != -1 && pts_curr != -1);
+#endif
+	
+#if defined (ENABLE_LIBEPLAYER3)
+	if (player && player->playback && !player->playback->isPlaying) 
+	{	  
+		dprintf(DEBUG_INFO, "cPlayback::%s !!!!EOF!!!! < -1\n", __func__);	
+	
+		return false;
+	} 
+
+	//PTS
+	unsigned long long int vpts = 0;
+
+	if(player && player->playback)
+		player->playback->Command(player, PLAYBACK_PTS, &vpts);
+
+	if(vpts <= 0) 
+	{
+		//printf("ERROR: vpts==0\n");
+		//return false;
+	} 
+	else 
+	{
+		/* len is in nanoseconds. we have 90 000 pts per second. */
+		position = vpts/90;
+	}
+
+	//LENGTH
+	double length = 0;
+
+	if(player && player->playback)
+		player->playback->Command(player, PLAYBACK_LENGTH, &length);
+
+	if(length <= 0) 
+	{
+		duration = duration+1000;
+		//printf("ERROR: duration==0\n");
+		//return false;
+	} 
+	else 
+	{
+		duration = (int)(length*1000);
+	}
+	
+	return true;
+#endif	
+
+#if defined (ENABLE_GSTREAMER)
+	//PTS
+	unsigned long long int pts = 0;
+	
+	GstFormat fmt = GST_FORMAT_TIME; //Returns time in nanosecs
+	
+	if(m_gst_playbin)
+	{
+		gst_element_query_position(m_gst_playbin, &fmt, &pts);
+		position = pts / 1000000000.0;
+		//debug(150, "Pts = %02d:%02d:%02d (%llu.0000 sec)", (int)((sec / 60) / 60) % 60, (int)(sec / 60) % 60, (int)sec % 60, sec);
+	}
+	
+	// length
+	double length = 0;
+	
+	GstFormat fmt = GST_FORMAT_TIME; //Returns time in nanosecs
+	gint64 len;
+
+	if(m_gst_playbin)
+	{
+		gst_element_query_duration(m_gst_playbin, &fmt, &len);
+		length = len / 1000000000.0;
+		if(length < 0) length = 0;
+		
+		duration = (int)(length*1000);
+		//debug(150, "Length = %02d:%02d:%02d (%.4f sec)", (int)((length / 60) / 60) % 60, (int)(length / 60) % 60, (int)length % 60, length);
+	}	
+	
+	return true;
+#endif
+}
+
+bool cPlayback::SetPosition(int position, bool absolute)
+{
+	if(playing == false) 
+		return false;
+	
+#if defined (ENABLE_PVR)	
+	int currpos, target, duration, oldspeed;
+	bool ret;
+
+	if (absolute)
+		target = position;
+	else
+	{
+		GetPosition(currpos, duration);
+		target = currpos + position;
+		printf("current position %d target %d\n", currpos, target);
+	}
+
+	oldspeed = mSpeed;
+	if (oldspeed != 0)
+		SetSpeed(0);		/* request pause */
+
+	while (playstate == STATE_PLAY)	/* playthread did not acknowledge pause */
+		usleep(1);
+	if (playstate == STATE_STOP)	/* we did get stopped by someone else */
+		return false;
+
+	ret = (seek_to_pts(target * 90) > 0);
+
+	if (oldspeed != 0)
+	{
+		SetSpeed(oldspeed);
+		/* avoid ugly artifacts */
+		videoDecoder->Stop();
+		videoDecoder->Start();
+	}
+	return ret;
+#endif
+
+#if defined (ENABLE_LIBEPLAYER3)
+	float pos = (position/1000.0);
+
+	if(player && player->playback)
+		player->playback->Command(player, PLAYBACK_SEEK, (void*)&pos);
+#endif
+
+#if defined (ENABLE_GSTREAMER)
+	gint64 time_nanoseconds;
+	gint64 pos;
+	GstFormat fmt = GST_FORMAT_TIME;
+		
+	if(m_gst_playbin)
+	{
+		gst_element_query_position(m_gst_playbin, &fmt, &pos);
+		time_nanoseconds = pos + (position * 1000000000);
+		if(time_nanoseconds < 0) time_nanoseconds = 0;
+		gst_element_seek(m_gst_playbin, 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, time_nanoseconds, GST_SEEK_TYPE_NONE, GST_CLOCK_TIME_NONE);
+	}
+#endif
+
+	return true;
+}
+
+void cPlayback::FindAllPids(uint16_t *apids, unsigned short *ac3flags, uint16_t *numpida, std::string *language)
+{ 
+	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);
+	
+#if defined (ENABLE_PVR)	
+	//INFO("\n");
+	//memcpy(_apids, &apids, sizeof(apids));
+	//memcpy(_ac3flags, &ac3flags, sizeof(&ac3flags));
+	//language = alang; /* TODO: language */
+	//*_numpida = numpida;
+#endif
+
+#if defined (ENABLE_LIBEPLAYER3)
+	// audio pids
+	if(player && player->manager && player->manager->audio) 
+	{
+		char ** TrackList = NULL;
+		player->manager->audio->Command(player, MANAGER_LIST, &TrackList);
+
+		if (TrackList != NULL) 
+		{
+			printf("AudioTrack List\n");
+			int i = 0,j=0;
+
+			for (i = 0, j=0; TrackList[i] != NULL; i+=2,j++) 
+			{
+				printf("\t%s - %s\n", TrackList[i], TrackList[i+1]);
+				apids[j]=j;
+
+				// atUnknown, atMPEG, atMP3, atAC3, atDTS, atAAC, atPCM, atOGG, atFLAC
+
+				if(!strncmp("A_MPEG/L3",   TrackList[i+1], 9))
+					ac3flags[j] = 4;
+				else if(!strncmp("A_AC3",       TrackList[i+1], 5))
+					ac3flags[j] = 1;
+				else if(!strncmp("A_DTS",       TrackList[i+1], 5))
+					ac3flags[j] = 6;
+				else if(!strncmp("A_AAC",       TrackList[i+1], 5))
+					ac3flags[j] = 5;
+				else if(!strncmp("A_PCM",       TrackList[i+1], 5))
+					ac3flags[j] = 0; 	//todo
+				else if(!strncmp("A_VORBIS",    TrackList[i+1], 8))
+					ac3flags[j] = 0;	//todo
+				else if(!strncmp("A_FLAC",      TrackList[i+1], 6))
+					ac3flags[j] = 0;	//todo
+				else
+					ac3flags[j] = 0;	//todo
+
+				language[j]=TrackList[i];
+				
+				free(TrackList[i]);
+				free(TrackList[i+1]);
+			}
+			free(TrackList);
+			*numpida=j;
+		}
+	}
+#endif	
+}
+
+void cPlayback::getMeta()
+{
+	if(playing) 
+		return;
+	
+#if defined (ENABLE_LIBEPLAYER3)
+	char *tags[] =
+        {
+                "Title",
+                "Artist",
+                "Album",
+                "Year",
+                "Genre",
+                "Comment",
+                "Track",
+                "Copyright",
+                "TestLibEplayer",
+                NULL
+        };
+		
+        int i = 0;
+        while (tags[i] != NULL)
+        {
+		char* tag = tags[i];
+                player->playback->Command(player, PLAYBACK_INFO, &tag);
+
+                if (tag != NULL)
+                    	printf("\t%s:\t%s\n",tags[i], tag);
+                else
+                    	printf("\t%s:\tNULL\n",tags[i]);
+                i++;
+       }
+#endif       
+}
+
+#if defined (ENABLE_PVR)
+off_t cPlayback::seek_to_pts(int64_t pts)
+{
+	off_t newpos = curr_pos;
+	int64_t tmppts, ptsdiff;
+	int count = 0;
+	if (pts_start < 0 || pts_end < 0 || bytes_per_second < 0)
+	{
+		printf("pts_start (%lld) or pts_end (%lld) or bytes_per_second (%lld) not initialized\n",
+			pts_start, pts_end, bytes_per_second);
+		return -1;
+	}
+	/* sanity check: buffer is without locking, so we must only seek while in pause mode */
+	if (playstate != STATE_PAUSE)
+	{
+		printf("playstate (%d) != STATE_PAUSE, not seeking\n", playstate);
+		return -1;
+	}
+
+	/* tmppts is normalized current pts */
+	if (pts_curr < pts_start)
+		tmppts = pts_curr + 0x200000000ULL - pts_start;
+	else
+		tmppts = pts_curr - pts_start;
+	while (abs(pts - tmppts) > 90000LL && count < 10)
+	{
+		count++;
+		ptsdiff = pts - tmppts;
+		newpos += ptsdiff * bytes_per_second / 90000;
+		printf("try #%d seeking from %lldms to %lldms, diff %lldms curr_pos %lld newpos %lld\n",
+			count, tmppts / 90, pts / 90, ptsdiff / 90, curr_pos, newpos);
+		if (newpos < 0)
+			newpos = 0;
+		newpos = mp_seekSync(newpos);
+		if (newpos < 0)
+			return newpos;
+		inbuf_pos = 0;
+		inbuf_sync = 0;
+		inbuf_read(); /* also updates current pts */
+		if (pts_curr < pts_start)
+			tmppts = pts_curr + 0x200000000ULL - pts_start;
+		else
+			tmppts = pts_curr - pts_start;
+	}
+	printf("end after %d tries, ptsdiff now %lld sec\n", count, (pts - tmppts) / 90000);
+	return newpos;
+}
+
+bool cPlayback::filelist_auto_add()
+{
+	if (filelist.size() != 1)
+		return false;
+
+	const char *filename = filelist[0].Name.c_str();
+	char *ext;
+	ext = strrchr((char *)filename, '.');	// FOO-xxx-2007-12-31.001.ts <- the dot before "ts"
+					// 001.vdr <- the dot before "vdr"
+	// check if there is something to do...
+	if (! ext)
+		return false;
+	if (!((ext - 7 >= filename && !strcmp(ext, ".ts") && *(ext - 4) == '.') ||
+	      (ext - 4 >= filename && !strcmp(ext, ".vdr"))))
+		return false;
+
+	int num = 0;
+	struct stat s;
+	size_t numpos = strlen(filename) - strlen(ext) - 3;
+	sscanf(filename + numpos, "%d", &num);
+	do {
+		num++;
+		char nextfile[strlen(filename) + 1]; /* todo: use fixed buffer? */
+		memcpy(nextfile, filename, numpos);
+		sprintf(nextfile + numpos, "%03d%s", num, ext);
+		if (stat(nextfile, &s))
+			break; // file does not exist
+		filelist_t file;
+		file.Name = std::string(nextfile);
+		file.Size = s.st_size;
+		printf("auto-adding '%s' to playlist\n", nextfile);
+		filelist.push_back(file);
+	} while (true && num < 999);
+
+	return (filelist.size() > 1);
+}
+
+/* the mf_* functions are wrappers for multiple-file I/O */
+int cPlayback::mf_open(int fileno)
+{
+	if (filelist.empty())
+		return -1;
+
+	if (fileno >= (int)filelist.size())
+		return -1;
+
+	mf_close();
+
+	in_fd = open(filelist[fileno].Name.c_str(), O_RDONLY);
+	if (in_fd != -1)
+		curr_fileno = fileno;
+
+	return in_fd;
+}
+
+int cPlayback::mf_close(void)
+{
+	int ret = 0;
+	printf("in_fd = %d curr_fileno = %d\n", in_fd, curr_fileno);
+	if (in_fd != -1)
+		ret = close(in_fd);
+	in_fd = curr_fileno = -1;
+
+	return ret;
+}
+
+off_t cPlayback::mf_getsize(void)
+{
+	off_t ret = 0;
+	for (unsigned int i = 0; i < filelist.size(); i++)
+		ret += filelist[i].Size;
+	return ret;
+}
+
+off_t cPlayback::mf_lseek(off_t pos)
+{
+	off_t offset = 0, lpos = pos, ret;
+	unsigned int fileno;
+	for (fileno = 0; fileno < filelist.size(); fileno++)
+	{
+		if (lpos < filelist[fileno].Size)
+			break;
+		offset += filelist[fileno].Size;
+		lpos   -= filelist[fileno].Size;
+	}
+	if (fileno == filelist.size())
+		return -2;	// EOF
+
+	if ((int)fileno != curr_fileno)
+	{
+		printf("old fileno: %d new fileno: %d, offset: %lld\n", curr_fileno, fileno, (long long)lpos);
+		in_fd = mf_open(fileno);
+		if (in_fd < 0)
+		{
+			printf("cannot open file %d:%s (%m)\n", fileno, filelist[fileno].Name.c_str());
+			return -1;
+		}
+	}
+
+	ret = lseek(in_fd, lpos, SEEK_SET);
+	if (ret < 0)
+		return ret;
+
+	curr_pos = offset + ret;
+	return curr_pos;
+}
+
+/* gets the PTS at a specific file position from a PES
+   ATTENTION! resets buf!  */
+int64_t cPlayback::get_PES_PTS(uint8_t *buf, int len, bool last)
+{
+	int64_t pts = -1;
+	int off, plen;
+	uint8_t *p;
+
+	off = mp_syncPES(buf, len);
+
+	if (off < 0)
+		return off;
+
+	p = buf + off;
+	while (off < len - 14 && (pts == -1 || last))
+	{
+		plen = ((p[4] << 8) | p[5]) + 6;
+
+		switch(p[3])
+		{
+			int64_t tmppts;
+			case 0xe0 ... 0xef:	// video!
+				tmppts = get_pts(p, true);
+				if (tmppts >= 0)
+					pts = tmppts;
+				break;
+			case 0xbb:
+			case 0xbe:
+			case 0xbf:
+			case 0xf0 ... 0xf3:
+			case 0xff:
+			case 0xc0 ... 0xcf:
+			case 0xd0 ... 0xdf:
+				break;
+			case 0xb9:
+			case 0xba:
+			case 0xbc:
+			default:
+				plen = 1;
+				break;
+		}
+		p += plen;
+		off += plen;
+	}
+	return pts;
+}
+
+ssize_t cPlayback::inbuf_read()
+{
+	if (filetype == FILETYPE_UNKNOWN)
+		return -1;
+	if (filetype == FILETYPE_TS)
+		return read_ts();
+	/* FILETYPE_MPG or FILETYPE_VDR */
+	return read_mpeg();
+}
+
+ssize_t cPlayback::read_ts()
+{
+	ssize_t toread, ret, sync, off;
+	toread = INBUF_SIZE - inbuf_pos;
+	bool retry = true;
+	/* fprintf(stderr, "%s:%d curr_pos %lld, inbuf_pos: %ld, toread: %ld\n",
+		__FUNCTION__, __LINE__, (long long)curr_pos, (long)inbuf_pos, (long)toread); */
+
+	while(true)
+	{
+		ret = read(in_fd, inbuf + inbuf_pos, toread);
+		if (ret == 0 && retry) /* EOF */
+		{
+			mf_lseek(curr_pos);
+			retry = false;
+			continue;
+		}
+		break;
+	}
+	if (ret < 0)
+	{
+		printf("failed: %m\n");
+		return ret;
+	}
+	if (ret == 0)
+		return ret;
+	inbuf_pos += ret;
+	curr_pos += ret;
+
+	sync = sync_ts(inbuf + inbuf_sync, INBUF_SIZE - inbuf_sync);
+	if (sync < 0)
+	{
+		printf("cannot sync\n");
+		return ret;
+	}
+	inbuf_sync += sync;
+	/* check for A/V PIDs */
+	uint16_t pid;
+	int i, j;
+	bool pid_new;
+	int64_t pts;
+	// fprintf(stderr, "inbuf_pos: %ld - sync: %ld\n", (long)inbuf_pos, (long)sync);
+	int synccnt = 0;
+	for (i = 0; i < inbuf_pos - inbuf_sync - 13;) {
+		uint8_t *buf = inbuf + inbuf_sync + i;
+		if (*buf != 0x47)
+		{
+			synccnt++;
+			i++;
+			continue;
+		}
+		if (synccnt)
+			printf("TS went out of sync %d\n", synccnt);
+		synccnt = 0;
+		if (!(buf[1] & 0x40))	/* PUSI */
+		{
+			i += 188;
+			continue;
+		}
+		off = 0;
+		if (buf[3] & 0x20)	/* adaptation field? */
+			off = buf[4] + 1;
+		pid = get_pid(buf + 1);
+		pid_new = true;
+		/* PES signature is at buf + 4, streamtype is after 00 00 01 */
+		switch (buf[4 + 3 + off])
+		{
+		case 0xe0 ... 0xef:	/* video stream */
+			if (vPid == 0)
+				vPid = pid;
+			pts = get_pts(buf + 4 + off, true);
+			if (pts < 0)
+				break;
+			pts_curr = pts;
+			if (pts_start < 0)
+				pts_start = pts;
+			break;
+		case 0xbd:		/* private stream 1 - ac3 */
+		case 0xc0 ... 0xdf:	/* audio stream */
+			if (numPida > 9)
+				break;
+			for (j = 0; j < numPida; j++) {
+				if (aPids[j] == pid)
+				{
+					pid_new = false;
+					break;
+				}
+			}
+			if (!pid_new)
+				break;
+			if (buf[7 + off] == 0xbd)
+			{
+				if (buf[12 + off] == 0x24)	/* 0x24 == TTX */
+					break;
+				AC3flags[numPida] = 1;
+			}
+			else
+				AC3flags[numPida] = 0;
+			aPids[numPida] = pid;
+			printf("found apid #%d 0x%04hx ac3:%d\n", numPida, pid, AC3flags[numPida]);
+			numPida++;
+			break;
+		}
+		i += 188;
+	}
+
+	// fprintf(stderr, "%s:%d ret %ld\n", __FUNCTION__, __LINE__, (long long)ret);
+	return ret;
+}
+
+ssize_t cPlayback::read_mpeg()
+{
+	ssize_t toread, ret, sync;
+	toread = INBUF_SIZE / 2 - pesbuf_pos;
+	bool retry = true;
+
+	while(true)
+	{
+		ret = read(in_fd, pesbuf + pesbuf_pos, toread);
+		if (ret == 0 && retry) /* EOF */
+		{
+			mf_lseek(curr_pos);
+			retry = false;
+			continue;
+		}
+		break;
+	}
+	if (ret < 0)
+	{
+		printf("failed: %m\n");
+		return ret;
+	}
+	pesbuf_pos += ret;
+	curr_pos += ret;
+
+	int i;
+	int count = 0;
+	uint16_t pid = 0;
+	while (count < pesbuf_pos - 10)
+	{
+		sync = mp_syncPES(pesbuf + count, pesbuf_pos - count - 10);
+		if (sync < 0)
+		{
+			printf("cannot sync\n");
+			break;
+		}
+		if (sync)
+			printf("needed sync\n");
+		count += sync;
+		uint8_t *ppes = pesbuf + count;
+		int av = 0; // 1 = video, 2 = audio
+		int64_t pts;
+		switch(ppes[3])
+		{
+			case 0xba:
+				// fprintf(stderr, "pack start code, 0x%02x\n", ppes[4]);
+				if ((ppes[4] & 0x3) == 1) // ??
+				{
+					//type = 1; // mpeg1
+					count += 12;
+				}
+				else
+					count += 14;
+				continue;
+				break;
+			case 0xbd: // AC3
+			{
+				int off = ppes[8] + 8 + 1; // ppes[8] is often 0
+				if (count + off >= pesbuf_pos)
+					break;
+				int subid = ppes[off];
+				// if (offset == 0x24 && subid == 0x10 ) // TTX?
+				if (subid < 0x80 || subid > 0x87)
+					break;
+				printf("AC3: ofs 0x%02x subid 0x%02x\n", off, subid);
+				//subid -= 0x60; // normalize to 32...39 (hex 0x20..0x27)
+
+				if (numPida > 9)
+					break;
+				bool found = false;
+				for (i = 0; i < numPida; i++) {
+					if (aPids[i] == subid)
+					{
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+				{
+					aPids[numPida] = subid;
+					AC3flags[numPida] = 1;
+					numPida++;
+					printf("found aid: %02x\n", subid);
+				}
+				pid = subid;
+				av = 2;
+				break;
+			}
+			case 0xbb:
+			case 0xbe:
+			case 0xbf:
+			case 0xf0 ... 0xf3:
+			case 0xff:
+				//skip = (ppes[4] << 8 | ppes[5]) + 6;
+				//DBG("0x%02x header, skip = %d\n", ppes[3], skip);
+				break;
+			case 0xc0 ... 0xcf:
+			case 0xd0 ... 0xdf:
+			{
+				// fprintf(stderr, "audio stream 0x%02x\n", ppes[3]);
+				int id = ppes[3]; // - 0xC0; // normalize to 0...31 (hex 0x0...0x1f)
+				bool found = false;
+				for (i = 0; i < numPida; i++) {
+					if (aPids[i] == id)
+					{
+						found = true;
+						break;
+					}
+				}
+				if (!found)
+				{
+					aPids[numPida] = id;
+					AC3flags[numPida] = 0;
+					numPida++;
+					printf("found aid: %02x\n", id);
+				}
+				pid = id;
+				av = 2;
+				break;
+			}
+			case 0xe0 ... 0xef:
+				// fprintf(stderr, "video stream 0x%02x, %02x %02x \n", ppes[3], ppes[4], ppes[5]);
+				pid = 0x40;
+				av = 1;
+				pts = get_pts(ppes, true);
+				if (pts < 0)
+					break;
+				pts_curr = pts;
+				if (pts_start < 0)
+					pts_start = pts;
+				break;
+			case 0xb9:
+			case 0xbc:
+				printf("%s\n", (ppes[3] == 0xb9) ? "program_end_code" : "program_stream_map");
+				//resync = true;
+				// fallthrough. TODO: implement properly.
+			default:
+				//if (! resync)
+				//	DBG("Unknown stream id: 0x%X.\n", ppes[3]);
+				count++;
+				continue;
+				break;
+		}
+
+		int pesPacketLen = ((ppes[4] << 8) | ppes[5]) + 6;
+		if (count + pesPacketLen >= pesbuf_pos)
+		{
+			printf("buffer len: %d, pesPacketLen: %d :-(\n", pesbuf_pos - count, pesPacketLen);
+			memmove(pesbuf, ppes, pesbuf_pos - count);
+			pesbuf_pos -= count;
+			break;
+		}
+
+		if (av)
+		{
+			int tsPacksCount = pesPacketLen / 184;
+			int rest = pesPacketLen % 184;
+
+			// divide PES packet into small TS packets
+			uint8_t pusi = 0x40;
+			int j;
+			uint8_t *ts = inbuf + inbuf_pos;
+			for (j = 0; j < tsPacksCount; j++)
+			{
+				ts[0] = 0x47;				// SYNC Byte
+				ts[1] = pusi;				// Set PUSI if first packet
+				ts[2] = pid;				// PID (low)
+				ts[3] = 0x10 | (cc[pid] & 0x0F);	// No adaptation field, payload only, continuity counter
+				cc[pid]++;
+				memcpy(ts + 4, ppes + j * 184, 184);
+				pusi = 0x00;				// clear PUSI
+				ts += 188;
+				inbuf_pos += 188;
+			}
+
+			if (rest > 0)
+			{
+				ts[0] = 0x47;				// SYNC Byte
+				ts[1] = pusi;				// Set PUSI or
+				ts[2] = pid;				// PID (low)
+				ts[3] = 0x30 | (cc[pid] & 0x0F);	// adaptation field, payload, continuity counter
+				cc[pid]++;
+				ts[4] = 183 - rest;
+				if (ts[4] > 0)
+				{
+					ts[5] = 0x00;
+					memset(ts + 6, 0xFF, ts[4] - 1);
+				}
+				memcpy(ts + 188 - rest, ppes + j * 184, rest);
+				inbuf_pos += 188;
+			}
+		} //if (av)
+
+		memmove(pesbuf, ppes + pesPacketLen, pesbuf_pos - count - pesPacketLen);
+		pesbuf_pos -= count + pesPacketLen;
+	}
+	
+	return ret;
+}
+
+//== seek to pos with sync to next proper TS packet ==
+//== returns offset to start of TS packet or actual ==
+//== pos on failure.                                ==
+//====================================================
+off_t cPlayback::mp_seekSync(off_t pos)
+{
+	off_t npos = pos;
+	off_t ret;
+	uint8_t pkt[188];
+
+	ret = mf_lseek(npos);
+	if (ret < 0)
+		printf("lseek ret < 0 (%m)\n");
+
+	while (read(in_fd, pkt, 1) > 0)
+	{
+		//-- check every byte until sync word reached --
+		npos++;
+		if (*pkt == 0x47)
+		{
+			//-- if found double check for next sync word --
+			if (read(in_fd, pkt, 188) == 188)
+			{
+				if(pkt[188-1] == 0x47)
+				{
+					ret = mf_lseek(npos - 1); // assume sync ok
+					if (ret < 0)
+						printf("lseek ret < 0 (%m)\n");
+					return ret;
+				}
+				else
+				{
+					ret = mf_lseek(npos); // oops, next pkt doesn't start with sync
+					if (ret < 0)
+						printf("lseek ret < 0 (%m)\n");
+				}
+			}
+		}
+
+		//-- check probe limits --
+		if (npos > (pos + 100 * 188))
+			break;
+	}
+
+	//-- on error stay on actual position --
+	return mf_lseek(pos);
+}
+
+static int sync_ts(uint8_t *p, int len)
+{
+	int count;
+	if (len < 189)
+		return -1;
+
+	count = 0;
+	while (*p != 0x47 || *(p + 188) != 0x47)
+	{
+		count++;
+		p++;
+		if (count + 188 > len)
+			return -1;
+	}
+	return count;
+}
+
+/* get the pts value from a TS or PES packet
+   pes == true selects PES mode. */
+int64_t cPlayback::get_pts(uint8_t *p, bool pes)
+{
+	if (!pes)
+	{
+		const uint8_t *end = p + 188;
+		if (p[0] != 0x47)
+			return -1;
+		if (!(p[1] & 0x40))
+			return -1;
+		if (get_pid(p + 1) != vPid)
+			return -1;
+		if (!(p[3] & 0x10))
+			return -1;
+
+		if (p[3] & 0x20)
+			p += p[4] + 4 + 1;
+		else
+			p += 4;
+
+		if (p + 13 > end)
+			return -1;
+		/* p is now pointing at the PES header. hopefully */
+		if (p[0] || p[1] || (p[2] != 1))
+			return -1;
+	}
+
+	if ((p[7] & 0x80) == 0) // packets with both pts, don't care for dts
+	// if ((p[7] & 0xC0) != 0x80) // packets with only pts
+	// if ((p[7] & 0xC0) != 0xC0) // packets with pts and dts
+		return -1;
+	if (p[8] < 5)
+		return -1;
+	if (!(p[9] & 0x20))
+		return -1;
+
+	int64_t pts =
+		((p[ 9] & 0x0EULL) << 29) |
+		((p[10] & 0xFFULL) << 22) |
+		((p[11] & 0xFEULL) << 14) |
+		((p[12] & 0xFFULL) << 7) |
+		((p[13] & 0xFEULL) >> 1);
+
+	//int msec = pts / 90;
+	//INFO("time: %02d:%02d:%02d\n", msec / 3600000, (msec / 60000) % 60, (msec / 1000) % 60);
+	return pts;
+}
+
+/* returns: 0 == was already synchronous, > 0 == is now synchronous, -1 == could not sync */
+static int mp_syncPES(uint8_t *buf, int len)
+{
+	int ret = 0;
+	while (ret < len - 3)
+	{
+		if (buf[ret + 2] != 0x01)
+		{
+			ret++;
+			continue;
+		}
+		if (buf[ret + 1] != 0x00)
+		{
+			ret += 2;
+			continue;
+		}
+		if (buf[ret] != 0x00)
+		{
+			ret += 3;
+			continue;
+		}
+		return ret;
+	}
+
+	printf("No valid PES signature found. %d Bytes deleted.\n", ret);
+	return -1;
+}
+
+static inline uint16_t get_pid(uint8_t *buf)
+{
+	return (*buf & 0x1f) << 8 | *(buf + 1);
+}
+#endif
+
