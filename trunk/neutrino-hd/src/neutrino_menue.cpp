@@ -739,15 +739,6 @@ const CMenuOptionChooser::keyval FLASHUPDATE_UPDATEMODE_OPTIONS[FLASHUPDATE_UPDA
 	{ 1, LOCALE_FLASHUPDATE_UPDATEMODE_INTERNET }
 };
 
-#define TUNER_TO_SCAN_OPTION_COUNT 4
-const CMenuOptionChooser::keyval TUNER_TO_SCAN_OPTIONS[TUNER_TO_SCAN_OPTION_COUNT] =
-{
-	{ 0, NONEXISTANT_LOCALE, "Tuner-1" },
-	{ 1, NONEXISTANT_LOCALE, "Tuner-2"},
-	{ 2, NONEXISTANT_LOCALE, "Tuner-3"},
-	{ 3, NONEXISTANT_LOCALE, "Tuner-4"}
-};
-
 void CNeutrinoApp::InitServiceSettings(CMenuWidget &service, CMenuWidget & TunerSetup)
 {
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitServiceSettings\n");
