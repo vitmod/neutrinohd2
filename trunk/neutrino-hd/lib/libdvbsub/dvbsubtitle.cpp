@@ -97,14 +97,9 @@ fb_pixel_t * simple_resize32(uint8_t * origin, uint32_t * colors, int nb_colors,
 		{
 			ip = i*ox/dx;
 			
-			//TEST
-			//memcpy(l + k, p+ip, sizeof(uint8_t));
-			
-			#if 1
 			int idx = p[ip];
 			if(idx < nb_colors)
 				l[k] = colors[idx];
-			#endif
 		}
 	}
 	
@@ -209,10 +204,18 @@ cDvbSubtitleConverter::cDvbSubtitleConverter(void)
 	if (avcodec_open(avctx, avcodec) < 0)
 		dbgconverter("cDvbSubtitleConverter: unable to open codec !\n");
 
-	av_log_set_level(0 /*AV_LOG_PANIC*/);
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)
+	av_log_set_level(AV_LOG_PANIC);
+#else
+	av_log_set_level(0);
+#endif
 
 	if(DebugConverter)
-		av_log_set_level(0 /*AV_LOG_INFO*/);
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)
+		av_log_set_level(AV_LOG_INFO);
+#else		
+		av_log_set_level(0);
+#endif		
 	
 	min_x = CFrameBuffer::getInstance()->getScreenWidth(); 		/* screen width */
 	min_y = CFrameBuffer::getInstance()->getScreenHeight();		/* screenheight */
@@ -309,8 +312,12 @@ int cDvbSubtitleConverter::Convert(const uchar *Data, int Length, int64_t pts)
 	dbgconverter("cDvbSubtitleConverter::Convert: sub %x pkt %x pts %lld\n", sub, &avpkt, pts);
 	//avctx->sub_id = (anc_page << 16) | comp_page; //FIXME not patched ffmpeg needs this !
 
-	//avcodec_decode_subtitle2(avctx, sub, &got_subtitle, &avpkt);
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)
+	avcodec_decode_subtitle2(avctx, sub, &got_subtitle, &avpkt);
+#else	
 	avcodec_decode_subtitle(avctx, sub, &got_subtitle, avpkt.data, avpkt.size);
+#endif
+
 	dbgconverter("cDvbSubtitleConverter::Convert: pts %lld subs ? %s, %d bitmaps\n", pts, got_subtitle? "yes" : "no", sub->num_rects);
 
 	if(got_subtitle) 
