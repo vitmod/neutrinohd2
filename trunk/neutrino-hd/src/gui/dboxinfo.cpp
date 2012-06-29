@@ -48,10 +48,6 @@
 
 #include <zapit/frontend_c.h>
 
-//test
-//#include <gui/pictureviewer.h>
-//extern CPictureViewer * g_PicViewer;
-
 
 static const int FSHIFT = 16;              /* nr of bits of precision */
 #define FIXED_1         (1<<FSHIFT)     /* 1.0 as fixed-point */
