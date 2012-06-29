@@ -57,8 +57,10 @@ class CPluginList : public CMenuTarget
 		struct pluginitem
 		{
 			int         number;
-			std::string name;   // UTF-8 encoded
-			std::string desc;   // UTF-8 encoded
+			std::string name;   	// UTF-8 encoded
+			std::string desc;   	// UTF-8 encoded
+			
+			std::string icon;	// icon
 		};
 
 		unsigned int	    liststart;

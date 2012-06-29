@@ -246,7 +246,10 @@ bool CPlugins::parseCfg(plugin *plugin_data)
 		{
 			reject = ((parm == "1")?true:false);
 		}
-
+		else if (cmd == "icon")
+		{
+			plugin_data->icon = parm;
+		}
 	}
 
 	inFile.close();

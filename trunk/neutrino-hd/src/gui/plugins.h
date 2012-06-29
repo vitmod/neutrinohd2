@@ -68,6 +68,8 @@ class CPlugins
 			std::string description;         // UTF-8 encoded
 			std::string depend;
 			CPlugins::p_type_t type;
+			
+			std::string    icon;		// Icon
 
 			bool fb;
 			bool rc;
@@ -116,6 +118,7 @@ class CPlugins
 		inline const std::string & getDescription      (const int number) const { return plugin_list[number].description       ; }
 		inline       int           getType             (const int number) const { return plugin_list[number].type              ; }
 		inline       bool          isHidden            (const int number) const { return plugin_list[number].hide              ; }
+		inline const char *        getIcon             (const int number) const { return plugin_list[number].icon.c_str()      ; }
 
 		void startPlugin(int number, int param);
 		void start_plugin_by_name(const std::string & filename, int param);	// start plugins by "name=" in .cfg

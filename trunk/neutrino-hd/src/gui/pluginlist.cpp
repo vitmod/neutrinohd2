@@ -129,6 +129,7 @@ int CPluginList::exec(CMenuTarget* parent, const std::string & /*actionKey*/)
 			tmp->number = count;
 			tmp->name = g_PluginList->getName(count);
 			tmp->desc = g_PluginList->getDescription(count);
+			tmp->icon = g_PluginList->getIcon(count);
 			pluginlist.push_back(tmp);
 		}
 	}
@@ -294,9 +295,15 @@ void CPluginList::paintItem(int pos)
 		int icon_h = 0;
 		if(!isback_menu)
 		{
-			printf("icon name:%s\n\n", (const char *)actplugin->name.c_str());
+			std::string IconName = "/var/tuxbox/plugins/" + actplugin->icon;
+			
 			frameBuffer->getIconSize(NEUTRINO_ICON_PLUGIN, &icon_w, &icon_h);
-			frameBuffer->paintIcon( NEUTRINO_ICON_PLUGIN, x + 8, ypos + 5 );
+			
+			if (!(actplugin->icon.empty()))
+				//frameBuffer->paintIcon( NEUTRINO_ICON_PLUGIN, x + 8, ypos + 5 );
+				frameBuffer->paintIcon(IconName.c_str(), x + 8, ypos + 5 );
+			else
+				frameBuffer->paintIcon( NEUTRINO_ICON_PLUGIN, x + 8, ypos + 5 );
 		}
 		
 		// name
