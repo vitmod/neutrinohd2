@@ -49,8 +49,8 @@
 #include <zapit/frontend_c.h>
 
 //test
-#include <gui/pictureviewer.h>
-extern CPictureViewer * g_PicViewer;
+//#include <gui/pictureviewer.h>
+//extern CPictureViewer * g_PicViewer;
 
 
 static const int FSHIFT = 16;              /* nr of bits of precision */
@@ -60,7 +60,7 @@ static const int FSHIFT = 16;              /* nr of bits of precision */
 
 extern int FrontendCount;
 
-//
+// hdd
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -73,6 +73,8 @@ extern int FrontendCount;
 #include <dirent.h>
 #include <dlfcn.h>
 #include <sys/mount.h>
+
+
 static int my_filter(const struct dirent * dent)
 {
 	if(dent->d_name[0] == 's' && dent->d_name[1] == 'd')
@@ -80,8 +82,6 @@ static int my_filter(const struct dirent * dent)
 	
 	return 0;
 }
-//
-
 
 CDBoxInfoWidget::CDBoxInfoWidget()
 {
@@ -95,7 +95,6 @@ CDBoxInfoWidget::CDBoxInfoWidget()
     	x=(((g_settings.screen_EndX- g_settings.screen_StartX)-width) / 2) + g_settings.screen_StartX;
 	y=(((g_settings.screen_EndY- g_settings.screen_StartY)-height) / 2) + g_settings.screen_StartY;
 }
-
 
 int CDBoxInfoWidget::exec(CMenuTarget * parent, const std::string &)
 {
@@ -123,30 +122,18 @@ void CDBoxInfoWidget::hide()
 #ifdef FB_BLIT	
 	frameBuffer->blit();
 #endif
-
-	//frameBuffer->useBackground(false);
-	//frameBuffer->paintBackground();
-#ifdef FB_BLIT
-	//frameBuffer->blit();
-#endif
 }
 
 void CDBoxInfoWidget::paint()
 {
 	int ypos=y;
 	int i = 0;
-	
-	// startup pic
-	//frameBuffer->loadBackgroundPic("start.jpg");	
-#ifdef FB_BLIT
-	//frameBuffer->blit();
-#endif
 
 	// head
 	frameBuffer->paintBoxRel(x, ypos, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
 	
 	// icon
-	frameBuffer->paintIcon(NEUTRINO_ICON_SETTINGS,x + 8, ypos + 8);
+	frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + 8, ypos + 8);
 	
 	// title
 	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth("Box info", true); // UTF-8
@@ -154,7 +141,7 @@ void CDBoxInfoWidget::paint()
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, ypos + hheight + 1, width - (stringstartposX - x) , "Box info", COL_MENUHEAD, 0, true); // UTF-8
 
 	// foot
-	frameBuffer->paintBoxRel(x, ypos+ hheight, width, height- hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, ypos + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
 	ypos += hheight + (mheight >>1);
 
@@ -250,7 +237,7 @@ void CDBoxInfoWidget::paint()
 
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x+ 10, ypos+ mheight, width, ubuf, COL_MENUCONTENT);
     	
-    	//hdd devices test
+    	//hdd devices
 	FILE * f;
 	int fd_hdd;
 	struct dirent **namelist;
@@ -267,8 +254,6 @@ void CDBoxInfoWidget::paint()
 		int64_t bytes;
 		int64_t megabytes;
 		int removable = 0;
-
-		//printf("[neutrino] HDD: checking /sys/block/%s\n", namelist[i]->d_name);
 		
 		sprintf(str, "/dev/%s", namelist[i]->d_name);
 		fd_hdd = open(str, O_RDONLY);
@@ -292,7 +277,6 @@ void CDBoxInfoWidget::paint()
 
 		if(!f) 
 		{
-			//printf("[neutrino] HDD: Cant open %s\n", str);
 			continue;
 		}
 		fscanf(f, "%s", vendor);
@@ -304,7 +288,6 @@ void CDBoxInfoWidget::paint()
 		
 		if(!f) 
 		{
-			//printf("[neutrino] HDD: Cant open %s\n", str);
 			continue;
 		}
 		fscanf(f, "%s", model);
@@ -316,43 +299,17 @@ void CDBoxInfoWidget::paint()
 		
 		if(!f) 
 		{
-			//printf("[neutrino] HDD: Cant open %s\n", str);
 			continue;
 		}
 		fscanf(f, "%d", &removable);
 		fclose(f);
 
 		sprintf(str, "HDD: %s (%s-%s %lld %s)", namelist[i]->d_name, vendor, model, megabytes < 10000 ? megabytes : megabytes/1000, megabytes < 10000 ? "MB" : "GB");
-
-		//printf("[neutrino] HDD: %s\n", str);
 		
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x+ 10, ypos+ mheight, width, str, COL_MENUCONTENT);
 		
 		free(namelist[i]);
 	}
-	//
-	
-	//hdd
-	/*
-    	struct statfs s;
-
-	if (::statfs(g_settings.network_nfs_recordingdir, &s) == 0) 
-	{
-		ypos += mheight;
-		
-		//printf("STATFS: type %lX free: %ld\n", s.f_type, s.f_bfree);
-		
-		if( (s.f_type != (int) 0xEF53) && (s.f_type != (int) 0x52654973) && (s.f_type != (int) 0x6969) && (s.f_type != (int) 0xFF534D42) && (s.f_type != (int) 0x517B) && (s.f_type != (int) 0x58465342) )
-			return;
-		
-		//printf("/hdd filesystem total %ldKb, free %ldKb\n", (long)(s.f_blocks/1024)*s.f_bsize, (long)(s.f_bfree/1024)*s.f_bsize);
-		
-		//sprintf(ubuf, "hdd filesystem total %ldKb, free %ldKb", (long)(s.f_blocks/1024)*s.f_bsize, (long)(s.f_bfree/1024)*s.f_bsize);
-		sprintf(ubuf, "hdd filesystem total %ldMB, free %ldMB", (long)((s.f_blocks/1024)/1024)*s.f_bsize, (long)((s.f_bfree/1024)/1024)*s.f_bsize);
-
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x+ 10, ypos+ mheight, width, ubuf, COL_MENUCONTENT);
-    	}
-    	*/
 
 	// free space
 	ypos += mheight/2;
