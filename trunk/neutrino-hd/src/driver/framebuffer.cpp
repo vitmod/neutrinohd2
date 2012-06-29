@@ -1052,17 +1052,21 @@ bool CFrameBuffer::paintIcon(const std::string & filename, const int x, const in
 	it = icon_cache.find(filename);
 	if(it == icon_cache.end()) 
 	{
-		std::string newname = iconBasePath + filename.c_str() + ".png";
+		//std::string newname = iconBasePath + filename.c_str() + ".png";
 		
-		dprintf(DEBUG_DEBUG, "CFrameBuffer::paintIcon: check for %s\n", newname.c_str());fflush(stdout);
+		//dprintf(DEBUG_DEBUG, "CFrameBuffer::paintIcon: check for %s\n", newname.c_str());fflush(stdout);
+		
+		dprintf(DEBUG_DEBUG, "CFrameBuffer::paintIcon: check for %s\n", filename.c_str());fflush(stdout);
 
-		data = getIcon(newname, &width, &height);
+		//data = getIcon(newname, &width, &height);
+		data = getIcon(filename, &width, &height);
 
 		if(data) 
 		{
+found_icon:		  
 			dsize = width*height*sizeof(fb_pixel_t);
 						
-			dprintf(DEBUG_DEBUG, "CFrameBuffer::paintIcon: %s size %d x %d\n", (char *)newname.c_str(), width, height);fflush(stdout);			
+			//dprintf(DEBUG_DEBUG, "CFrameBuffer::paintIcon: %s size %d x %d\n", (char *)newname.c_str(), width, height);fflush(stdout);			
 			
 			if(cache_size+dsize < ICON_CACHE_SIZE) 
 			{
@@ -1071,6 +1075,7 @@ bool CFrameBuffer::paintIcon(const std::string & filename, const int x, const in
 				tmpIcon.height = height;
 				tmpIcon.data = data;
 				icon_cache.insert(std::pair <std::string, Icon> (filename, tmpIcon));
+				
 				//printf("Cached %s, cache size %d\n", newname.c_str(), cache_size);
 			}
 			
@@ -1078,8 +1083,18 @@ bool CFrameBuffer::paintIcon(const std::string & filename, const int x, const in
 		}
 		else
 		{
-			dprintf(DEBUG_NORMAL, "paintIcon: error while loading icon: %s\n", newname.c_str());
-			return false;
+			std::string newname = iconBasePath + filename.c_str() + ".png";
+			dprintf(DEBUG_DEBUG, "CFrameBuffer::paintIcon: check for %s\n", newname.c_str());fflush(stdout);
+			
+			data = getIcon(newname, &width, &height);
+			
+			if(data)
+				goto found_icon;
+			else
+			{
+				dprintf(DEBUG_NORMAL, "paintIcon: error while loading icon: %s\n", newname.c_str());
+				return false;
+			}
 		}
 	} 
 	else 
