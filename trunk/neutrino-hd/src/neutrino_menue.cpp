@@ -1603,14 +1603,11 @@ void CNeutrinoApp::InitColorThemesSettings(CMenuWidget &colorSettings_Themes)
 	colorSettings_Themes.addItem(new CMenuForwarder(LOCALE_EXTRA_SAVECOLORS, true, NULL, this, "savecolors"));
 	colorSettings_Themes.addItem(GenericMenuSeparatorLine);
 	
-	//neutrino themes
-	colorSettings_Themes.addItem(new CMenuForwarder(LOCALE_COLORTHEMEMENU_NEUTRINO_THEME, true, NULL, this, "theme_neutrino"));
-	
 	//nhd2
 	colorSettings_Themes.addItem(new CMenuForwarder(LOCALE_COLORTHEMEMENU_NEUTRINOHD2_THEME, true, NULL, this, "theme_nhd2"));
 	
-	// gigablue
-	colorSettings_Themes.addItem(new CMenuForwarder(LOCALE_COLORTHEMEMENU_GIGABLUE_THEME, true, NULL, this, "theme_gigablue"));
+	//neutrino themes
+	colorSettings_Themes.addItem(new CMenuForwarder(LOCALE_COLORTHEMEMENU_NEUTRINO_THEME, true, NULL, this, "theme_neutrino"));
 	
 	// classic
 	colorSettings_Themes.addItem(new CMenuForwarder(LOCALE_COLORTHEMEMENU_CLASSIC_THEME, true, NULL, this, "theme_classic"));
@@ -1626,6 +1623,9 @@ void CNeutrinoApp::InitColorThemesSettings(CMenuWidget &colorSettings_Themes)
 	
 	// red
 	colorSettings_Themes.addItem(new CMenuForwarder(LOCALE_COLORTHEMEMENU_RED_THEME, true, NULL, this, "theme_red"));
+	
+	// gigablue
+	colorSettings_Themes.addItem(new CMenuForwarder(LOCALE_COLORTHEMEMENU_GIGABLUE_THEME, true, NULL, this, "theme_gigablue"));
 }
 
 void CNeutrinoApp::InitColorSettingsMenuColors(CMenuWidget &colorSettings_menuColors)
