@@ -92,7 +92,6 @@ class CPlugins
 
 		std::vector<plugin> plugin_list;
 		std::string plugin_dir;
-		//std::string scriptOutput;
 
 		bool parseCfg(plugin *plugin_data);
 		void scanDir(const char *dir);
@@ -126,9 +125,6 @@ class CPlugins
 
 		void startPlugin(const char * const filename); 				// start plugins also by name
 		bool hasPlugin(CPlugins::p_type_t type);
-
-		//const std::string& getScriptOutput() const;
-		//void delScriptOutput();
 };
 
 #endif

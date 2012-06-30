@@ -307,38 +307,17 @@ void CPlugins::startScriptPlugin(int number)
 	
 	if (!pluginfile_exists(plugin_list[number].pluginfile))
 	{
-		printf("[CPlugins] could not find %s,\nperhaps wrong plugin type in %s\n",
-		       script, plugin_list[number].cfgfile.c_str());
+		printf("[CPlugins] could not find %s,\nperhaps wrong plugin type in %s\n", script, plugin_list[number].cfgfile.c_str());
 		return;
 	}
 	
 	//system("script");
 	mysystem((char *) plugin_list[number].pluginfile.c_str(), NULL, NULL);
-
-	/*
-	FILE *f = popen(script,"r");
-	if (f != NULL)
-	{
-		char output[1024];
-		while (fgets(output, 1024, f))
-		{
-			scriptOutput += output;
-		}
-		pclose(f);
-	}
-	else
-	{
-		printf("[CPlugins] can't execute %s\n",script);
-	}
-	*/
 }
 
 void CPlugins::startPlugin(int number,int param)
 {
-	//always delete old output
-	//delScriptOutput();
-
-	//printf("exec: %s\n", plugin_list[number].pluginfile.c_str());
+	printf("CPlugins::startPlugin: %s\n", plugin_list[number].pluginfile.c_str());
 	
 	// script type
 	if (plugin_list[number].type == CPlugins::P_TYPE_SCRIPT)
@@ -350,8 +329,7 @@ void CPlugins::startPlugin(int number,int param)
 	// .so plugins
 	if (!pluginfile_exists(plugin_list[number].pluginfile))
 	{
-		printf("[CPlugins] could not find %s,\nperhaps wrong plugin type in %s\n",
-		       plugin_list[number].pluginfile.c_str(), plugin_list[number].cfgfile.c_str());
+		printf("[CPlugins] could not find %s,\nperhaps wrong plugin type in %s\n", plugin_list[number].pluginfile.c_str(), plugin_list[number].cfgfile.c_str());
 		return;
 	}
 
@@ -399,7 +377,7 @@ void CPlugins::startPlugin(int number,int param)
 		lcd_fd = open("/dev/vfd", O_RDWR);
 #endif		
 
-		startparam = makeParam(P_ID_LCD      , lcd_fd                          , startparam);
+		startparam = makeParam(P_ID_LCD, lcd_fd, startparam);
 	}	
 	
 	// vtxtpid	
@@ -488,7 +466,7 @@ void CPlugins::startPlugin(int number,int param)
 				if (plugin_list[number].fb) 
 				{			  
 					//frameBuffer->setMode(720, 576, 8);
-					//frameBuffer->paletteSet();					
+					//frameBuffer->paletteSet();
 				}
 				
 
@@ -557,18 +535,6 @@ bool CPlugins::hasPlugin(CPlugins::p_type_t type)
 	}
 	return false;
 }
-
-/*
-const std::string& CPlugins::getScriptOutput() const
-{
-	return scriptOutput;
-}
-
-void CPlugins::delScriptOutput()
-{
-	scriptOutput.clear();
-}
-*/
 
 CPlugins::p_type_t CPlugins::getPluginType(int type)
 {

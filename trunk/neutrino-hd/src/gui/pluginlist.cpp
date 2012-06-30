@@ -290,7 +290,7 @@ void CPluginList::paintItem(int pos)
 		
 		bool isback_menu  = !strcmp((const char *)actplugin->name.c_str(), (const char *)g_Locale->getText(LOCALE_MENU_BACK) );
 		
-		// paint icon
+		// icon
 		int icon_w = 0;
 		int icon_h = 0;
 		if(!isback_menu)
@@ -300,7 +300,6 @@ void CPluginList::paintItem(int pos)
 			frameBuffer->getIconSize(NEUTRINO_ICON_PLUGIN, &icon_w, &icon_h);
 			
 			if (!(actplugin->icon.empty()))
-				//frameBuffer->paintIcon( NEUTRINO_ICON_PLUGIN, x + 8, ypos + 5 );
 				frameBuffer->paintIcon(IconName.c_str(), x + 8, ypos + 5 );
 			else
 				frameBuffer->paintIcon( NEUTRINO_ICON_PLUGIN, x + 8, ypos + 5 );
@@ -328,15 +327,15 @@ void CPluginList::paintHead()
 	if(pluginlisttype == CPlugins::P_TYPE_GAME)
 	{
 		frameBuffer->paintIcon(NEUTRINO_ICON_GAMES, x + 8, y + 5);
-		//g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x+38,y+theight+1, width, g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
+
 		int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(g_Locale->getText(name), true); // UTF-8
 		int stringstartposX = x +(width >> 1) - (neededWidth >> 1);
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, y + theight, width - (stringstartposX- x) , g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
 	} 
-	else /*if (pluginlisttype == CPlugins::P_TYPE_TOOL|CPlugins::P_TYPE_SCRIPT )*/ //plugins + scripts
+	else
 	{
 		frameBuffer->paintIcon(NEUTRINO_ICON_SHELL, x + 8, y + 5);
-		//g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x+38,y+theight+1, width, g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
+
 		int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(g_Locale->getText(name), true); // UTF-8
 		int stringstartposX = x +(width >> 1) - (neededWidth >> 1);
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, y + theight, width - (stringstartposX- x) , g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
@@ -385,15 +384,7 @@ void CPluginList::paintItems()
 
 CPluginList::result_ CPluginList::pluginSelected()
 {
-	g_PluginList->startPlugin(pluginlist[selected]->number,0);
-	
-	/*
-	if (!g_PluginList->getScriptOutput().empty())
-	{
-		hide();
-		ShowMsgUTF(LOCALE_PLUGINS_RESULT, Latin1_to_UTF8(g_PluginList->getScriptOutput()), CMessageBox::mbrBack,CMessageBox::mbBack,NEUTRINO_ICON_SHELL);
-	}
-	*/
+	g_PluginList->startPlugin(pluginlist[selected]->number, 0);
 	
 	paint();
 	
