@@ -624,10 +624,10 @@ void CMenuWidget::paint()
 	
 	frameBuffer->getIconSize(iconfile.c_str(), &icon_w, &icon_h);
 	
-	frameBuffer->paintIcon(iconfile, x + 8, y+ hheight/2 - icon_h/2);
+	frameBuffer->paintIcon(iconfile, x + 8, y + hheight/2 - icon_h/2);
 	
 	// head title (centered)
-	int stringstartposX = x + icon_w + (width >> 1) - ( neededWidth >> 1);
+	int stringstartposX = x /*+ 8 + icon_w*/ + (width >> 1) - ( neededWidth >> 1);
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, y + hheight + 1, width - BORDER_RIGHT - (stringstartposX - x), l_name, COL_MENUHEAD, 0, true); // UTF-8
 	
 	// paint separator
@@ -643,14 +643,10 @@ void CMenuWidget::paint()
 	//
 	
 	//paint foot
-	//frameBuffer->paintBoxRel(x, y + height - ((RADIUS_MID * 2) + 1) + (RADIUS_MID / 3 * 2), width + sb_width, ((RADIUS_MID * 3) + 1), COL_MENUCONTENTDARK_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
-	frameBuffer->paintBoxRel(x, y + height /*- ((RADIUS_MID * 2) + 1) + (RADIUS_MID / 3 * 2)*/, width + sb_width, (RADIUS_MID * 3) + 1, COL_MENUCONTENTDARK_PLUS_0/*, RADIUS_MID, CORNER_BOTTOM*/ );
+	frameBuffer->paintBoxRel(x, y + height, width + sb_width, (RADIUS_MID * 3) + 1, COL_MENUCONTENTDARK_PLUS_0 );
 	
 	// foot separator
 	frameBuffer->paintHLineRel(x, width + sb_width, y + height + 2, COL_MENUCONTENTSELECTED_PLUS_0 /*COL_MENUCONTENTINACTIVE_PLUS_0*/ ); 
-	
-	// info icon
-	//frameBuffer->paintIcon(NEUTRINO_ICON_FEATURES, x + BORDER_LEFT, y + height + 5);
 
 	//item_start_y = y + hheight;
 	item_start_y = y + hheight + sp_height;
@@ -680,32 +676,10 @@ void CMenuWidget::paintItems()
 	if(total_pages > 1)
 	{
 		int sbh= ((item_height - 4) / total_pages);
-		
-		// paint bg 
-		//frameBuffer->paintBoxRel(x, item_start_y, width + SCROLLBAR_WIDTH, item_height, COL_MENUCONTENTDARK_PLUS_0 );
-		
-		// foot
-		//frameBuffer->paintBoxRel(x, item_height, width + SCROLLBAR_WIDTH, 40, COL_MENUCONTENTDARK_PLUS_0 );
-		// ft sep
-		//frameBuffer->paintHLineRel(x, width + SCROLLBAR_WIDTH, item_height + 2, COL_MENUCONTENTINACTIVE_PLUS_0 ); 
-		// info icon
-		//frameBuffer->paintIcon(NEUTRINO_ICON_FEATURES, x + BORDER_LEFT, item_height + 5);
 
 		//scrollbar
 		frameBuffer->paintBoxRel(x + width, item_start_y, SCROLLBAR_WIDTH, item_height, COL_MENUCONTENT_PLUS_1); //15 = sb width
 		frameBuffer->paintBoxRel(x + width + 2, item_start_y + 2 + current_page * sbh, 11, sbh, COL_MENUCONTENT_PLUS_3);
-	}
-	else
-	{
-		// paint items (bg)
-		//frameBuffer->paintBoxRel(x, item_start_y, width, item_height, COL_MENUCONTENTDARK_PLUS_0 );
-		
-		// foot
-		//frameBuffer->paintBoxRel(x, item_height, width, 40, COL_MENUCONTENTDARK_PLUS_0 );
-		// ft sep
-		//frameBuffer->paintHLineRel(x, width + SCROLLBAR_WIDTH, item_height + 2, COL_MENUCONTENTINACTIVE_PLUS_0 ); 
-		// info icon
-		//frameBuffer->paintIcon(NEUTRINO_ICON_FEATURES, x + BORDER_LEFT, item_height + 5);
 	}
 	
 	// paint items (bg)
