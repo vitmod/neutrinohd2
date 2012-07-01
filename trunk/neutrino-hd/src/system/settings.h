@@ -293,6 +293,12 @@ struct SNeutrinoSettings
                 BUTTON_GREEN = 1,
                 BUTTON_YELLOW = 2,
                 BUTTON_BLUE = 3,
+#if defined (PLATFORM_GIGABLUE)  
+		BUTTON_F1 = 4,
+		BUTTON_F2 = 5,
+		BUTTON_F3 = 3,
+		BUTTON_F4 = 4,
+#endif
                 BUTTON_MAX   // MUST be always the last in the list
         }USER_BUTTON;
 
