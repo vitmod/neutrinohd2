@@ -695,7 +695,6 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0, bool 
 			// always compare with fe0
 			if( CFrontend::getInstance(0)->getInfo()->type == CFrontend::getInstance(i)->getInfo()->type )
 			{
-				twin_mode = true;
 				newchannel->setFeIndex(0);
 			}
 		}
