@@ -150,6 +150,11 @@
 
 #define NEUTRINO_ICON_PLUGIN			"plugin"
 
+#define NEUTRINO_ICON_BUTTON_F1			"f1"
+#define NEUTRINO_ICON_BUTTON_F2			"f2"
+#define NEUTRINO_ICON_BUTTON_F3			"f3"
+#define NEUTRINO_ICON_BUTTON_F4			"f4"
+
 // menuitem icons
 
 // misc
