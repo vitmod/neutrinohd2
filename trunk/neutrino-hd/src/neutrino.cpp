@@ -710,9 +710,9 @@ void CNeutrinoApp::setupColors_nhd2()
 	g_settings.menu_Content_Selected_Text_blue   = 100;
 
 	g_settings.menu_Content_inactive_alpha = 0;
-	g_settings.menu_Content_inactive_red   = 48;
-	g_settings.menu_Content_inactive_green = 48;
-	g_settings.menu_Content_inactive_blue  = 48;
+	g_settings.menu_Content_inactive_red   = 75;
+	g_settings.menu_Content_inactive_green = 75;
+	g_settings.menu_Content_inactive_blue  = 75;
 
 	g_settings.menu_Content_inactive_Text_alpha  = 0;
 	g_settings.menu_Content_inactive_Text_red    = 80;
@@ -1029,9 +1029,9 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.menu_Content_Selected_Text_blue = configfile.getInt32( "menu_Content_Selected_Text_blue", 100 );
 	
 	g_settings.menu_Content_inactive_alpha = configfile.getInt32( "menu_Content_inactive_alpha", 0 );
-	g_settings.menu_Content_inactive_red = configfile.getInt32( "menu_Content_inactive_red", 48 );
-	g_settings.menu_Content_inactive_green = configfile.getInt32( "menu_Content_inactive_green", 48 );
-	g_settings.menu_Content_inactive_blue = configfile.getInt32( "menu_Content_inactive_blue", 48 );
+	g_settings.menu_Content_inactive_red = configfile.getInt32( "menu_Content_inactive_red", 75 );
+	g_settings.menu_Content_inactive_green = configfile.getInt32( "menu_Content_inactive_green", 75 );
+	g_settings.menu_Content_inactive_blue = configfile.getInt32( "menu_Content_inactive_blue", 75 );
 	
 	g_settings.menu_Content_inactive_Text_alpha = configfile.getInt32( "menu_Content_inactive_Text_alpha", 0 );
 	g_settings.menu_Content_inactive_Text_red = configfile.getInt32( "menu_Content_inactive_Text_red", 80 );
