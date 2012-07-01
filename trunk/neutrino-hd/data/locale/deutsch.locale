@@ -1343,6 +1343,10 @@ usermenu.button_blue Benutzermenü 'blau'
 usermenu.button_green Benutzermenü 'grün'
 usermenu.button_red Benutzermenü 'rot'
 usermenu.button_yellow Benutzermenü 'gelb'
+usermenu.button_f1 Benutzermenü 'F1'
+usermenu.button_f2 Benutzermenü 'F2'
+usermenu.button_f3 Benutzermenü 'F3'
+usermenu.button_f4 Benutzermenü 'F4'
 usermenu.head Benutzermenü
 usermenu.item_bar ---- Trennung ----
 usermenu.item_epg_misc EPG Funktionen

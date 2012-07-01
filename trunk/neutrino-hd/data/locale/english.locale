@@ -1342,6 +1342,10 @@ usermenu.button_blue User menu blue
 usermenu.button_green User menu green
 usermenu.button_red User menu red
 usermenu.button_yellow User menu yellow
+usermenu.button_f1 Benutzermenü F1
+usermenu.button_f2 Benutzermenü F2
+usermenu.button_f3 Benutzermenü F3
+usermenu.button_f4 Benutzermenü F4
 usermenu.head User menu
 usermenu.item_bar ---- Border ----
 usermenu.item_epg_misc EPG functions
