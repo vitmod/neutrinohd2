@@ -29,6 +29,9 @@
 #include <system/debug.h>
 
 
+static const char * FILENAME = "[record_cs.cpp]";
+
+
 /* helper function to call the cpp thread loop */
 void *execute_record_thread(void *c)
 {
@@ -40,7 +43,7 @@ void *execute_record_thread(void *c)
 
 cRecord::cRecord(int num)
 {
-	dprintf(DEBUG_INFO, "\n");
+	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);
 	demux_num = LIVE_DEMUX;
 	fe_num = num;
 	dmx = NULL;
@@ -51,14 +54,13 @@ cRecord::cRecord(int num)
 
 cRecord::~cRecord()
 {
-	dprintf(DEBUG_INFO, "calling ::Stop()\n");
+	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);
 	Stop();
-	dprintf(DEBUG_INFO, "end\n");
 }
 
 bool cRecord::Open(int /*numpids*/)
 {
-	dprintf(DEBUG_INFO, "\n");
+	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);
 	exit_flag = RECORD_STOPPED;
 	return true;
 }
@@ -96,7 +98,7 @@ bool cRecord::Start(int fd, unsigned short vpid, unsigned short * apids, int num
 
 bool cRecord::Stop(void)
 {
-	dprintf(DEBUG_INFO, "\n");
+	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);
 
 	if (exit_flag != RECORD_RUNNING)
 		printf("status not RUNNING? (%d)\n", exit_flag);
@@ -123,7 +125,7 @@ bool cRecord::Stop(void)
 
 void cRecord::RecordThread()
 {
-	dprintf(DEBUG_INFO, "begin\n");
+	//dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);
 #define BUFSIZE (1 << 19) /* 512 kB */
 	ssize_t r = 0;
 	int buf_pos = 0;
@@ -133,7 +135,7 @@ void cRecord::RecordThread()
 	if (!buf)
 	{
 		exit_flag = RECORD_FAILED_MEMORY;
-		dprintf(DEBUG_INFO, "unable to allocate buffer! (out of memory)\n");
+		//dprintf(DEBUG_INFO, "unable to allocate buffer! (out of memory)\n");
 	}
 
 	dmx->Start();
@@ -148,17 +150,17 @@ void cRecord::RecordThread()
 			{
 				if (errno != EAGAIN)
 				{
-					dprintf(DEBUG_INFO, "read failed\n");
+					//dprintf(DEBUG_INFO, "read failed\n");
 					exit_flag = RECORD_FAILED_READ;
 					break;
 				}
-				dprintf(DEBUG_INFO, "EAGAIN\n");
+				//dprintf(DEBUG_INFO, "EAGAIN\n");
 			}
 			else
 				buf_pos += r;
 		}
-		else
-			printf("buffer full! Overflow?\n");
+		//else
+		//	printf("buffer full! Overflow?\n");
 		
 		if (buf_pos > (BUFSIZE / 3)) /* start writeout */
 		{
@@ -169,7 +171,7 @@ void cRecord::RecordThread()
 			if (r < 0)
 			{
 				exit_flag = RECORD_FAILED_FILE;
-				dprintf(DEBUG_INFO, "write error\n");
+				//dprintf(DEBUG_INFO, "write error\n");
 				break;
 			}
 			buf_pos -= r;
@@ -184,7 +186,7 @@ void cRecord::RecordThread()
 		if (r < 0)
 		{
 			exit_flag = RECORD_FAILED_FILE;
-			dprintf(DEBUG_INFO, "write error\n");
+			//dprintf(DEBUG_INFO, "write error\n");
 			break;
 		}
 		buf_pos -= r;
@@ -192,7 +194,8 @@ void cRecord::RecordThread()
 	}
 	free(buf);
 
-	dprintf(DEBUG_INFO, "end");
+	//dprintf(DEBUG_INFO, "end\n");
+	
 	pthread_exit(NULL);
 }
 
