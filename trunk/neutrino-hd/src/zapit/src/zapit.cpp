@@ -685,6 +685,21 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0, bool 
 		DBG("channel_id " PRINTF_CHANNEL_ID_TYPE " not found", channel_id);
 		return -1;
 	}
+	
+	// check for twin
+	//NOTE: getservice::loadservices() set by twin feindex to the higher
+	if(FrontendCount > 1)
+	{
+		for(int i = 1; i < FrontendCount; i++)
+		{
+			// always compare with fe0
+			if( CFrontend::getInstance(0)->getInfo()->type == CFrontend::getInstance(i)->getInfo()->type )
+			{
+				twin_mode = true;
+				newchannel->setFeIndex(0);
+			}
+		}
+	}
 
 	sig_delay = 2;
 	
@@ -777,7 +792,7 @@ int zapit_to_record(const t_channel_id channel_id)
 	}
 	
 	// check for twin
-	if(FrontendCount > 1)
+	/*if(FrontendCount > 1)
 	{
 		for(int i = 1; i < FrontendCount; i++)
 		{
@@ -788,7 +803,7 @@ int zapit_to_record(const t_channel_id channel_id)
 				channel->setFeIndex(i);
 			}
 		}
-	}
+	}*/
 	
 	printf("%s: %s (%llx) fe(%d)\n", __FUNCTION__, newchannel->getName().c_str(), channel_id, channel->getFeIndex());
 	

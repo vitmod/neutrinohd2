@@ -482,6 +482,7 @@ int LoadServices(bool only_current)
 
 	satcleared = 1;
 
+	// FIXME: twin: this rewrite the feindex !!!
 	for(int i = 0; i < FrontendCount; i++)
 	{
 		xmlFreeDoc(scanInputParser);
