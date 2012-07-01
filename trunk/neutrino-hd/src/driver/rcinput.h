@@ -259,11 +259,6 @@ class CRCInput
 			RC_green	= KEY_GREEN,	    /* /include/linux/input.h: #define KEY_GREEN		0x18f */ /* in patched input.h */
 			RC_yellow	= KEY_YELLOW,	    /* /include/linux/input.h: #define KEY_YELLOW		0x190 */ /* in patched input.h */
 			RC_blue		= KEY_BLUE,	    /* /include/linux/input.h: #define KEY_BLUE			0x191 */ /* in patched input.h */
-			
-			//RC_top_left	= KEY_TOPLEFT,	    /* /include/linux/input.h: #define KEY_TOPLEFT		0x1a2 */ /* in patched input.h */
-			//RC_top_right	= KEY_TOPRIGHT,	    /* /include/linux/input.h: #define KEY_TOPRIGHT		0x1a3 */ /* in patched input.h */
-			//RC_bottom_left	= KEY_BOTTOMLEFT,   /* /include/linux/input.h: #define KEY_BOTTOMLEFT		0x1a4 */ /* in patched input.h */
-			//RC_bottom_right	= KEY_BOTTOMRIGHT,  /* /include/linux/input.h: #define KEY_BOTTOMRIGHT		0x1a5 */ /* in patched input.h */
 
 #if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)
 			RC_audio	= 0x3D,
@@ -298,7 +293,7 @@ class CRCInput
 			RC_favorites	= KEY_FAVORITES,	/* 0x16c */
 
 			RC_sat		= KEY_SAT,		/* 0x17d */
-			RC_sat2		= KEY_SAT2,		/* 0x17e */
+			//RC_sat2		= KEY_SAT2,		/* 0x17e */
 			
 			RC_record	= KEY_RECORD,		/* 0xA7 */
 			RC_play		= KEY_PLAY,		/* 0xCF */
@@ -311,7 +306,7 @@ class CRCInput
 			
 #if defined (PLATFORM_GIGABLUE)
 			RC_mode		= 0x181,
-#elif defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)			
+#elif defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)
 			RC_mode		= 0x3B,
 #else			
 			RC_mode		= KEY_MODE,		/* 0x175 */
@@ -322,8 +317,10 @@ class CRCInput
 			RC_prev		= 0xFFFFFFF1,
 
 			/* added from cuberevo3000hd so fix it please */
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)			
 			RC_music	= KEY_MUSIC,
 			RC_picture	= KEY_PICTURE,
+#endif			
 			
 			RC_repeat	= KEY_REPEAT,
 			RC_slow		= KEY_SLOW,
@@ -340,6 +337,13 @@ class CRCInput
 			RC_net		= KEY_NET,
 			
 			RC_bookmark	= KEY_BOOKMARK,
+			
+#if defined (PLATFORM_GIGABLUE)			
+			RC_f1		= 0x3B,
+			RC_f2		= 0x3C,
+			RC_f3		= 0x3D,
+			RC_f4		= 0x3E,
+#endif			
 			
 			RC_vfdup	= VFD_UP,
 			RC_vfddown	= VFD_DOWN,

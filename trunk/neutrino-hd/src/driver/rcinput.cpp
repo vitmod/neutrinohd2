@@ -1470,12 +1470,6 @@ const char * CRCInput::getSpecialKeyName(const unsigned int key)
 				
 		case RC_info:
 			return "info";
-				
-		//case RC_topleft:
-		//	return "topleft";
-				
-		//case RC_topright:
-		//	return "topright";
 
 		case RC_audio:
 			return "audio";
@@ -1503,9 +1497,6 @@ const char * CRCInput::getSpecialKeyName(const unsigned int key)
 				
 		case RC_sat:
 			return "sat";
-				
-		case RC_sat2:
-			return "sat2";
 				
 		case RC_play:
 			return "play";
@@ -1569,6 +1560,20 @@ const char * CRCInput::getSpecialKeyName(const unsigned int key)
 				
 		case RC_net:
 			return "inet";
+		
+#if defined (PLATFORM_GIGABLUE)			
+		case RC_f1:
+			return "f1";
+					
+		case RC_f2:
+			return "f2";
+			
+		case RC_f3:
+			return "f3";
+			
+		case RC_f4:
+			return "f4";
+#endif			
 				
 		/* VFD Tasten the generic values are from cuberevo so fix it */
 		case RC_vfdup:
