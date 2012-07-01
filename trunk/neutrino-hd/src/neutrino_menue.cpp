@@ -806,12 +806,6 @@ void CNeutrinoApp::InitServiceSettings(CMenuWidget &service, CMenuWidget & Tuner
 
 	// restart neutrino
 	service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_SERVICEMENU_RESTART, true, "", this, "restart", CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, "shutdown"));
-	
-#if defined (PLATFORM_GIGABLUE) || defined (PLATFORM_DUCKBOX) || defined (PLATFORM_DREAMBOX) || defined (PLATFORM_XTREND)
-#warning just for testing remove me plz
-	// restat e2
-	service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_SERVICEMENU_RESTART_E2, true, "", this, "restart_e2", CRCInput::convertDigitToKey(shortcutService++), NULL, "shutdown"));
-#endif
 
 	// softupdate
 	//if(softupdate)

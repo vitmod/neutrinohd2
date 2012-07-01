@@ -5399,43 +5399,6 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 
 		return menu_return::RETURN_REPAINT;	
 	}
-	else if(actionKey == "restart_e2")
-	{
-		if (recordingstatus)
-			DisplayErrorMessage(g_Locale->getText(LOCALE_SERVICEMENU_RESTART_REFUSED_RECORDING));
-		else 
-		{
-			CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, (char *)"E2 wird wieder Standardbootsystem");
-			hintBox->paint();
-
-			stop_daemons();
-
-			delete g_RCInput;
-			delete g_Sectionsd;
-			delete g_Timerd;
-			delete g_RemoteControl;
-			delete g_fontRenderer;
-			delete g_Zapit;
-			delete CVFD::getInstance();
-
-			networkConfig.automatic_start = (network_automatic_start == 1);
-			networkConfig.commitConfig();
-			
-			saveSetup(NEUTRINO_SETTINGS_FILE);
-
-			delete frameBuffer;
-			
-			sleep(1);
-			
-			// start e2
-			system("enigma2");
-			
-
-			sleep(1);
-			
-			exit(1);
-		}
-	}
 
 	return returnval;
 }
