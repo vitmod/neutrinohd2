@@ -161,6 +161,7 @@ scan_list_t scanProviders;
 int AdapterCount = 0;
 int FrontendCount = 0;
 int DemuxCount = 0;
+static bool twin_mode = false;
 
 /* variables for EN 50494 (a.k.a Unicable) */
 int uni_scr = -1;	/* the unicable SCR address,     -1 == no unicable */
@@ -499,7 +500,7 @@ static CZapitChannel * find_channel_tozap(const t_channel_id channel_id, bool in
 
 		if (cit == nvodchannels.end()) 
 		{
-			printf("%s channel_id (%llx) not found\n", channel_id);
+			printf("%s channel_id (%llx) not found\n", __FUNCTION__, channel_id);
 			return false;
 		}
 	} 
@@ -532,7 +533,8 @@ static bool tune_to_channel(CZapitChannel * channel, bool &transponder_change)
 	transponder_change = false;
 		  
 	transponder_change = CFrontend::getInstance( channel->getFeIndex() )->setInput(channel, current_is_nvod);
-		
+	
+	// drive rotor
 	if(transponder_change && !current_is_nvod) 
 	{
 		waitForMotor = CFrontend::getInstance( channel->getFeIndex() )->driveToSatellitePosition(channel->getSatellitePosition());
@@ -555,13 +557,15 @@ static bool tune_to_channel(CZapitChannel * channel, bool &transponder_change)
 		}
 	}
 
-	// if channel's transponder does not match frontend's tuned transponder
-	if (transponder_change || current_is_nvod) 
+	// tune fe (by TP change, nvod, twin_mode)
+	if (transponder_change || current_is_nvod || twin_mode) 
 	{
 		if (CFrontend::getInstance( channel->getFeIndex() )->tuneChannel(channel, current_is_nvod) == false) 
 		{
 			return false;
 		}
+		
+		twin_mode = false;
 	}
 
 	return true;
@@ -776,6 +780,7 @@ int zapit_to_record(const t_channel_id channel_id)
 			// always compare with fe0
 			if( CFrontend::getInstance(0)->getInfo()->type == CFrontend::getInstance(i)->getInfo()->type )
 			{
+				twin_mode = true;
 				channel->setFeIndex(i);
 			}
 		}
