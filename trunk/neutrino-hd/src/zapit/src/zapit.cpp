@@ -565,7 +565,11 @@ static bool tune_to_channel(CZapitChannel * channel, bool &transponder_change)
 			return false;
 		}
 		
-		twin_mode = false;
+		if(twin_mode)
+		{
+			channel->setFeIndex(0);
+			twin_mode = false;
+		}
 	}
 
 	return true;
