@@ -2000,7 +2000,13 @@ void CNeutrinoApp::InitKeySettings(CMenuWidget &keySettings, CMenuWidget &bindSe
         keySettings.addItem(new CMenuForwarder(LOCALE_USERMENU_BUTTON_RED, true, NULL, new CUserMenuMenu(LOCALE_USERMENU_BUTTON_RED, 0), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
         keySettings.addItem(new CMenuForwarder(LOCALE_USERMENU_BUTTON_GREEN, true, NULL, new CUserMenuMenu(LOCALE_USERMENU_BUTTON_GREEN, 1), NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
         keySettings.addItem(new CMenuForwarder(LOCALE_USERMENU_BUTTON_YELLOW, true, NULL, new CUserMenuMenu(LOCALE_USERMENU_BUTTON_YELLOW, 2), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
-        keySettings.addItem(new CMenuForwarder(LOCALE_USERMENU_BUTTON_BLUE, true, NULL, new CUserMenuMenu(LOCALE_USERMENU_BUTTON_BLUE, 3), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));	
+        keySettings.addItem(new CMenuForwarder(LOCALE_USERMENU_BUTTON_BLUE, true, NULL, new CUserMenuMenu(LOCALE_USERMENU_BUTTON_BLUE, 3), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
+#if defined (PLATFORM_GIGABLUE)	
+	keySettings.addItem(new CMenuForwarder(LOCALE_USERMENU_BUTTON_F1, true, NULL, new CUserMenuMenu(LOCALE_USERMENU_BUTTON_F1, 4), NULL, CRCInput::RC_f1, NEUTRINO_ICON_BUTTON_F1 ));
+        keySettings.addItem(new CMenuForwarder(LOCALE_USERMENU_BUTTON_F2, true, NULL, new CUserMenuMenu(LOCALE_USERMENU_BUTTON_F2, 5), NULL, CRCInput::RC_f2, NEUTRINO_ICON_BUTTON_F2 ));
+        keySettings.addItem(new CMenuForwarder(LOCALE_USERMENU_BUTTON_F3, true, NULL, new CUserMenuMenu(LOCALE_USERMENU_BUTTON_F3, 6), NULL, CRCInput::RC_f3, NEUTRINO_ICON_BUTTON_F3 ));
+        keySettings.addItem(new CMenuForwarder(LOCALE_USERMENU_BUTTON_F4, true, NULL, new CUserMenuMenu(LOCALE_USERMENU_BUTTON_BLUE, 7), NULL, CRCInput::RC_f4, NEUTRINO_ICON_BUTTON_F4 ));	
+#endif
 }
 
 // User menu
@@ -2093,19 +2099,36 @@ const CMenuOptionChooser::keyval MAINMENU_RECORDING_OPTIONS[MAINMENU_RECORDING_O
 
 // USERMENU
 // This is just a quick helper for the usermenu only. I already made it a class for future use.
+#if defined (PLATFORM_GIGABLUE)
+#define BUTTONMAX 8
+#else
 #define BUTTONMAX 4
+#endif
+
 const neutrino_msg_t key_helper_msg_def[BUTTONMAX] = {
 	CRCInput::RC_red,
 	CRCInput::RC_green,
 	CRCInput::RC_yellow,
-	CRCInput::RC_blue
+	CRCInput::RC_blue,
+#if defined (PLATFORM_GIGABLUE)
+	CRCInput::RC_f1,
+	CRCInput::RC_f2,
+	CRCInput::RC_f3,
+	CRCInput::RC_f4
+#endif
 };
 
 const char * key_helper_icon_def[BUTTONMAX]={
 	NEUTRINO_ICON_BUTTON_RED, 
 	NEUTRINO_ICON_BUTTON_GREEN, 
 	NEUTRINO_ICON_BUTTON_YELLOW, 
-	NEUTRINO_ICON_BUTTON_BLUE
+	NEUTRINO_ICON_BUTTON_BLUE,
+#if defined (PLATFORM_GIGABLUE)	
+	NEUTRINO_ICON_BUTTON_F1, 
+	NEUTRINO_ICON_BUTTON_F2, 
+	NEUTRINO_ICON_BUTTON_F3, 
+	NEUTRINO_ICON_BUTTON_F4, 
+#endif
 };
 
 class CKeyHelper
@@ -2139,6 +2162,16 @@ class CKeyHelper
                                 button = 2;
                         if(prefered_key == CRCInput::RC_blue)
                                 button = 3;
+#if defined (PLATFORM_GIGABLUE)
+			if(prefered_key == CRCInput::RC_f1)
+                                button = 4;
+			if(prefered_key == CRCInput::RC_f2)
+                                button = 5;
+			if(prefered_key == CRCInput::RC_f3)
+                                button = 6;
+			if(prefered_key == CRCInput::RC_f4)
+                                button = 7;
+#endif
 
                         *msg = CRCInput::RC_nokey;
                         *icon = "";
@@ -2187,7 +2220,18 @@ bool CNeutrinoApp::showUserMenu(int button)
 
         int menu_items = 0;
         int menu_prev = -1;
-	static int selected[SNeutrinoSettings::BUTTON_MAX] = {-1, -1, -1, -1};
+	static int selected[SNeutrinoSettings::BUTTON_MAX] = {
+		-1, 
+		-1, 
+		-1, 
+		-1,
+#if defined (PLATFORM_GIGABLUE)
+		-1,
+		-1,
+		-1,
+		-1,
+#endif		
+	};
 
         /* define classes */
         CFavorites * tmpFavorites                               = NULL;

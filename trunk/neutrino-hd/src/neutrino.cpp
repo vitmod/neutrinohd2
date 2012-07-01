@@ -280,7 +280,18 @@ static char **global_argv;
 extern const char * locale_real_names[]; 		//#include <system/locals_intern.h>
 
 //user menu
-const char* usermenu_button_def[SNeutrinoSettings::BUTTON_MAX]={"red", "green", "yellow", "blue"};
+const char* usermenu_button_def[SNeutrinoSettings::BUTTON_MAX]={
+	"red", 
+	"green", 
+	"yellow", 
+	"blue",
+#if defined (PLATFORM_GIGABLUE)
+	"f1",
+	"f2",
+	"f3",
+	"f4"
+#endif
+};
 
 CZapitClient::SatelliteList satList;
 
@@ -1115,7 +1126,13 @@ int CNeutrinoApp::loadSetup(const char * fname)
                 "2,3,4,13",                     // RED
                 "6",                            // GREEN
                 "7",                            // YELLOW
-                "12,10,11,14,15"    		// BLUE
+                "12,10,11,14,15",   		// BLUE
+#if defined (PLATFORM_GIGABLUE)
+		"2",				// F1
+		"3",				// F2
+		"4",				// F3
+		"5",				// F4
+#endif
         };
         char txt1[81];
         std::string txt2;
@@ -3123,6 +3140,32 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 				showUserMenu(SNeutrinoSettings::BUTTON_BLUE);
 				StartSubtitles();
 			}
+#if defined (PLATFORM_GIGABLUE)
+			else if( msg == CRCInput::RC_f1 ) 
+			{
+				StopSubtitles();
+				showUserMenu(SNeutrinoSettings::BUTTON_F1);
+				StartSubtitles();
+			}
+			else if( msg == CRCInput::RC_f2 )
+			{
+				StopSubtitles();
+				showUserMenu(SNeutrinoSettings::BUTTON_F2);
+				StartSubtitles();
+			}
+			else if( msg == CRCInput::RC_f3 ) 
+			{ 
+				StopSubtitles();
+				showUserMenu(SNeutrinoSettings::BUTTON_F3);
+				StartSubtitles();
+			}
+			else if( msg == CRCInput::RC_f4 ) 
+			{
+				StopSubtitles();
+				showUserMenu(SNeutrinoSettings::BUTTON_F4);
+				StartSubtitles();
+			}
+#endif
 			//music player
 			else if( msg == CRCInput::RC_music) 
 			{
