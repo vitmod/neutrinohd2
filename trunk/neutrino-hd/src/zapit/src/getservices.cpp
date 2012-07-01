@@ -51,18 +51,6 @@ extern map<t_channel_id, audio_map_set_t> audio_map;		/* defined in zapit.cpp */
 extern int FrontendCount;
 
 
-#define TIMER_START()                                                                   \
-        static struct timeval tv, tv2;                                                         \
-        static unsigned int msec;                                                              \
-        gettimeofday(&tv, NULL)
-
-#define TIMER_STOP(label)                                                               \
-        gettimeofday(&tv2, NULL);                                                       \
-        msec = ((tv2.tv_sec - tv.tv_sec) * 1000) + ((tv2.tv_usec - tv.tv_usec) / 1000); \
-        printf("%s: %u msec\n", label, msec)
-
-
-
 void ParseTransponders(xmlNodePtr node, t_satellite_position satellitePosition, uint8_t Source, int FeIndex)
 {
 	t_transport_stream_id transport_stream_id;
@@ -254,7 +242,6 @@ void FindTransponder(xmlNodePtr search)
 		else if ( !(strcmp(xmlGetName(search), "sat")) ) 
 		{
 			Source = DVB_S;
-			//satellitePosition = xmlGetSignedNumericAttribute(search, "position", 10); //FIXME
 		}
 		else
 		{
@@ -273,19 +260,6 @@ void FindTransponder(xmlNodePtr search)
 		{
 			feindex = sit->second.feindex;
 		}
-		
-		//
-		// get fe index from sat name
-		//sat_iterator_t sit; //sat list iterator
-		//for(sit = satellitePositions.begin(); sit != satellitePositions.end(); sit++) 
-		//{
-		//	if( strcmp( sit->second.name.c_str(), xmlGetAttribute(search, "name") ) == 0)
-		//	{
-		//		satellitePosition = sit->first;
-		//		feindex = sit->second.feindex;
-		//	}
-		//}
-		//
 		
 		printf("getservices:FindTransponder: going to parse dvb-%c provider %s position %d fe(%d)\n", xmlGetName(search)[0], xmlGetAttribute(search, "name"), satellitePosition, feindex);
 		
@@ -499,8 +473,6 @@ int LoadServices(bool only_current)
 
 	if(only_current)
 		goto do_current;
-
-	TIMER_START();
 	
 	select_transponders.clear();
 	fake_tid = fake_nid = 0;
@@ -614,7 +586,7 @@ int LoadServices(bool only_current)
 
 		while (search) 
 		{
-			//this is unpretty hier sat config data are loaded from 
+			//this is unpretty here sat config data are loaded from 
 			#if 1
 			// init sat position from services.xml
 			if (!(strcmp(xmlGetName(search), "sat"))) 
@@ -648,7 +620,6 @@ int LoadServices(bool only_current)
 	}
 
 	printf("[zapit] %d services loaded (%d)...\n", scnt, allchans.size());
-	TIMER_STOP("[zapit] service loading took");
 
 	if(zapit_debug) 
 	{

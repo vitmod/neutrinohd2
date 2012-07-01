@@ -86,7 +86,6 @@ int def_audio_mode = 0;
 int aspectratio = 0;
 int mode43 = 0;
 
-
 /* live/record/pip channel id */
 t_channel_id live_channel_id;
 static t_channel_id rec_channel_id;
@@ -143,8 +142,8 @@ xmlDocPtr scanInputParser = NULL;
 CBouquetManager * g_bouquetManager = NULL;
 
 /* Audio/Video Decoder */
-extern cVideo *videoDecoder;			/* defined in video_cs.pp (libcoolstream) */
-extern cAudio *audioDecoder;			/* defined in audio_cs.pp (libcoolstream) */
+extern cVideo * videoDecoder;			/* defined in video_cs.pp (libcoolstream) */
+extern cAudio * audioDecoder;			/* defined in audio_cs.pp (libcoolstream) */
 
 /* Demuxes */
 extern cDemux * audioDemux;			/* defined in dmx_cs.pp (libcoolstream) */
@@ -500,7 +499,7 @@ static CZapitChannel * find_channel_tozap(const t_channel_id channel_id, bool in
 
 		if (cit == nvodchannels.end()) 
 		{
-			DBG("channel_id " PRINTF_CHANNEL_ID_TYPE " not found", channel_id);
+			printf("%s channel_id (%llx) not found\n", channel_id);
 			return false;
 		}
 	} 
@@ -512,10 +511,11 @@ static CZapitChannel * find_channel_tozap(const t_channel_id channel_id, bool in
 
 		if (cit == allchans.end()) 
 		{
+			// check again if we have nvod channel
 			cit = nvodchannels.find(channel_id);
 			if (cit == nvodchannels.end()) 
 			{
-				DBG("channel_id " PRINTF_CHANNEL_ID_TYPE " AS NVOD not found", channel_id);
+				printf("channel_id (%llx) AS NVOD not found\n", channel_id);
 				return NULL;
 			}
 			current_is_nvod = true;
@@ -525,25 +525,17 @@ static CZapitChannel * find_channel_tozap(const t_channel_id channel_id, bool in
 	return &cit->second;
 }
 
-static bool tune_to_channel(/*CFrontend * frontend,*/ CZapitChannel * channel, bool &transponder_change)
+static bool tune_to_channel(CZapitChannel * channel, bool &transponder_change)
 {
-	/*if(frontend == NULL) 
-	{
-		printf("tune_to_channel: Cannot get frontend\n");
-		return false;
-	}*/
-	
 	int waitForMotor = 0;
 
 	transponder_change = false;
 		  
 	transponder_change = CFrontend::getInstance( channel->getFeIndex() )->setInput(channel, current_is_nvod);
-	//transponder_change = frontend->setInput(channel, current_is_nvod);
 		
 	if(transponder_change && !current_is_nvod) 
 	{
 		waitForMotor = CFrontend::getInstance( channel->getFeIndex() )->driveToSatellitePosition(channel->getSatellitePosition());
-		//waitForMotor = frontend->driveToSatellitePosition(channel->getSatellitePosition());
 			
 		if(waitForMotor > 0) 
 		{
@@ -567,7 +559,6 @@ static bool tune_to_channel(/*CFrontend * frontend,*/ CZapitChannel * channel, b
 	if (transponder_change || current_is_nvod) 
 	{
 		if (CFrontend::getInstance( channel->getFeIndex() )->tuneChannel(channel, current_is_nvod) == false) 
-		//if( frontend->tuneChannel(channel, current_is_nvod) == false) 
 		{
 			return false;
 		}
@@ -578,9 +569,9 @@ static bool tune_to_channel(/*CFrontend * frontend,*/ CZapitChannel * channel, b
 
 static bool parse_channel_pat_pmt(CZapitChannel * channel)
 {
-	DBG("looking up pids for channel_id " PRINTF_CHANNEL_ID_TYPE "\n", channel->getChannelID());
+	printf("%s looking up pids for channel_id (%llx)\n", __FUNCTION__, channel->getChannelID());
 	
-	/* get program map table pid from program association table */
+	// get program map table pid from program association table
 	if (channel->getPmtPid() == 0) 
 	{
 		printf("[zapit] no pmt pid, going to parse pat\n");
@@ -670,6 +661,7 @@ static void restore_channel_pids(CZapitChannel * channel)
 		//audioDecoder->setChannel(audio_mode);
 }
 
+// return 0, -1 fails
 int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0, bool startplayback = true)
 {
 	bool transponder_change = false;
@@ -692,7 +684,7 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0, bool 
 	if (!firstzap && channel)
 		save_channel_pids(channel);
 
-	/* firstzap right now does nothing but control saving the audio channel */
+	// firstzap right now does nothing but control saving the audio channel
 	firstzap = false;
 
 #ifdef UPDATE_PMT
@@ -709,16 +701,10 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0, bool 
 	live_channel_id = channel->getChannelID();
 	saveZapitSettings(false, false);
 
-	printf("[zapit] zap to %s(%llx)\n", channel->getName().c_str(), live_channel_id);
+	printf("[zapit] zap to %s(%llx) fe(%d)\n", channel->getName().c_str(), live_channel_id, channel->getFeIndex() );
 
 	// tune it
-	//TEST
-	if (!(currentMode & RECORD_MODE)) 
-	{
-		if(!tune_to_channel(channel, transponder_change))
-			return -1;
-	}
-	else if(!SAME_TRANSPONDER(newchannel->getChannelID(), live_channel_id))
+	if(!tune_to_channel(channel, transponder_change))
 		return -1;
 
 	// check if nvod
@@ -751,14 +737,14 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0, bool 
 
 	restore_channel_pids(channel);
 
-	if (startplayback /* && !we_playing*/)
+	if (startplayback)
 		startPlayBack(channel);
 
 	printf("[zapit] sending capmt....\n");
 
 	start_camd(forupdate);
 	
-	//play:
+	// send caid
 	int caid = 1;
 
 	eventServer->sendEvent(CZapitClient::EVT_ZAP_CA_ID, CEventServer::INITID_ZAPIT, &caid, sizeof(int));
@@ -775,13 +761,27 @@ int zapit_to_record(const t_channel_id channel_id)
 	CZapitChannel * newchannel;
 	bool transponder_change;
 
+	// find channel
 	if((newchannel = find_channel_tozap(channel_id, false)) == NULL) 
 	{
-		printf("zapit_to_record: channel_id " PRINTF_CHANNEL_ID_TYPE " not found", channel_id);
+		printf("zapit_to_record: channel_id (%llx) fe(%d) not found\n", channel_id, channel->getFeIndex() );
 		return -1;
 	}
 	
-	printf("%s: %s (%llx)\n", __FUNCTION__, newchannel->getName().c_str(), channel_id);
+	// check for twin
+	if(FrontendCount > 1)
+	{
+		for(int i = 1; i < FrontendCount; i++)
+		{
+			// always compare with fe0
+			if( CFrontend::getInstance(0)->getInfo()->type == CFrontend::getInstance(i)->getInfo()->type )
+			{
+				channel->setFeIndex(i);
+			}
+		}
+	}
+	
+	printf("%s: %s (%llx) fe(%d)\n", __FUNCTION__, newchannel->getName().c_str(), channel_id, channel->getFeIndex());
 	
 	// tune to rec channel
 	if(!tune_to_channel(newchannel, transponder_change))
@@ -792,7 +792,7 @@ int zapit_to_record(const t_channel_id channel_id)
 		return -1;
 	
 	//TEST: do we need to set ca_pmt_list_managment???
-	newchannel->getCaPmt()->ca_pmt_list_management = transponder_change ? 0x03 : 0x04;
+	//newchannel->getCaPmt()->ca_pmt_list_management = transponder_change ? 0x03 : 0x04;
 
 	return 0;
 }
