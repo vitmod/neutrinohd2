@@ -100,6 +100,8 @@ bool new_mode_active = 0;
 //int list_changed = 0;
 //static bool pipzap;
 
+extern int FrontendCount;			// defined in zapit.cpp
+
 
 extern CBouquetManager *g_bouquetManager;
 
@@ -1776,15 +1778,19 @@ void CChannelList::paintItem(int pos)
 	int ypos = y + theight + 0 + pos*fheight;
 	uint8_t    color;
 	fb_pixel_t bgcolor;
-	bool iscurrent = true;
+	bool iscurrent = false;
 	unsigned int curr = liststart + pos;
 
 	if(!autoshift && CNeutrinoApp::getInstance()->recordingstatus && curr < chanlist.size()) 
 	{
-		iscurrent = (chanlist[curr]->channel_id >> 16) == (rec_channel_id >> 16);
+		//iscurrent = (chanlist[curr]->channel_id >> 16) == (rec_channel_id >> 16);
+		if(FrontendCount < 2)
+		{
+			if(chanlist[curr]->channel_id >> 16 == rec_channel_id >> 16)
+				iscurrent = true;
+		}
 	
-		//printf("recording %llx current %llx current = %s\n", rec_channel_id, chanlist[liststart + pos]->channel->channel_id, iscurrent? "yes" : "no");
-		printf("[channellist.cpp] recording %llx\n", rec_channel_id);
+		printf("CChannelList::paintItem: recording %llx current %llx current = %s\n", rec_channel_id, chanlist[liststart + pos]->channel_id, iscurrent? "yes" : "no");
 	}
 	
 	if (curr == selected) 
