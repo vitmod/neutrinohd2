@@ -2591,8 +2591,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 	InitParentalLockSettings(parentallockSettings);
 	
 	//init scan settings
-	CScanSetup scansetup;
-	//scansetup.initScanSettings();
+	//CScanSetup scansetup;
 
 	dprintf( DEBUG_NORMAL, "CNeutrinoApp::run: registering as event client\n");
 
@@ -2700,8 +2699,8 @@ int CNeutrinoApp::run(int argc, char **argv)
 			networkSettings.exec(NULL, "");
 
 		// setup scan settings
-		if(ret != menu_return::RETURN_EXIT_ALL)
-			scansetup.exec(NULL, "");
+		//if(ret != menu_return::RETURN_EXIT_ALL)
+		//	scansetup.exec(NULL, "");
 
 		dprintf(DEBUG_INFO, "config file or options missing\n");
 
