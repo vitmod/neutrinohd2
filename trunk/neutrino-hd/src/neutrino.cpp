@@ -3166,6 +3166,7 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 				StartSubtitles();
 			}
 #endif
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)
 			//music player
 			else if( msg == CRCInput::RC_music) 
 			{
@@ -3176,6 +3177,7 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 
 				StartSubtitles();
 			}
+#endif			
 			else if( msg == CRCInput::RC_dvbsub)
 			{
 				StopSubtitles();
@@ -3192,6 +3194,7 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 				
 				StartSubtitles();
 			}
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)			
 			else if(msg == CRCInput::RC_net) 	// internet radio
 			{
 				StopSubtitles();
@@ -3201,6 +3204,7 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 
 				StartSubtitles();
 			}
+#endif			
 			else if( msg == CRCInput::RC_video)	// movie browser (recorded files)
 			{
 				StopSubtitles();
@@ -3218,6 +3222,7 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 					
 				StartSubtitles();
 			}
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)			
 			else if(msg == CRCInput::RC_picture) 	// picture viewer
 			{
 				StopSubtitles();
@@ -3227,6 +3232,7 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 				
 				StartSubtitles();
 			}
+#endif			
 			else if (CRCInput::isNumeric(msg) && g_RemoteControl->director_mode ) 
 			{
 				StopSubtitles();
