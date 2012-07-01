@@ -1476,12 +1476,14 @@ const char * CRCInput::getSpecialKeyName(const unsigned int key)
 				
 		case RC_video:
 			return "video";
-				
+		
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)			
 		case RC_picture:
 			return "picture";
 				
 		case RC_music:
 			return "music";
+#endif			
 
 		case RC_text:
 			return "text";
