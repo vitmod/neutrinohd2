@@ -168,7 +168,7 @@ CFrontend::~CFrontend(void)
 	close(fd);
 }
 
-bool /*void*/ CFrontend::Open(void)
+bool CFrontend::Open(void)
 {
 
 	char filename[256];
