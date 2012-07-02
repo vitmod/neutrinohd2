@@ -1778,7 +1778,7 @@ void CChannelList::paintItem(int pos)
 	int ypos = y + theight + 0 + pos*fheight;
 	uint8_t    color;
 	fb_pixel_t bgcolor;
-	bool iscurrent = false;
+	bool iscurrent = true;
 	unsigned int curr = liststart + pos;
 
 	if(!autoshift && CNeutrinoApp::getInstance()->recordingstatus && curr < chanlist.size()) 
@@ -1787,7 +1787,7 @@ void CChannelList::paintItem(int pos)
 		if(FrontendCount < 2)
 		{
 			if(chanlist[curr]->channel_id >> 16 == rec_channel_id >> 16)
-				iscurrent = true;
+				iscurrent = false;
 		}
 	
 		printf("CChannelList::paintItem: recording %llx current %llx current = %s\n", rec_channel_id, chanlist[liststart + pos]->channel_id, iscurrent? "yes" : "no");
@@ -1946,7 +1946,7 @@ void CChannelList::paintItem(int pos)
 		}
 
 		// show channame/event info in vfd
-		#if 0
+#if 0
 		if (curr == selected) 
 		{
 			if (!(chan->currentEvent.description.empty())) 
@@ -1969,7 +1969,7 @@ void CChannelList::paintItem(int pos)
 			//CVFD::getInstance()->showMenuText(0, nameAndDescription, -1, true); // UTF-8
 			CVFD::getInstance()->ShowText(nameAndDescription); // UTF-8
 		}
-		#endif
+#endif
 	}
 }
 
@@ -1995,17 +1995,6 @@ void CChannelList::paintHead()
 {
 	// head
 	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);//round
-	
-	// head icon
-	//frameBuffer->paintIcon(NEUTRINO_ICON_SETTINGS, x + 7, y + 5);
-	
-	//title
-	//g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 10, y + theight, width - 65, name, COL_MENUHEAD, 0, true); // UTF-8
-	
-	// centered
-	//int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(name, true); // UTF-8
-	//int stringstartposX = x + (width >> 1) - (neededWidth >> 1);
-	//g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, y + theight, width - (stringstartposX - x - PIC_W) , name, COL_MENUHEAD, 0, true); // UTF-8
 
 	int ButtonWidth = (width - 20) / 4;
 
