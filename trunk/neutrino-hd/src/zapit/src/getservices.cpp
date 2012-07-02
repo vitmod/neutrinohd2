@@ -256,15 +256,15 @@ void FindTransponder(xmlNodePtr search)
 		// frontend index from sat pos
 		sat_iterator_t sit = satellitePositions.find(satellitePosition);
 
-		if(sit != satellitePositions.end()) 
-		{
-			feindex = sit->second.feindex;
-		}
+		//if(sit != satellitePositions.end()) 
+		//{
+		//	feindex = sit->second.feindex;
+		//}
 		
-		printf("getservices:FindTransponder: going to parse dvb-%c provider %s position %d fe(%d)\n", xmlGetName(search)[0], xmlGetAttribute(search, "name"), satellitePosition, feindex);
+		printf("getservices:FindTransponder: going to parse dvb-%c provider %s position %d fe(%d)\n", xmlGetName(search)[0], xmlGetAttribute(search, "name"), satellitePosition, /*feindex*/ sit->second.feindex);
 		
 		// parse TP
-		ParseTransponders(search->xmlChildrenNode, satellitePosition, Source, feindex);
+		ParseTransponders(search->xmlChildrenNode, satellitePosition, Source, /*feindex*/ sit->second.feindex);
 
 		newfound++;
 		
@@ -357,11 +357,6 @@ int LoadMotorPositions(void)
 	t_satellite_position satellitePosition;
 	int spos = 0, mpos = 0, diseqc = 0, uncom = 0, com = 0, usals = 0, inuse;
 	int offH = 10600, offL = 9750, sw = 11700;
-	
-	#if 0
-	int stype = DVB_S;
-	int sindex = 0;
-	#endif
 
 	printf("getservices:loadingmotorpositions...\n");
 
@@ -372,8 +367,6 @@ int LoadMotorPositions(void)
 		while(!feof(fd)) 
 		{
 			sscanf(buffer, "%d %d %d %d %d %d %d %d %d %d", &spos, &mpos, &diseqc, &com, &uncom, &offL, &offH, &sw, &inuse, &usals);
-			//test
-			//sscanf(buffer, "%d %d %d %d %d %d %d %d %d %d %d %d", &spos, &mpos, &diseqc, &com, &uncom, &offL, &offH, &sw, &inuse, &usals, &stype, &sindex);
 
 			satellitePosition = spos;
 			sat_iterator_t sit = satellitePositions.find(satellitePosition);
@@ -389,11 +382,6 @@ int LoadMotorPositions(void)
 				sit->second.lnbSwitch = sw;
 				sit->second.use_in_scan = inuse;
 				sit->second.use_usals = usals;
-				//test
-				#if 0
-				sit->second.type = stype;
-				sit->second.feindex = sindex;
-				#endif
 			}
 			fgets(buffer, 255, fd);
 		}
@@ -419,8 +407,6 @@ void SaveMotorPositions()
 	}
 	
 	fprintf(fd, "# sat position, stored rotor, diseqc, commited, uncommited, low, high, switch, use in full scan, use usals\n");
-	//test
-	//fprintf(fd, "# sat position, stored rotor, diseqc, commited, uncommited, low, high, switch, use in full scan, use usals, type, index\n");
 	
 	for(sit = satellitePositions.begin(); sit != satellitePositions.end(); sit++) 
 	{
@@ -588,7 +574,7 @@ int LoadServices(bool only_current)
 		while (search) 
 		{
 			//this is unpretty here sat config data are loaded from 
-			#if 1
+			#if 0
 			// init sat position from services.xml
 			if (!(strcmp(xmlGetName(search), "sat"))) 
 			{
