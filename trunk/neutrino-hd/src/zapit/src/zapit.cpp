@@ -155,7 +155,7 @@ extern cDemux * pmtDemux;			/* defined in pmt.pp */
 scan_list_t scanProviders;
 
 // DVB
-#define DVBADAPTER_MAX	1
+#define DVBADAPTER_MAX	2
 #define FRONTEND_MAX	4
 #define DEMUX_MAX 	4
 int AdapterCount = 0;
@@ -434,11 +434,6 @@ void start_camd(bool forupdate = false)
 {
 	if(!channel)
 		return;
-
-	//CCamManager::getInstance()->Start(channel->getChannelID(), CCamManager::PLAY, forupdate);
-	//int len;
-	//unsigned char * pmt = channel->getRawPmt(len);
-	//ca->SendPMT(DEMUX_SOURCE_0, pmt, len);
 	
 	static int camask = 1; // demux 0
 
@@ -3272,17 +3267,12 @@ void * sdt_thread(void * arg)
 	return 0;
 }
 
-//TODO: feed all fronrend indexes/adapter into feed
-//std::vector<CFrontend*>	fe;
-
 bool getDVBCount()
 {
 	#if 1
 	// adapter count / frontend count
 	int i, j, fd = -1, frontend_count = 0;
 	char buf[256];
-	
-	//std::vector<CFrontend *> fe;
 	
 	for(i = 0; i < DVBADAPTER_MAX; i++)
 	{
@@ -3304,7 +3294,7 @@ bool getDVBCount()
 	
 	//
 	#if 0
-	fe_map_t femap;
+	//fe_map_t femap;
 	fe_map_iterator_t it;
 	
 	CFrontend * fe;
