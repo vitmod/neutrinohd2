@@ -86,19 +86,11 @@ extern CBouquetList   * RADIOallList;
 
 
 extern t_channel_id rec_channel_id;
-//TEST
 extern t_channel_id live_channel_id;
-
-//TEST
 bool pip_selected = false;
-//bool pipzap = false;
-
-
 extern bool autoshift;
 int info_height = 0;
 bool new_mode_active = 0;
-//int list_changed = 0;
-//static bool pipzap;
 
 extern int FrontendCount;			// defined in zapit.cpp
 
@@ -1784,7 +1776,7 @@ void CChannelList::paintItem(int pos)
 	if(!autoshift && CNeutrinoApp::getInstance()->recordingstatus && curr < chanlist.size()) 
 	{
 		//iscurrent = (chanlist[curr]->channel_id >> 16) == (rec_channel_id >> 16);
-		if(FrontendCount < 2)
+		//if(FrontendCount == 1) // single tuner
 		{
 			if(chanlist[curr]->channel_id >> 16 == rec_channel_id >> 16)
 				iscurrent = false;

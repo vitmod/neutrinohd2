@@ -468,9 +468,10 @@ void CScanSetup::showScanService()
 		
 	if(!sfound && satellitePositions.size() ) 
 	{
-		//sit = satellitePositions.begin();	
-		//strcpy(scanSettings.satNameNoDiseqc, sit->second.name.c_str());
+		sit = satellitePositions.begin();	
+		strcpy(scanSettings.satNameNoDiseqc, sit->second.name.c_str());
 		
+		#if 0
 		for(sit = satellitePositions.end(); sit != satellitePositions.begin(); sit--) 
 		{
 			if (CFrontend::getInstance(feindex)->getInfo()->type == FE_QPSK) 
@@ -498,6 +499,7 @@ void CScanSetup::showScanService()
 				}
 			}
 		}
+		#endif
 	}
 
 	// scan type
