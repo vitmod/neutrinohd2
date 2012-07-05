@@ -363,7 +363,10 @@ class CRCInput
 #if HAVE_DVB_API_VERSION == 1
 			return fd_gamerc;
 #else
-			return fd_rc[0];
+			for (int i = 0; i < NUMBER_OF_EVENT_DEVICES; i++)
+			{
+				return fd_rc[i];
+			}
 #endif
 		}
 		
