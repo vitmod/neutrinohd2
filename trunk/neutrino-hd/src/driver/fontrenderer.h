@@ -74,9 +74,6 @@ class Font
 
 		Font(FBFontRenderClass *render, FTC_FaceID faceid, const int isize, const fontmodifier _stylemodifier);
 		~Font(){}
-		
-		//TEST
-		void Bidi(const char *Ltr);
 };
 
 class FBFontRenderClass
@@ -122,9 +119,6 @@ class FBFontRenderClass
 		FBFontRenderClass(const int xres = 72, const int yres = 72);
 		~FBFontRenderClass();
 		
-		//TEST
-		void Bidi(const char *Ltr);
-
 		friend class Font;
 };
 
