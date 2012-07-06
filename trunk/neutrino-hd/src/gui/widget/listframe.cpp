@@ -56,9 +56,9 @@
 #include <system/debug.h>
 
 #define	TEXT_BORDER_WIDTH			 8
-#define ROW_BORDER_WIDTH             4
+#define ROW_BORDER_WIDTH             		4
 #define	SCROLL_FRAME_WIDTH			10
-#define	SCROLL_MARKER_BORDER		 2
+#define	SCROLL_MARKER_BORDER		 	2
 
 #define MAX_WINDOW_WIDTH  (frameBuffer->getScreenWidth() - 40)
 #define MAX_WINDOW_HEIGHT (frameBuffer->getScreenHeight() - 40)	
