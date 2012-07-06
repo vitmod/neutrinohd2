@@ -1436,5 +1436,10 @@ const char *locale_real_names[] = {
 	"screenshot.token",
 	"screenshot.remove",
 	"servicemenu.restart_e2",
+	
+	"helptext.tvmode",
+	"helptext.radiomode",
+	"helptext.scart",
+	"helptext.mediaplayer",
 };
 #endif
