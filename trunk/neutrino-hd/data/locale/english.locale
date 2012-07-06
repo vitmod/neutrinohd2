@@ -1425,4 +1425,12 @@ screenshot.announce create screenshot?
 screenshot.token creating screenshot...
 screenshot.remove remove screenshot?
 servicemenu.restart_e2 Boot E2 as Standard
+helptext.tvmode Here you can switch to TV Modus.
+helptext.radiomode Here you can switch to Radio Modus.
+helptext.scart Here you can switch to Scart Modus.
+helptext.mediaplayer Here you can switch to Mediaplayer.
+
+
+
+
 
