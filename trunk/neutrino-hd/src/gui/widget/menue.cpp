@@ -631,7 +631,7 @@ void CMenuWidget::paint()
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, y + hheight + 1, width - BORDER_RIGHT - (stringstartposX - x), l_name, COL_MENUHEAD, 0, true); // UTF-8
 	
 	// paint separator
-	int sp_height = 10;
+	int sp_height = 5;
 	frameBuffer->paintBoxRel(x, y + hheight, width + sb_width, sp_height, COL_MENUCONTENTDARK_PLUS_0 );
 	
 	// recalculate total height
@@ -643,10 +643,13 @@ void CMenuWidget::paint()
 	//
 	
 	//paint foot
-	frameBuffer->paintBoxRel(x, y + height, width + sb_width, (RADIUS_MID * 3) + 1, COL_MENUCONTENTDARK_PLUS_0 );
+	frameBuffer->paintBoxRel(x, y + height, width + sb_width, (RADIUS_MID * 3) + 1, /*COL_MENUCONTENTDARK_PLUS_0*/COL_MENUHEAD_PLUS_0 );
 	
 	// foot separator
-	frameBuffer->paintHLineRel(x, width + sb_width, y + height + 2, COL_MENUCONTENTSELECTED_PLUS_0 /*COL_MENUCONTENTINACTIVE_PLUS_0*/ ); 
+	//frameBuffer->paintHLineRel(x, width + sb_width, y + height + 2, COL_MENUCONTENTSELECTED_PLUS_0 ); 
+	
+	// info icon
+	//frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + 8, y + height + 2 + 2);
 
 	//item_start_y = y + hheight;
 	item_start_y = y + hheight + sp_height;
@@ -1480,30 +1483,32 @@ int CMenuForwarder::paint(bool selected)
 }
 
 // CMenuForwarderItemMenuIcon
-CMenuForwarderItemMenuIcon::CMenuForwarderItemMenuIcon(const neutrino_locale_t Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon )
+CMenuForwarderItemMenuIcon::CMenuForwarderItemMenuIcon(const neutrino_locale_t Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText )
 {
 	option = Option;
 	option_string = NULL;
-	text=Text;
+	text = Text;
 	active = Active;
 	jumpTarget = Target;
 	actionKey = ActionKey ? ActionKey : "";
 	directKey = DirectKey;
 	iconName = IconName ? IconName : "";
 	itemIcon = ItemIcon ? ItemIcon : "";
+	helptext = HelpText;
 }
 
-CMenuForwarderItemMenuIcon::CMenuForwarderItemMenuIcon(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon)
+CMenuForwarderItemMenuIcon::CMenuForwarderItemMenuIcon(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText)
 {
 	option = NULL;
 	option_string = &Option;
-	text=Text;
+	text = Text;
 	active = Active;
 	jumpTarget = Target;
 	actionKey = ActionKey ? ActionKey : "";
 	directKey = DirectKey;
 	iconName = IconName ? IconName : "";
 	itemIcon = ItemIcon ? ItemIcon : "";
+	helptext = HelpText;
 }
 
 int CMenuForwarderItemMenuIcon::getHeight(void) const
@@ -1556,6 +1561,11 @@ const char * CMenuForwarderItemMenuIcon::getName(void)
 	return g_Locale->getText(text);
 }
 
+const char * CMenuForwarderItemMenuIcon::getHelpText(void)
+{
+	return g_Locale->getText(helptext);
+}
+
 int CMenuForwarderItemMenuIcon::paint(bool selected)
 {
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
@@ -1599,7 +1609,7 @@ int CMenuForwarderItemMenuIcon::paint(bool selected)
 		bgcolor = COL_MENUCONTENTINACTIVE_PLUS_0;
 	}
 	
-		//show ItemMenuIcon
+	//show ItemMenuIcon
 	if (selected)
 	{
 		if (!itemIcon.empty())
@@ -1619,8 +1629,7 @@ int CMenuForwarderItemMenuIcon::paint(bool selected)
 			// paint item icon
 			frameBuffer->paintIcon(itemIcon, x + BORDER_LEFT + (dx/3)*2 + ((( dx - (dx/3)*2 - BORDER_RIGHT )/2) - icon_w/2), ( frameBuffer->getScreenHeight(true) - icon_h + hheight + 25 )/2);  //25:foot height
 		}
-		
-		//help icons
+		//help tasten icons
 		//left
 		//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_LEFT, x + dx/2 -45, HEIGHT-20);
 		// down
@@ -1631,6 +1640,18 @@ int CMenuForwarderItemMenuIcon::paint(bool selected)
 		//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_TOP, x + dx/2 +20, HEIGHT-20);
 		// up
 		//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RIGHT, x + dx/2 + 45, HEIGHT-20);
+		
+		// or help text
+		// refresh
+		frameBuffer->paintBoxRel(x, HEIGHT - 25, dx, 25, COL_MENUHEAD_PLUS_0);
+		
+		// paint help icon
+		frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + BORDER_LEFT - 2, HEIGHT - 25);
+		
+		// help text
+		const char * help_text = getHelpText();
+		
+		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMSMALL]->RenderString(stringstartposX, HEIGHT, dx - (stringstartposX - x), help_text, COL_MENUHEAD, 0, true); // UTF-8
 	}
 	
 	// paint item
