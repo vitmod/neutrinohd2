@@ -199,20 +199,20 @@ void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu, CMenuWidget &mainSettings
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitMainMenu\n");
 
 	// tv modus
-	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_TVMODE, true, "", this, "tv", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, "tv"), true);
+	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_TVMODE, true, "", this, "tv", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, "tv", LOCALE_HELPTEXT_TVMODE ), true);
 
 	// radio modus
-	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_RADIOMODE, true, "", this, "radio", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, "radio"));	
+	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_RADIOMODE, true, "", this, "radio", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, "radio", LOCALE_HELPTEXT_RADIOMODE ));	
 	
 	// vcr-scart
 #if defined (PLATFORM_CUBEREVO ) || defined (PLATFORM_CUBEREVO_9500HD)
-	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_SCARTMODE, true, "", this, "scart", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, "scart"));
+	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_SCARTMODE, true, "", this, "scart", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, "scart", LOCALE_HELPTEXT_SCART ));
 #endif
 
 	//MediaPlayer e.g internet radio/audioplayer/movieplayer/picplayer/upnp
 	// Media player main menu
 	mainMenu.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
-	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_MEDIAPLAYER, true, "", &MediaPlayer, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, "mediaplayer" ));
+	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_MEDIAPLAYER, true, "", &MediaPlayer, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, "mediaplayer", LOCALE_HELPTEXT_MEDIAPLAYER ));
 	
 	int shortcutMediaPlayer = 1;
 	
