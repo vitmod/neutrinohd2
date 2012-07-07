@@ -10,6 +10,7 @@ SUBDIRS = \
 	libtuxtxt \
 	libdvbsub \
 	libupnpclient \
+	liblcddisplay \
 	libcoolstream
 
 # libeplayer3
@@ -17,7 +18,6 @@ if ENABLE_LIBEPLAYER3
 SUBDIRS += libeplayer3
 endif
 
-#SUBDIRS += liblcddisplay
 
 
 
