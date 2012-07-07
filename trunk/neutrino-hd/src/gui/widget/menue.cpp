@@ -531,7 +531,7 @@ int CMenuWidget::exec(CMenuTarget * parent, const std::string &)
 
 void CMenuWidget::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width + SCROLLBAR_WIDTH, height + ((RADIUS_MID * 3) + 1) ); //15=sb_width, ((RADIUS_MID * 3) + 1)= foot 
+	frameBuffer->paintBackgroundBoxRel(x, y, width + SCROLLBAR_WIDTH, height + ((RADIUS_MID * 3) + 1) + 5); //15=sb_width, ((RADIUS_MID * 3) + 1)= foot 
 	
 #ifdef FB_BLIT
 	frameBuffer->blit();
@@ -636,22 +636,15 @@ void CMenuWidget::paint()
 	
 	// recalculate total height
 	height = height + sp_height;
-	//
-	
-	//
-	HEIGHT = y + height + 25;
-	//
 	
 	//paint foot
-	frameBuffer->paintBoxRel(x, y + height, width + sb_width, (RADIUS_MID * 3) + 1, /*COL_MENUCONTENTDARK_PLUS_0*/COL_MENUHEAD_PLUS_0 );
+	frameBuffer->paintBoxRel(x, y + height, width + sb_width, (RADIUS_MID * 3) + 1 + 5, COL_MENUHEAD_PLUS_0 );
 	
-	// foot separator
-	//frameBuffer->paintHLineRel(x, width + sb_width, y + height + 2, COL_MENUCONTENTSELECTED_PLUS_0 ); 
+	// all height
+	HEIGHT = y + height + 25 + 5;
+	//
 	
-	// info icon
-	//frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + 8, y + height + 2 + 2);
-
-	//item_start_y = y + hheight;
+	//item_start_y
 	item_start_y = y + hheight + sp_height;
 	
 	// paint items
@@ -685,8 +678,8 @@ void CMenuWidget::paintItems()
 		frameBuffer->paintBoxRel(x + width + 2, item_start_y + 2 + current_page * sbh, 11, sbh, COL_MENUCONTENT_PLUS_3);
 	}
 	
-	// paint items (bg)
-	frameBuffer->paintBoxRel(x, item_start_y, width, item_height, COL_MENUCONTENTDARK_PLUS_0 );
+	// paint items background
+	frameBuffer->paintBoxRel(x, item_start_y, width, item_height + 5, COL_MENUCONTENTDARK_PLUS_0 );
 
 	int ypos = item_start_y;
 	
