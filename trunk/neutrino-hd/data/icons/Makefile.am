@@ -74,7 +74,7 @@ install_DATA += \
 # MenuItemsIcons
 install_DATA += \
 	tv.png radio.png games_item.png mediaplayer.png mainsettings.png service.png sleeptimer.png reboot.png shutdown.png boxinfo.png \
-	videosettings.png audiosettings.png parentallock.png networksettings.png recordsettings.png osdsettings.png vfdsettings.png keyssettings.png \
+	videosettings.png audiosettings.png parentallock.png networksettings.png recordingsettings.png osdsettings.png vfdsettings.png keyssettings.png \
 	movieplayersettings.png audioplayersettings.png pictureviewersettings.png miscsettings.png hddsettings.png \
 	movieplayer.png internetradio.png upnpbrowser.png pictureviewer.png audioplayer.png \
 	miscsettingsgeneral.png miscsettingschannellist.png miscsettingsepg.png miscsettingsfilebrowser.png imageinfo.png cam.png scart.png \
