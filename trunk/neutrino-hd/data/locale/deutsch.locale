@@ -1431,4 +1431,44 @@ helptext.tvmode Hier können Sie in den TV Modus schalten.
 helptext.radiomode Hier können Sie in den Radio Modus schalten.
 helptext.scart Hier können Sie in den Scart Modus schalten.
 helptext.mediaplayer Hier können Sie in den Mediaplayer schalten.
+helptext.internetradio Hier können Sie in den Internetradio schalten.
+helptext.audioplayer Hier können Sie in den Audioplayer schalten.
+helptext.tsmoviebrowser Hier können Sie in Ihre Aufnahmen abspielen.
+helptext.fileplayback Hier können Sie Ihre Media Dateien abspielen.
+helptext.netstream Hier können Sie Streams aus dem Net abspielen.
+helptext.pictureviewer Hier können Sie Ihre Bilder Diashow schauen.
+helptext.upnpbrowser Hier können Sie in den UPNPBrowser schalten.
+helptext.mainsettings Hier können Sie in den Einstellugen schalten.
+helptext.service Hier können Sie in den Service schalten.
+helptext.sleeptimer Hier können Sie den Sleep Timer einstellen.
+helptext.reboot Hier können Sie Ihren STB rebooten.
+helptext.shutdown Hier können Sie Ihren STB ausschalten.
+helptext.boxinfo Hier erhalten Sie Infos über die HW Ihren STB.
+helptext.videosettings Hier können Sie die Video Einstellugen führen.
+helptext.audiosettings Hier können Sie die Audio Einstellugen führen.
+helptext.parentallock Hier können Sie den Parental/Pin einstellen.
+helptext.networksettings Hier können Sie die Network Einstellugen führen.
+helptext.recordingsettings Hier können Sie die Aufnahmen Einstellugen führen.
+helptext.movieplayersettings Hier können Sie die Movieplayer Einstellugen führen.
+helptext.osdsettings Hier können Sie die OSD Einstellugen führen.
+helptext.vfdsettings Hier können Sie die VFD Einstellugen führen.
+helptext.keyssettings Hier können Sie die Fernbedienung Einstellugen führen.
+helptext.audioplayersettings Hier können Sie die Audio Einstellugen führen.
+helptext.pictureviewersettings Hier können Sie die Pictureviewer Einstellugen führen.
+helptext.miscsettings Hier können Sie die diverse Einstellugen führen.
+helptext.hddsettings Hier können Sie die Festplatte Einstellugen führen.
+helptext.scansetup Hier können Sie einen Kanal Suchlauf führen.
+helptext.reloadchannels Hier können Sie die Kanäle Liste neu laden.
+helptext.bouquteseditor Hier können Sie Ihre Favoriten editieren.
+helptext.deletechannels Hier können Sie die Kanäle Liste löschen.
+helptext.cam Hier können Sie das Cam Module einstellen.
+helptext.reloadplugins Hier können Sie die Plugins Liste neu laden.
+helptext.imageinfo Hier können Sie infos über das Image erhalten.
+helptext.softrestart Hier können Sie die Software neu starten.
+helptext.softwareupdate Hier können Sie die Software auf einen akuellen Stand updaten.
+helptext.miscsettingsgeneral Hier können Sie divers general Einstellungen führen.
+helptext.miscsettingschannellist Hier können Sie die Kanal listen einstellen.
+helptext.miscsettingsepg Hier können Sie EPG einstellen.
+helptext.miscsettingsfilebrowser Hier können Sie die Filebrowser einstellen
+helptext.miscsettingszapitsetup Hier können Sie das Start Program und mode fest einstellen.
 

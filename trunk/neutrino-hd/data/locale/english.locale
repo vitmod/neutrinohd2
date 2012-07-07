@@ -1429,6 +1429,49 @@ helptext.tvmode Here you can switch to TV Modus.
 helptext.radiomode Here you can switch to Radio Modus.
 helptext.scart Here you can switch to Scart Modus.
 helptext.mediaplayer Here you can switch to Mediaplayer.
+helptext.internetradio Here you can switch to Internetradio.
+helptext.audioplayer Here you can switch to Audioplayer.
+helptext.tsmoviebrowser Here you can play yout recorded files.
+helptext.fileplayback Here you can play media files.
+helptext.netstream Here you can play streams from net.
+helptext.pictureviewer Here you can see your pics diashows.
+helptext.upnpbrowser Here you can switch to UPNPBrowser.
+helptext.mainsettings Here you can switch to main settings.
+helptext.service Here you can switch to service.
+helptext.sleeptimer Here you can setup the Sleep Timer.
+helptext.reboot Here you can reboot your STB.
+helptext.shutdown Here you can shutdown your STB.
+helptext.boxinfo Here you can get HW infos about your STB.
+helptext.videosettings Here you can set up video setup.
+helptext.audiosettings Here you can set up audio setup.
+helptext.parentallock Here you can set up parental/pin setup.
+helptext.networksettings Here you can set up network setup.
+helptext.recordingsettings Here you can set up record setup.
+helptext.movieplayersettings Here you can set up movieplayer setup.
+helptext.osdsettings Here you can set up OSD setup.
+helptext.vfdsettings Here you can set up VFD setup.
+helptext.keyssettings Here you can set up remote control setup.
+helptext.audioplayersettings Here you can set up audioplayer setup.
+helptext.pictureviewersettings Here you can set up pictureviewer setup.
+helptext.miscsettings Here you can set up misc setup.
+helptext.hddsettings Here you can set up HDD setup.
+helptext.scansetup Here you can start channel scan.
+helptext.reloadchannels Here you can load the channel list.
+helptext.bouquteseditor Here you can edit your favorits list.
+helptext.deletechannels Here you can delete the channels list.
+helptext.cam Here you can set up you Cam modul.
+helptext.reloadplugins Here you can reload the plugins list.
+helptext.imageinfo Here you can get infos about the software.
+helptext.softrestart Here you can restart the software.
+helptext.softwareupdate Here you can update the software.
+helptext.miscsettingsgeneral Here you can set up dviers misc setup.
+helptext.miscsettingschannellist Here you can set up channel lists.
+helptext.miscsettingsepg Here you can set up EPG.
+helptext.miscsettingsfilebrowser Here you can set up the filebrowser.
+helptext.miscsettingszapitsetup Here you can set up the start-program and mode.
+
+
+
 
 
 
