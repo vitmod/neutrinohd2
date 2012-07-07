@@ -468,9 +468,9 @@ class CLockedMenuForwarderItemMenuIcon : public CMenuForwarderItemMenuIcon, publ
 	public:
 		CLockedMenuForwarderItemMenuIcon(const neutrino_locale_t Text, char* _validPIN, bool alwaysAsk=false, const bool Active=true, char *Option=NULL,
 		                     CMenuTarget* Target=NULL, const char * const ActionKey = NULL,
-		                     neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const char * const ItemIcon = NULL)
+		                     neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const char * const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE )
 
-		                     : CMenuForwarderItemMenuIcon(Text, Active, Option, Target, ActionKey, DirectKey, IconName, ItemIcon) ,
+		                     : CMenuForwarderItemMenuIcon(Text, Active, Option, Target, ActionKey, DirectKey, IconName, ItemIcon, HelpText) ,
 		                       CPINProtection( _validPIN){AlwaysAsk = alwaysAsk;};
 
 		virtual int exec(CMenuTarget* parent);
