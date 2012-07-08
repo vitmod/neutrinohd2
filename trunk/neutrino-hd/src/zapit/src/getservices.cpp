@@ -568,9 +568,9 @@ int LoadServices(bool only_current)
 
 		while (search) 
 		{
-			// use this to reset sat channellist loaded by 2d frontend
+			//FIXME: this code is only valable for such constellation e.g
 			// spark-triplex: S+S , T/C
-			// init sat position from services.xml
+			// ich gehe davon aus dass der erste tuner immer einen sat tuner ist.
 			if (!(strcmp(xmlGetName(search), "sat"))) 
 			{
 				// position
@@ -583,6 +583,10 @@ int LoadServices(bool only_current)
 					
 					satellitePositions[position].name = name;
 				}
+				
+				//FIXME:
+				// ich gehe davon aus dass der erste tuner immer einen sat tuner ist.
+				satellitePositions[position].feindex = 0;
 			}
 
 			// jump to the next node

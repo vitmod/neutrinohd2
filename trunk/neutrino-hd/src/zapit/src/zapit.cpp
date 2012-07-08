@@ -678,23 +678,6 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0, bool 
 		DBG("channel_id " PRINTF_CHANNEL_ID_TYPE " not found", channel_id);
 		return -1;
 	}
-	
-	// check for twin
-	//NOTE: getservice::loadservices() set by twin feindex to the higher
-	// getservices reset feindex to 0, so do we need this???
-	#if 0
-	if(FrontendCount > 1)
-	{
-		for(int i = 1; i < FrontendCount; i++)
-		{
-			// always compare with fe0
-			if( CFrontend::getInstance(0)->getInfo()->type == CFrontend::getInstance(i)->getInfo()->type )
-			{
-				newchannel->setFeIndex(0);
-			}
-		}
-	}
-	#endif
 
 	sig_delay = 2;
 	
