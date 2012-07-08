@@ -687,113 +687,6 @@ void CNeutrinoApp::setupColors_dvb2k()
 	g_settings.infobar_Text_blue  = 100;
 }
 
-// CNeutrinoApp -  setup Color Sheme (NeutrinoHD2)
-void CNeutrinoApp::setupColors_nhd2()
-{
-	g_settings.menu_Head_alpha = 0;
-	g_settings.menu_Head_red   = 48;
-	g_settings.menu_Head_green = 48;
-	g_settings.menu_Head_blue  = 48;
-
-	g_settings.menu_Head_Text_alpha = 0;
-	g_settings.menu_Head_Text_red   = 100;
-	g_settings.menu_Head_Text_green = 100;
-	g_settings.menu_Head_Text_blue  = 0;
-
-	g_settings.menu_Content_alpha = 20;
-	g_settings.menu_Content_red   = 50;
-	g_settings.menu_Content_green = 50;
-	g_settings.menu_Content_blue  = 50;
-
-	g_settings.menu_Content_Text_alpha = 0;
-	g_settings.menu_Content_Text_red   = 100;
-	g_settings.menu_Content_Text_green = 100;
-	g_settings.menu_Content_Text_blue  = 100;
-
-	g_settings.menu_Content_Selected_alpha = 20;
-	g_settings.menu_Content_Selected_red   = 22;
-	g_settings.menu_Content_Selected_green = 22;
-	g_settings.menu_Content_Selected_blue  = 22;
-
-	g_settings.menu_Content_Selected_Text_alpha  = 0;
-	g_settings.menu_Content_Selected_Text_red    = 100;
-	g_settings.menu_Content_Selected_Text_green  = 100;
-	g_settings.menu_Content_Selected_Text_blue   = 100;
-
-	g_settings.menu_Content_inactive_alpha = 0;
-	g_settings.menu_Content_inactive_red   = 75;
-	g_settings.menu_Content_inactive_green = 75;
-	g_settings.menu_Content_inactive_blue  = 75;
-
-	g_settings.menu_Content_inactive_Text_alpha  = 0;
-	g_settings.menu_Content_inactive_Text_red    = 80;
-	g_settings.menu_Content_inactive_Text_green  = 80;
-	g_settings.menu_Content_inactive_Text_blue   = 80;
-
-	g_settings.infobar_alpha = 0;
-	g_settings.infobar_red   = 50;
-	g_settings.infobar_green = 50;
-	g_settings.infobar_blue  = 50;
-
-	g_settings.infobar_Text_alpha = 0;
-	g_settings.infobar_Text_red   = 100;
-	g_settings.infobar_Text_green = 100;
-	g_settings.infobar_Text_blue  = 100;
-}
-
-void CNeutrinoApp::setupColors_gigablue()
-{
-	g_settings.infobar_Text_alpha = 0;
-	g_settings.infobar_Text_blue = 100;
-	g_settings.infobar_Text_green = 100;
-	g_settings.infobar_Text_red = 100;
-	
-	g_settings.infobar_alpha = 0;
-	g_settings.infobar_blue = 80;
-	g_settings.infobar_green = 50;
-	g_settings.infobar_red = 50;
-	
-	g_settings.menu_Content_Selected_Text_alpha = 0;
-	g_settings.menu_Content_Selected_Text_blue = 100;
-	g_settings.menu_Content_Selected_Text_green = 100;
-	g_settings.menu_Content_Selected_Text_red = 100;
-	
-	g_settings.menu_Content_Selected_alpha = 2;
-	g_settings.menu_Content_Selected_blue = 80;
-	g_settings.menu_Content_Selected_green = 22;
-	g_settings.menu_Content_Selected_red = 22;
-	
-	g_settings.menu_Content_Text_alpha = 0;
-	g_settings.menu_Content_Text_blue = 100;
-	g_settings.menu_Content_Text_green = 100;
-	g_settings.menu_Content_Text_red = 100;
-	
-	g_settings.menu_Content_alpha = 20;
-	g_settings.menu_Content_blue = 80;
-	g_settings.menu_Content_green = 50;
-	g_settings.menu_Content_inactive_Text_alpha = 0;
-	
-	g_settings.menu_Content_inactive_Text_blue = 80;
-	g_settings.menu_Content_inactive_Text_green = 80;
-	g_settings.menu_Content_inactive_Text_red = 80;
-	g_settings.menu_Content_inactive_alpha = 0;
-	
-	g_settings.menu_Content_inactive_blue = 48;
-	g_settings.menu_Content_inactive_green = 48;
-	g_settings.menu_Content_inactive_red = 48;
-	g_settings.menu_Content_red = 50;
-	
-	g_settings.menu_Head_Text_alpha = 0;
-	g_settings.menu_Head_Text_blue = 0;
-	g_settings.menu_Head_Text_green = 100;
-	g_settings.menu_Head_Text_red = 100;
-	
-	g_settings.menu_Head_alpha = 0;
-	g_settings.menu_Head_blue = 80;
-	g_settings.menu_Head_green = 48;
-	g_settings.menu_Head_red = 48;
-}
-
 // fonts
 #define FONT_STYLE_REGULAR 0
 #define FONT_STYLE_BOLD    1
@@ -1116,8 +1009,10 @@ int CNeutrinoApp::loadSetup(const char * fname)
 #endif	
 	
 	//pip
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)	
 	g_settings.key_pip = configfile.getInt32("key_pip", CRCInput::RC_pip);
 	g_settings.key_pip_subchannel = configfile.getInt32("key_pip_subchannel", CRCInput::RC_pipsubch);
+#endif	
 
         // USERMENU -> in system/settings.h
         //-------------------------------------------
@@ -2875,6 +2770,7 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 
 				StartSubtitles();
 			}
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)			
 			else if( msg == CRCInput::RC_bookmark) 
 			{
 				StopSubtitles();
@@ -2883,6 +2779,7 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 				
 				StartSubtitles();
 			}
+#endif			
 			else if( msg == CRCInput::RC_setup || msg == CRCInput::RC_vfdmenu) 
 			{
 				StopSubtitles();
@@ -2974,14 +2871,14 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 
 				StartSubtitles(res < 0);
 			}
-			else if (msg == CRCInput::RC_games)
-			{
-				StopSubtitles();
+			//else if (msg == CRCInput::RC_games)
+			//{
+			//	StopSubtitles();
 				
-				int res = channelList->numericZap( msg );
+			//	int res = channelList->numericZap( msg );
 					
-				StartSubtitles(res < 0);
-			}
+			//	StartSubtitles(res < 0);
+			//}
 			#if 0
 			else if( msg == CRCInput::RC_pause || msg == (neutrino_msg_t) g_settings.key_timeshift ) // start timeshift recording
 			{
@@ -3176,7 +3073,8 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 
 				StartSubtitles();
 			}
-#endif			
+#endif	
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)
 			else if( msg == CRCInput::RC_dvbsub)
 			{
 				StopSubtitles();
@@ -3192,8 +3090,7 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 				}
 				
 				StartSubtitles();
-			}
-#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)			
+			}			
 			else if(msg == CRCInput::RC_net) 	// internet radio
 			{
 				StopSubtitles();
@@ -5090,16 +4987,6 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 	else if(actionKey=="theme_red") 
 	{
 		setupColors_red();
-		colorSetupNotifier->changeNotify(NONEXISTANT_LOCALE, NULL);
-	}
-	else if(actionKey=="theme_nhd2") 
-	{
-		setupColors_nhd2();
-		colorSetupNotifier->changeNotify(NONEXISTANT_LOCALE, NULL);
-	}
-	else if(actionKey=="theme_gigablue") 
-	{
-		setupColors_gigablue();
 		colorSetupNotifier->changeNotify(NONEXISTANT_LOCALE, NULL);
 	}
 	else if(actionKey=="savescansettings") 
