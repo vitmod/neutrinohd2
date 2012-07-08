@@ -226,7 +226,7 @@ void FindTransponder(xmlNodePtr search)
 	t_satellite_position satellitePosition = 0;
 	uint8_t Source;
 	newtpid = 0xC000;
-	int feindex = 0;
+	//int feindex = 0;
 	
 	while (search) 
 	{
@@ -255,16 +255,11 @@ void FindTransponder(xmlNodePtr search)
 		
 		// frontend index from sat pos
 		sat_iterator_t sit = satellitePositions.find(satellitePosition);
-
-		//if(sit != satellitePositions.end()) 
-		//{
-		//	feindex = sit->second.feindex;
-		//}
 		
-		printf("getservices:FindTransponder: going to parse dvb-%c provider %s position %d fe(%d)\n", xmlGetName(search)[0], xmlGetAttribute(search, "name"), satellitePosition, /*feindex*/ sit->second.feindex);
+		printf("getservices:FindTransponder: going to parse dvb-%c provider %s position %d fe(%d)\n", xmlGetName(search)[0], xmlGetAttribute(search, "name"), satellitePosition, sit->second.feindex);
 		
 		// parse TP
-		ParseTransponders(search->xmlChildrenNode, satellitePosition, Source, /*feindex*/ sit->second.feindex);
+		ParseTransponders(search->xmlChildrenNode, satellitePosition, Source, sit->second.feindex);
 
 		newfound++;
 		
@@ -573,8 +568,8 @@ int LoadServices(bool only_current)
 
 		while (search) 
 		{
-			//this is unpretty here sat config data are loaded from 
-			#if 0
+			// use this to reset sat channellist loaded by 2d frontend
+			// spark-triplex: S+S , T/C
 			// init sat position from services.xml
 			if (!(strcmp(xmlGetName(search), "sat"))) 
 			{
@@ -584,12 +579,11 @@ int LoadServices(bool only_current)
 
 				if(satellitePositions.find(position) == satellitePositions.end()) 
 				{
-					init_sat(position);
+					init_sat(position); // this will reset feindex to 
 					
 					satellitePositions[position].name = name;
 				}
 			}
-			#endif
 
 			// jump to the next node
 			search = search->xmlNextNode;

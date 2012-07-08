@@ -155,12 +155,10 @@ extern cDemux * pmtDemux;			/* defined in pmt.pp */
 scan_list_t scanProviders;
 
 // DVB
-#define DVBADAPTER_MAX	2
+#define DVBADAPTER_MAX	1
 #define FRONTEND_MAX	4
-#define DEMUX_MAX 	4
 int AdapterCount = 0;
 int FrontendCount = 0;
-int DemuxCount = 0;
 static bool twin_mode = false;
 
 /* variables for EN 50494 (a.k.a Unicable) */
@@ -683,6 +681,8 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0, bool 
 	
 	// check for twin
 	//NOTE: getservice::loadservices() set by twin feindex to the higher
+	// getservices reset feindex to 0, so do we need this???
+	#if 0
 	if(FrontendCount > 1)
 	{
 		for(int i = 1; i < FrontendCount; i++)
@@ -694,6 +694,7 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0, bool 
 			}
 		}
 	}
+	#endif
 
 	sig_delay = 2;
 	
@@ -781,12 +782,13 @@ int zapit_to_record(const t_channel_id channel_id)
 	// find channel
 	if((newchannel = find_channel_tozap(channel_id, false)) == NULL) 
 	{
-		printf("zapit_to_record: channel_id (%llx) fe(%d) not found\n", channel_id, channel->getFeIndex() );
+		printf("zapit_to_record: channel_id (%llx) fe(%d) not found\n", newchannel_id, newchannel->getFeIndex() );
 		return -1;
 	}
 	
 	// check for twin
-	/*if(FrontendCount > 1)
+	#if 1
+	if(FrontendCount > 1)
 	{
 		for(int i = 1; i < FrontendCount; i++)
 		{
@@ -794,12 +796,13 @@ int zapit_to_record(const t_channel_id channel_id)
 			if( CFrontend::getInstance(0)->getInfo()->type == CFrontend::getInstance(i)->getInfo()->type )
 			{
 				twin_mode = true;
-				channel->setFeIndex(i);
+				newchannel->setFeIndex(i);
 			}
 		}
-	}*/
+	}
+	#endif
 	
-	printf("%s: %s (%llx) fe(%d)\n", __FUNCTION__, newchannel->getName().c_str(), channel_id, channel->getFeIndex());
+	printf("%s: %s (%llx) fe(%d)\n", __FUNCTION__, newchannel->getName().c_str(), channel_id, newchannel->getFeIndex());
 	
 	// tune to rec channel
 	if(!tune_to_channel(newchannel, transponder_change))
@@ -3332,29 +3335,7 @@ bool getDVBCount()
 		printf("no frontend detected...\n");
 	#endif
 	//
-	
-	// demuxes count
-	#if 0
-	int demux_count = 0;
-	
-	for(i = 0; i < DVBADAPTER_MAX; i++)
-	{
-		for(j = 0; j < DEMUX_MAX; j++)
-		{
-			sprintf(buf, "/dev/dvb/adapter%d/demux%d", i, j);
-			fd = open(buf, O_RDWR );
-			if(fd >= 0)
-			{
-				demux_count++;
-			}
-			
-			close(fd);
-		}
-	}
-	
-	DemuxCount = demux_count;
-	#endif
-	
+		
 	return true;
 }
 
