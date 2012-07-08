@@ -1851,6 +1851,7 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 			refresh();
 		}
 	}
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)
 	else if (msg == CRCInput::RC_dvbsub) 
 	{
 		if((m_movieSelectionHandler == playing_info) && (NeutrinoMessages::mode_ts == CNeutrinoApp::getInstance()->getMode()))
@@ -1889,7 +1890,8 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 			}
           	}
 	}
-	else if (msg == CRCInput::RC_mode /*|| msg == CRCInput::RC_radio*/ ) 
+#endif	
+	else if ( msg == CRCInput::RC_mode ) 
 	{
           	if (m_movieSelectionHandler != NULL) 
 		{

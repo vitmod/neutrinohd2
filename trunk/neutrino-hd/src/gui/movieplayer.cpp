@@ -2001,7 +2001,11 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 			}
 		} 
-		else if ( msg == CRCInput::RC_2 || msg == CRCInput::RC_repeat) 
+		else if ( msg == CRCInput::RC_2
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)		  
+		  || msg == CRCInput::RC_repeat 
+#endif
+		)
 		{	// goto start
 			playback->SetPosition(startposition, true);
 			
@@ -2099,6 +2103,7 @@ void CMoviePlayerGui::PlayFile(void)
 			else if (playstate != CMoviePlayerGui::PAUSE)
 				playstate = CMoviePlayerGui::SOFTRESET;
 		} 
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)		
 		else if (msg == CRCInput::RC_slow) 
 		{
 			if (slow > 0)
@@ -2112,6 +2117,7 @@ void CMoviePlayerGui::PlayFile(void)
 			playstate = CMoviePlayerGui::SLOW;
 			update_lcd = true;
 		}
+#endif		
 		else if(msg == CRCInput::RC_red)
 		{
 			playback->SyncAV();
