@@ -782,7 +782,7 @@ int zapit_to_record(const t_channel_id channel_id)
 	// find channel
 	if((newchannel = find_channel_tozap(channel_id, false)) == NULL) 
 	{
-		printf("zapit_to_record: channel_id (%llx) fe(%d) not found\n", newchannel_id, newchannel->getFeIndex() );
+		printf("zapit_to_record: channel_id (%llx) fe(%d) not found\n", channel_id, newchannel->getFeIndex() );
 		return -1;
 	}
 	
