@@ -776,13 +776,13 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0, bool 
 
 int zapit_to_record(const t_channel_id channel_id)
 {
-	CZapitChannel * newchannel;
+	CZapitChannel * rec_channel;
 	bool transponder_change;
 
 	// find channel
-	if((newchannel = find_channel_tozap(channel_id, false)) == NULL) 
+	if((rec_channel = find_channel_tozap(channel_id, false)) == NULL) 
 	{
-		printf("zapit_to_record: channel_id (%llx) fe(%d) not found\n", channel_id, newchannel->getFeIndex() );
+		printf("zapit_to_record: channel_id (%llx) fe(%d) not found\n", channel_id, rec_channel->getFeIndex() );
 		return -1;
 	}
 	
@@ -796,24 +796,24 @@ int zapit_to_record(const t_channel_id channel_id)
 			if( CFrontend::getInstance(0)->getInfo()->type == CFrontend::getInstance(i)->getInfo()->type )
 			{
 				twin_mode = true;
-				newchannel->setFeIndex(i);
+				rec_channel->setFeIndex(i);
 			}
 		}
 	}
 	#endif
 	
-	printf("%s: %s (%llx) fe(%d)\n", __FUNCTION__, newchannel->getName().c_str(), channel_id, newchannel->getFeIndex());
+	printf("%s: %s (%llx) fe(%d)\n", __FUNCTION__, rec_channel->getName().c_str(), channel_id, rec_channel->getFeIndex());
 	
 	// tune to rec channel
-	if(!tune_to_channel(newchannel, transponder_change))
+	if(!tune_to_channel(rec_channel, transponder_change))
 		return -1;
 	
 	// parse pat_pmt
-	if(!parse_channel_pat_pmt(newchannel))
+	if(!parse_channel_pat_pmt(rec_channel))
 		return -1;
 	
 	//TEST: do we need to set ca_pmt_list_managment???
-	//newchannel->getCaPmt()->ca_pmt_list_management = transponder_change ? 0x03 : 0x04;
+	rec_channel->getCaPmt()->ca_pmt_list_management = transponder_change ? 0x03 : 0x04;
 
 	return 0;
 }
