@@ -293,7 +293,7 @@ class CRCInput
 			RC_favorites	= KEY_FAVORITES,	/* 0x16c */
 
 			RC_sat		= KEY_SAT,		/* 0x17d */
-			//RC_sat2		= KEY_SAT2,		/* 0x17e */
+			//RC_sat2	= KEY_SAT2,		/* 0x17e */
 			
 			RC_record	= KEY_RECORD,		/* 0xA7 */
 			RC_play		= KEY_PLAY,		/* 0xCF */
@@ -311,16 +311,20 @@ class CRCInput
 #else			
 			RC_mode		= KEY_MODE,		/* 0x175 */
 #endif			
-			RC_games	= KEY_GAMES,
+			//RC_games	= KEY_GAMES,
 
+#if defined (PLATFORM_GIGABLUE)
+			RC_next		= 0x197,
+			RC_prev		= 0x19C,
+#else
 			RC_next		= 0xFFFFFFF0,
 			RC_prev		= 0xFFFFFFF1,
+#endif			
 
 			/* added from cuberevo3000hd so fix it please */
-#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)			
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)
 			RC_music	= KEY_MUSIC,
-			RC_picture	= KEY_PICTURE,
-#endif			
+			RC_picture	= KEY_PICTURE,			
 			
 			RC_repeat	= KEY_REPEAT,
 			RC_slow		= KEY_SLOW,
@@ -331,18 +335,24 @@ class CRCInput
 			RC_pippos	= KEY_PIPPOS,
 			RC_pipswap	= KEY_PIPSWAP,
 			RC_pipsubch	= KEY_PIPSUBCH,
-			
-			RC_multifeed	= KEY_MULTIFEED,
 
 			RC_net		= KEY_NET,
 			
 			RC_bookmark	= KEY_BOOKMARK,
+#endif
+
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)
+			RC_multifeed	= KEY_MULTIFEED,
+#else
+			RC_multifeed	= 0x165,
+#endif
 			
 #if defined (PLATFORM_GIGABLUE)			
 			RC_f1		= 0x3B,
 			RC_f2		= 0x3C,
 			RC_f3		= 0x3D,
 			RC_f4		= 0x3E,
+			RC_aspect	= 0x40,
 #endif			
 			
 			RC_vfdup	= VFD_UP,

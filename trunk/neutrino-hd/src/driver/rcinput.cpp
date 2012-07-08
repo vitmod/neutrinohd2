@@ -1523,15 +1523,17 @@ const char * CRCInput::getSpecialKeyName(const unsigned int key)
 				
 		case RC_pause:
 			return "pause";
-				
+		
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)			
 		case RC_repeat:
 			return "repeat";
 				
 		case RC_slow:
 			return "slow";
+#endif			
 				
-		case RC_games:
-			return "games";
+		//case RC_games:
+		//	return "games";
 
 		case RC_next:
 			return "next";
@@ -1539,6 +1541,7 @@ const char * CRCInput::getSpecialKeyName(const unsigned int key)
 		case RC_prev:
 			return "prev";
 
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)
 		case RC_dvbsub:
 			return "dvbsub";
 				
@@ -1554,14 +1557,15 @@ const char * CRCInput::getSpecialKeyName(const unsigned int key)
 		case RC_pipsubch:
 			return "pipsubch";
 				
-		case RC_multifeed:
-			return "multifeed";
-				
 		case RC_bookmark:
 			return "bookmark";
 				
 		case RC_net:
 			return "inet";
+#endif
+
+		case RC_multifeed:
+			return "multifeed";
 		
 #if defined (PLATFORM_GIGABLUE)			
 		case RC_f1:
@@ -1575,6 +1579,9 @@ const char * CRCInput::getSpecialKeyName(const unsigned int key)
 			
 		case RC_f4:
 			return "f4";
+			
+		case RC_aspect:
+			return "aspect";
 #endif			
 				
 		/* VFD Tasten the generic values are from cuberevo so fix it */
