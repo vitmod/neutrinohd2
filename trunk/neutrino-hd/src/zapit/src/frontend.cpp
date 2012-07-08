@@ -739,7 +739,7 @@ void CFrontend::setFrontend(const struct dvb_frontend_parameters *feparams, bool
 	
 	if(info.type == FE_QPSK)
 	{
-		switch (fec_inner) 
+		switch ((int)fec_inner) 
 		{
 			case FEC_1_2:			  
 			case FEC_S2_QPSK_1_2:			  
@@ -880,18 +880,8 @@ void CFrontend::setFrontend(const struct dvb_frontend_parameters *feparams, bool
 		SETCMD(DTV_FREQUENCY, feparams->frequency);
 		SETCMD(DTV_MODULATION, modulation);
 		SETCMD(DTV_SYMBOL_RATE, feparams->u.qpsk.symbol_rate);
-		SETCMD(DTV_INNER_FEC, fec /*fec_inner*/);	//for decoded fec inner (don't work correctly)
+		SETCMD(DTV_INNER_FEC, fec );
 		SETCMD(DTV_INVERSION, feparams->inversion);
-		//SETCMD(DTV_ROLLOFF, rolloff);
-		
-		// unicable
-		#if 0
-		if (uni_scr >= 0)
-			SETCMD(DTV_FREQUENCY, sendEN50494TuningCommand(feparams->frequency,
-							currentToneMode == SEC_TONE_ON,
-							currentVoltage == SEC_VOLTAGE_18,
-							0) ); /* bank 0/1, like mini-diseqc a/b, not impl.*/
-		#endif
 	
 		//DVB-S2
 		if (delsys == SYS_DVBS2) 
@@ -915,7 +905,6 @@ void CFrontend::setFrontend(const struct dvb_frontend_parameters *feparams, bool
      		SETCMD(DTV_FREQUENCY, feparams->frequency);
      		SETCMD(DTV_INVERSION, feparams->inversion);
      		SETCMD(DTV_BANDWIDTH_HZ, feparams->u.ofdm.bandwidth);
-     		//SETCMD(DTV_CODE_RATE_HP, feparams->u.ofdm.code_rate_HP);
 		SETCMD(DTV_CODE_RATE_HP, fec_inner);
      		SETCMD(DTV_CODE_RATE_LP, feparams->u.ofdm.code_rate_LP);
 		SETCMD(DTV_MODULATION, modulation);
@@ -964,12 +953,6 @@ void CFrontend::setFrontend(const struct dvb_frontend_parameters * feparams, boo
 			printf("CFrontend::setFrontend: unknown frontend type, exiting\n");
 			break;
 	}
-	
-	// unicable
-	#if 0
-	if (uni_scr >= 0)
-		sendEN50494TuningCommand(feparams->frequency, currentToneMode == SEC_TONE_ON, currentVoltage == SEC_VOLTAGE_18, 0); /* bank 0/1, like mini-diseqc a/b, not impl.*/
-	#endif
 	
 	// getDelSys
 	char *f, *s, *m;
