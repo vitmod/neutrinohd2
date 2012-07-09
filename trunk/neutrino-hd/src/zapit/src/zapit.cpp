@@ -657,9 +657,10 @@ static void restore_channel_pids(CZapitChannel * channel)
 	
 	/* restore saved stereo / left / right channel mode */
 	//audioDecoder->setVolume(volume_left, volume_right);
+	
 	//TEST
-	//if(audioDecoder)
-		//audioDecoder->setChannel(audio_mode);
+	if(audioDecoder)
+		audioDecoder->setChannel(audio_mode);
 }
 
 // return 0, -1 fails
