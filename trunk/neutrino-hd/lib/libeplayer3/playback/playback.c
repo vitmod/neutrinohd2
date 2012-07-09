@@ -451,6 +451,9 @@ static int PlaybackContinue(Context_t  *context) {
 
         if(context->playback->SlowMotion)
             context->output->Command(context, OUTPUT_CLEAR, NULL);
+	
+	//FIXME: just for testing
+	PlaybackPause(context);
 
         context->output->Command(context, OUTPUT_CONTINUE, NULL);
 
