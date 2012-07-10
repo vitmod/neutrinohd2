@@ -70,6 +70,5 @@ if ENABLE_TEST_MENU
 libneutrino_gui2_a_SOURCES += test_menu.cpp
 endif
 
-
 libtimerlist_a_SOURCES = timerlist.cpp
 
