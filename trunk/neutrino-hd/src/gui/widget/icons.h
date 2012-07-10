@@ -97,6 +97,7 @@
 #define NEUTRINO_ICON_STREAMING			"streaming"
 #define NEUTRINO_ICON_TIMER			"timer"
 #define NEUTRINO_ICON_UPDATE			"softupdate"
+#define NEUTRINO_ICON_UPDATE_SMALL		"softupdate_small"
 #define NEUTRINO_ICON_UPNP			"upnp"
 #define NEUTRINO_ICON_VIDEO			"video"
 #define NEUTRINO_ICON_VOLUMEBODY		"volumebody"
