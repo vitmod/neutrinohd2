@@ -90,7 +90,7 @@ install_DATA += \
 
 # new
 install_DATA += \
-	picture.png plugin.png
+	picture.png plugin.png softupdate_small.png
 
 
 
