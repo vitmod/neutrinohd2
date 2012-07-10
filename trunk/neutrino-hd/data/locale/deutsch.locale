@@ -439,7 +439,7 @@ flashupdate.titlewriteflash Flash schreiben
 flashupdate.updatemode Updatemodus
 flashupdate.updatemode_internet Internet
 flashupdate.updatemode_manual manuell (ftp)
-flashupdate.url_file Image Update URL
+flashupdate.url_file Software Update URL
 flashupdate.versioncheck Versionsüberprüfung
 flashupdate.writeflash ganzes Flashimage einspielen
 flashupdate.writeflashmtd einzelne Partition einspielen
