@@ -444,6 +444,8 @@ flashupdate.writeflash Write whole image
 flashupdate.writeflashmtd Write one partition
 flashupdate.wrongbase Your Release cycle differs.\nTo continue?
 flashupdate.noversion by manual package update version checks are currently not supported.?\nAre you sure that you wish to install this package?
+flashupdate.downloadedimage flash downloaded image?
+flashupdate.installpackage install downloaded package?
 fontmenu.channellist Channellist
 fontmenu.epg EPG
 fontmenu.eventlist Eventlist
