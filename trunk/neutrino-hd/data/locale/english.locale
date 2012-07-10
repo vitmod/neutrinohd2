@@ -391,7 +391,7 @@ filesystem.is.utf8.option.utf8 UTF-8
 flashupdate.actionreadflash reading
 flashupdate.cantopenfile can't open file
 flashupdate.cantopenmtd can't open mtd-device
-flashupdate.checkupdate search for new version
+flashupdate.checkupdate search for software update
 flashupdate.currentreleasecycle Release cycle
 flashupdate.currentversion_sep Current version
 flashupdate.currentversiondate Date
@@ -404,13 +404,13 @@ flashupdate.expertfunctions Expert-functions
 flashupdate.fileis0bytes the filesize is 0 Bytes
 flashupdate.fileselector File-Selector
 flashupdate.flashreadyreboot The image was successfully flashed.\nThe box will be rebooted now.
-flashupdate.getinfofile getting versioninfo
-flashupdate.getinfofileerror can't get versioninfo
+flashupdate.getinfofile getting update list
+flashupdate.getinfofileerror can't get update list
 flashupdate.getupdatefile getting update
 flashupdate.getupdatefileerror can't get update
 flashupdate.globalprogress Global Progress:
 flashupdate.head Software Update
-flashupdate.md5check checking image
+flashupdate.md5check MD5 checking
 flashupdate.md5sumerror image has errors
 flashupdate.msgbox Found the following new file:\nDate: %s, %s\nBaseImage: %s\nType: %s\n\nDo you want to download and install this version now?
 flashupdate.msgbox_manual Found the following new image:\nDate: %s, %s\nBaseImage: %s\nImageType: %s\n\nDo you want to install this version now?
@@ -428,21 +428,22 @@ flashupdate.proxyusername_hint1 enter the proxyserver username
 flashupdate.proxyusername_hint2 a empty entry means no proxy-auth
 flashupdate.readflash Read whole image
 flashupdate.readflashmtd Read one partition
-flashupdate.ready ready
+flashupdate.ready Package successfully installed
 flashupdate.reallyflashmtd Do you really want to flash?\n\nIf a error occurs or the image is not\nvalid, the box will not boot after flashing.\n\nImagename: %s\nTarget: %s
 flashupdate.savesuccess The image was successfully saved \nunder %s.
-flashupdate.selectimage Available Images/Files
+flashupdate.selectimage Available Images/Packages
 flashupdate.squashfs.noversion SquashFS version checks are currently only supported when updating over the web.\nAre you sure that you wish to install this image?
 flashupdate.titlereadflash Reading Flash
 flashupdate.titlewriteflash Writing Flash
 flashupdate.updatemode Updatemode
 flashupdate.updatemode_internet internet
 flashupdate.updatemode_manual manual (ftp)
-flashupdate.url_file config file
+flashupdate.url_file Image Update URL
 flashupdate.versioncheck checking version
 flashupdate.writeflash Write whole image
 flashupdate.writeflashmtd Write one partition
 flashupdate.wrongbase Your Release cycle differs.\nTo continue?
+flashupdate.noversion by manual package update version checks are currently not supported.?\nAre you sure that you wish to install this package?
 fontmenu.channellist Channellist
 fontmenu.epg EPG
 fontmenu.eventlist Eventlist
@@ -1469,7 +1470,6 @@ helptext.miscsettingschannellist Here you can set up channel lists.
 helptext.miscsettingsepg Here you can set up EPG.
 helptext.miscsettingsfilebrowser Here you can set up the filebrowser.
 helptext.miscsettingszapitsetup Here you can set up the start-program and mode.
-
 
 
 

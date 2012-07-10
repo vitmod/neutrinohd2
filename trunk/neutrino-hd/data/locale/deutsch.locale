@@ -392,7 +392,7 @@ filesystem.is.utf8.option.utf8 UTF-8
 flashupdate.actionreadflash lese Flash
 flashupdate.cantopenfile kann Datei nicht öffnen
 flashupdate.cantopenmtd kann das MTD-Device nicht öffnen
-flashupdate.checkupdate nach neuer Version suchen
+flashupdate.checkupdate nach Software Update suchen
 flashupdate.currentreleasecycle Releasezyklus
 flashupdate.currentversion_sep Installierte Version
 flashupdate.currentversiondate Datum
@@ -405,13 +405,13 @@ flashupdate.expertfunctions Experten-Funktionen
 flashupdate.fileis0bytes die Dateigröße ist 0 Byte
 flashupdate.fileselector Datei-Auswahl
 flashupdate.flashreadyreboot Das Image wurde erfolgreich geflasht.\nIhre Box wird jetzt neu gestartet.
-flashupdate.getinfofile lade Versionsinfo
-flashupdate.getinfofileerror kann Info nicht laden
+flashupdate.getinfofile lade Update Liste
+flashupdate.getinfofileerror kann Update Liste nicht laden
 flashupdate.getupdatefile lade Update
 flashupdate.getupdatefileerror kann Update nicht laden
 flashupdate.globalprogress Gesamtstatus:
 flashupdate.head Aktualisierung
-flashupdate.md5check Imageprüfung
+flashupdate.md5check MD5 prüfung
 flashupdate.md5sumerror Das Image ist fehlerhaft
 flashupdate.msgbox Es wurde folgendes neues file gefunden:\nDatum: %s, %s\nBasisImage: %s\nTyp: %s\n\nWollen Sie diese Version jetzt herunterladen\nund installieren?
 flashupdate.msgbox_manual Es wurde ein neues Image gefunden:\nDatum: %s, %s\nBasisImage: %s\nImageTyp: %s\n\nWollen Sie diese Version jetzt installieren?
@@ -429,21 +429,22 @@ flashupdate.proxyusername_hint1 Geben Sie den Proxy-Benutzernamen ein
 flashupdate.proxyusername_hint2 Ein leerer Eintrag bedeutet keine Authentifizierung
 flashupdate.readflash ganzes Flashimage auslesen
 flashupdate.readflashmtd einzelne Partition auslesen
-flashupdate.ready fertig
+flashupdate.ready Package erfolgreich installiert
 flashupdate.reallyflashmtd Wollen Sie den Flashvorgang wirklich durchführen?\n\nFalls ein Fehler auftritt oder das Image nicht\nfunktionfähig ist, wird Ihre box nicht mehr booten.\n\nImagename: %s\nZiel: %s
 flashupdate.savesuccess Das Image wurde erfolgreich unter dem\nDateinamen %s gespeichert.
-flashupdate.selectimage Verfügbare Images/Files
+flashupdate.selectimage Verfügbare Images/Packages
 flashupdate.squashfs.noversion Bei SquashFS Updates werden Versionsüberprüfungen derzeit nur bei Web-Updates unterstützt.\nWollen Sie das ausgewählt Image wirklich installieren?
 flashupdate.titlereadflash Flash auslesen
 flashupdate.titlewriteflash Flash schreiben
 flashupdate.updatemode Updatemodus
 flashupdate.updatemode_internet Internet
 flashupdate.updatemode_manual manuell (ftp)
-flashupdate.url_file Konfigfile
+flashupdate.url_file Image Update URL
 flashupdate.versioncheck Versionsüberprüfung
 flashupdate.writeflash ganzes Flashimage einspielen
 flashupdate.writeflashmtd einzelne Partition einspielen
 flashupdate.wrongbase Abweichende release Info\nFortfahren?
+flashupdate.noversion Bei manual Package Updates werden Versionüberprüfungen nicht unterstützt.\nWollen Sie das ausgewählt Package wirklich installieren?
 fontmenu.channellist Kanalliste
 fontmenu.epg EPG
 fontmenu.eventlist Eventlist
@@ -1471,4 +1472,5 @@ helptext.miscsettingschannellist Hier können Sie die Kanal listen einstellen.
 helptext.miscsettingsepg Hier können Sie EPG einstellen.
 helptext.miscsettingsfilebrowser Hier können Sie die Filebrowser einstellen
 helptext.miscsettingszapitsetup Hier können Sie das Start Program und mode fest einstellen.
+
 
