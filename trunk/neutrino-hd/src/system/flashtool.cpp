@@ -425,6 +425,12 @@ const char * const CFlashVersionInfo::getType(void) const
 			return "Beta";
 		case 'A':
 			return "Addon";
+		case 'S':
+			return "Settings";
+		case 'P':
+			return "Plugins";
+		case 'G':
+			return "Games";
 		default:
 			return "Unknown";
 	}
