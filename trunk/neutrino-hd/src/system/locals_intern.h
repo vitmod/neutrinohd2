@@ -401,6 +401,8 @@ const char *locale_real_names[] = {
 	"flashupdate.writeflashmtd",
 	"flashupdate.wrongbase",
 	"flashupdate.noversion",
+	"flashupdate.downloadedimage",
+	"flashupdate.installpackage",
 	"fontmenu.channellist",
 	"fontmenu.epg",
 	"fontmenu.eventlist",
