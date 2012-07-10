@@ -67,7 +67,6 @@ class CFlashTool
 		void reboot();
 };
 
-
 class CFlashVersionInfo
 {
 	private:
@@ -86,7 +85,6 @@ class CFlashVersionInfo
 		const char * const getReleaseCycle(void) const;
 		const char * const getType(void) const;
 };
-
 
 class CMTDInfo
 {
@@ -126,6 +124,5 @@ class CMTDInfo
 		int findMTDNumber(const std::string & filename);
 
 };
-
 
 #endif

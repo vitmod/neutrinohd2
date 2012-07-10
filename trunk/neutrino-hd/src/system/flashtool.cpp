@@ -231,8 +231,7 @@ bool CFlashTool::program( const std::string & filename, int globalProgressEndEra
 		fsize -= block;
 		char prog = char(100-(100./filesize*fsize));
 
-		printf( "\rFlashing %s to %s %2u %% complete.\n",
-		                 filename.c_str(), mtdDevice.c_str(), prog );
+		printf( "\rFlashing %s to %s %2u %% complete.\n", filename.c_str(), mtdDevice.c_str(), prog );
 
 		if(statusViewer)
 		{
@@ -330,14 +329,16 @@ bool CFlashTool::check_md5( const std::string & filename, const std::string & sm
 	if(strlen(ptr) < 32)
 		return false;
 	
-	//printf("[flashtool] check file %s md5 %s\n", filename.c_str(), ptr);
+	printf("CFlashTool::check_md5: check file %s md5 %s\n", filename.c_str(), ptr);
 
 	for(int i = 0; i < 16; i++)
 		omd5[i] = FROMHEX(ptr[i*2])*16 + FROMHEX(ptr[i*2+1]);
 
 	md5_file(filename.c_str(), 1, md5);
+	
 	if(memcmp(md5, omd5, 16))
 		return false;
+	
 	return true;
 }
 
@@ -422,14 +423,8 @@ const char * const CFlashVersionInfo::getType(void) const
 			return "Snapshot";
 		case '2':
 			return "Beta";
-		case 'L':
-			return "Locale";
-		case 'S':
-			return "Settings";
 		case 'A':
 			return "Addon";
-		case 'T':
-			return "Text";
 		default:
 			return "Unknown";
 	}
