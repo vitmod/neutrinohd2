@@ -445,6 +445,8 @@ flashupdate.writeflash ganzes Flashimage einspielen
 flashupdate.writeflashmtd einzelne Partition einspielen
 flashupdate.wrongbase Abweichende release Info\nFortfahren?
 flashupdate.noversion Bei manual Package Updates werden Versionüberprüfungen nicht unterstützt.\nWollen Sie das ausgewählt Package wirklich installieren?
+flashupdate.downloadedimage dieses Image flashen?
+flashupdate.installpackage install dies downloaded Package?
 fontmenu.channellist Kanalliste
 fontmenu.epg EPG
 fontmenu.eventlist Eventlist
