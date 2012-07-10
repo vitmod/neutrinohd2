@@ -381,7 +381,7 @@ int CFlashUpdate::exec(CMenuTarget* parent, const std::string &)
 	}
 
 #ifdef VFD_UPDATE
-	CVFD::getInstance()->showProgressBar2(0,"checking",0,"Update Neutrino");
+	CVFD::getInstance()->showProgressBar2(0, "checking", 0, "Update Neutrino");
 	CVFD::getInstance()->setMode(CLCD::MODE_PROGRESSBAR2);	
 #endif // VFD_UPDATE
 
@@ -426,7 +426,8 @@ int CFlashUpdate::exec(CMenuTarget* parent, const std::string &)
 	if(g_settings.softupdate_mode == 1) 
 	{ 
 		//internet-update
-		if ( ShowMsgUTF(LOCALE_MESSAGEBOX_INFO, (fileType < '3') ? "Flash downloaded image ?" : "Install downloaded pack ?", CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) != CMessageBox::mbrYes) // UTF-8
+		//if ( ShowMsgUTF(LOCALE_MESSAGEBOX_INFO, (fileType < '3') ? "Flash downloaded image ?" : "Install downloaded pack ?", CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) != CMessageBox::mbrYes) // UTF-8
+		if ( ShowMsgUTF(LOCALE_MESSAGEBOX_INFO, g_Locale->getText( (fileType < '3') ? LOCALE_FLASHUPDATE_DOWNLOADEDIMAGE : LOCALE_FLASHUPDATE_INSTALLPACKAGE ), CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) != CMessageBox::mbrYes) // UTF-8
 		{
 			hide();
 			return menu_return::RETURN_REPAINT;
