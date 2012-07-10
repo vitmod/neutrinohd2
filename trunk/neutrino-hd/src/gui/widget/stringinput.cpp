@@ -111,7 +111,9 @@ CStringInput::~CStringInput()
 	{
 		delete[] value;
 	}
-	if(head) {
+	
+	if(head) 
+	{
 		free(head);
 	}
 }
@@ -518,7 +520,6 @@ void CStringInput::paint()
 
 	for (int count=0;count<size;count++)
 		paintChar(count);
-
 }
 
 void CStringInput::paintChar(int pos, const char c)
@@ -558,6 +559,7 @@ void CStringInput::paintChar(int pos)
 		paintChar(pos, value[pos]);
 }
 
+// CStringInputSMS
 CStringInputSMS::CStringInputSMS(const neutrino_locale_t Name, std::string* Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver* Observ, const char * const Icon)
 		: CStringInput(Name, Value, Size, Hint_1, Hint_2, Valid_Chars, Observ, Icon)
 {
@@ -566,7 +568,7 @@ CStringInputSMS::CStringInputSMS(const neutrino_locale_t Name, std::string* Valu
 
 CStringInputSMS::CStringInputSMS(const neutrino_locale_t Name, char* Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver* Observ, const char * const Icon)
    		: CStringInput(Name, Value, Size, Hint_1, Hint_2, Valid_Chars, Observ, Icon)
-   {
+{
 	initSMS(Valid_Chars);
 }
 
@@ -708,9 +710,12 @@ void CStringInputSMS::paint()
 {
 	CStringInput::paint();
 
-	frameBuffer->paintIcon(NEUTRINO_ICON_NUMERIC_PAD, x + 20 + 140, y+ hheight+ mheight + iheight*3 + 30, COL_MENUCONTENT);
+	//frameBuffer->paintIcon(NEUTRINO_ICON_NUMERIC_PAD, x + 20 + 140, y + hheight + mheight + iheight*3 + 30, COL_MENUCONTENT);
 	//test
-	//frameBuffer->paintIconRaw(NEUTRINO_ICON_NUMERIC_PAD, x+20+140, y+ hheight+ mheight+ iheight* 3+ 30, COL_MENUCONTENT);
+	int icol_w = 28;
+	int icol_h = 16;
+	frameBuffer->getIconSize(NEUTRINO_ICON_NUMERIC_PAD, &icol_w, &icol_h);
+	frameBuffer->paintIcon(NEUTRINO_ICON_NUMERIC_PAD, x + (width - icol_w)/2, y+ hheight+ mheight+ iheight* 3 + 20, COL_MENUCONTENT);
 
 	frameBuffer->paintBoxRel(x,y+height-25, width,25, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 	frameBuffer->paintHLine(x, x+width,  y+height-25, COL_INFOBAR_SHADOW_PLUS_0);
@@ -763,8 +768,7 @@ int CPINInput::exec( CMenuTarget* parent, const std::string & )
 			if ( old_selected == ( size- 1 ) )
 				loop=false;
 		}
-		else if ( (msg==CRCInput::RC_up) ||
-				  (msg==CRCInput::RC_down) )
+		else if ( (msg==CRCInput::RC_up) || (msg==CRCInput::RC_down) )
 		{
 			g_RCInput->postMsg( msg, data );
 			res = menu_return::RETURN_EXIT;
