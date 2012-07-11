@@ -436,6 +436,7 @@ const char * const CFlashVersionInfo::getType(void) const
 	}
 }
 
+// MTDInfo
 CMTDInfo::CMTDInfo()
 {
 	getPartitionInfo();
