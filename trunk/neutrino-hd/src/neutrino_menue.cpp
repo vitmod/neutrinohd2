@@ -807,101 +807,101 @@ void CNeutrinoApp::InitServiceSettings(CMenuWidget &service, CMenuWidget & Tuner
 	service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_SERVICEMENU_RESTART, true, "", this, "restart", CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, "shutdown", LOCALE_HELPTEXT_SOFTRESTART ));
 
 	// softupdate
-	//if(softupdate)
-	{
-		dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitServiceSettings. init soft-update-stuff\n");
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitServiceSettings. init soft-update-stuff\n");
 		
-		CMenuWidget * updateSettings = new CMenuWidget(LOCALE_SERVICEMENU_UPDATE, NEUTRINO_ICON_UPDATE, 550);
+	CMenuWidget * updateSettings = new CMenuWidget(LOCALE_SERVICEMENU_UPDATE, NEUTRINO_ICON_UPDATE, 550);
 		
-		// intros
-		//updateSettings->addItem(GenericMenuSeparator);
-		updateSettings->addItem(GenericMenuBack);
-		updateSettings->addItem(GenericMenuSeparatorLine);
+	// intros
+	//updateSettings->addItem(GenericMenuSeparator);
+	updateSettings->addItem(GenericMenuBack);
+	updateSettings->addItem(GenericMenuSeparatorLine);
+	
+	// save settings
+	updateSettings->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	updateSettings->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 
-		// expert-function for mtd read/write
-		CMenuWidget * mtdexpert = new CMenuWidget(LOCALE_FLASHUPDATE_EXPERTFUNCTIONS, NEUTRINO_ICON_UPDATE);
+	// expert-function for mtd read/write
+	CMenuWidget * mtdexpert = new CMenuWidget(LOCALE_FLASHUPDATE_EXPERTFUNCTIONS, NEUTRINO_ICON_UPDATE);
 		
-		// intros
-		//mtdexpert->addItem(GenericMenuSeparator);
-		mtdexpert->addItem(GenericMenuBack);
-		mtdexpert->addItem(GenericMenuSeparatorLine);
+	// intros
+	//mtdexpert->addItem(GenericMenuSeparator);
+	mtdexpert->addItem(GenericMenuBack);
+	mtdexpert->addItem(GenericMenuSeparatorLine);
 		
-		CFlashExpert* fe = new CFlashExpert();
+	CFlashExpert* fe = new CFlashExpert();
 
-		// read mtd 
-		mtdexpert->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_READFLASHMTD , true, NULL, fe, "readflashmtd" ));
+	// read mtd 
+	mtdexpert->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_READFLASHMTD , true, NULL, fe, "readflashmtd" ));
 
-		// write mtd
-		//if(softupdate)
-		mtdexpert->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_WRITEFLASHMTD, true, NULL, fe, "writeflashmtd"));
+	// write mtd
+	mtdexpert->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_WRITEFLASHMTD, true, NULL, fe, "writeflashmtd"));
 
-		// experten function
-		//TODO: allow update only when the rootfs is jffs2/squashfs
-		updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_EXPERTFUNCTIONS, true, NULL, mtdexpert, "", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	// experten function
+	//FIXME: allow update only when the rootfs is jffs2/squashfs
+	updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_EXPERTFUNCTIONS, true, NULL, mtdexpert, ""/*, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED*/ ));
 
-		updateSettings->addItem(GenericMenuSeparatorLine);
+	updateSettings->addItem(GenericMenuSeparatorLine);
 		
-		// update mode
-		CMenuOptionChooser *oj = new CMenuOptionChooser(LOCALE_FLASHUPDATE_UPDATEMODE, &g_settings.softupdate_mode, FLASHUPDATE_UPDATEMODE_OPTIONS, FLASHUPDATE_UPDATEMODE_OPTION_COUNT, true, NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN);
-		updateSettings->addItem( oj );
+	// update mode
+	CMenuOptionChooser *oj = new CMenuOptionChooser(LOCALE_FLASHUPDATE_UPDATEMODE, &g_settings.softupdate_mode, FLASHUPDATE_UPDATEMODE_OPTIONS, FLASHUPDATE_UPDATEMODE_OPTION_COUNT, true, NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN);
+	updateSettings->addItem( oj );
 
-		// update dir
-		updateSettings->addItem( new CMenuForwarder(LOCALE_EXTRA_UPDATE_DIR, true, g_settings.update_dir , this, "update_dir", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW) );
+	// update dir
+	updateSettings->addItem( new CMenuForwarder(LOCALE_EXTRA_UPDATE_DIR, true, g_settings.update_dir , this, "update_dir", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW) );
 		
-		// image update url
-		CStringInputSMS * updateSettings_url_file = new CStringInputSMS(LOCALE_FLASHUPDATE_URL_FILE, g_settings.softupdate_url_file, 30, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE, "abcdefghijklmnopqrstuvwxyz0123456789!""§$%&/()=?-. ");
-		updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_URL_FILE, true, g_settings.softupdate_url_file, updateSettings_url_file));
+	// image update url
+	CStringInputSMS * updateSettings_url_file = new CStringInputSMS(LOCALE_FLASHUPDATE_URL_FILE, g_settings.softupdate_url_file, 30, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE, "abcdefghijklmnopqrstuvwxyz0123456789!""§$%&/()=?-. ");
+	updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_URL_FILE, true, g_settings.softupdate_url_file, updateSettings_url_file));
 
-		// show current version
-		updateSettings->addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_FLASHUPDATE_CURRENTVERSION_SEP));
+	// show current version
+	updateSettings->addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_FLASHUPDATE_CURRENTVERSION_SEP));
 
-		// get current version SBBB YYYY MM TT HH MM -- formatsting
-		CConfigFile configfile('\t');
+	// get current version SBBB YYYY MM TT HH MM -- formatsting
+	CConfigFile configfile('\t');
 
-		const char * versionString = (configfile.loadConfig("/.version")) ? (configfile.getString( "version", "????????????????????").c_str()) : "1200201205091849";
+	const char * versionString = (configfile.loadConfig("/.version")) ? (configfile.getString( "version", "????????????????????").c_str()) : "1200201205091849";
 
-		dprintf(DEBUG_INFO, "CNeutrinoApp::InitServiceSettings: current flash-version: %s\n", versionString);
+	dprintf(DEBUG_INFO, "CNeutrinoApp::InitServiceSettings: current flash-version: %s\n", versionString);
 
-		static CFlashVersionInfo versionInfo(versionString);
+	static CFlashVersionInfo versionInfo(versionString);
 
-		// release cycle
-		updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTRELEASECYCLE, false, versionInfo.getReleaseCycle() ));
+	// release cycle
+	updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTRELEASECYCLE, false, versionInfo.getReleaseCycle() ));
 		
-		// date
-		updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTVERSIONDATE, false, versionInfo.getDate() ));
+	// date
+	updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTVERSIONDATE, false, versionInfo.getDate() ));
 		
-		// time
-		updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTVERSIONTIME, false, versionInfo.getTime()));
+	// time
+	updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTVERSIONTIME, false, versionInfo.getTime()));
 		
-		// type
-		/* versionInfo.getType() returns const char * which is never deallocated */
-		updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTVERSIONSNAPSHOT, false, versionInfo.getType()));
+	// type
+	/* versionInfo.getType() returns const char * which is never deallocated */
+	updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CURRENTVERSIONSNAPSHOT, false, versionInfo.getType()));
 
-		updateSettings->addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_FLASHUPDATE_PROXYSERVER_SEP));
+	updateSettings->addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_FLASHUPDATE_PROXYSERVER_SEP));
 
-		// proxy server
-		CStringInputSMS * updateSettings_proxy = new CStringInputSMS(LOCALE_FLASHUPDATE_PROXYSERVER, g_settings.softupdate_proxyserver, 23, LOCALE_FLASHUPDATE_PROXYSERVER_HINT1, LOCALE_FLASHUPDATE_PROXYSERVER_HINT2, "abcdefghijklmnopqrstuvwxyz0123456789-.: ");
-		updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_PROXYSERVER, true, g_settings.softupdate_proxyserver, updateSettings_proxy));
+	// proxy server
+	CStringInputSMS * updateSettings_proxy = new CStringInputSMS(LOCALE_FLASHUPDATE_PROXYSERVER, g_settings.softupdate_proxyserver, 23, LOCALE_FLASHUPDATE_PROXYSERVER_HINT1, LOCALE_FLASHUPDATE_PROXYSERVER_HINT2, "abcdefghijklmnopqrstuvwxyz0123456789-.: ");
+	updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_PROXYSERVER, true, g_settings.softupdate_proxyserver, updateSettings_proxy));
 
-		// proxy username
-		CStringInputSMS * updateSettings_proxyuser = new CStringInputSMS(LOCALE_FLASHUPDATE_PROXYUSERNAME, g_settings.softupdate_proxyusername, 23, LOCALE_FLASHUPDATE_PROXYUSERNAME_HINT1, LOCALE_FLASHUPDATE_PROXYUSERNAME_HINT2, "abcdefghijklmnopqrstuvwxyz0123456789!""§$%&/()=?-. ");
-		updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_PROXYUSERNAME, true, g_settings.softupdate_proxyusername, updateSettings_proxyuser));
+	// proxy username
+	CStringInputSMS * updateSettings_proxyuser = new CStringInputSMS(LOCALE_FLASHUPDATE_PROXYUSERNAME, g_settings.softupdate_proxyusername, 23, LOCALE_FLASHUPDATE_PROXYUSERNAME_HINT1, LOCALE_FLASHUPDATE_PROXYUSERNAME_HINT2, "abcdefghijklmnopqrstuvwxyz0123456789!""§$%&/()=?-. ");
+	updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_PROXYUSERNAME, true, g_settings.softupdate_proxyusername, updateSettings_proxyuser));
 
-		// proxy pwd
-		CStringInputSMS * updateSettings_proxypass = new CStringInputSMS(LOCALE_FLASHUPDATE_PROXYPASSWORD, g_settings.softupdate_proxypassword, 20, LOCALE_FLASHUPDATE_PROXYPASSWORD_HINT1, LOCALE_FLASHUPDATE_PROXYPASSWORD_HINT2, "abcdefghijklmnopqrstuvwxyz0123456789!""§$%&/()=?-. ");
-		updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_PROXYPASSWORD, true, g_settings.softupdate_proxypassword, updateSettings_proxypass));
+	// proxy pwd
+	CStringInputSMS * updateSettings_proxypass = new CStringInputSMS(LOCALE_FLASHUPDATE_PROXYPASSWORD, g_settings.softupdate_proxypassword, 20, LOCALE_FLASHUPDATE_PROXYPASSWORD_HINT1, LOCALE_FLASHUPDATE_PROXYPASSWORD_HINT2, "abcdefghijklmnopqrstuvwxyz0123456789!""§$%&/()=?-. ");
+	updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_PROXYPASSWORD, true, g_settings.softupdate_proxypassword, updateSettings_proxypass));
 
-		// check update
-		//TODO: allow update only when the rootfs is jffs2/squashfs
-		updateSettings->addItem(GenericMenuSeparatorLine);
-		updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CHECKUPDATE, true, NULL, new CFlashUpdate(), "", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
+	// check update
+	//FIXME: allow update only when the rootfs is jffs2/squashfs
+	updateSettings->addItem(GenericMenuSeparatorLine);
+	updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_CHECKUPDATE, true, NULL, new CFlashUpdate(), "", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
 
-		// software update
-		service.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
+	// software update
+	service.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
 		
-		// updatesettings
-		service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_SERVICEMENU_UPDATE, true, "", updateSettings, NULL, CRCInput::convertDigitToKey(shortcutService++), NULL, "service", LOCALE_HELPTEXT_SOFTWAREUPDATE ));
-	}
+	// updatesettings
+	service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_SERVICEMENU_UPDATE, true, "", updateSettings, NULL, CRCInput::convertDigitToKey(shortcutService++), NULL, "service", LOCALE_HELPTEXT_SOFTWAREUPDATE ));
 }
 
 // Init AudioPlayer Settings

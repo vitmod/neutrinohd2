@@ -115,7 +115,6 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 
 		int				mode;
 		int				lastMode;
-		bool				softupdate;
 		
 		CTimerd::RecordingInfo * nextRecordingInfo;
 

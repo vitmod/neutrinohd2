@@ -166,7 +166,7 @@ CHintBox * reloadhintBox = 0;
 
 extern bool has_hdd;
 
-int allow_flash = 1;
+//int allow_flash = 1;
 extern int was_record;
 
 //zapit config
@@ -1822,18 +1822,10 @@ void CNeutrinoApp::CmdParser(int argc, char **argv)
 	
         global_argv[argc] = NULL;
 
-	softupdate = false;
+	//softupdate = false;
 
 	for(int x=1; x<argc; x++) 
 	{
-		if ((!strcmp(argv[x], "-u")) || (!strcmp(argv[x], "--enable-update"))) 
-		{
-			dprintf(DEBUG_NORMAL, "Software update enabled\n");
-			softupdate = true;
-			allow_flash = 1;
-		}
-		else 
-		
 		if (((!strcmp(argv[x], "-v")) || (!strcmp(argv[x], "--verbose"))) && (x + 1 < argc)) 
 		{
 			int dl = atoi(argv[x + 1]);
@@ -1855,7 +1847,7 @@ void CNeutrinoApp::CmdParser(int argc, char **argv)
 		} 
 		else 
 		{
-			dprintf(DEBUG_NORMAL, "Usage: neutrino [-u | --enable-update] [-sd] [-zd] [-v | --verbose 0..3]\n");
+			dprintf(DEBUG_NORMAL, "Usage: neutrino [-sd] [-zd] [-v | --verbose 0..3]\n");
 			exit(1);
 		}
 	}
