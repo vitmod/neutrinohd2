@@ -413,7 +413,7 @@ flashupdate.globalprogress Gesamtstatus:
 flashupdate.head Aktualisierung
 flashupdate.md5check MD5 prüfung
 flashupdate.md5sumerror Das Image ist fehlerhaft
-flashupdate.msgbox Es wurde folgendes neues file gefunden:\nDatum: %s, %s\nBasisImage: %s\nTyp: %s\n\nWollen Sie diese Version jetzt herunterladen\nund installieren?
+flashupdate.msgbox Es wurde folgendes neues Package gefunden:\nPackage: %s\nDatum: %s, %s\nBasisImage: %s\nTyp: %s\n\nWollen Sie diese Version jetzt herunterladen\nund installieren?
 flashupdate.msgbox_manual Es wurde ein neues Image gefunden:\nDatum: %s, %s\nBasisImage: %s\nImageTyp: %s\n\nWollen Sie diese Version jetzt installieren?
 flashupdate.mtdselector Partitions-Auswahl
 flashupdate.programmingflash programmiere Flash
@@ -446,7 +446,7 @@ flashupdate.writeflashmtd einzelne Partition einspielen
 flashupdate.wrongbase Abweichende release Info\nFortfahren?
 flashupdate.noversion Bei manual Package Updates werden Versionüberprüfungen nicht unterstützt.\nWollen Sie das ausgewählt Package wirklich installieren?
 flashupdate.downloadedimage dieses Image flashen?
-flashupdate.installpackage install dies downloaded Package?
+flashupdate.installpackage wollen Sie dieses Package installieren?
 fontmenu.channellist Kanalliste
 fontmenu.epg EPG
 fontmenu.eventlist Eventlist

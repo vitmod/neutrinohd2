@@ -412,7 +412,7 @@ flashupdate.globalprogress Global Progress:
 flashupdate.head Software Update
 flashupdate.md5check MD5 checking
 flashupdate.md5sumerror image has errors
-flashupdate.msgbox Found the following new file:\nDate: %s, %s\nBaseImage: %s\nType: %s\n\nDo you want to download and install this version now?
+flashupdate.msgbox Found the following new package:\nPackage: %s\nDate: %s, %s\nBaseImage: %s\nType: %s\n\nDo you want to download and install this version now?
 flashupdate.msgbox_manual Found the following new image:\nDate: %s, %s\nBaseImage: %s\nImageType: %s\n\nDo you want to install this version now?
 flashupdate.mtdselector Partition-Selector
 flashupdate.programmingflash programming flash
@@ -445,7 +445,7 @@ flashupdate.writeflashmtd Write one partition
 flashupdate.wrongbase Your Release cycle differs.\nTo continue?
 flashupdate.noversion by manual package update version checks are currently not supported.?\nAre you sure that you wish to install this package?
 flashupdate.downloadedimage flash downloaded image?
-flashupdate.installpackage install downloaded package?
+flashupdate.installpackage do you want to install this package?
 fontmenu.channellist Channellist
 fontmenu.epg EPG
 fontmenu.eventlist Eventlist
