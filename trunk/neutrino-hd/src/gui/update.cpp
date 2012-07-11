@@ -66,7 +66,6 @@
 
 #include <fstream>
 
-//extern int allow_flash;
 
 #define gTmpPath "/var/tmp/"
 #define gUserAgent "neutrino/softupdater 1.0"
@@ -182,7 +181,7 @@ bool CFlashUpdate::selectHttpImage(void)
 		if (httpTool.downloadFile(url, gTmpPath LIST_OF_UPDATES_LOCAL_FILENAME, 20))
 		{
 			std::ifstream in(gTmpPath LIST_OF_UPDATES_LOCAL_FILENAME);
-			bool enabled;
+
 			while (in >> url >> version >> md5 >> std::ws)
 			{
 				urls.push_back(url);
@@ -191,16 +190,13 @@ bool CFlashUpdate::selectHttpImage(void)
 				names.push_back(name);
 				//std::getline(in, md5);
 				md5s.push_back(md5);
-				enabled = true;
+
 #ifdef DEBUG
 				printf("[update] url %s version %s md5 %s name %s\n", url.c_str(), version.c_str(), md5.c_str(), name.c_str());
 #endif
 
 				CFlashVersionInfo versionInfo(versions[i]);
 
-				if(/* !allow_flash &&*/ (versionInfo.snapshot < '3') )
-					enabled = false;
-				
 				fileTypes[i] = versionInfo.snapshot;
 				std::string description = versionInfo.getType();
 				description += ' ';
@@ -210,7 +206,7 @@ bool CFlashUpdate::selectHttpImage(void)
 				
 				descriptions.push_back(description); /* workaround since CMenuForwarder does not store the Option String itself */
 
-				SelectionWidget.addItem(new CMenuForwarderNonLocalized(names[i].c_str(), enabled, descriptions[i].c_str(), new CUpdateMenuTarget(i, &selected), NULL, NULL, NEUTRINO_ICON_UPDATE_SMALL ));
+				SelectionWidget.addItem(new CMenuForwarderNonLocalized(names[i].c_str(), true, descriptions[i].c_str(), new CUpdateMenuTarget(i, &selected), NULL, NULL, NEUTRINO_ICON_UPDATE_SMALL ));
 				i++;
 			}
 		}
@@ -284,12 +280,13 @@ bool CFlashUpdate::checkVersion4Update()
 		msg_body = LOCALE_FLASHUPDATE_MSGBOX;
 #ifdef SQUASHFS
 		versionInfo = new CFlashVersionInfo(newVersion);//Memory leak: versionInfo
-		sprintf(msg, g_Locale->getText(msg_body), versionInfo->getDate(), versionInfo->getTime(), versionInfo->getReleaseCycle(), versionInfo->getType());
+		sprintf(msg, g_Locale->getText(msg_body), filename.c_str(), versionInfo->getDate(), versionInfo->getTime(), versionInfo->getReleaseCycle(), versionInfo->getType());
 
+		// flash
 		if(fileType < '3') 
 		{
 			if ((strncmp(RELEASE_CYCLE, versionInfo->getReleaseCycle(), 2) != 0) &&
-		    (ShowMsgUTF(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_FLASHUPDATE_WRONGBASE), CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) != CMessageBox::mbrYes))
+			(ShowMsgUTF(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_FLASHUPDATE_WRONGBASE), CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) != CMessageBox::mbrYes))
 			{
 				delete versionInfo;
 				//ShowHintUTF(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_FLASHUPDATE_WRONGBASE)); // UTF-8
@@ -307,7 +304,7 @@ bool CFlashUpdate::checkVersion4Update()
 		delete versionInfo;
 #endif
 	}
-	else
+	else // manual update (ftp)
 	{
 		CFileBrowser UpdatesBrowser;
 
@@ -346,13 +343,9 @@ bool CFlashUpdate::checkVersion4Update()
 		if(ptr) 
 		{
 			ptr++;
-			//if(!strcmp(ptr, "bin")) 
+
 			if(!strcmp(ptr, "bin")) 
 				fileType = 'A';
-			//else if(!strcmp(ptr, "txt")) 
-			//	fileType = 'T';
-			//else if(!allow_flash) 
-			//	return false;
 			else 
 				fileType = 0;
 #ifdef DEBUG

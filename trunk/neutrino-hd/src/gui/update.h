@@ -41,6 +41,7 @@
 
 #include <string>
 
+// CFlashUpdate
 class CFlashUpdate : public CProgressWindow
 {
 	private:
@@ -61,6 +62,7 @@ class CFlashUpdate : public CProgressWindow
 
 };
 
+// CFlashExppert
 class CFlashExpert : public CProgressWindow
 {
 	private:
@@ -77,6 +79,5 @@ class CFlashExpert : public CProgressWindow
 		int exec(CMenuTarget* parent, const std::string & actionKey);
 
 };
-
 
 #endif
