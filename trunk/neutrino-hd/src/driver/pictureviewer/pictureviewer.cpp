@@ -520,27 +520,7 @@ void CPictureViewer::Cleanup ()
 	}
 }
 
-#define LOGO_DIR1 "/share/tuxbox/neutrino/icons/logo"
-#define LOGO_DIR2 "/var/share/icons/logo"
-#define LOGO_FMT ".jpg"
-
-bool CPictureViewer::DisplayLogo(uint64_t channel_id, int posx, int posy, int width, int height)
-{	
-        char fname[255];
-	bool ret = false;
-
-        sprintf(fname, "%s/%llx.jpg", LOGO_DIR2, channel_id & 0xFFFFFFFFFFFFULL);
-
-        if(!access(fname, F_OK)) 
-	{
-		dprintf(DEBUG_INFO, "CPictureViewer::DisplayLogo file: %s\n", fname);
-                ret = DisplayImage(fname, posx, posy, width, height);
-        }
-
-	return ret;
-}
-
-// needed for display logos
+// display image
 bool CPictureViewer::DisplayImage(const std::string & name, int posx, int posy, int width, int height)
 {
 	dprintf(DEBUG_INFO, "CPictureViewer::DisplayImage\n");
@@ -557,4 +537,22 @@ bool CPictureViewer::DisplayImage(const std::string & name, int posx, int posy, 
 	
 	return false;
 }
+
+// display logos
+bool CPictureViewer::DisplayLogo(uint64_t channel_id, int posx, int posy, int width, int height)
+{	
+        char fname[255];
+	bool ret = false;
+
+        sprintf(fname, "%s/%llx.jpg", g_settings.logos_dir.c_str(), channel_id & 0xFFFFFFFFFFFFULL);
+
+        if(!access(fname, F_OK)) 
+	{
+		dprintf(DEBUG_INFO, "CPictureViewer::DisplayLogo file: %s\n", fname);
+                ret = DisplayImage(fname, posx, posy, width, height);
+        }
+
+	return ret;
+}
+
 
