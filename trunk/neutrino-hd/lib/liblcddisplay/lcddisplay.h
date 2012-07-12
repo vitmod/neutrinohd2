@@ -26,22 +26,22 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifdef HAVE_GENERIC_HARDWARE
-// dummy
-#define LCD_ROWS	8
-#define LCD_COLS	120
-#define LCD_PIXEL_OFF	0
-#define LCD_PIXEL_ON	1
-#define LCD_PIXEL_INV	2
 
-#else
-#ifndef HAVE_TRIPLEDRAGON
+// dummy
+//#define LCD_ROWS	8
+//#define LCD_COLS	120
+//#define LCD_PIXEL_OFF	0
+//#define LCD_PIXEL_ON	1
+//#define LCD_PIXEL_INV	2
+
+//#if defined (PLATFORM_GIGABLUE_UE)
+//#ifndef HAVE_TRIPLEDRAGON
 /* dreambox is actually compatible to dbox2 wrt. lcd */
-#include <dbox/lcd-ks0713.h>
+//#include <dbox/lcd-ks0713.h>
 #define LCD_DEVICE	"/dev/dbox/lcd0"
-#else
-#include <tdpanel/lcdstuff.h>
-#include <tddevices.h>
+//#else
+//#include <tdpanel/lcdstuff.h>
+//#include <tddevices.h>
 #define LCD_LINES	64
 #define LCD_ROWS	(LCD_LINES / 8) // compatibility with stupid DBOX LCD driver
 #define LCD_COLS	128
@@ -50,14 +50,15 @@
 #define LCD_PIXEL_OFF	0
 #define LCD_PIXEL_ON	1
 #define LCD_PIXEL_INV	2
-#define LCD_DEVICE	"/dev/" DEVICE_NAME_LCD
+//#define LCD_DEVICE	"/dev/" DEVICE_NAME_LCD
 #define LCD_MODE_ASC	0
 #define LCD_MODE_BIN	2
+
 // ioctls
-#define LCD_IOCTL_ASC_MODE	IOC_LCD_WRMODE
-#define LCD_IOCTL_CLEAR		IOC_LCD_CLEAR
-#endif
-#endif
+#define LCD_IOCTL_ASC_MODE	(25)
+#define LCD_IOCTL_CLEAR		(26)
+//#endif
+//#endif
 
 #include <string>
 
@@ -65,19 +66,15 @@ typedef unsigned char raw_display_t[LCD_ROWS*8][LCD_COLS];
 
 class CLCDDisplay
 {
- private:
-	raw_display_t raw;
-#ifdef HAVE_TRIPLEDRAGON
-	unsigned char lcd[LCD_BUFFER_SIZE];
-#else
-	unsigned char lcd[LCD_ROWS][LCD_COLS];
-#endif
-	int           fd, paused;
-	std::string   iconBasePath;
-	bool          available;
+	private:
+		raw_display_t raw;
+		unsigned char lcd[LCD_ROWS][LCD_COLS];
+		int           fd, paused;
+		std::string   iconBasePath;
+		bool          available;
 	
- public:
-	enum
+	public:
+		enum
 		{
 			PIXEL_ON  = LCD_PIXEL_ON,
 			PIXEL_OFF = LCD_PIXEL_OFF,
@@ -107,6 +104,5 @@ class CLCDDisplay
 		void load_screen(const raw_display_t * const screen);
 		bool load_png(const char * const filename);
 };
-
 
 #endif
