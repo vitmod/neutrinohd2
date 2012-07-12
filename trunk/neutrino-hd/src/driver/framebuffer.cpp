@@ -1576,7 +1576,7 @@ void * CFrameBuffer::convertRGB2FB(unsigned char *rgbbuff, unsigned long x, unsi
 		return NULL;
 	}
 	
-	if (alpha)
+	if(alpha)
 	{
 		for(i = 0; i < count ; i++)
 			fbbuff[i] = ((rgbbuff[i*4+3] << 24) & 0xFF000000) | 
