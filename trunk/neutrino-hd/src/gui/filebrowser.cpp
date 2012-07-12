@@ -1387,7 +1387,7 @@ void CFileBrowser::paintItem(unsigned int pos)
 		}
 	}
 	else
-		frameBuffer->paintBoxRel(x,ypos, width- 15, fheight, COL_MENUCONTENT_PLUS_0/*DARK*/);
+		frameBuffer->paintBoxRel(x,ypos, width- 15, fheight, COL_MENUCONTENT_PLUS_0 );
 }
 
 void CFileBrowser::paintHead()

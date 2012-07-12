@@ -107,12 +107,7 @@ void CScale::paint (int x, int y, int pcr)
 				
 				color = make16color(rgb);
 				
-				//for(j = 0; j <= hcnt; j++ ) 
-				{
-					frameBuffer->paintBoxRel (posx + i*ITEMW, posy /*+ j*ITEMW*/, POINT, height/*POINT*/, color);
-					//TEST
-					//frameBuffer->paintBoxRel (posx + i*ITEMW, posy + j*ITEMW, ITEMW, ITEMW, color);
-				}
+				frameBuffer->paintBoxRel (posx + i*ITEMW, posy /*+ j*ITEMW*/, POINT, height/*POINT*/, color);
 			}
 	
 			//yellow
@@ -127,12 +122,7 @@ void CScale::paint (int x, int y, int pcr)
 	
 				color = make16color(rgb);		    
 				
-				//for(j = 0; j <= hcnt; j++ ) 
-				{
-					frameBuffer->paintBoxRel (posx + i*ITEMW, posy /*+ j*ITEMW*/, POINT, height/*POINT*/, color);
-					//TEST
-					//frameBuffer->paintBoxRel (posx + i*ITEMW, posy + j*ITEMW, ITEMW, ITEMW, color);
-				}
+				frameBuffer->paintBoxRel (posx + i*ITEMW, posy /*+ j*ITEMW*/, POINT, height/*POINT*/, color);
 			}
 
 			//green
@@ -147,34 +137,24 @@ void CScale::paint (int x, int y, int pcr)
 				
 				color = make16color(rgb);
 				
-				//for(j = 0; j <= hcnt; j++ ) 
-				{
-					frameBuffer->paintBoxRel (posx + i*ITEMW, posy /*+ j*ITEMW*/, POINT, height/*POINT*/, color);
-					//TEST
-					//frameBuffer->paintBoxRel (posx + i*ITEMW, posy + j*ITEMW, ITEMW, ITEMW, color);
-				}
+				frameBuffer->paintBoxRel (posx + i*ITEMW, posy /*+ j*ITEMW*/, POINT, height/*POINT*/, color);
 			}
 		}
 		
 		for(i = maxi; i < total; i++) 
 		{
-			//for(j = 0; j <= hcnt; j++ ) 
-			{
-				frameBuffer->paintBoxRel (posx + i*ITEMW, posy /*+ j*ITEMW*/, ITEMW, height, COL_INFOBAR_PLUS_1);	//fill passive
-				//TEST
-				//frameBuffer->paintBoxRel (posx + i*ITEMW, posy + j*ITEMW, ITEMW, ITEMW, COL_INFOBAR_PLUS_1); 	//fill passive
-			}
+			frameBuffer->paintBoxRel (posx + i*ITEMW, posy, ITEMW, height, COL_INFOBAR_PLUS_1);	//fill passive
 		}
 		
 		percent = pcr;
 	}
 }
 
-void CScale::reset ()
+void CScale::reset()
 {
   	percent = 255;
 }
 
-void CScale::hide ()
+void CScale::hide()
 {
 }

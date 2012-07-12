@@ -828,9 +828,6 @@ void CInfoViewer::showMovieTitle (const int playstate, const std::string & title
 
 	is_visible = true;
 
-	//moviescale = new CScale(BoxEndX - ChanInfoX, /*TIME_BAR_HEIGHT*/ BoxEndY - 18 - BoxEndInfoY, 30, GREEN_BAR, 70, true);
-	//moviescale->reset();
-
 	InfoHeightY = NUMBER_H * 9 / 8 + 2 * g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight() + 25;
 	InfoHeightY_Info = 40;
 
@@ -841,7 +838,7 @@ void CInfoViewer::showMovieTitle (const int playstate, const std::string & title
 	int BoxEndInfoY = BoxEndY - InfoHeightY_Info;
 	BoxStartY = BoxEndInfoY - InfoHeightY;
 	
-	moviescale = new CScale(BoxEndX - ChanInfoX, /*TIME_BAR_HEIGHT*/ BoxEndY - 18 - BoxEndInfoY, 30, GREEN_BAR, 70, true);
+	moviescale = new CScale(BoxEndX - ChanInfoX, BoxEndY - 18 - BoxEndInfoY, 30, GREEN_BAR, 70, true);
 	moviescale->reset();
 	MoviePercent = file_prozent;
 	
@@ -901,8 +898,6 @@ void CInfoViewer::showMovieTitle (const int playstate, const std::string & title
 	asize = asize - (NEUTRINO_ICON_BUTTON_RED_WIDTH+6)*4;
 	asize = asize / 4;
 	
-	//if (showButtonBar) 
-	//{
 	sec_timer_id = g_RCInput->addTimer (1*1000*1000, false);
 
 	if (BOTTOM_BAR_OFFSET > 0)
@@ -910,25 +905,6 @@ void CInfoViewer::showMovieTitle (const int playstate, const std::string & title
 
 	//datum bar/ moviescale bar
 	frameBuffer->paintBox(ChanInfoX, BoxEndInfoY-2, BoxEndX, BoxEndY-20, COL_INFOBAR_PLUS_1);
-		
-	// show date
-	#if 0
-	char datestr[11];
-			
-	time_t wakeup_time;
-	struct tm *now;
-			
-	time(&wakeup_time);
-	now = localtime(&wakeup_time);
-		
-	strftime( datestr, sizeof(datestr), "%d.%m.%Y", now);
-			
-	int widthr = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth(datestr, true); //UTF-8
-			
-	//g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString( (BoxEndX - ChanInfoX + widthr)/2, BoxEndY - 16, widthr, datestr, COL_INFOBAR);
-	int stringstartposX = ChanInfoX + (BoxEndX >> 1) - (widthr >> 1) - 40;
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->RenderString(stringstartposX, BoxEndY - 16, (BoxEndX - ChanInfoX) - (stringstartposX - ChanInfoX), datestr, COL_INFOBAR, 0, true); // UTF-8
-	#endif
 		
 	// bottum bar
 	frameBuffer->paintBox (ChanInfoX, BoxEndY-20, BoxEndX, BoxEndY, COL_INFOBAR_BUTTONS_BACKGROUND, RADIUS_MID, CORNER_BOTTOM); //round
@@ -966,8 +942,7 @@ void CInfoViewer::showMovieTitle (const int playstate, const std::string & title
 	showIcon_Audio(ac3state);
 		
 	// mp icon
-	frameBuffer->paintIcon("mp", ChanInfoX, ChanInfoY);
-	//}	
+	frameBuffer->paintIcon("mp", ChanInfoX, ChanInfoY);	
 
 	// play-state icon 
 	const char *icon;
@@ -1013,7 +988,7 @@ void CInfoViewer::showMovieTitle (const int playstate, const std::string & title
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_CHANNAME]->RenderString(ChanNameX + 10, ChanNameY + time_height, BoxEndX - (ChanNameX + 20) - time_width - 15, g_Locale->getText(LOCALE_MOVIEPLAYER_HEAD), COL_INFOBAR, 0, true);	
 
 	// file_procent bar
-	moviescale->paint(BoxStartX + 40, BoxEndY - 40, /*file_prozent*/ MoviePercent);
+	moviescale->paint(BoxStartX + 40, BoxEndY - 40, MoviePercent);
 
 	// Infos Titles
 	int xStart = BoxStartX + ChanWidth;
