@@ -1152,6 +1152,9 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	
 	// radiotext
 	g_settings.radiotext_enable = configfile.getBool("radiotext_enable"          , false);
+	
+	// logos_dir
+	g_settings.logos_dir = configfile.getString("logos_dir", "/var/share/icons/logo");
 	// END MISC OPTS
 
 	// HDD
@@ -1520,6 +1523,9 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	
 	// radiotext
 	configfile.setBool("radiotext_enable", g_settings.radiotext_enable);
+	
+	// logos_dir
+	configfile.setString("logos_dir", g_settings.logos_dir);
 	// END MISC OPTS
 
 	// HDD
@@ -5093,8 +5099,10 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 	else if(actionKey == "audioplayerdir") 
 	{
 		parent->hide();
+		
 		CFileBrowser b;
 		b.Dir_Mode=true;
+		
 		if (b.exec(g_settings.network_nfs_audioplayerdir))
 			strncpy(g_settings.network_nfs_audioplayerdir, b.getSelectedFile()->Name.c_str(), sizeof(g_settings.network_nfs_audioplayerdir)-1);
 		
@@ -5103,8 +5111,10 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 	else if(actionKey == "picturedir") 
 	{
 		parent->hide();
+		
 		CFileBrowser b;
 		b.Dir_Mode=true;
+		
 		if (b.exec(g_settings.network_nfs_picturedir))
 			strncpy(g_settings.network_nfs_picturedir, b.getSelectedFile()->Name.c_str(), sizeof(g_settings.network_nfs_picturedir)-1);
 		
@@ -5113,6 +5123,7 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 	else if(actionKey == "moviedir") 
 	{
 		parent->hide();
+		
 		CFileBrowser b;
 		b.Dir_Mode=true;
 
@@ -5124,6 +5135,7 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 	else if(actionKey == "recordingdir") 
 	{
 		parent->hide();
+		
 		CFileBrowser b;
 		b.Dir_Mode=true;
 
@@ -5151,13 +5163,15 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 	else if(actionKey == "update_dir") 
 	{
 		parent->hide();
+		
 		CFileBrowser fileBrowser;
 		fileBrowser.Dir_Mode = true;
+		
 		if (fileBrowser.exec(g_settings.update_dir) == true) 
 		{
 			const char * newdir = fileBrowser.getSelectedFile()->Name.c_str();
 			if(check_dir(newdir))
-				printf("CNeutrinoApp::exec: Wrong/unsupported recording dir %s\n", newdir);
+				printf("CNeutrinoApp::exec: Wrong/unsupported update dir %s\n", newdir);
 			else
 			{
 				strcpy(g_settings.update_dir, fileBrowser.getSelectedFile()->Name.c_str());
@@ -5169,8 +5183,10 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 	else if(actionKey == "epgdir") 
 	{
 		parent->hide();
+		
 		CFileBrowser b;
 		b.Dir_Mode=true;
+		
 		if (b.exec(g_settings.epg_dir.c_str())) 
 		{
 			const char * newdir = b.getSelectedFile()->Name.c_str();
@@ -5185,6 +5201,27 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
+	else if(actionKey == "logos_dir") 
+	{
+		parent->hide();
+		
+		CFileBrowser b;
+		b.Dir_Mode=true;
+		
+		if (b.exec(g_settings.logos_dir.c_str())) 
+		{
+			const char * newdir = b.getSelectedFile()->Name.c_str();
+			if(check_dir(newdir))
+				printf("CNeutrinoApp::exec: Wrong/unsupported logos dir %s\n", newdir);
+			else
+			{
+				g_settings.logos_dir = b.getSelectedFile()->Name;
+				dprintf(DEBUG_NORMAL, "CNeutrinoApp::exec: new logos dir %s\n", b.getSelectedFile()->Name.c_str());
+			}
+		}
+
+		return menu_return::RETURN_REPAINT;
+	}
 	else if(actionKey == "loadcolors") 
 	{
 		parent->hide();
@@ -5193,11 +5230,13 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 		CFileFilter fileFilter;
 		fileFilter.addFilter("conf");
 		fileBrowser.Filter = &fileFilter;
+		
 		if (fileBrowser.exec("/var/tuxbox/config") == true) 
 		{
 			loadColors(fileBrowser.getSelectedFile()->Name.c_str());
 			dprintf(DEBUG_NORMAL, "CNeutrinoApp::exec: new colors: %s\n", fileBrowser.getSelectedFile()->Name.c_str());
 		}
+		
 		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "savecolors") 
@@ -5217,6 +5256,7 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 			saveColors(sname);
 			delete sms;
 		}
+		
 		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "loadkeys") 
@@ -5227,18 +5267,22 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 		CFileFilter fileFilter;
 		fileFilter.addFilter("conf");
 		fileBrowser.Filter = &fileFilter;
+		
 		if (fileBrowser.exec("/var/tuxbox/config") == true) 
 		{
 			loadKeys(fileBrowser.getSelectedFile()->Name.c_str());
 			dprintf(DEBUG_NORMAL, "CNeutrinoApp::exec: new keys: %s\n", fileBrowser.getSelectedFile()->Name.c_str());
 		}
+		
 		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "savekeys") 
 	{
 		parent->hide();
+		
 		CFileBrowser fileBrowser;
 		fileBrowser.Dir_Mode = true;
+		
 		if (fileBrowser.exec("/var/tuxbox") == true) 
 		{
 			char  fname[256] = "keys.conf", sname[256];
@@ -5249,6 +5293,7 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 			saveKeys(sname);
 			delete sms;
 		}
+		
 		return menu_return::RETURN_REPAINT;
 	}
 	else if(actionKey == "clearSectionsd")
