@@ -368,9 +368,10 @@ const char *locale_real_names[] = {
 	"flashupdate.globalprogress",
 	"flashupdate.head",
 	"flashupdate.md5check",
-	"flashupdate.md5sumerror",
-	"flashupdate.msgbox",
-	"flashupdate.msgbox_manual",
+	"flashupdate.flashmd5sumerror",
+	"flashupdate.packagemd5sumerror",
+	"flashupdate.flashmsgbox",
+	"flashupdate.packagemsgbox",
 	"flashupdate.mtdselector",
 	"flashupdate.programmingflash",
 	"flashupdate.proxypassword",
@@ -403,6 +404,7 @@ const char *locale_real_names[] = {
 	"flashupdate.noversion",
 	"flashupdate.downloadedimage",
 	"flashupdate.installpackage",
+	"flashupdate.installfailed",
 	"fontmenu.channellist",
 	"fontmenu.epg",
 	"fontmenu.eventlist",
@@ -1484,5 +1486,7 @@ const char *locale_real_names[] = {
 	"helptext.miscsettingsepg",
 	"helptext.miscsettingsfilebrowser",
 	"helptext.miscsettingszapitsetup",
+	
+	"miscsettings.logosdir",
 };
 #endif

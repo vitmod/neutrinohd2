@@ -471,8 +471,10 @@ void CMTDInfo::getPartitionInfo()
 		perror("cannot read /proc/mtd");
 		return;
 	}
+	
 	char buf[1000];
 	fgets(buf,sizeof(buf),fd);
+	
 	while(!feof(fd))
 	{
 		if(fgets(buf,sizeof(buf),fd)!=NULL)
