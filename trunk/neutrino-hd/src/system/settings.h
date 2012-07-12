@@ -364,6 +364,8 @@ struct SNeutrinoSettings
 
 	int show_ca;
 	int radiotext_enable;
+	
+	std::string logos_dir;
 
 	// channellist
 	int channellist_epgtext_align_right;
