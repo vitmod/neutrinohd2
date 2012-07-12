@@ -412,9 +412,10 @@ flashupdate.getupdatefileerror kann Update nicht laden
 flashupdate.globalprogress Gesamtstatus:
 flashupdate.head Aktualisierung
 flashupdate.md5check MD5 prüfung
-flashupdate.md5sumerror Das Image ist fehlerhaft
-flashupdate.msgbox Es wurde folgendes neues Package gefunden:\nPackage: %s\nDatum: %s, %s\nBasisImage: %s\nTyp: %s\n\nWollen Sie diese Version jetzt herunterladen\nund installieren?
-flashupdate.msgbox_manual Es wurde ein neues Image gefunden:\nDatum: %s, %s\nBasisImage: %s\nImageTyp: %s\n\nWollen Sie diese Version jetzt installieren?
+flashupdate.flashmd5sumerror Das Image ist fehlerhaft
+flashupdate.packagemd5sumerror Das Package ist fehlerhaft
+flashupdate.flashmsgbox Es wurde ein neues Image gefunden:\nImage: %s\nDatum: %s, %s\nBasisImage: %s\nImageTyp: %s\n\nWollen Sie diese Version jetzt installieren?
+flashupdate.packagemsgbox Es wurde folgendes neues Package gefunden:\nPackage: %s\nDatum: %s, %s\nBasisImage: %s\nTyp: %s\n\nWollen Sie diese Version jetzt herunterladen\nund installieren?
 flashupdate.mtdselector Partitions-Auswahl
 flashupdate.programmingflash programmiere Flash
 flashupdate.proxypassword Passwort
@@ -433,7 +434,7 @@ flashupdate.ready Package erfolgreich installiert
 flashupdate.reallyflashmtd Wollen Sie den Flashvorgang wirklich durchführen?\n\nFalls ein Fehler auftritt oder das Image nicht\nfunktionfähig ist, wird Ihre box nicht mehr booten.\n\nImagename: %s\nZiel: %s
 flashupdate.savesuccess Das Image wurde erfolgreich unter dem\nDateinamen %s gespeichert.
 flashupdate.selectimage Verfügbare Images/Packages
-flashupdate.squashfs.noversion Bei SquashFS Updates werden Versionsüberprüfungen derzeit nur bei Web-Updates unterstützt.\nWollen Sie das ausgewählt Image wirklich installieren?
+flashupdate.squashfs.noversion Bei manual Flash Updates werden Versionsüberprüfungen nicht unterstützt.\nWollen Sie das ausgewählt Image wirklich installieren?
 flashupdate.titlereadflash Flash auslesen
 flashupdate.titlewriteflash Flash schreiben
 flashupdate.updatemode Updatemodus
@@ -447,6 +448,7 @@ flashupdate.wrongbase Abweichende release Info\nFortfahren?
 flashupdate.noversion Bei manual Package Updates werden Versionüberprüfungen nicht unterstützt.\nWollen Sie das ausgewählt Package wirklich installieren?
 flashupdate.downloadedimage dieses Image flashen?
 flashupdate.installpackage wollen Sie dieses Package installieren?
+flashupdate.installfailed Package installieren fehlgeschlagen.
 fontmenu.channellist Kanalliste
 fontmenu.epg EPG
 fontmenu.eventlist Eventlist
@@ -1474,5 +1476,7 @@ helptext.miscsettingschannellist Hier können Sie die Kanal listen einstellen.
 helptext.miscsettingsepg Hier können Sie EPG einstellen.
 helptext.miscsettingsfilebrowser Hier können Sie die Filebrowser einstellen
 helptext.miscsettingszapitsetup Hier können Sie das Start Program und mode fest einstellen.
+
+miscsettings.logosdir Sender logos Dir
 
 
