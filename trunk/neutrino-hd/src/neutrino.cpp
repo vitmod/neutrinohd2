@@ -1154,7 +1154,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.radiotext_enable = configfile.getBool("radiotext_enable"          , false);
 	
 	// logos_dir
-	g_settings.logos_dir = configfile.getString("logos_dir", "/var/share/icons/logo");
+	g_settings.logos_dir = configfile.getString("logos_dir", "/var/tuxbox/icons/logos");
 	// END MISC OPTS
 
 	// HDD
