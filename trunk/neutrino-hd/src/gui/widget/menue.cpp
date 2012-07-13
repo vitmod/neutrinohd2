@@ -1428,7 +1428,7 @@ int CMenuForwarder::paint(bool selected)
 	frameBuffer->paintBoxRel(x + BORDER_LEFT, y, dx -(BORDER_LEFT + BORDER_RIGHT), height, bgcolor); //FIXME
 
 	//local-text
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y+ height, dx- (stringstartposX - x), l_text, color, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y + height, dx - BORDER_LEFT - - BORDER_LEFT/2 - (stringstartposX - x), l_text, color, 0, true); // UTF-8
 	
 	//icons/keys
 	if (!iconName.empty())
@@ -1469,7 +1469,7 @@ int CMenuForwarder::paint(bool selected)
 		int stringwidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(option_text, true);
 		int stringstartposOption = std::max(stringstartposX + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_text, true) + BORDER_LEFT + BORDER_LEFT/2, x + dx - stringwidth - BORDER_RIGHT - BORDER_RIGHT/2); //+ offx
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposOption, y+height,dx- (stringstartposOption- x),  option_text, color, 0, true);
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposOption, y + height, dx - BORDER_LEFT - (stringstartposOption- x),  option_text, color, 0, true);
 	}
 	
 	return y + height;
@@ -1622,19 +1622,8 @@ int CMenuForwarderItemMenuIcon::paint(bool selected)
 			// paint item icon
 			frameBuffer->paintIcon(itemIcon, x + BORDER_LEFT + (dx/3)*2 + ((( dx - (dx/3)*2 - BORDER_RIGHT )/2) - icon_w/2), ( frameBuffer->getScreenHeight(true) - icon_h + hheight + 25 )/2);  //25:foot height
 		}
-		//help tasten icons
-		//left
-		//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_LEFT, x + dx/2 -45, HEIGHT-20);
-		// down
-		//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_DOWN, x + dx/2 -30, HEIGHT-20);
-		// ok
-		//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + dx/2 - 13, HEIGHT-22);
-		// roght
-		//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_TOP, x + dx/2 +20, HEIGHT-20);
-		// up
-		//frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RIGHT, x + dx/2 + 45, HEIGHT-20);
 		
-		// or help text
+		//help text
 		// refresh
 		frameBuffer->paintBoxRel(x, HEIGHT - 25, dx, 25, COL_MENUHEAD_PLUS_0);
 		
