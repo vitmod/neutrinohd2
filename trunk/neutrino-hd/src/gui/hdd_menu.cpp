@@ -619,6 +619,21 @@ int CHDDFmtExec::exec(CMenuTarget* parent, const std::string& key)
 			goto _return;
 		}
 	}
+	else
+	{
+		/* umount */
+		strcpy(dst, "/hdd");
+		res = umount(dst);
+		
+		if(res == -1) 
+		{
+			hintbox = new CHintBox(LOCALE_HDD_FORMAT, g_Locale->getText(LOCALE_HDD_UMOUNT_WARN));
+			hintbox->paint();
+			sleep(2);
+			delete hintbox;
+			goto _return;
+		}
+	}
 
 	f = fopen("/proc/sys/kernel/hotplug", "w");
 	if(f) 
@@ -772,6 +787,11 @@ int CHDDChkExec::exec(CMenuTarget* parent, const std::string& key)
 	//res = check_and_umount(src, dst);
 	if(check_if_mounted(src) == 1)
 	{
+		umount(dst);
+	}
+	else
+	{
+		strcpy(dst, "/hdd");
 		umount(dst);
 	}
 
@@ -980,6 +1000,34 @@ int CHDDuMountMSGExec::exec(CMenuTarget* parent, const std::string& key)
 	}
 	else
 	{
+		// perhaps mounted to /hdd
+		strcpy(dst, "/hdd");
+		
+		if(check_if_mounted(dst) == 1)
+		{
+			res = umount(dst);
+			printf("CHDDuMountExec: umount res %d\n", res);
+
+			if(res == 0)	/* umounted */
+			{
+				hintbox = new CHintBox(LOCALE_HDD_MOUNT, g_Locale->getText(LOCALE_HDD_UMOUNTED));
+				hintbox->paint();
+				sleep(2);
+				delete hintbox;
+				
+				return menu_return::RETURN_REPAINT;
+			}
+			else
+			{
+				hintbox = new CHintBox(LOCALE_HDD_MOUNT, g_Locale->getText(LOCALE_HDD_UMOUNT_WARN));
+				hintbox->paint();
+				sleep(2);
+				delete hintbox;
+				return menu_return::RETURN_REPAINT;
+			}
+		}
+		
+		// not mounted
 		printf("not mounted\n");
 		hintbox = new CHintBox(LOCALE_HDD_MOUNT, g_Locale->getText(LOCALE_HDD_UMOUNTED));
 		hintbox->paint();

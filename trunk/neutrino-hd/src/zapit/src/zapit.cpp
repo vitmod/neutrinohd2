@@ -157,7 +157,7 @@ scan_list_t scanProviders;
 // DVB
 #define DVBADAPTER_MAX	1
 #define FRONTEND_MAX	4
-int AdapterCount = 0;
+//int AdapterCount = 0;
 int FrontendCount = 0;
 static bool twin_mode = false;
 
@@ -3256,8 +3256,7 @@ void * sdt_thread(void * arg)
 
 bool getDVBCount()
 {
-	#if 1
-	// adapter count / frontend count
+	// frontend count
 	int i, j, fd = -1, frontend_count = 0;
 	char buf[256];
 	
@@ -3277,48 +3276,6 @@ bool getDVBCount()
 	}
 	
 	FrontendCount = frontend_count;
-	#endif
-	
-	//
-	#if 0
-	//fe_map_t femap;
-	fe_map_iterator_t it;
-	
-	CFrontend * fe;
-	unsigned short fekey;
-	
-	#define MAKE_FE_KEY(adapter, number) ((adapter << 8) | (number & 0xFF))
-
-	for(int i = 0; i < DVBADAPTER_MAX; i++) 
-	{
-		for(int j = 0; j < FRONTEND_MAX; j++) 
-		{
-			fe = new CFrontend(j, i);
-			
-			if(fe->Open() ) 
-			{
-				fekey = MAKE_FE_KEY(i, j);
-				
-				femap.insert(std::pair <unsigned short, CFrontend*> (fekey, fe));
-				printf("add fe %d%d\n", i,j);
-				//printf("fekey:%s\n", fekey);
-				//if(livefe == NULL)
-				//	livefe = fe;
-			} 
-			else
-				delete fe;
-		}
-	}
-	
-	FrontendCount = femap.size();
-	
-	printf("found %d frontends\n", femap.size());
-	
-	if(femap.size() == 0)
-		//return false;
-		printf("no frontend detected...\n");
-	#endif
-	//
 		
 	return true;
 }
@@ -3331,7 +3288,6 @@ bool getDVBCount()
 * init dvbsub
 * 
 */
-//bool twin_tuner = false;
 int zapit_main_thread(void *data)
 {
 	Z_start_arg *ZapStart_arg = (Z_start_arg *) data;

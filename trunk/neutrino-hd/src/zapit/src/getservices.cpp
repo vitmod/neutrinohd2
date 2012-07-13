@@ -571,22 +571,70 @@ int LoadServices(bool only_current)
 			//FIXME: this code is only valable for such constellation e.g
 			// spark-triplex: S+S , T/C
 			// ich gehe davon aus dass der erste tuner immer einen sat tuner ist.
-			if (!(strcmp(xmlGetName(search), "sat"))) 
+			//NOTE: what about cable twin box ;-(
+			//NOTE: hope this will resolve the problem:
+			if(FrontendCount > 1)
 			{
-				// position
-				t_satellite_position position = xmlGetSignedNumericAttribute(search, "position", 10);
-				char * name = xmlGetAttribute(search, "name");
-
-				if(satellitePositions.find(position) == satellitePositions.end()) 
+				if( CFrontend::getInstance(0)->getInfo()->type == FE_QPSK)
 				{
-					init_sat(position); // this will reset feindex to 
-					
-					satellitePositions[position].name = name;
+					if (!(strcmp(xmlGetName(search), "sat"))) 
+					{
+						// position
+						t_satellite_position position = xmlGetSignedNumericAttribute(search, "position", 10);
+						char * name = xmlGetAttribute(search, "name");
+
+						if(satellitePositions.find(position) == satellitePositions.end()) 
+						{
+							init_sat(position); // this will reset feindex to 
+							
+							satellitePositions[position].name = name;
+						}
+						
+						//FIXME:
+						// ich gehe davon aus dass der erste tuner immer einen sat tuner ist.
+						satellitePositions[position].feindex = 0;
+					}
 				}
-				
-				//FIXME:
-				// ich gehe davon aus dass der erste tuner immer einen sat tuner ist.
-				satellitePositions[position].feindex = 0;
+				else if( CFrontend::getInstance(0)->getInfo()->type == FE_QAM)
+				{
+					if (!(strcmp(xmlGetName(search), "cable"))) 
+					{
+						// position
+						t_satellite_position position = xmlGetSignedNumericAttribute(search, "position", 10);
+						char * name = xmlGetAttribute(search, "name");
+
+						if(satellitePositions.find(position) == satellitePositions.end()) 
+						{
+							init_sat(position); // this will reset feindex to 
+							
+							satellitePositions[position].name = name;
+						}
+						
+						//FIXME:
+						// ich gehe davon aus dass der erste tuner immer einen sat tuner ist.
+						satellitePositions[position].feindex = 0;
+					}
+				}
+				else if( CFrontend::getInstance(0)->getInfo()->type == FE_OFDM)
+				{
+					if (!(strcmp(xmlGetName(search), "terrestrial"))) 
+					{
+						// position
+						t_satellite_position position = xmlGetSignedNumericAttribute(search, "position", 10);
+						char * name = xmlGetAttribute(search, "name");
+
+						if(satellitePositions.find(position) == satellitePositions.end()) 
+						{
+							init_sat(position); // this will reset feindex to 
+							
+							satellitePositions[position].name = name;
+						}
+						
+						//FIXME:
+						// ich gehe davon aus dass der erste tuner immer einen sat tuner ist.
+						satellitePositions[position].feindex = 0;
+					}
+				}
 			}
 
 			// jump to the next node

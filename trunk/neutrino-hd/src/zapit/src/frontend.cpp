@@ -55,11 +55,11 @@ extern int motorRotationSpeed;
 #define min(x,y)	((x < y) ? x : y)
 #define max(x,y)	((x > y) ? x : y)
 
+// channel
 extern bool current_is_nvod;
 extern t_channel_id live_channel_id;
 
-extern int AdapterCount;
-
+// unicable
 extern int uni_scr;
 extern int uni_qrg;
 
@@ -84,14 +84,13 @@ extern int uni_qrg;
 		 label, timer_msec, tmin, tmax);
 
 
-//the dvb frontend device e.g:2 frontend devices musst be sufficient for Twin/Combi nim tuners
-//NOTE: sehr blöd ist dies
-//FIXME
+//FIXME: the dvb frontend device
 CFrontend *frontend0 = NULL;
 CFrontend *frontend1 = NULL;
 CFrontend *frontend2 = NULL;
 CFrontend *frontend3 = NULL;
 
+//FIXME: too dirty
 CFrontend * CFrontend::getInstance(int num, int adap)
 {
 	switch(num)
