@@ -142,7 +142,7 @@ bool CFlashUpdate::selectHttpImage(void)
 	httpTool.setStatusViewer(this);
 	showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_GETINFOFILE)); // UTF-8
 
-	CMenuWidget SelectionWidget(LOCALE_FLASHUPDATE_SELECTIMAGE, NEUTRINO_ICON_UPDATE, 600);
+	CMenuWidget SelectionWidget(LOCALE_FLASHUPDATE_SELECTIMAGE, NEUTRINO_ICON_UPDATE, CFrameBuffer::getInstance()->getScreenWidth(true) );
 	
 	// intros
 	//SelectionWidget.addItem(GenericMenuSeparator);
@@ -605,7 +605,7 @@ void CFlashExpert::showMTDSelector(const std::string & actionkey)
 	printf("CFlashExpert::showMTDSelector: actionkey: %s\n", actionkey.c_str());
 	
 	//mtd-selector erzeugen
-	CMenuWidget* mtdselector = new CMenuWidget(LOCALE_FLASHUPDATE_MTDSELECTOR, NEUTRINO_ICON_UPDATE);
+	CMenuWidget * mtdselector = new CMenuWidget(LOCALE_FLASHUPDATE_MTDSELECTOR, NEUTRINO_ICON_UPDATE);
 	
 	// intros
 	//mtdselector->addItem(GenericMenuSeparator);
@@ -666,7 +666,7 @@ void CFlashExpert::showMTDSelector(const std::string & actionkey)
 
 void CFlashExpert::showFileSelector(const std::string & actionkey)
 {
-	CMenuWidget* fileselector = new CMenuWidget(LOCALE_FLASHUPDATE_FILESELECTOR, NEUTRINO_ICON_UPDATE);
+	CMenuWidget * fileselector = new CMenuWidget(LOCALE_FLASHUPDATE_FILESELECTOR, NEUTRINO_ICON_UPDATE);
 	
 	// intros
 	//fileselector->addItem(GenericMenuSeparator);

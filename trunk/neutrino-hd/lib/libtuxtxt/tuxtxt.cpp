@@ -49,7 +49,6 @@ int left, top, width, height;
 char aspect[16];
 char policy[16];
 
-
 // subs
 static pthread_t ttx_sub_thread;
 static int reader_running;
@@ -88,7 +87,7 @@ void FillBorder(int color)
 	FillRect(StartX, ys+StartY+25*fontheight,displaywidth, CFrameBuffer::getInstance()->getScreenHeight(true)-(StartY+25*fontheight), color);
 
 	if (screenmode == 0 )
-		FillRect(StartX + displaywidth, ys, CFrameBuffer::getInstance()->getScreenWidth(true)-(StartX+displaywidth),CFrameBuffer::getInstance()->getScreenHeight(true), color);
+		FillRect(StartX + displaywidth, ys, CFrameBuffer::getInstance()->getScreenWidth(true) - (StartX+displaywidth),CFrameBuffer::getInstance()->getScreenHeight(true), color);
 
 	debugf(20, "%s: <\n", __func__);
 }
