@@ -159,8 +159,8 @@ void CStringInput::init()
 			height += iheight;
 	}
 
-	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width)>>1);
-	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height)>>1);
+	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width) >>1 );
+	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
 	
 	selected = 0;
 }

@@ -88,8 +88,8 @@ CDBoxInfoWidget::CDBoxInfoWidget()
 	width  = w_max (600, 0);
 	height = h_max (hheight+12*mheight+ 20, 0);
 	
-    	x=(((g_settings.screen_EndX- g_settings.screen_StartX)-width) / 2) + g_settings.screen_StartX;
-	y=(((g_settings.screen_EndY- g_settings.screen_StartY)-height) / 2) + g_settings.screen_StartY;
+    	x=(((g_settings.screen_EndX - g_settings.screen_StartX) - width) / 2) + g_settings.screen_StartX;
+	y=(((g_settings.screen_EndY - g_settings.screen_StartY) - height) / 2) + g_settings.screen_StartY;
 }
 
 int CDBoxInfoWidget::exec(CMenuTarget * parent, const std::string &)
