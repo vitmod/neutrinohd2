@@ -765,11 +765,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	}
 
 	// video
-#if defined (PLATFORM_GIGABLUE)  || defined (PLATFORM_DREAMBOX) || defined (PLATFORM_XTREND)
-	g_settings.video_Mode = configfile.getInt32("video_Mode", VIDEO_STD_1080I50);
-#else
-	g_settings.video_Mode = configfile.getInt32("video_Mode", VIDEO_STD_PAL);
-#endif	
+	g_settings.video_Mode = configfile.getInt32("video_Mode", VIDEO_STD_PAL);	
 	prev_video_Mode = g_settings.video_Mode;
 	
 	//analog mode
