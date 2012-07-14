@@ -1672,7 +1672,7 @@ unsigned char * CFrameBuffer::Resize(unsigned char *origin, int ox, int oy, int 
 	{
 		cr = (unsigned char*) malloc(dx*dy*3);
 
-		if(cr==NULL)
+		if(cr == NULL)
 		{
 			printf("Error: malloc\n");
 			return(origin);
@@ -1685,12 +1685,12 @@ unsigned char * CFrameBuffer::Resize(unsigned char *origin, int ox, int oy, int 
 	{
 		unsigned char *p,*l;
 		int i,j,k,ip;
-		l=cr;
+		l = cr;
 
 		for(j=0; j<dy; j++, l += dx*3)
 		{
-			p=origin+(j*oy/dy*ox*3);
-			for(i=0,k=0;i<dx;i++,k+=3)
+			p = origin + (j*oy/dy*ox*3);
+			for(i=0, k=0; i<dx; i++, k+=3)
 			{
 				ip=i*ox/dx*3;
 				memmove(l+k, p+ip, 3);
@@ -1709,12 +1709,14 @@ unsigned char * CFrameBuffer::Resize(unsigned char *origin, int ox, int oy, int 
 		for(i=0;i<dx;i++)
 			xa_v[i] = i*ox/dx;
 		int xb_v[dx+1];
+		
 		for(i=0;i<dx;i++)
 		{
 			xb_v[i]= (i+1)*ox/dx;
 			if(xb_v[i]>=ox)
 				xb_v[i]=ox-1;
 		}
+		
 		for(j=0;j<dy;j++)
 		{
 			ya= j*oy/dy;
@@ -1733,7 +1735,9 @@ unsigned char * CFrameBuffer::Resize(unsigned char *origin, int ox, int oy, int 
 			}
 		}
 	}
+	
 	free(origin);
+	
 	return(cr);
 }
 

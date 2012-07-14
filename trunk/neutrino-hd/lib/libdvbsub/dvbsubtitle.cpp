@@ -144,7 +144,7 @@ void cDvbSubtitleBitmaps::Draw(int &min_x, int &min_y, int &max_x, int &max_y)
 		fb_pixel_t * newdata = simple_resize32(sub.rects[i]->pict.data[0], colors, sub.rects[i]->nb_colors, width, height, nw, nh);
 		
 		// blit2fb
-		CFrameBuffer::getInstance()->blit2FB(newdata, nw, nh, xoff, yoff, 0, 0, true);
+		CFrameBuffer::getInstance()->blit2FB(newdata, nw, nh, xoff, yoff, 0, 0, false );
 
 		free(newdata);
 
@@ -270,10 +270,8 @@ void cDvbSubtitleConverter::Clear(void)
 	if(running && (max_x - min_x > 0) && (max_y - min_y > 0)) 
 	{
 		CFrameBuffer::getInstance()->paintBackgroundBoxRel (min_x, min_y, max_x - min_x, max_y-min_y);
-		//CFrameBuffer::getInstance()->ClearFrameBuffer();
 #ifdef FB_BLIT	
 		CFrameBuffer::getInstance()->blit();
-		//CFrameBuffer::getInstance()->blit(min_x, min_y, max_x - min_x, max_y-min_y);
 #endif		
 	}
 }
@@ -389,7 +387,6 @@ int cDvbSubtitleConverter::Action(void)
 					sb->Draw(min_x, min_y, max_x, max_y);
 
 #ifdef FB_BLIT
-					//CFrameBuffer::getInstance()->blit(min_x, min_y, max_x - min_x, max_y - min_y);
 					CFrameBuffer::getInstance()->blit();
 #endif
 
