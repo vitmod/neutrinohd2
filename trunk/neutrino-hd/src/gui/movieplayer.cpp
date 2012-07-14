@@ -1765,12 +1765,8 @@ void CMoviePlayerGui::PlayFile(void)
 		} 
 		else if (msg == (neutrino_msg_t) g_settings.mpkey_rewind) 
 		{
-			//FIXMEnot yet	
 			// backward
-			if (speed >= 0)
-				speed = -1;
-			else
-				speed --;
+			speed = (speed >= 0) ? -1 : speed - 1;
 						
 			if(speed < -15)
 				speed = -15;			
@@ -1835,15 +1831,12 @@ void CMoviePlayerGui::PlayFile(void)
 		}
 		else if (msg == (neutrino_msg_t) g_settings.mpkey_forward) 
 		{	// fast-forward
-			if (speed <= 0)
-				speed = 2;
-			else
-				speed ++;
+			speed = (speed <= 0) ? 2 : speed + 1;
 						
 			if(speed > 15)
 				speed = 15;			
 			
-			//test
+			// icons
 			CVFD::getInstance()->ShowIcon(VFD_ICON_PLAY, false);
 			CVFD::getInstance()->ShowIcon(VFD_ICON_PAUSE, false);
 
