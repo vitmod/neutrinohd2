@@ -61,7 +61,7 @@
 #define VC1_SEQUENCE_LAYER_METADATA_START_CODE          0x80
 #define VC1_FRAME_START_CODE                            0x0d
 
-#define VC1_DEBUG
+//#define VC1_DEBUG
 
 #ifdef VC1_DEBUG
 
@@ -280,7 +280,11 @@ static WriterCaps_t caps = {
     "vc1",
     eVideo,
     "V_VC1",
-    VIDEO_ENCODING_VC1
+#ifdef __sh__    
+    VIDEO_ENCODING_VC1,
+#else
+    VIDEO_STREAMTYPE_VC1_SM,
+#endif
 };
 
 struct Writer_s WriterVideoVC1 = {

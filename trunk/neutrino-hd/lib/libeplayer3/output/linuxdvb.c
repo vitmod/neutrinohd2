@@ -43,6 +43,7 @@
 #include "stm_ioctls.h"
 #else
 //#include <video_cs.h>
+#if 0
 typedef enum {
 	VIDEO_STREAMTYPE_MPEG2,
 	VIDEO_STREAMTYPE_MPEG4_H264,
@@ -64,6 +65,7 @@ typedef enum {
 	AUDIO_STREAMTYPE_MP3
 }AUDIO_FORMAT;
 #endif
+#endif
 
 #include "writer.h"
 #include "misc.h"
@@ -73,7 +75,7 @@ typedef enum {
 /* Makros/Constants              */
 /* ***************************** */
 
-#define LINUXDVB_DEBUG
+//#define LINUXDVB_DEBUG
 
 static short debug_level = 10;
 
@@ -300,12 +302,15 @@ int LinuxDvbPlay(Context_t  *context, char * type)
 			
 #ifdef __sh__			
 			if (ioctl( videofd, VIDEO_SET_ENCODING, (void*) writer->caps->dvbEncoding) == -1)
+#else
+			if (ioctl( videofd, VIDEO_SET_STREAMTYPE, (VIDEO_FORMAT) writer->caps->dvbEncoding) == -1)
+#endif
 			{
 				linuxdvb_err("ioctl failed with errno %d\n", errno);
 				linuxdvb_err("VIDEO_SET_ENCODING: %s\n", strerror(errno));
 				ret = cERR_LINUXDVB_ERROR;
 			}
-#endif			
+			
 		}
 
 		if (ioctl(videofd, VIDEO_PLAY, NULL) == -1)
@@ -347,12 +352,14 @@ int LinuxDvbPlay(Context_t  *context, char * type)
 			
 #ifdef __sh__			
 			if (ioctl( audiofd, AUDIO_SET_ENCODING, (void*) writer->caps->dvbEncoding) == -1)
+#else
+			if (ioctl( audiofd, AUDIO_SET_BYPASS_MODE, (AUDIO_FORMAT) writer->caps->dvbEncoding) == -1)
+#endif
 			{
 				linuxdvb_err("ioctl failed with errno %d\n", errno);
 				linuxdvb_err("AUDIO_SET_ENCODING: %s\n", strerror(errno));
 				ret = -1;
-			}
-#endif			
+			}		
 		}
 
 		if (ioctl(audiofd, AUDIO_PLAY, NULL) == -1)
@@ -1026,11 +1033,13 @@ int LinuxDvbSwitch(Context_t  *context, char * type)
 					
 #ifdef __sh__					
 					if (ioctl( audiofd, AUDIO_SET_ENCODING, (void*) writer->caps->dvbEncoding) == -1)
+#else
+					if (ioctl( audiofd, AUDIO_SET_BYPASS_MODE, (AUDIO_FORMAT) writer->caps->dvbEncoding) == -1)
+#endif
 					{
 						linuxdvb_err("ioctl failed with errno %d\n", errno);
 						linuxdvb_err("AUDIO_SET_ENCODING: %s\n", strerror(errno));
-					}
-#endif					
+					}				
 				}
 
 				if (ioctl(audiofd, AUDIO_PLAY, NULL) == -1)
@@ -1087,11 +1096,13 @@ int LinuxDvbSwitch(Context_t  *context, char * type)
 					
 #ifdef __sh__					
 					if (ioctl( videofd, VIDEO_SET_ENCODING, (void*) writer->caps->dvbEncoding) == -1)
+#else
+					if (ioctl( videofd, VIDEO_SET_STREAMTYPE, (VIDEO_FORMAT) writer->caps->dvbEncoding) == -1)
+#endif
 					{
 						linuxdvb_err("ioctl failed with errno %d\n", errno);
 						linuxdvb_err("VIDEO_SET_ENCODING: %s\n", strerror(errno));
-					}
-#endif					
+					}					
 				}
 
 				if (ioctl(videofd, VIDEO_PLAY, NULL) == -1)

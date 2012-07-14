@@ -49,11 +49,13 @@
 /* ***************************** */
 /* Makros/Constants              */
 /* ***************************** */
-#define FLAC_DEBUG
+
+
+//#define FLAC_DEBUG
 
 #ifdef FLAC_DEBUG
 
-static short debug_level = 1;
+static short debug_level = 10;
 
 #define flac_printf(level, fmt, x...) do { \
 if (debug_level >= level) printf("[%s:%s] " fmt, __FILE__, __FUNCTION__, ## x); } while (0)

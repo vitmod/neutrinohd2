@@ -57,7 +57,7 @@
 #define METADATA_STRUCT_B_FRAMERATE_START   32
 #define METADATA_STRUCT_C_START             8
 
-#define WMV_DEBUG
+//#define WMV_DEBUG
 
 #ifdef WMV_DEBUG
 

@@ -3,7 +3,12 @@
 
 #include <stdio.h>
 
-typedef enum { eNone, eAudio, eVideo, eGfx} eWriterType_t;
+typedef enum { 
+	eNone, 
+	eAudio, 
+	eVideo, 
+	eGfx
+} eWriterType_t;
 
 typedef struct {
     int                    fd;

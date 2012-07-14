@@ -50,11 +50,11 @@
 /* Makros/Constants              */
 /* ***************************** */
 
-#define DIVX_DEBUG
+//#define DIVX_DEBUG
 
 #ifdef DIVX_DEBUG
 
-static short debug_level = 0;
+static short debug_level = 10;
 
 #define divx_printf(level, fmt, x...) do { \
 if (debug_level >= level) printf("[%s:%s] " fmt, __FILE__, __FUNCTION__, ## x); } while (0)
@@ -176,7 +176,11 @@ static WriterCaps_t mpeg4p2_caps = {
     "mscomp",
     eVideo,
     "V_MSCOMP",
+#ifdef __sh__
     VIDEO_ENCODING_MPEG4P2,
+#else
+    VIDEO_STREAMTYPE_DIVX311,
+#endif
 };
 
 struct Writer_s WriterVideoMSCOMP = {
@@ -190,7 +194,11 @@ static WriterCaps_t fourcc_caps = {
     "fourcc",
     eVideo,
     "V_MS/VFW/FOURCC",
+#ifdef __sh__    
     VIDEO_ENCODING_MPEG4P2,
+#else
+    VIDEO_STREAMTYPE_DIVX311,
+#endif    
 };
 
 struct Writer_s WriterVideoFOURCC = {
@@ -204,7 +212,11 @@ static WriterCaps_t divx_caps = {
     "divx",
     eVideo,
     "V_MKV/XVID",
+#ifdef __sh__    
     VIDEO_ENCODING_MPEG4P2,
+#else
+    VIDEO_STREAMTYPE_DIVX311,
+#endif    
 };
 
 struct Writer_s WriterVideoDIVX = {

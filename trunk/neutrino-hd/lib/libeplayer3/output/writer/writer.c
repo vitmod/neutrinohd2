@@ -32,11 +32,11 @@
 /* Makros/Constants              */
 /* ***************************** */
 
-#define WRITER_DEBUG
+//#define WRITER_DEBUG
 
 #ifdef WRITER_DEBUG
 
-static short debug_level = 0;
+static short debug_level = 10;
 
 #define writer_printf(level, x...) do { \
 if (debug_level >= level) printf(x); } while (0)

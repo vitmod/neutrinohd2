@@ -32,11 +32,11 @@
 /* ***************************** */
 #define TRACKWRAP 20
 
-#define AUDIO_MGR_DEBUG
+//#define AUDIO_MGR_DEBUG
 
 #ifdef AUDIO_MGR_DEBUG
 
-static short debug_level = 0;
+static short debug_level = 10;
 
 #define audio_mgr_printf(level, x...) do { \
 if (debug_level >= level) printf(x); } while (0)

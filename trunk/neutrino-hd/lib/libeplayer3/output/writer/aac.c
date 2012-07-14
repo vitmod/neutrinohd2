@@ -52,11 +52,11 @@
 
 #define AAC_HEADER_LENGTH       7
 
-#define AAC_DEBUG
+//#define AAC_DEBUG
 
 #ifdef AAC_DEBUG
 
-static short debug_level = 0;
+static short debug_level = 10;
 
 #define aac_printf(level, fmt, x...) do { \
 if (debug_level >= level) printf("[%s:%s] " fmt, __FILE__, __FUNCTION__, ## x); } while (0)
@@ -279,7 +279,11 @@ static WriterCaps_t caps = {
     "aac",
     eAudio,
     "A_AAC",
+#ifdef __sh__    
     AUDIO_ENCODING_AAC
+#else
+    AUDIO_STREAMTYPE_AAC
+#endif
 };
 
 struct Writer_s WriterAudioAAC = {

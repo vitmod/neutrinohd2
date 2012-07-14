@@ -49,11 +49,13 @@
 /* ***************************** */
 /* Makros/Constants              */
 /* ***************************** */
-#define H264_DEBUG
+
+
+//#define H264_DEBUG
 
 #ifdef H264_DEBUG
 
-static short debug_level = 0;
+static short debug_level = 10;
 
 #define h264_printf(level, fmt, x...) do { \
 if (debug_level >= level) printf("[%s:%s] " fmt, __FILE__, __FUNCTION__, ## x); } while (0)
@@ -427,7 +429,11 @@ static WriterCaps_t caps = {
     "h264",
     eVideo,
     "V_MPEG4/ISO/AVC",
+#ifdef __sh__    
     VIDEO_ENCODING_H264,
+#else
+    VIDEO_STREAMTYPE_MPEG4_H264,
+#endif
 };
 
 struct Writer_s WriterVideoH264 = {

@@ -50,7 +50,7 @@
 /* Makros/Constants              */
 /* ***************************** */
 
-#define WMA_DEBUG
+//#define WMA_DEBUG
 
 #ifdef WMA_DEBUG
 

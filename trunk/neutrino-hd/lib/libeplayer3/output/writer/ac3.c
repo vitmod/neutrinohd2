@@ -51,11 +51,11 @@
 /* ***************************** */
 #define AC3_HEADER_LENGTH       7
 
-#define AC3_DEBUG
+//#define AC3_DEBUG
 
 #ifdef AC3_DEBUG
 
-static short debug_level = 0;
+static short debug_level = 10;
 
 #define ac3_printf(level, fmt, x...) do { \
 if (debug_level >= level) printf("[%s:%s] " fmt, __FILE__, __FUNCTION__, ## x); } while (0)
@@ -139,7 +139,11 @@ static WriterCaps_t caps_ac3 = {
     "ac3",
     eAudio,
     "A_AC3",
+#ifdef __sh__    
     AUDIO_ENCODING_AC3,
+#else
+    AUDIO_STREAMTYPE_AC3,
+#endif
 };
 
 struct Writer_s WriterAudioAC3 = {

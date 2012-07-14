@@ -49,11 +49,13 @@
 /* ***************************** */
 /* Makros/Constants              */
 /* ***************************** */
-#define MP3_DEBUG
+
+
+//#define MP3_DEBUG
 
 #ifdef MP3_DEBUG
 
-static short debug_level = 0;
+static short debug_level = 10;
 
 #define mp3_printf(level, fmt, x...) do { \
 if (debug_level >= level) printf("[%s:%s] " fmt, __FILE__, __FUNCTION__, ## x); } while (0)
@@ -139,7 +141,11 @@ static WriterCaps_t caps_mp3 = {
     "mp3",
     eAudio,
     "A_MP3",
+#ifdef __sh__    
     AUDIO_ENCODING_MP3,
+#else
+    AUDIO_STREAMTYPE_MP3,
+#endif
 };
 
 struct Writer_s WriterAudioMP3 = {
@@ -153,7 +159,11 @@ static WriterCaps_t caps_mpegl3 = {
     "mpeg/l3",
     eAudio,
     "A_MPEG/L3",
+#ifdef __sh__    
     AUDIO_ENCODING_MPEG2,
+#else
+    AUDIO_STREAMTYPE_MPEG,
+#endif
 };
 
 struct Writer_s WriterAudioMPEGL3 = {

@@ -49,11 +49,13 @@
 /* ***************************** */
 /* Makros/Constants              */
 /* ***************************** */
-#define H263_DEBUG
+
+
+//#define H263_DEBUG
 
 #ifdef H263_DEBUG
 
-static short debug_level = 0;
+static short debug_level = 10;
 
 #define h263_printf(level, fmt, x...) do { \
 if (debug_level >= level) printf("[%s:%s] " fmt, __FILE__, __FUNCTION__, ## x); } while (0)
@@ -151,7 +153,11 @@ static WriterCaps_t caps_h263 = {
     "h263",
     eVideo,
     "V_H263",
+#ifdef __sh__    
     VIDEO_ENCODING_H263,
+#else
+    VIDEO_STREAMTYPE_MPEG4_H263,
+#endif
 };
 
 struct Writer_s WriterVideoH263 = {

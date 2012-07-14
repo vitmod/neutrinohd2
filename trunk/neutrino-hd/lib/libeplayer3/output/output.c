@@ -31,11 +31,11 @@
 /* Makros/Constants              */
 /* ***************************** */
 
-#define OUTPUT_DEBUG
+//#define OUTPUT_DEBUG
 
 #ifdef OUTPUT_DEBUG
 
-static short debug_level = 0;
+static short debug_level = 10;
 
 #define output_printf(level, x...) do { \
 if (debug_level >= level) printf(x); } while (0)

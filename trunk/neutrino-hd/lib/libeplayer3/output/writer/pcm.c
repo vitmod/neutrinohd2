@@ -50,11 +50,13 @@
 /* ***************************** */
 /* Makros/Constants              */
 /* ***************************** */
-#define PCM_DEBUG
+
+
+//#define PCM_DEBUG
 
 #ifdef PCM_DEBUG
 
-static short debug_level = 1;
+static short debug_level = 10;
 
 #define pcm_printf(level, fmt, x...) do { \
 if (debug_level >= level) printf("[%s:%s] " fmt, __FILE__, __FUNCTION__, ## x); } while (0)
@@ -319,7 +321,11 @@ static WriterCaps_t caps_pcm = {
     "pcm",
     eAudio,
     "A_PCM",
+#ifdef __sh__    
     AUDIO_ENCODING_LPCMA,
+#else
+    AUDIO_STREAMTYPE_LPCMDVD,
+#endif
 };
 
 struct Writer_s WriterAudioPCM = {
@@ -333,7 +339,11 @@ static WriterCaps_t caps_ipcm = {
     "ipcm",
     eAudio,
     "A_IPCM",
+#ifdef __sh__    
     AUDIO_ENCODING_LPCMA,
+#else
+    AUDIO_STREAMTYPE_LPCMDVD,
+#endif
 };
 
 struct Writer_s WriterAudioIPCM = {

@@ -50,11 +50,11 @@
 /* Makros/Constants              */
 /* ***************************** */
 
-#define MPEG2_DEBUG
+//#define MPEG2_DEBUG
 
 #ifdef MPEG2_DEBUG
 
-static short debug_level = 0;
+static short debug_level = 10;
 
 #define mpeg2_printf(level, fmt, x...) do { \
 if (debug_level >= level) printf("[%s:%s] " fmt, __FILE__, __FUNCTION__, ## x); } while (0)
@@ -153,7 +153,11 @@ static WriterCaps_t caps = {
     "mpeg2",
     eVideo,
     "V_MPEG2",
+#ifdef __sh__    
     VIDEO_ENCODING_AUTO,
+#else
+    VIDEO_STREAMTYPE_MPEG2,
+#endif
 };
 
 struct Writer_s WriterVideoMPEG2 = {
@@ -167,7 +171,11 @@ static WriterCaps_t h264_caps = {
     "mpges_h264",
     eVideo,
     "V_MPEG2/H264",
+#ifdef __sh__    
     VIDEO_ENCODING_H264,
+#else
+    VIDEO_STREAMTYPE_MPEG4_H264,
+#endif
 };
 
 struct Writer_s WriterVideoMPEGH264 = {
