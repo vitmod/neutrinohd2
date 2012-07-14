@@ -924,7 +924,7 @@ int container_ffmpeg_init(Context_t *context, char * filename)
                 ffmpeg_printf(10, "frame_rate %d\n", track.frame_rate);
                 ffmpeg_printf(10, "TimeScale %d\n", track.TimeScale);
 
-                track.Name      = "und";
+                track.Name      = "Stream";
                 track.Encoding  = encoding;
                 track.Id        = n;
 
@@ -965,7 +965,7 @@ int container_ffmpeg_init(Context_t *context, char * filename)
                // if (lang)
                  //  track.Name        = strdup(lang->value);
                 //else
-                   track.Name        = strdup("und");
+                   track.Name        = strdup("Stream");
                 
                 ffmpeg_printf(10, "Language %s\n", track.Name);
 
@@ -1170,7 +1170,7 @@ int container_ffmpeg_init(Context_t *context, char * filename)
              //if (lang)
                // track.Name        = strdup(lang->value);
              //else
-                track.Name        = strdup("und");
+                track.Name        = strdup("Stream");
 
             ffmpeg_printf(10, "Language %s\n", track.Name);
 
