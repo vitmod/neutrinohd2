@@ -120,6 +120,7 @@ Writer_t* getDefaultAudioWriter()
     return NULL;
 }
 
+#if defined (ENABLE_LIBASS)
 Writer_t* getDefaultFramebufferWriter()
 {
     int i;
@@ -138,4 +139,5 @@ Writer_t* getDefaultFramebufferWriter()
 
     return NULL;
 }
+#endif
 

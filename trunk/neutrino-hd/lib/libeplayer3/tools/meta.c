@@ -46,8 +46,11 @@ int main(int argc,char* argv[])
         char error[512];
 
         printf("av_open_input_file failed %d (%s)\n", err, file);
+	
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)	
         av_strerror(err, error, 512);
         printf("Cause: %s\n", error);
+#endif	
 
         return -1;
     }

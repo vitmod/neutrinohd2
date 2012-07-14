@@ -200,6 +200,7 @@ static char* Codec2Encoding(enum CodecID id, int* version)
     case CODEC_ID_FLAC: //86030
         return "A_IPCM"; //return "A_FLAC";
 /* subtitle */
+#if defined (ENABLE_LIBASS)
     case CODEC_ID_SSA:
         return "S_TEXT/ASS"; /* Hellmaster1024: seems to be ASS instead of SSA */
     case CODEC_ID_TEXT: /* Hellmaster1024: i dont have most of this, but lets hope it is normal text :-) */
@@ -207,11 +208,14 @@ static char* Codec2Encoding(enum CodecID id, int* version)
     case CODEC_ID_DVB_SUBTITLE:
     case CODEC_ID_XSUB:
     case CODEC_ID_MOV_TEXT:
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)      
     case CODEC_ID_HDMV_PGS_SUBTITLE:
     case CODEC_ID_DVB_TELETEXT:
         return "S_TEXT/SRT"; /* fixme */
     //case CODEC_ID_SRT:
         //return "S_TEXT/SRT"; /* fixme */
+#endif
+#endif
     default:
         ffmpeg_err("ERROR! CODEC NOT FOUND -> %d\n",id);
     }
@@ -242,6 +246,7 @@ long long int calcPts(AVStream* stream, AVPacket* packet)
 }
 
 /*Hellmaster1024: get the Duration of the subtitle from the SSA line*/
+#if defined (ENABLE_LIBASS)
 float getDurationFromSSALine(unsigned char* line){
     int i,h,m,s,ms;
     char* Text = strdup((char*) line);
@@ -268,6 +273,7 @@ float getDurationFromSSALine(unsigned char* line){
     free(Text);
     return (float)msec/1000.0;
 }
+#endif
 
 /* search for metatdata in context and stream
  * and map it to our metadata.
@@ -458,7 +464,9 @@ if(!context->playback->BackWard && audioMute)
             long long int pts;
             Track_t * videoTrack = NULL;
             Track_t * audioTrack = NULL;
+#if defined (ENABLE_LIBASS)	    
             Track_t * subtitleTrack = NULL;
+#endif	    
 
             int index = packet.stream_index;
 
@@ -469,9 +477,10 @@ if(!context->playback->BackWard && audioMute)
 
             if (context->manager->audio->Command(context, MANAGER_GET_TRACK, &audioTrack) < 0)
                 ffmpeg_err("error getting audio track\n");
-
+#if defined (ENABLE_LIBASS)
             if (context->manager->subtitle->Command(context, MANAGER_GET_TRACK, &subtitleTrack) < 0)
                 ffmpeg_err("error getting subtitle track\n");
+#endif	    
 
             ffmpeg_printf(200, "packet.size %d - index %d\n", packet.size, index);
 
@@ -509,8 +518,11 @@ if(!context->playback->BackWard && audioMute)
                 }
             }
 
-            if (audioTrack != NULL) {
-                if (audioTrack->Id == index) {
+	    // audio
+            if (audioTrack != NULL) 
+	    {
+                if (audioTrack->Id == index) 
+		{
                     currentAudioPts = audioTrack->pts = pts = calcPts(audioTrack->stream, &packet);
                     
                     if ((currentAudioPts > latestPts) && (!videoTrack))
@@ -541,8 +553,13 @@ if(!context->playback->BackWard && audioMute)
                         {
                             int decoded_data_size = samples_size;
 
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)
                             bytesDone = avcodec_decode_audio3(( (AVStream*) audioTrack->stream)->codec, 
                                 (short *)(samples), &decoded_data_size, &avpkt);
+#else
+			    bytesDone = avcodec_decode_audio2(( (AVStream*) audioTrack->stream)->codec, 
+                                (short *)(samples), &decoded_data_size, avpkt.data, avpkt.size);
+#endif
 
 
                             if(bytesDone < 0) // Error Happend
@@ -627,8 +644,11 @@ if(!context->playback->BackWard && audioMute)
                 }
             }
 
-            if (subtitleTrack != NULL) {
-                if (subtitleTrack->Id == index) {
+#if defined (ENABLE_LIBASS)
+            if (subtitleTrack != NULL) 
+	    {
+                if (subtitleTrack->Id == index) 
+		{
                     float duration=3.0;
                     ffmpeg_printf(100, "subtitleTrack->stream %p \n", subtitleTrack->stream);
 
@@ -651,7 +671,8 @@ if(!context->playback->BackWard && audioMute)
                           packet.convergence_duration we need to calculate it any other way, for SSA it is stored in
                           the Text line*/
                         duration = getDurationFromSSALine(packet.data);
-                    } else {
+                    } else 
+		    {
                         /* no clue yet */
                     }
 
@@ -668,7 +689,11 @@ if(!context->playback->BackWard && audioMute)
                            AVSubtitle sub;
                            int got_sub_ptr;
 
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)
                            if (avcodec_decode_subtitle2(((AVStream*) subtitleTrack->stream)->codec, &sub, &got_sub_ptr, &packet) < 0)
+#else
+			   if (avcodec_decode_subtitle(((AVStream*) subtitleTrack->stream)->codec, &sub, &got_sub_ptr, packet.data, packet.size) < 0)
+#endif
                            {
                                ffmpeg_err("error decoding subtitle\n");
                            } else
@@ -679,7 +704,9 @@ if(!context->playback->BackWard && audioMute)
                                ffmpeg_printf(0, "start_display_time %d\n", sub.start_display_time);
                                ffmpeg_printf(0, "end_display_time %d\n", sub.end_display_time);
                                ffmpeg_printf(0, "num_rects %d\n", sub.num_rects);
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)			       
                                ffmpeg_printf(0, "pts %lld\n", sub.pts);
+#endif			       
 
                                for (i = 0; i < sub.num_rects; i++)
                                {
@@ -698,6 +725,7 @@ if(!context->playback->BackWard && audioMute)
                            }
 
                         }
+#if defined (ENABLE_LIBASS)                        
                         else
                         if(((AVStream*)subtitleTrack->stream)->codec->codec_id == CODEC_ID_SSA)
                         {
@@ -713,7 +741,7 @@ if(!context->playback->BackWard && audioMute)
                             data.duration  = duration;
 
                             context->container->assContainer->Command(context, CONTAINER_DATA, &data);
-                        }
+                        }                       
                         else
                         {
                             /* hopefully native text ;) */
@@ -733,10 +761,11 @@ if(!context->playback->BackWard && audioMute)
                             context->container->assContainer->Command(context, CONTAINER_DATA, &data);
                             free(line);
                         }
+#endif                        
                     } /* duration */
                 }
             }
-
+#endif
             if (packet.data)
                av_free_packet(&packet);
         }
@@ -801,8 +830,10 @@ int container_ffmpeg_init(Context_t *context, char * filename)
         char error[512];
 
         ffmpeg_err("av_open_input_file failed %d (%s)\n", err, filename);
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)	
         av_strerror(err, error, 512);
         ffmpeg_err("Cause: %s\n", error);
+#endif	
         
         releaseMutex(FILENAME, __FUNCTION__,__LINE__);
         return cERR_CONTAINER_FFMPEG_OPEN;
@@ -847,7 +878,11 @@ int container_ffmpeg_init(Context_t *context, char * filename)
         memset(&track, 0, sizeof(track));
    
         switch (stream->codec->codec_type) {
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)	  
         case AVMEDIA_TYPE_VIDEO:
+#else
+	case CODEC_TYPE_VIDEO:
+#endif
             ffmpeg_printf(10, "CODEC_TYPE_VIDEO %d\n",stream->codec->codec_type);
             
             if (encoding != NULL) {
@@ -914,7 +949,11 @@ int container_ffmpeg_init(Context_t *context, char * filename)
                 ffmpeg_err("codec type video but codec unknown %d\n", stream->codec->codec_id);
             }
             break;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)	    
         case AVMEDIA_TYPE_AUDIO:
+#else
+	case CODEC_TYPE_AUDIO:
+#endif	  
             ffmpeg_printf(10, "CODEC_TYPE_AUDIO %d\n",stream->codec->codec_type);
             
             if (encoding != NULL) {
@@ -1118,6 +1157,8 @@ int container_ffmpeg_init(Context_t *context, char * filename)
                 ffmpeg_err("codec type audio but codec unknown %d\n", stream->codec->codec_id);
             }
             break;
+#if defined (ENABLE_LIBASS)	    
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)	    
         case AVMEDIA_TYPE_SUBTITLE:
         {    
            // AVDictionaryEntry *lang;
@@ -1176,6 +1217,8 @@ int container_ffmpeg_init(Context_t *context, char * filename)
         case AVMEDIA_TYPE_DATA:
         case AVMEDIA_TYPE_ATTACHMENT:
         case AVMEDIA_TYPE_NB:
+#endif
+#endif
         default:
             ffmpeg_err("not handled or unknown codec_type %d\n", stream->codec->codec_type);
          break;
@@ -1283,12 +1326,13 @@ static int container_ffmpeg_seek_bytes(off_t pos) {
 
     if (current_pos > pos)
         flag |= AVSEEK_FLAG_BACKWARD;
-
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52, 64, 0)
     if (avformat_seek_file(avContext, -1, INT64_MIN, pos, INT64_MAX, flag) < 0)
     {
         ffmpeg_err( "Error seeking\n");
         return cERR_CONTAINER_FFMPEG_ERR;
     }
+#endif    
 
     ffmpeg_printf(30, "current_pos after seek %lld\n", url_ftell(avContext->pb));
 
@@ -1319,9 +1363,10 @@ static int container_ffmpeg_seek_bytes_rel(off_t start, off_t bytes) {
 
     ffmpeg_printf(20, "seeking to position %lld (bytes)\n", newpos);
 
-/* fixme: should we adapt INT64_MIN/MAX to some better value?
- * take a loog in ffmpeg to be sure what this paramter are doing
- */
+    /* fixme: should we adapt INT64_MIN/MAX to some better value?
+    * take a loog in ffmpeg to be sure what this paramter are doing
+    */
+    
     if (avformat_seek_file(avContext, -1, INT64_MIN, newpos, INT64_MAX, flag) < 0)
     {
         ffmpeg_err( "Error seeking\n");
@@ -1550,14 +1595,18 @@ static int container_ffmpeg_get_length(Context_t *context, double * length) {
 
     context->manager->video->Command(context, MANAGER_GET_TRACK, &videoTrack);
     context->manager->audio->Command(context, MANAGER_GET_TRACK, &audioTrack);
+#if defined (ENABLE_LIBASS)    
     context->manager->subtitle->Command(context, MANAGER_GET_TRACK, &subtitleTrack);
+#endif    
 
     if (videoTrack != NULL)
         current = videoTrack;
     else if (audioTrack != NULL)
         current = audioTrack;
+#if defined (ENABLE_LIBASS)    
     else if (subtitleTrack != NULL)
         current = subtitleTrack;
+#endif    
 
     *length = 0.0;
 

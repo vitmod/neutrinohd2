@@ -111,15 +111,19 @@ static int Command(void  *_context, ContainerCmd_t command, void * argument) {
     return ret;
 }
 
+#if defined (ENABLE_LIBASS)
 extern Container_t SrtContainer;
 extern Container_t SsaContainer;
 extern Container_t ASSContainer;
+#endif
 
 ContainerHandler_t ContainerHandler = {
     "Output",
     NULL,
+#if defined (ENABLE_LIBASS)    
     &SrtContainer,
     &SsaContainer,
     &ASSContainer,
+#endif    
     Command,
 };

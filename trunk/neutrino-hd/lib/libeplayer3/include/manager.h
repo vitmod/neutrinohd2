@@ -46,7 +46,7 @@ typedef struct Track_s {
     void               *  stream;
     /* codec extra data (header or some other stuff) */
     void               *  extraData;
-    int		              extraSize;
+    int		          extraSize;
 
     uint8_t*              aacbuf;
     unsigned int          aacbuflen;
@@ -68,7 +68,9 @@ typedef struct ManagerHandler_s {
     char * Name;
     Manager_t * audio;
     Manager_t * video;
+#if defined (ENABLE_LIBASS)    
     Manager_t * subtitle;
+#endif    
 } ManagerHandler_t;
 
 void freeTrack(Track_t* track);

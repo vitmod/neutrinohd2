@@ -39,13 +39,17 @@
 
 extern Manager_t AudioManager;
 extern Manager_t VideoManager;
+#if defined (ENABLE_LIBASS)
 extern Manager_t SubtitleManager;
+#endif
 
 ManagerHandler_t ManagerHandler = {
     "ManagerHandler",
     &AudioManager,
     &VideoManager,
+#if defined (ENABLE_LIBASS)    
     &SubtitleManager,
+#endif    
 };
 
 /* ***************************** */
@@ -88,6 +92,5 @@ void freeTrack(Track_t* track)
 
     if (track->aacbuf != NULL)
         free(track->aacbuf);
-
 }
 

@@ -10,7 +10,7 @@
 typedef struct Context_s {
     PlaybackHandler_t	* playback;
     ContainerHandler_t	* container;
-    OutputHandler_t		* output;
+    OutputHandler_t	* output;
     ManagerHandler_t	* manager;
 } Context_t;
 
