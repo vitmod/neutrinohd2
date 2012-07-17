@@ -41,30 +41,6 @@
 
 #ifdef __sh__
 #include "stm_ioctls.h"
-#else
-//#include <video_cs.h>
-#if 0
-typedef enum {
-	VIDEO_STREAMTYPE_MPEG2,
-	VIDEO_STREAMTYPE_MPEG4_H264,
-	VIDEO_STREAMTYPE_MPEG4_H263,
-	VIDEO_STREAMTYPE_VC1,
-	VIDEO_STREAMTYPE_MPEG4_Part2,
-	VIDEO_STREAMTYPE_VC1_SM,
-	VIDEO_STREAMTYPE_MPEG1,
-	VIDEO_STREAMTYPE_DIVX311
-}VIDEO_FORMAT;
-
-typedef enum {
-	AUDIO_STREAMTYPE_AC3 = 0,
-	AUDIO_STREAMTYPE_MPEG,
-	AUDIO_STREAMTYPE_DTS,
-	AUDIO_STREAMTYPE_LPCMDVD = 6,
-	AUDIO_STREAMTYPE_AAC = 8,
-	AUDIO_STREAMTYPE_AACPLUS,
-	AUDIO_STREAMTYPE_MP3
-}AUDIO_FORMAT;
-#endif
 #endif
 
 #include "writer.h"
@@ -158,11 +134,13 @@ int LinuxDvbOpen(Context_t  *context, char * type)
 			}
 		}
 
+		#if 0 //FIXME: do we need this ???
 		if (ioctl( videofd, VIDEO_CLEAR_BUFFER, NULL) == -1)
 		{
 			linuxdvb_err("ioctl failed with errno %d\n", errno);
 			linuxdvb_err("VIDEO_CLEAR_BUFFER: %s\n", strerror(errno));
 		}
+		#endif
 
 		if (ioctl( videofd, VIDEO_SELECT_SOURCE, (void*)VIDEO_SOURCE_MEMORY) == -1)
 		{
@@ -207,11 +185,13 @@ int LinuxDvbOpen(Context_t  *context, char * type)
 			return cERR_LINUXDVB_ERROR;
 		}
 
+		#if 0 //FIXME: do we need this ???
 		if (ioctl( audiofd, AUDIO_CLEAR_BUFFER, NULL) == -1)
 		{
 			linuxdvb_err("ioctl failed with errno %d\n", errno);
 			linuxdvb_err("AUDIO_CLEAR_BUFFER: %s\n", strerror(errno));
 		}
+		#endif
 
 		if (ioctl( audiofd, AUDIO_SELECT_SOURCE, (void*)AUDIO_SOURCE_MEMORY) == -1)
 		{
@@ -386,11 +366,13 @@ int LinuxDvbStop(Context_t  *context, char * type)
 
 	if (video && videofd != -1) 
 	{
+		#if 0 //FIXME: do we need this ???
 		if (ioctl(videofd, VIDEO_CLEAR_BUFFER, NULL) == -1)
 		{
 			linuxdvb_err("ioctl failed with errno %d\n", errno);
 			linuxdvb_err("VIDEO_CLEAR_BUFFER: %s\n", strerror(errno));
 		}
+		#endif
 
 		/* set back to normal speed (end trickmodes) */
 #ifdef __sh__		
@@ -411,11 +393,13 @@ int LinuxDvbStop(Context_t  *context, char * type)
 	
 	if (audio && audiofd != -1) 
 	{
+		#if 0 //FIXME: do we need this ???
 		if (ioctl(audiofd, AUDIO_CLEAR_BUFFER, NULL) == -1)
 		{
 			linuxdvb_err("ioctl failed with errno %d\n", errno);
 			linuxdvb_err("AUDIO_CLEAR_BUFFER: %s\n", strerror(errno));
 		}
+		#endif
 
 		/* set back to normal speed (end trickmodes) */
 #ifdef __sh__		
@@ -1066,11 +1050,13 @@ int LinuxDvbSwitch(Context_t  *context, char * type)
 					linuxdvb_err("VIDEO_STOP: %s\n", strerror(errno));
 				}
 
+				#if 0 //FIXME: do we need this ???
 				if (ioctl(videofd, VIDEO_CLEAR_BUFFER ,NULL) == -1)
 				{
 					linuxdvb_err("ioctl failed with errno %d\n", errno);
 					linuxdvb_err("VIDEO_CLEAR_BUFFER: %s\n", strerror(errno));
 				}
+				#endif
 
 				linuxdvb_printf(10, "V %s\n", Encoding);
 

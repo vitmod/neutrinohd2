@@ -1001,11 +1001,14 @@ int container_ffmpeg_init(Context_t *context, char * filename)
 
 
                 }
-                else if(stream->codec->codec_id == CODEC_ID_AAC) {
+                else if(stream->codec->codec_id == CODEC_ID_AAC) 
+		{
                     ffmpeg_printf(10,"Create AAC ExtraData\n");
                     ffmpeg_printf(10,"stream->codec->extradata_size %d\n", stream->codec->extradata_size);
+		    
+		    #ifdef FFMPEG_DEBUG_1
                     Hexdump(stream->codec->extradata, stream->codec->extradata_size);
-  
+		    #endif
   /* extradata
 13 10 56 e5 9d 48 00 (anderen cops)
 	object_type: 00010 2 = LC
@@ -1047,8 +1050,10 @@ int container_ffmpeg_init(Context_t *context, char * filename)
                     track.aacbuf[5] = 0x1F;
                     track.aacbuf[6] = 0xFC;
                     
+		    #ifdef FFMPEG_DEBUG_1
                     printf("AAC_HEADER -> ");
                     Hexdump(track.aacbuf,7);
+		    #endif
                     track.have_aacheader = 1;
 
                 } else if(stream->codec->codec_id == CODEC_ID_WMAV1
@@ -1135,8 +1140,10 @@ int container_ffmpeg_init(Context_t *context, char * filename)
 
                     memcpy(track.aacbuf + 96, stream->codec->extradata, stream->codec->extradata_size);
 
+		    #ifdef FFMPEG_DEBUG_1
                     ffmpeg_printf(1, "aacbuf:\n");
                     Hexdump(track.aacbuf, track.aacbuflen);
+		    #endif
 
                     //ffmpeg_printf(1, "priv_data:\n");
                     //Hexdump(stream->codec->priv_data, track.aacbuflen);
