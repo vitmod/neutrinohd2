@@ -3820,17 +3820,6 @@ _repeat:
 			}
 		}
 
-		// recording_zap_on_announce
-		#if 0
-		if(recordingstatus == 0) 
-		{
-			dvbsub_stop(); //FIXME if same channel ?
-				
-			t_channel_id channel_id=((CTimerd::RecordingInfo*)data)->channel_id;
-			g_Zapit->zapTo_serviceID_NOWAIT(channel_id); 
-		}
-		#endif
-
 		delete[] (unsigned char*) data;
 		
 		if( mode != mode_scart )
