@@ -3305,13 +3305,13 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 		{
 			scrambled_timer = 0;
 
-#if 0
+			#if 0
 			if(videoDecoder->getBlank() && videoDecoder->getPlayState()) 
 			{
 				const char * text = g_Locale->getText(LOCALE_SCRAMBLED_CHANNEL);
 				ShowHintUTF (LOCALE_MESSAGEBOX_INFO, text, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth (text, true) + 10, 5);
 			}
-#endif
+			#endif
 
 			return messages_return::handled;	
 		}
@@ -3779,6 +3779,7 @@ _repeat:
 		{
 			char * recDir = ((CTimerd::RecordingInfo*)data)->recordingDir;
 
+			// etherwake
 			for(int i=0 ; i < NETWORK_NFS_NR_OF_ENTRIES ; i++) 
 			{
 				if (strcmp(g_settings.network_nfs_local_dir[i],recDir) == 0) 
@@ -3820,15 +3821,15 @@ _repeat:
 		}
 
 		// recording_zap_on_announce
+		#if 0
 		if(recordingstatus == 0) 
 		{
 			dvbsub_stop(); //FIXME if same channel ?
-			//TEST
-			//dvbsub_close();
 				
 			t_channel_id channel_id=((CTimerd::RecordingInfo*)data)->channel_id;
 			g_Zapit->zapTo_serviceID_NOWAIT(channel_id); 
 		}
+		#endif
 
 		delete[] (unsigned char*) data;
 		
