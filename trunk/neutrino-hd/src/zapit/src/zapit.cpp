@@ -2856,7 +2856,7 @@ unsigned zapTo(const unsigned int bouquet, const unsigned int channel)
 		return CZapitClient::ZAP_INVALID_PARAM;
 	}
 
-	ZapitChannelList *channels;
+	ZapitChannelList * channels;
 
 	if (currentMode & RADIO_MODE)
 		channels = &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
@@ -2917,15 +2917,6 @@ unsigned zapTo(const unsigned int channel)
 	else
 		return 0;
 }
-
-/*
-void send_ca_id(int caid)
-{
-	printf("\n[zapit]send_ca_id: send event: EVT_ZAP_CA_ID\n");
-	
-	eventServer->sendEvent(CZapitClient::EVT_ZAP_CA_ID, CEventServer::INITID_ZAPIT, &caid, sizeof(int));
-}
-*/
 
 void setZapitConfig(Zapit_config * Cfg)
 {
