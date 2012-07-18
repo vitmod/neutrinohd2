@@ -28,6 +28,7 @@
 /* ***************************** */
 
 //#define PLAYBACK_DEBUG
+#define PLAYBACK_SILENT
 
 static short debug_level = 10;
 
