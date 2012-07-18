@@ -150,9 +150,7 @@ typedef struct Zapit_config {
 	int makeRemainingChannelsBouquet;
 	int saveLastChannel;
 	int rezapTimeout;
-	//int fastZap;
 	int sortNames;
-	//int highVoltage;
 	int scanPids;
 	int scanSDT;
 	int useGotoXX;

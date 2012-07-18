@@ -1233,22 +1233,19 @@ void CFrontend::setInput(t_satellite_position satellitePosition, uint32_t freque
 
 	printf("CFrontend::setInput: fe(%d) SatellitePosition %d -> %d\n", fenumber, currentSatellitePosition, satellitePosition);
 
-#if 0
-	if (currentSatellitePosition != satellitePosition)
-#endif
-		
-		//setLnbOffsets(sit->second.lnbOffsetLow, sit->second.lnbOffsetHigh, sit->second.lnbSwitch);
-		//test
-		if(info.type==FE_QPSK)
+	// set lnb offset
+	if(info.type == FE_QPSK)
 			setLnbOffsets(sit->second.lnbOffsetLow, sit->second.lnbOffsetHigh, sit->second.lnbSwitch);
 
 
+	// set diseqc
 	if (diseqcType != DISEQC_ADVANCED) 
 	{
 		setDiseqc(sit->second.diseqc, polarization, frequency);
 		return;
 	}
 
+	// set simple or committed diseqc
 	if (sit->second.diseqc_order == COMMITED_FIRST) 
 	{
 		if (setDiseqcSimple(sit->second.commited, polarization, frequency))

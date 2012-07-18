@@ -36,7 +36,8 @@
 
 
 /* audio map struct */
-typedef struct audio_map_set {
+typedef struct audio_map_set 
+{
         unsigned short apid;
         int mode;
         unsigned int volume;
@@ -46,12 +47,14 @@ typedef struct audio_map_set {
 } audio_map_set_t;
 
 /* subtitling support */
-class CZapitAbsSub {
+class CZapitAbsSub 
+{
  	public:
     		unsigned short pId;
     		std::string ISO639_language_code;
 		
-    		enum ZapitSubtitleType {
+    		enum ZapitSubtitleType 
+    		{
         		TTX,
         		DVB
     		};
@@ -59,7 +62,8 @@ class CZapitAbsSub {
     		ZapitSubtitleType thisSubType;
 };
 
-class CZapitDVBSub:public CZapitAbsSub {
+class CZapitDVBSub:public CZapitAbsSub 
+{
 	public:
 		unsigned short subtitling_type;
 		/*
@@ -109,7 +113,7 @@ class CZapitAudioChannel
 	       ZapitAudioChannelType audioChannelType;
 };
 
-class CChannelList;
+class CChannelList;	// defined gui/channellist.cpp
 
 class CZapitChannel
 {

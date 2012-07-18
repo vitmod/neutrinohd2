@@ -183,7 +183,7 @@ void ParseChannels(xmlNodePtr node, const t_transport_stream_id transport_stream
 
 		pair<map<t_channel_id, CZapitChannel>::iterator,bool> ret;
 
-		ret = allchans.insert (std::pair <t_channel_id, CZapitChannel> (chid,CZapitChannel ( name, service_id,transport_stream_id,original_network_id,service_type, satellitePosition, freq, FeIndex)));
+		ret = allchans.insert (std::pair <t_channel_id, CZapitChannel> (chid,CZapitChannel ( name, service_id, transport_stream_id,original_network_id, service_type, satellitePosition, freq, FeIndex)));
 
 		//printf("getServicess:ParseChannels: add %s %x fe(%d)\n", name.c_str(), &ret.first->second, FeIndex);
 

@@ -157,7 +157,7 @@ scan_list_t scanProviders;
 // DVB
 #define DVBADAPTER_MAX	1
 #define FRONTEND_MAX	4
-//int AdapterCount = 0;
+int AdapterCount = 0;
 int FrontendCount = 0;
 static bool twin_mode = false;
 
@@ -452,7 +452,7 @@ void start_camd(bool forupdate = false)
 		else 
 		{
 			// zap back to rec. channel
-			camask =  5; 	//
+			camask =  1 /*5*/; 	//
 					
 			cam0->setCaPmt(channel->getCaPmt(), 0, camask, true); // update
 			cam1->sendMessage(0, 0); // stop/close
@@ -2688,7 +2688,7 @@ int stopPlayBack(bool stopemu)
 			// if we recording and rec == live, only update camask on cam0, else stop cam1
 			if(live_channel_id == rec_channel_id)
 			{
-				cam0->setCaPmt(channel->getCaPmt(), 0, 4, true); // demux0+ 2, update
+				cam0->setCaPmt(channel->getCaPmt(), 0, 1/*4*/, true); // demux0+ 2, update
 			}
 			else
 				cam1->sendMessage(0, 0);
