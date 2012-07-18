@@ -62,9 +62,6 @@ struct SNeutrinoSettings
 	int audio_DolbyDigital;
 
 	int hdmi_dd;
-	
-	//int hdmi_dd_source;
-	//int spdif_dd;
 
 	int avsync;
 	
@@ -480,22 +477,18 @@ const int PARENTALLOCK_PROMPT_ONSIGNAL       = 3;
 // scan settings
 #define MAX_SATELLITES 80
 
-struct SglobalInfo
-{
-	unsigned char     box_Type;
-	//delivery_system_t delivery_system;
-};
 
 class CScanSettings
 {
 	public:
 		CConfigFile	configfile;
+		
 		int		bouquetMode;
 		int		scanType;
 		int		diseqcMode;
 		uint32_t	diseqcRepeat;
-		char                      satNameNoDiseqc[50];
-		//delivery_system_t         delivery_system;
+		char            satNameNoDiseqc[50];
+		
 		int		scanSectionsd;
 		int		scan_mode;
 		int		TP_fec;
@@ -515,8 +508,8 @@ class CScanSettings
 	
 		CScanSettings();
 	
-		void useDefaults(/*const delivery_system_t _delivery_system*/ );
-		bool loadSettings(const char * const fileName/*, const delivery_system_t _delivery_system*/ );
+		void useDefaults();
+		bool loadSettings(const char * const fileName);
 		bool saveSettings(const char * const fileName);
 };
 

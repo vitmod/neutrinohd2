@@ -65,15 +65,13 @@ const neutrino_locale_t timing_setting_name[TIMING_SETTING_COUNT] =
 CScanSettings::CScanSettings(void)
 	: configfile('\t')
 {
-	//delivery_system = DVB_S;
 	satNameNoDiseqc[0] = 0;
 }
 
-void CScanSettings::useDefaults( /*const delivery_system_t _delivery_system*/ )
+void CScanSettings::useDefaults()
 {
 	printf("[neutrino] CScanSettings::useDefaults\n");
 	
-	//delivery_system = _delivery_system;
 	bouquetMode     = CZapitClient::BM_UPDATEBOUQUETS;
 	scanType = CZapitClient::ST_ALL;
 	diseqcMode      = NO_DISEQC;
@@ -90,47 +88,16 @@ void CScanSettings::useDefaults( /*const delivery_system_t _delivery_system*/ )
 	TP_guard = 3;
 	TP_hierarchy = 0;
 
-	/*
-	switch (delivery_system)
-	{
-		case DVB_C:
-			strcpy(satNameNoDiseqc, "none");
-			break;
-			
-		case DVB_S:
-			strcpy(satNameNoDiseqc, "none");
-			break;
-			
-		case DVB_T:
-			strcpy(satNameNoDiseqc, "");
-			break;
-	}
-	*/
 	strcpy(satNameNoDiseqc, "none");
 }
 
-bool CScanSettings::loadSettings(const char * const fileName/*, const delivery_system_t _delivery_system*/ )
+bool CScanSettings::loadSettings(const char * const fileName)
 {
 	printf("[neutrino] CScanSettings::loadSettings\n");
 	
-	/* use default */
-	//useDefaults(_delivery_system);
-	
 	/* if scan.conf not exists load default */
 	if(!configfile.loadConfig(fileName))
-		//return false;
-		useDefaults( /*_delivery_system*/ );
-
-	/* check delivery system */
-	#if 0
-	if (configfile.getInt32("delivery_system", -1) != delivery_system)
-	{
-		// configfile is not for this delivery system
-		configfile.clear();
-		//return false;
-		useDefaults(_delivery_system);
-	}
-	#endif
+		useDefaults( );
 
 	diseqcMode = configfile.getInt32("diseqcMode"  , diseqcMode);
 	diseqcRepeat = configfile.getInt32("diseqcRepeat", diseqcRepeat);
@@ -167,15 +134,7 @@ bool CScanSettings::loadSettings(const char * const fileName/*, const delivery_s
 
 bool CScanSettings::saveSettings(const char * const fileName)
 {
-	printf("[neutrino] CScanSettings::saveSettings\n");
-	
-	/* remove file */
-	//remove(fileName);
-	
-	//test
-	//printf("test: delivery_system: %d\n\n", g_info.delivery_system);
-	
-	//configfile.setInt32("delivery_system", delivery_system);
+	printf("CScanSettings::saveSettings\n");
 	
 	configfile.setInt32( "diseqcMode", diseqcMode );
 	configfile.setInt32( "diseqcRepeat", diseqcRepeat );
