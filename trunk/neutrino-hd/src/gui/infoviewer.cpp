@@ -647,7 +647,7 @@ void CInfoViewer::showTitle (const int ChanNum, const std::string & Channel, con
 			}
 #endif
 
-			if (msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
+			if ( msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
 			{
 				g_RCInput->postMsg (msg, 0);
 				res = messages_return::cancel_info;
@@ -1807,6 +1807,7 @@ CSectionsdClient::CurrentNextInfo CInfoViewer::getEPG(const t_channel_id for_cha
 				msg = NeutrinoMessages::EVT_CURRENTEPG;
 			else
 				msg = NeutrinoMessages::EVT_NEXTEPG;
+			
 			g_RCInput->postMsg(msg, (unsigned) _info, false );
 		} 
 		else 

@@ -251,9 +251,6 @@ int CListBox::exec(CMenuTarget* parent, const std::string & actionKey)
 		{
 			onBlueKeyPressed();
 		}
-		else if ((msg ==CRCInput::RC_sat) || (msg == CRCInput::RC_favorites))
-		{
-		}
 		else
 		{
 			CNeutrinoApp::getInstance()->handleMsg( msg, data );

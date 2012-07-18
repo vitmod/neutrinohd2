@@ -177,10 +177,6 @@ int CScreenSetup::exec(CMenuTarget* parent, const std::string &)
 						paintBorder( selected );
 					break;
 				}
-				
-			case CRCInput::RC_favorites:
-			case CRCInput::RC_sat:
-				break;
 
 			default:
 				if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )

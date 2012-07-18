@@ -594,7 +594,7 @@ int CChannelList::show()
 			bShowBouquetList = true;
 			loop=false;
 		}
-		else if( msg == CRCInput::/*RC_green*/RC_blue ) //epgplus
+		else if( msg == CRCInput::RC_blue ) //epgplus
 		{
 			CEPGplusHandler * tmpEPGplusHandler = NULL;
 			tmpEPGplusHandler = new CEPGplusHandler();
@@ -606,7 +606,7 @@ int CChannelList::show()
 			
 			loop = false;
 		}
-		else if (msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
+		else if ( msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
 		{
 			g_RCInput->postMsg (msg, 0);
 			loop = false;
@@ -1392,9 +1392,6 @@ int CChannelList::numericZap(int key)
 			if ( ( chn > (int)chanlist.size() ) || (chn == 0) )
 				chn = tuned + 1;
 			break;
-		}
-		else if ( msg == CRCInput::RC_favorites || msg == CRCInput::RC_sat)
-		{
 		}
 		else if (CRCInput::isNumeric(msg)) 
 		{

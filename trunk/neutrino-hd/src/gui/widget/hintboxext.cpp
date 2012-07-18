@@ -217,9 +217,10 @@ void CHintBoxExt::refresh(bool toround)
 	{
 		return;
 	}
-	// bottom, right shadow
-	m_window->paintBoxRel(m_width-20, borderwidth, borderwidth+20, m_height - borderwidth, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);//round
-	m_window->paintBoxRel(borderwidth, m_height-20, m_width, borderwidth+20, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
+	
+	// paint shadow (buttom , right)
+	//m_window->paintBoxRel(m_width-20, borderwidth, borderwidth+20, m_height - borderwidth, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);//round
+	//m_window->paintBoxRel(borderwidth, m_height-20, m_width, borderwidth+20, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 	
 	// title
 	m_window->paintBoxRel(0, 0, m_width, m_theight, (CFBWindow::color_t)COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);//round
@@ -257,6 +258,7 @@ void CHintBoxExt::refresh(bool toround)
 		yPos += maxHeight;
 	}
 
+	// paint scrollbar
 	if (has_scrollbar()) 
 	{
 		yPos = m_theight;

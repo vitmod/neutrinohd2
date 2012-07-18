@@ -427,29 +427,6 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 				
 				char * recDir = g_settings.network_nfs_recordingdir;
 				
-				/*
-				if (g_settings.recording_choose_direct_rec_dir)
-				{
-					int id = -1;
-					CMountChooser recDirs(LOCALE_TIMERLIST_RECORDING_DIR, NEUTRINO_ICON_SETTINGS, &id, NULL, g_settings.network_nfs_recordingdir);
-					if (recDirs.hasItem()) 
-					{
-						hide();
-						recDirs.exec(NULL,"");
-						paint(channel_id);
-					} 
-					else
-					{
-						printf("[CEventList] no network devices available\n");					
-					}
-					
-					if (id != -1)
-						recDir = g_settings.network_nfs_local_dir[id];
-					else 
-						recDir = NULL;
-				}
-				*/
-				
 				if (recDir != NULL)
 				{
 					//FIXME: bad ?if (g_Timerd->addRecordTimerEvent(evtlist[selected].sub ? GET_CHANNEL_ID_FROM_EVENT_ID(evtlist[selected].eventID) : channel_id,

@@ -1633,7 +1633,7 @@ int CMenuForwarderItemMenuIcon::paint(bool selected)
 		// help text
 		const char * help_text = getHelpText();
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMSMALL]->RenderString(stringstartposX, HEIGHT, dx - (stringstartposX - x), help_text, COL_MENUHEAD, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::/*FONT_TYPE_EVENTLIST_ITEMSMALL*/FONT_TYPE_EPG_INFO1]->RenderString(stringstartposX, HEIGHT, dx - (stringstartposX - x), help_text, COL_MENUHEAD, 0, true); // UTF-8
 	}
 	
 	// paint item

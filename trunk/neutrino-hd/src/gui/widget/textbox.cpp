@@ -408,12 +408,16 @@ void CTextBox::refreshTextLineArray(void)
 
 void CTextBox::refreshScroll(void)
 {
-	if(	!(m_nMode & SCROLL)) return;
-	if( frameBuffer == NULL) return;
+	if(	!(m_nMode & SCROLL)) 
+		return;
+	
+	if( frameBuffer == NULL) 
+		return;
 
 	if (m_nNrOfPages > 1) 
 	{
 		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX+m_cFrame.iX, m_cFrameScrollRel.iY+m_cFrame.iY, m_cFrameScrollRel.iWidth, m_cFrameScrollRel.iHeight, COL_MENUCONTENT_PLUS_1);
+		
 		unsigned int marker_size = m_cFrameScrollRel.iHeight / m_nNrOfPages;
 		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + SCROLL_MARKER_BORDER+m_cFrame.iX, m_cFrameScrollRel.iY + m_nCurrentPage * marker_size+m_cFrame.iY, m_cFrameScrollRel.iWidth - 2*SCROLL_MARKER_BORDER, marker_size, COL_MENUCONTENT_PLUS_3);
 	}

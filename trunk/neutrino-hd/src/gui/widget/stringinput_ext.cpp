@@ -279,9 +279,6 @@ int CExtendedInput::exec( CMenuTarget* parent, const std::string & )
 					*cancel = true;
 			}
 		}
-		else if ((msg ==CRCInput::RC_sat) || (msg == CRCInput::RC_favorites))
-		{
-		}
 		else if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
 		{
 			loop = false;

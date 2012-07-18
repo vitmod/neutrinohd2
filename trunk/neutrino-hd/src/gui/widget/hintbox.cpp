@@ -257,9 +257,6 @@ int ShowHintUTF(const neutrino_locale_t Caption, const char * const Text, const 
 			else
 				hintBox->scroll_down();
 		}
-		else if((msg == CRCInput::RC_sat) || (msg == CRCInput::RC_favorites)) 
-		{
-		}
 		else if((msg == CRCInput::RC_mode) || (msg == CRCInput::RC_next) || (msg == CRCInput::RC_prev)) 
 		{
 				res = messages_return::cancel_info;

@@ -68,6 +68,7 @@ class CMsgBox
 			mbrCancel = 2,
 			mbrBack   = 3
 		};
+		
 		enum buttons_
 		{
 			mbYes =		0x01,
@@ -76,6 +77,7 @@ class CMsgBox
 			mbAll =		0x07,
 			mbBack =	0x08
 		};
+		
 		 enum mode_
 		{
 			AUTO_WIDTH	= 0x01,

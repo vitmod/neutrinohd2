@@ -533,7 +533,7 @@ int CTimerList::show()
 			res=menu_return::RETURN_EXIT_ALL;
 			loop=false;
 		}
-		else if( /*msg == CRCInput::RC_help ||*/ msg == CRCInput::RC_info)
+		else if(msg == CRCInput::RC_info)
 		{
 			CTimerd::responseGetTimer* timer=&timerlist[selected];
 			if(timer!=NULL)

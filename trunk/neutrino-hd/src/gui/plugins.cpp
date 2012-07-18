@@ -298,7 +298,7 @@ void CPlugins::startPlugin(const char * const name)
 
 }
 
-int mysystem(char * cmd, char * arg1, char * arg2);
+//int mysystem(char * cmd, char * arg1, char * arg2);
 void CPlugins::startScriptPlugin(int number)
 {
 	const char *script = plugin_list[number].pluginfile.c_str();
@@ -312,7 +312,23 @@ void CPlugins::startScriptPlugin(int number)
 	}
 	
 	//system("script");
-	mysystem((char *) plugin_list[number].pluginfile.c_str(), NULL, NULL);
+	//mysystem((char *)plugin_list[number].pluginfile.c_str(), NULL, NULL);
+	FILE *f = popen(script,"r");
+	if (f != NULL)
+	{
+		//char output[1024];
+		//while (fgets(output,1024,f))
+		//{
+		//	scriptOutput += output; 
+		//}
+		
+		printf("CPlugins::startScriptPlugin: script %s successfull started\n", script);
+		pclose(f);
+	} 
+	else 
+	{	
+		printf("[CPlugins] can't execute %s\n",script);
+	}
 }
 
 void CPlugins::startPlugin(int number,int param)

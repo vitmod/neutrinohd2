@@ -241,11 +241,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 			case CRCInput::RC_timeout:
 				loop = false;
 				break;
-
-			case CRCInput::RC_sat:
-			case CRCInput::RC_favorites:
-				break;
-				
+	
 			default:
 				if ( CNeutrinoApp::getInstance()->handleMsg( msg, data ) & messages_return::cancel_all )
 				{

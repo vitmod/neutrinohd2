@@ -1142,7 +1142,7 @@ int EpgPlus::exec (CChannelList * channelList, int selectedChannelIndex, CBouque
 		  			}
 				}
 			}
-			else if (msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
+			else if ( msg == CRCInput::RC_sat || msg == CRCInput::RC_favorites)
 			{
 				g_RCInput->postMsg (msg, 0);
 				res = menu_return::RETURN_EXIT_ALL;

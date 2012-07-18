@@ -421,9 +421,6 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 			strncpy(value, oldval, size);
 			loop=false;
 		}
-		else if ((msg ==CRCInput::RC_sat) || (msg == CRCInput::RC_favorites))
-		{
-		}
 		else
 		{
 			int r = handleOthers( msg, data );

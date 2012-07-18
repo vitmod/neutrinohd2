@@ -501,6 +501,7 @@ bool CMsgBox::hide(void)
 		TRACE("  return -> window does not exists\r\n");
 		return (false);
 	}
+	
 	if(m_pcTextBox != NULL)
 	{
 		m_pcTextBox->hide();
@@ -583,7 +584,9 @@ bool CMsgBox::paint(void)
 	{
 		m_pcTextBox->paint();
 	}
+	
 	refresh();
+	
 	return (true);
 }
 
@@ -639,6 +642,7 @@ int CMsgBox::exec( int timeout, int returnDefaultOnTimeout)
 
 	// show message box
 	paint();
+	
 	if (m_pcWindow == NULL)
 	{
 		return res; /* out of memory */
@@ -713,9 +717,6 @@ int CMsgBox::exec( int timeout, int returnDefaultOnTimeout)
 		else if(msg == CRCInput::RC_ok)
 		{
 			loop = false;
-		}
-		else if ((msg ==CRCInput::RC_sat) || (msg == CRCInput::RC_favorites))
-		{
 		}
 		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
 		{

@@ -140,27 +140,28 @@ class CTextBox
 		void    scrollPageDown(const int pages);
 		void    scrollPageUp(const int pages);				
 		bool	setText(const std::string* newText, int _max_width = 0);
-inline	bool 	isPainted(void){if( frameBuffer == NULL) return (false); else return (true);};
+		
+		inline	bool 	isPainted(void){if( frameBuffer == NULL) return (false); else return (true);};
 
-inline	CBox	getWindowsPos(void)			{return(m_cFrame);};
-inline	int		getMaxLineWidth(void)		{return(m_nMaxLineWidth);};
-inline  int     getLines(void)				{return(m_nNrOfLines);};
-inline  int     getPages(void)				{return(m_nNrOfPages);};
-inline	void	movePosition(int x, int y){m_cFrame.iX = x; m_cFrame.iY = y;};
+		inline	CBox	getWindowsPos(void)			{return(m_cFrame);};
+		inline	int		getMaxLineWidth(void)		{return(m_nMaxLineWidth);};
+		inline  int     getLines(void)				{return(m_nNrOfLines);};
+		inline  int     getPages(void)				{return(m_nNrOfPages);};
+		inline	void	movePosition(int x, int y){m_cFrame.iX = x; m_cFrame.iY = y;};
 
 		void paint (void);
 		void hide (void);
 
 
 		/* Variables */
-	typedef enum mode_
-	{
-		AUTO_WIDTH	= 0x01,
-		AUTO_HIGH	= 0x02,
-		SCROLL		= 0x04,
-		CENTER		= 0x40,
-		NO_AUTO_LINEBREAK = 0x80
-	}mode;
+		typedef enum mode_
+		{
+			AUTO_WIDTH	= 0x01,
+			AUTO_HIGH	= 0x02,
+			SCROLL		= 0x04,
+			CENTER		= 0x40,
+			NO_AUTO_LINEBREAK = 0x80
+		}mode;
 };
 
 						
