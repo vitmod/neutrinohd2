@@ -39,8 +39,6 @@
 #include_next<locale.h>
 #include <time.h>
 
-//const char * getISO639Description(const char * const iso);
-
 #include <map>
 
 void initialize_iso639_map(void);
@@ -57,11 +55,11 @@ class CLocaleManager
 		
 	public:
 		enum loadLocale_ret_t
-			{
-				ISO_8859_1_FONT =  0,
-				UNICODE_FONT    =  1,
-				NO_SUCH_LOCALE  = -1
-			};
+		{
+			ISO_8859_1_FONT =  0,
+			UNICODE_FONT    =  1,
+			NO_SUCH_LOCALE  = -1
+		};
 
 		CLocaleManager();
 		~CLocaleManager();
@@ -73,4 +71,5 @@ class CLocaleManager
 		static neutrino_locale_t getMonth  (const struct tm * struct_tm_p);
 		static neutrino_locale_t getWeekday(const struct tm * struct_tm_p);
 };
+
 #endif
