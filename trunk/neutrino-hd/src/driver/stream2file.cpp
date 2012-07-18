@@ -152,9 +152,7 @@ stream2file_error_msg_t start_recording(const char * const filename, const char 
 	}
 	
         if(channel)
-	{
 		cam0->setCaPmt(channel->getCaPmt(), 0, 1, true); // demux 0+2 , update
-	}
 
 	return STREAM2FILE_OK;
 }

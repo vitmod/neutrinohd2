@@ -357,10 +357,8 @@ void * streamts_live_thread(void *data)
 	for(int i = 1; i < demuxfd_count; i++)
 		dmx->addPid(pids[i]);
 
-        if(channel)
-	{
+	if(channel)
 		cam0->setCaPmt(channel->getCaPmt(), 0, 1, true); // demux 0 + 1, update
-	}
 
 	ssize_t r;
 
