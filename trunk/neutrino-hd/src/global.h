@@ -68,7 +68,6 @@
 
 
 NEUTRINO_CPP  SNeutrinoSettings		g_settings;
-NEUTRINO_CPP  SglobalInfo		g_info;
 
 NEUTRINO_CPP  CZapitClient		*g_Zapit;
 NEUTRINO_CPP  CSectionsdClient		*g_Sectionsd;

@@ -781,7 +781,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 
 	//wss	
 	g_settings.wss_mode = configfile.getInt32("wss_mode", WSS_OFF);
-
 	// end video
 
 	// audio
@@ -803,7 +802,8 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.auto_lang = configfile.getInt32( "auto_lang", 0 );
 	g_settings.auto_subs = configfile.getInt32( "auto_subs", 0 );
 
-	for(int i = 0; i < 3; i++) {
+	for(int i = 0; i < 3; i++) 
+	{
 		sprintf(cfg_key, "pref_lang_%d", i);
 		strncpy(g_settings.pref_lang[i], configfile.getString(cfg_key, "").c_str(), 30);
 		sprintf(cfg_key, "pref_subs_%d", i);
@@ -3366,7 +3366,7 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 					nNewChannel = bouquetList->Bouquets[old_b]->channelList->exec();	//with ZAP!
 				else
 					nNewChannel = bouquetList->exec(true);
-			} 
+			}
 			else if(msg == CRCInput::RC_sat) 
 			{
 				SetChannelMode(LIST_MODE_SAT);

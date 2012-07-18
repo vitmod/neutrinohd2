@@ -756,8 +756,8 @@ void CNeutrinoApp::InitServiceSettings(CMenuWidget &service, CMenuWidget & Tuner
 		TunerSetup.addItem(GenericMenuBack);
 		TunerSetup.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 		
-		TunerSetup.addItem(new CMenuForwarderNonLocalized("Tuner Mode", false, "independant", NULL ));
-		TunerSetup.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+		//TunerSetup.addItem(new CMenuForwarderNonLocalized("Tuner Mode", false, "independant", NULL ));
+		//TunerSetup.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 		
 		for(int i=0; i<FrontendCount; i++)
 		{
@@ -767,12 +767,13 @@ void CNeutrinoApp::InitServiceSettings(CMenuWidget &service, CMenuWidget & Tuner
 			TunerSetup.addItem(new CMenuForwarderNonLocalized(tbuf, true, NULL, new CScanSetup(i) ));
 		}	
 		
+		// scan settings
 		service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_SERVICEMENU_SCANTS, true, "", &TunerSetup, NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, "service", LOCALE_HELPTEXT_SCANSETUP ));
 	}
 	else
 	{
 		// scan settings
-		service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_SERVICEMENU_SCANTS, true, "", new CScanSetup(), "", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, "service", LOCALE_HELPTEXT_SCANSETUP ));	
+		service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_SERVICEMENU_SCANTS, true, "", new CScanSetup(), "", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, "service", LOCALE_HELPTEXT_SCANSETUP ));
 	}
 
 	// reload Channels
