@@ -180,7 +180,7 @@ const char * const FBFontRenderClass::AddFont(const char * const filename, const
 
 	if ((error=FT_New_Face(library, filename, 0, &face)))
 	{
-		dprintf(DEBUG_DEBUG, "[FONT] adding font %s, failed: %i\n", filename, error);
+		dprintf(DEBUG_INFO, "[FONT] adding font %s, failed: %i\n", filename, error);
 		delete n;//Memory leak: n
 		return NULL;
 	}
@@ -189,7 +189,7 @@ const char * const FBFontRenderClass::AddFont(const char * const filename, const
 	n->style    = strdup(make_italics ? "Italic" : face->style_name);
 	FT_Done_Face(face);
 	n->next=font;
-	dprintf(DEBUG_DEBUG, "[FONT] adding font %s... family %s, style %s ok\n", filename, n->family, n->style);
+	dprintf(DEBUG_INFO, "[FONT] adding font %s... family %s, style %s ok\n", filename, n->family, n->style);
 	font=n;
 	
 	return n->style;
