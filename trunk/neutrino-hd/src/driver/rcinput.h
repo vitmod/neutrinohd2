@@ -38,6 +38,8 @@
 #include <vector>
 #include <stdint.h>
 
+#include <configfile.h>
+
 
 #ifndef KEY_OK
 #define KEY_OK           0x160
@@ -179,7 +181,7 @@ class CRCInput
 
 		int		fd_max;
 		__u16 rc_last_key;
-		void set_dsp();
+		//void set_dsp();
 
 		void open();
 		void close();
@@ -293,7 +295,6 @@ class CRCInput
 			RC_favorites	= KEY_FAVORITES,	/* 0x16c */
 
 			RC_sat		= KEY_SAT,		/* 0x17d */
-			//RC_sat2	= KEY_SAT2,		/* 0x17e */
 			
 			RC_record	= KEY_RECORD,		/* 0xA7 */
 			RC_play		= KEY_PLAY,		/* 0xCF */
@@ -311,7 +312,6 @@ class CRCInput
 #else			
 			RC_mode		= KEY_MODE,		/* 0x175 */
 #endif			
-			//RC_games	= KEY_GAMES,
 
 #if defined (PLATFORM_GIGABLUE)
 			RC_next		= 0x197,

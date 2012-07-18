@@ -305,9 +305,6 @@ int CRCInput::messageLoop( bool anyKeyCancels, int timeout )
 		{
 			doLoop = false;
 		}
-		else if((msg == CRCInput::RC_sat) || (msg == CRCInput::RC_favorites))
-		{
-		}
 		else
 		{
 			int mr = CNeutrinoApp::getInstance()->handleMsg( msg, data );
