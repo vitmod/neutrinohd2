@@ -135,6 +135,9 @@ CEventServer *eventServer = NULL;
 /* the current channel */
 CZapitChannel * channel = NULL;
 
+// record channel
+CZapitChannel * rec_channel = NULL;
+
 /* the transponder scan xml input */
 xmlDocPtr scanInputParser = NULL;
 
@@ -466,19 +469,20 @@ void start_camd(bool forupdate = false)
 }
 
 // save pids
-static void save_channel_pids(CZapitChannel * channel)
+static void save_channel_pids(CZapitChannel * thischannel)
 {
-	if(channel == NULL)
+	if(thischannel == NULL)
 		return;
 
-	printf("[zapit] saving channel, apid %x mode %d volume %d\n", channel->getAudioPid(), audio_mode, volume_right);
-	audio_map[channel->getChannelID()].apid = channel->getAudioPid();
-	audio_map[channel->getChannelID()].mode = audio_mode;
+	printf("[zapit] saving channel, apid %x mode %d volume %d\n", thischannel->getAudioPid(), audio_mode, volume_right);
+	
+	audio_map[thischannel->getChannelID()].apid = thischannel->getAudioPid();
+	audio_map[thischannel->getChannelID()].mode = audio_mode;
 	if(audioDecoder)
-		audio_map[channel->getChannelID()].volume = audioDecoder->getVolume();
-	audio_map[channel->getChannelID()].subpid = dvbsub_getpid();
+		audio_map[thischannel->getChannelID()].volume = audioDecoder->getVolume();
+	audio_map[thischannel->getChannelID()].subpid = dvbsub_getpid();
 	//dvbsub_getpid(&audio_map[channel->getChannelID()].subpid, NULL);
-	tuxtx_subtitle_running(&audio_map[channel->getChannelID()].ttxpid, &audio_map[channel->getChannelID()].ttxpage, NULL);
+	tuxtx_subtitle_running(&audio_map[thischannel->getChannelID()].ttxpid, &audio_map[thischannel->getChannelID()].ttxpage, NULL);
 }
 
 static CZapitChannel * find_channel_tozap(const t_channel_id channel_id, bool in_nvod)
@@ -519,18 +523,18 @@ static CZapitChannel * find_channel_tozap(const t_channel_id channel_id, bool in
 	return &cit->second;
 }
 
-static bool tune_to_channel(CZapitChannel * channel, bool &transponder_change)
+static bool tune_to_channel(CZapitChannel * thischannel, bool &transponder_change)
 {
 	int waitForMotor = 0;
 
 	transponder_change = false;
 		  
-	transponder_change = CFrontend::getInstance( channel->getFeIndex() )->setInput(channel, current_is_nvod);
+	transponder_change = CFrontend::getInstance( thischannel->getFeIndex() )->setInput(thischannel, current_is_nvod);
 	
 	// drive rotor
 	if(transponder_change && !current_is_nvod) 
 	{
-		waitForMotor = CFrontend::getInstance( channel->getFeIndex() )->driveToSatellitePosition(channel->getSatellitePosition());
+		waitForMotor = CFrontend::getInstance( thischannel->getFeIndex() )->driveToSatellitePosition(thischannel->getSatellitePosition());
 			
 		if(waitForMotor > 0) 
 		{
@@ -553,31 +557,28 @@ static bool tune_to_channel(CZapitChannel * channel, bool &transponder_change)
 	// tune fe (by TP change, nvod, twin_mode)
 	if (transponder_change || current_is_nvod || twin_mode) 
 	{
-		if (CFrontend::getInstance( channel->getFeIndex() )->tuneChannel(channel, current_is_nvod) == false) 
+		if (CFrontend::getInstance( thischannel->getFeIndex() )->tuneChannel(thischannel, current_is_nvod) == false) 
 		{
 			return false;
 		}
-		
-		if(twin_mode)
-		{
-			channel->setFeIndex(0);
-			twin_mode = false;
-		}
 	}
+	
+	if(twin_mode)
+		twin_mode = false;
 
 	return true;
 }
 
-static bool parse_channel_pat_pmt(CZapitChannel * channel)
+static bool parse_channel_pat_pmt(CZapitChannel * thischannel)
 {
-	printf("%s looking up pids for channel_id (%llx)\n", __FUNCTION__, channel->getChannelID());
+	printf("%s looking up pids for channel_id (%llx)\n", __FUNCTION__, thischannel->getChannelID());
 	
 	// get program map table pid from program association table
-	if (channel->getPmtPid() == 0) 
+	if (thischannel->getPmtPid() == 0) 
 	{
 		printf("[zapit] no pmt pid, going to parse pat\n");
 		
-		if (parse_pat(channel) < 0) 
+		if (parse_pat(thischannel) < 0) 
 		{
 			printf("[zapit] pat parsing failed\n");
 			return false;
@@ -585,16 +586,16 @@ static bool parse_channel_pat_pmt(CZapitChannel * channel)
 	}
 
 	/* parse program map table and store pids */
-	if (parse_pmt(channel) < 0) 
+	if (parse_pmt(thischannel) < 0) 
 	{
 		printf("[zapit] pmt parsing failed\n");
 		
-		if (parse_pat(channel) < 0) 
+		if (parse_pat(thischannel) < 0) 
 		{
 			printf("pat parsing failed\n");
 			return false;
 		}
-		else if (parse_pmt(channel) < 0) 
+		else if (parse_pmt(thischannel) < 0) 
 		{
 			printf("[zapit] pmt parsing failed\n");
 			return false;
@@ -604,7 +605,7 @@ static bool parse_channel_pat_pmt(CZapitChannel * channel)
 	return true;
 }
 
-static void restore_channel_pids(CZapitChannel * channel)
+static void restore_channel_pids(CZapitChannel * thischannel)
 {
 	audio_map_it = audio_map.find(live_channel_id);
 	
@@ -612,14 +613,14 @@ static void restore_channel_pids(CZapitChannel * channel)
 	{
 		printf("[zapit] channel found, audio pid %x, subtitle pid %x mode %d volume %d\n", audio_map_it->second.apid, audio_map_it->second.subpid, audio_map_it->second.mode, audio_map_it->second.volume);
 				
-		if(channel->getAudioChannelCount() > 1) 
+		if(thischannel->getAudioChannelCount() > 1) 
 		{
-			for (int i = 0; i < channel->getAudioChannelCount(); i++) 
+			for (int i = 0; i < thischannel->getAudioChannelCount(); i++) 
 			{
-				if (channel->getAudioChannel(i)->pid == audio_map_it->second.apid ) 
+				if (thischannel->getAudioChannel(i)->pid == audio_map_it->second.apid ) 
 				{
 					DBG("Setting audio!\n");
-					channel->setAudioChannel(i);
+					thischannel->setAudioChannel(i);
 				}
 			}
 		}
@@ -632,9 +633,9 @@ static void restore_channel_pids(CZapitChannel * channel)
 
 		// set txtsub pid
 		std::string tmplang;
-		for (int i = 0 ; i < (int)channel->getSubtitleCount() ; ++i) 
+		for (int i = 0 ; i < (int)thischannel->getSubtitleCount() ; ++i) 
 		{
-			CZapitAbsSub* s = channel->getChannelSub(i);
+			CZapitAbsSub* s = thischannel->getChannelSub(i);
 			
 			if(s->pId == audio_map_it->second.ttxpid) 
 			{
@@ -644,7 +645,7 @@ static void restore_channel_pids(CZapitChannel * channel)
 		}
 		
 		if(tmplang.empty())
-			tuxtx_set_pid(audio_map_it->second.ttxpid, audio_map_it->second.ttxpage, (char *) channel->getTeletextLang());
+			tuxtx_set_pid(audio_map_it->second.ttxpid, audio_map_it->second.ttxpage, (char *) thischannel->getTeletextLang());
 		else
 			tuxtx_set_pid(audio_map_it->second.ttxpid, audio_map_it->second.ttxpage, (char *) tmplang.c_str());
 	} 
@@ -652,7 +653,7 @@ static void restore_channel_pids(CZapitChannel * channel)
 	{
 		volume_left = volume_right = def_volume_left;
 		audio_mode = def_audio_mode;
-		tuxtx_set_pid(0, 0, (char *) channel->getTeletextLang());
+		tuxtx_set_pid(0, 0, (char *) thischannel->getTeletextLang());
 	}
 	
 	/* restore saved stereo / left / right channel mode */
@@ -760,7 +761,7 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0, bool 
 
 int zapit_to_record(const t_channel_id channel_id)
 {
-	CZapitChannel * rec_channel;
+	//CZapitChannel * rec_channel;
 	bool transponder_change;
 
 	// find channel
@@ -950,6 +951,8 @@ void unsetRecordMode(void)
 	}
 
 	rec_channel_id = 0;
+	
+	rec_channel = 0;
 }
 
 void setPipMode(void)
@@ -2030,7 +2033,6 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 			{
 				CZapitClient::responseGetOtherPIDs responseGetOtherPIDs;
 				responseGetOtherPIDs.vpid = channel->getVideoPid();
-				responseGetOtherPIDs.ecmpid = 0; // TODO: remove
 				responseGetOtherPIDs.vtxtpid = channel->getTeletextPid();
 				responseGetOtherPIDs.pmtpid = channel->getPmtPid();
 				responseGetOtherPIDs.pcrpid = channel->getPcrPid();
@@ -2197,7 +2199,7 @@ void addChannelToBouquet(const unsigned int bouquet, const t_channel_id channel_
 {
 	//DBG("addChannelToBouquet(%d, %d)\n", bouquet, channel_id);
 
-	CZapitChannel* chan = g_bouquetManager->findChannelByChannelID(channel_id);
+	CZapitChannel * chan = g_bouquetManager->findChannelByChannelID(channel_id);
 
 	if (chan != NULL)
 		if (bouquet < g_bouquetManager->Bouquets.size())

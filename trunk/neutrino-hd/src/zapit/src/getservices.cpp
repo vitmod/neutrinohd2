@@ -344,7 +344,6 @@ void ParseSatTransponders(fe_type_t frontendType, xmlNodePtr search, t_satellite
 	}
 }
 
-// FIXME: ugly: sat.conf contains also T/C position/type
 int LoadMotorPositions(void)
 {
 	FILE *fd = NULL;
@@ -436,8 +435,8 @@ void init_sat(t_satellite_position position)
 	satellitePositions[position].use_in_scan = 0;
 	satellitePositions[position].use_usals = 0;
 
-	satellitePositions[position].type = DVB_S;
-	satellitePositions[position].feindex = 0;
+	//satellitePositions[position].type = DVB_S;
+	//satellitePositions[position].feindex = 0;
 }
 
 // load services
@@ -568,11 +567,6 @@ int LoadServices(bool only_current)
 
 		while (search) 
 		{
-			//FIXME: this code is only valable for such constellation e.g
-			// spark-triplex: S+S , T/C
-			// ich gehe davon aus dass der erste tuner immer einen sat tuner ist.
-			//NOTE: what about cable twin box ;-(
-			//NOTE: hope this will resolve the problem:
 			if(FrontendCount > 1)
 			{
 				if( CFrontend::getInstance(0)->getInfo()->type == FE_QPSK)
@@ -585,13 +579,11 @@ int LoadServices(bool only_current)
 
 						if(satellitePositions.find(position) == satellitePositions.end()) 
 						{
-							init_sat(position); // this will reset feindex to 
+							init_sat(position);
 							
 							satellitePositions[position].name = name;
 						}
 						
-						//FIXME:
-						// ich gehe davon aus dass der erste tuner immer einen sat tuner ist.
 						satellitePositions[position].feindex = 0;
 					}
 				}
@@ -610,8 +602,6 @@ int LoadServices(bool only_current)
 							satellitePositions[position].name = name;
 						}
 						
-						//FIXME:
-						// ich gehe davon aus dass der erste tuner immer einen sat tuner ist.
 						satellitePositions[position].feindex = 0;
 					}
 				}
@@ -630,8 +620,6 @@ int LoadServices(bool only_current)
 							satellitePositions[position].name = name;
 						}
 						
-						//FIXME:
-						// ich gehe davon aus dass der erste tuner immer einen sat tuner ist.
 						satellitePositions[position].feindex = 0;
 					}
 				}
