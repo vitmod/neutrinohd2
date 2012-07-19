@@ -63,17 +63,18 @@ unsigned int CCaDescriptor::writeToBuffer(unsigned char * const buffer) // retur
  */
 void CCaTable::addCaDescriptor(const unsigned char * const buffer)
 {
-	CCaDescriptor* dummy = new CCaDescriptor(buffer);
+	CCaDescriptor * dummy = new CCaDescriptor(buffer);
 	ca_descriptor.push_back(dummy);
 	
 	if (info_length == 0)
-	    info_length = 1;
+		info_length = 1;
+	
 	info_length += dummy->getLength();
 }
 
 unsigned int CCaTable::writeToBuffer(unsigned char * const buffer) // returns number of bytes written
 {
-#if 0  
+#if 1 
 	unsigned int pos = 0;
 
 	for (unsigned int i = 0; i < ca_descriptor.size(); i++)
@@ -89,10 +90,12 @@ unsigned int CCaTable::writeToBuffer(unsigned char * const buffer) // returns nu
 		return 2;
 
 	buffer[2] = 1;                  // ca_pmt_cmd_id: ok_descrambling= 1;
+	
 	unsigned int pos = 3;
 
 	for (unsigned int i = 0; i < ca_descriptor.size(); i++)
 		pos += ca_descriptor[i]->writeToBuffer(&(buffer[pos]));
+	
 	return pos;
 #endif
 }
@@ -109,11 +112,13 @@ CCaTable::~CCaTable(void)
  */
 unsigned int CEsInfo::writeToBuffer(unsigned char * const buffer) // returns number of bytes written
 {
-#if 0  
+#if 1 
 	int len = 0;
+	
 	buffer[0] = stream_type;
 	buffer[1] = ((reserved1 << 5) | (elementary_PID >> 8)) & 0xff;
 	buffer[2] = elementary_PID & 0xff;
+	
 	/* len! */
 	len = CCaTable::writeToBuffer(&(buffer[6]));
 	
@@ -122,6 +127,7 @@ unsigned int CEsInfo::writeToBuffer(unsigned char * const buffer) // returns num
 		buffer[5] = 0x1; // ca_pmt_cmd_id: ok_descrambling= 1;
 		len++;
 	}
+	
 	buffer[3] = ((len & 0xf00)>>8);
 	buffer[4] = (len & 0xff);
 	
@@ -147,7 +153,7 @@ CCaPmt::~CCaPmt(void)
 
 unsigned int CCaPmt::writeToBuffer(unsigned char * const buffer, int demux, int camask) // returns number of bytes written
 {
-#if 0  
+#if 1  
 	unsigned int i;
 
 	memcpy(buffer, "\x9f\x80\x32\x82\x00\x00", 6);
@@ -178,9 +184,9 @@ unsigned int CCaPmt::writeToBuffer(unsigned char * const buffer, int demux, int 
 	buffer[29] = (curpmtpid >> 8) & 0xFF;
 	buffer[30] = curpmtpid & 0xFF; 		// 30
 
-        int lenpos=10;
-        int len=19;
-        int wp=31;
+        int lenpos = 10;
+        int len = 19;
+        int wp = 31;
 
 
 	i = CCaTable::writeToBuffer(&(buffer[wp]));
@@ -208,9 +214,7 @@ unsigned int CCaPmt::writeToBuffer(unsigned char * const buffer, int demux, int 
 
 	pos += write_length_field(&(buffer[pos]), getLength());
 
-	ca_pmt_list_management = 3; /* fixme 5 fuer update */
 	buffer[pos++] = ca_pmt_list_management;
-	printf("ca_pmt_list_management %d\n", ca_pmt_list_management);
 	buffer[pos++] = program_number >> 8;
 	buffer[pos++] = program_number;
 	buffer[pos++] = (reserved1 << 6) | (version_number << 1) | current_next_indicator;
@@ -226,7 +230,7 @@ unsigned int CCaPmt::writeToBuffer(unsigned char * const buffer, int demux, int 
 
 unsigned int CCaPmt::getLength(void)  // the (3 + length_field()) initial bytes are not counted !
 {
-#if 0  
+#if 1  
 	unsigned int size = 25 + CCaTable::getLength();
 	
 	for (unsigned int i = 0; i < es_info.size(); i++)

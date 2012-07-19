@@ -35,12 +35,8 @@
 
 #include <zapit/frontend_c.h>
 
+
 #define PMT_SIZE 1024
-
-#include <eventserver.h>
-#include <zapit/client/zapitclient.h>
-extern CEventServer *eventServer;
-
 
 #define RECORD_MODE 0x4
 extern int currentMode;
@@ -85,7 +81,7 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 	unsigned char componentTag = 0xFF;
 
 	/* elementary stream info for ca pmt */
-	CEsInfo *esInfo = new CEsInfo();
+	CEsInfo * esInfo = new CEsInfo();
 
 	esInfo->stream_type = buffer[0];
 	esInfo->reserved1 = buffer[1] >> 5;
@@ -149,7 +145,7 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 				break;
 
 			case 0x56: /* teletext descriptor */
-				for (unsigned char fIdx=0;fIdx<fieldCount;fIdx++) 
+				for (unsigned char fIdx=0; fIdx<fieldCount; fIdx++) 
 				{
 					char tmpLang[4];
 					memcpy(tmpLang, &buffer[pos + 5*fIdx + 2], 3);
@@ -159,7 +155,7 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 					unsigned char teletext_page_number=buffer[pos + 5*fIdx + 6];
 					if (teletext_type==0x02)
 					{
-						channel->addTTXSubtitle(esInfo->elementary_PID,tmpLang,teletext_magazine_number,teletext_page_number);
+						channel->addTTXSubtitle(esInfo->elementary_PID, tmpLang,teletext_magazine_number, teletext_page_number);
 					} 
 					else 
 					{
@@ -178,7 +174,7 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 				if (esInfo->stream_type==0x06) 
 				{
 					unsigned char fieldCount=descriptor_length/8;
-					for (unsigned char fIdx=0;fIdx<fieldCount;fIdx++)
+					for (unsigned char fIdx=0; fIdx<fieldCount; fIdx++)
 					{
 						char tmpLang[4];
 						memcpy(tmpLang,&buffer[pos + 8*fIdx + 2],3);
@@ -235,7 +231,7 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 
 			case 0xC2: /* User Private descriptor - Canal+ */
 #if 0
-				DBG("0xC2 dump:");
+				printf("0xC2 dump:");
 				for (i = 0; i < descriptor_length; i++) {
 					printf("%c", buffer[pos + 2 + i]);
 					if (((i+1) % 8) == 0)
@@ -287,6 +283,7 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 			} 
 			else
 				channel->addAudioChannel(esInfo->elementary_PID, CZapitAudioChannel::MPEG, description, componentTag);
+			
 			descramble = true;
 			
 			printf("[pmt]parse_ES_info: apid 0x%x %s\n", esInfo->elementary_PID, description.c_str());
@@ -317,14 +314,16 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 							break;
 					}
 				}
+				
 				if ( tmp == 3 ) 
 				{
 					channel->setPrivatePid(esInfo->elementary_PID);
-					DBG("[pmt]parse_ES_info: channel->setPrivatePid(0x%x)\n", esInfo->elementary_PID);
+					printf("[pmt]parse_ES_info: channel->setPrivatePid(0x%x)\n", esInfo->elementary_PID);
 				}
 				descramble = true;
 				break;
 			}
+			
 		case 0x81:
 			esInfo->stream_type = 0x6;
 			if (description == "")
@@ -332,9 +331,13 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 			description += " (AC3)";
 			isAc3 = true;
 			descramble = true;
+			
 			if(!scan_runs)
 				channel->addAudioChannel(esInfo->elementary_PID, CZapitAudioChannel::AC3, description, componentTag);
+			
+			printf("[pmt]parse_ES_info: apid 0x%x %s\n", esInfo->elementary_PID, description.c_str());
 			break;
+			
 		case 0x06:
 			if ( (isAc3) || (isDts) || (isAac) ) 
 			{
@@ -364,6 +367,8 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 					channel->addAudioChannel(esInfo->elementary_PID, Type, description, componentTag);
 				}
 				descramble = true;
+				
+				printf("[pmt]parse_ES_info: apid 0x%x %s\n", esInfo->elementary_PID, description.c_str());
 			}
 			break;
 			
@@ -377,6 +382,9 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 			descramble = true;
 			if(!scan_runs)
 				channel->addAudioChannel(esInfo->elementary_PID, CZapitAudioChannel::AAC, description, componentTag);
+			
+			printf("[pmt]parse_ES_info: apid 0x%x %s\n", esInfo->elementary_PID, description.c_str());
+			break;
 
 		case 0x0B:
 			break;
@@ -397,7 +405,7 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 			break;
 
 		default:
-			DBG("[pmt]parse_ES_info: stream_type: %02x\n", esInfo->stream_type);
+			printf("[pmt]parse_ES_info: stream_type: %02x\n", esInfo->stream_type);
 			break;
 	}
 
@@ -462,12 +470,15 @@ int parse_pmt(CZapitChannel * const channel)
 	}
 	
 	delete dmx;
+	
+	// current pnt pid
+	curpmtpid = channel->getPmtPid();
 
 	// pmt.tmp
 	FILE *fout;
 	int pmtlen;
-	curpmtpid = channel->getPmtPid();
-	pmtlen= ((buffer[1]&0xf)<<8) + buffer[2] +3;
+	
+	pmtlen= ((buffer[1]&0xf)<<8) + buffer[2] + 3;
 
 	if( !(currentMode & RECORD_MODE) && !scan_runs) 
 	{
@@ -536,10 +547,11 @@ int parse_pmt(CZapitChannel * const channel)
 						} //switch
 					} // if
 			} // for
-			pos+=dpmtlen+5;
+			pos += dpmtlen + 5;
 		} // while
 	} /* if !scan_runs */
 	
+	// ca pmt
 	CCaPmt * caPmt = new CCaPmt();
 
 	/* ca pmt */
