@@ -67,7 +67,8 @@ extern "C" {
 }
 
 static cRecord * record = NULL;
-extern CZapitChannel *channel;
+//extern CZapitChannel *channel;
+extern CZapitChannel * rec_channel;
 extern CCam *cam0;
 
 
@@ -134,8 +135,8 @@ stream2file_error_msg_t start_recording(const char * const filename, const char 
 	// init record
 	if(!record)
 	{
-		if(channel)
-			record = new cRecord( channel->getFeIndex() );
+		if(rec_channel)
+			record = new cRecord( rec_channel->getFeIndex() );
 	}
 	
 
@@ -151,8 +152,8 @@ stream2file_error_msg_t start_recording(const char * const filename, const char 
 		return STREAM2FILE_INVALID_DIRECTORY;
 	}
 	
-        if(channel)
-		cam0->setCaPmt(channel->getCaPmt(), 0, 1, true); // demux 0+2 , update
+        if(rec_channel)
+		cam0->setCaPmt(rec_channel->getCaPmt(), 0, 1, true); // demux 0+2 , update
 
 	return STREAM2FILE_OK;
 }
