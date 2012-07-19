@@ -209,7 +209,6 @@ class CZapitClient : public CBasicClient
 		struct responseGetOtherPIDs
 		{
 			uint		vpid;
-			uint		ecmpid;
 			uint		vtxtpid;
 			uint		pcrpid;
 			uint		selected_apid;
