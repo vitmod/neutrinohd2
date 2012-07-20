@@ -562,9 +562,6 @@ static bool tune_to_channel(CZapitChannel * thischannel, bool &transponder_chang
 			return false;
 		}
 	}
-	
-	if(twin_mode)
-		twin_mode = false;
 
 	return true;
 }
@@ -761,7 +758,6 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0, bool 
 
 int zapit_to_record(const t_channel_id channel_id)
 {
-	//CZapitChannel * rec_channel;
 	bool transponder_change;
 
 	// find channel
@@ -771,6 +767,7 @@ int zapit_to_record(const t_channel_id channel_id)
 		return -1;
 	}
 	
+	//tune
 	// check for twin
 	#if 1
 	if(FrontendCount > 1)
@@ -799,6 +796,9 @@ int zapit_to_record(const t_channel_id channel_id)
 	
 	//TEST: do we need to set ca_pmt_list_managment???
 	rec_channel->getCaPmt()->ca_pmt_list_management = transponder_change ? 0x03 : 0x04;
+	
+	if(twin_mode)
+		twin_mode = false;
 
 	return 0;
 }
@@ -952,7 +952,10 @@ void unsetRecordMode(void)
 
 	rec_channel_id = 0;
 	
+	// twin mode
 	rec_channel = 0;
+	if(twin_mode)
+		twin_mode = false;
 }
 
 void setPipMode(void)

@@ -454,6 +454,7 @@ std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRComman
         APIDList apid_list;
         getAPIDs(apids,apid_list);
         apids_selected="";
+	
         for(APIDList::iterator it = apid_list.begin(); it != apid_list.end(); it++)
         {
                 if(it != apid_list.begin())
@@ -760,7 +761,7 @@ bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGD
 
 void strReplace(std::string & orig, const char *fstr, const std::string rstr);
 
-bool /*void*/ CVCRControl::Screenshot(const t_channel_id channel_id, char * fname, int spos) 
+bool CVCRControl::Screenshot(const t_channel_id channel_id, char * fname, int spos) 
 {
 	char filename[512]; // UTF-8
 	char cmd[512];
