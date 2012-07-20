@@ -442,7 +442,7 @@ int parse_pmt(CZapitChannel * const channel)
 		return -1;
 	}
 	
-	cDemux * dmx = new cDemux( LIVE_DEMUX ); 
+	cDemux * dmx = new cDemux( channel->getFeIndex() ); 
 	
 	// open
 	dmx->Open(DMX_PSI_CHANNEL, PMT_SIZE, channel->getFeIndex());
@@ -626,7 +626,7 @@ int pmt_set_update_filter(CZapitChannel * const channel, int * fd )
 
 	if(pmtDemux == NULL) 
 	{
-		pmtDemux = new cDemux( LIVE_DEMUX );
+		pmtDemux = new cDemux( channel->getFeIndex() );
 		
 		// open 
 		pmtDemux->Open(DMX_PSI_CHANNEL, PMT_SIZE, channel->getFeIndex() ); // this indicate fe num

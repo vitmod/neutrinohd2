@@ -592,7 +592,7 @@ void CRemoteControl::processAPIDnames()
 
 	for(unsigned int count=0; count< current_PIDs.APIDs.size(); count++)
 	{
-		printf("CRemoteControl::processAPIDnames: apid name= %s (%s) pid= %X\n", current_PIDs.APIDs[count].desc, getISO639Description( current_PIDs.APIDs[count].desc ), current_PIDs.APIDs[count].pid);
+		printf("CRemoteControl::processAPIDnames: apid name= %s (%s) pid= 0x%x\n", current_PIDs.APIDs[count].desc, getISO639Description( current_PIDs.APIDs[count].desc ), current_PIDs.APIDs[count].pid);
 		if ( current_PIDs.APIDs[count].component_tag != 0xFF )
 		{
 			has_unresolved_ctags= true;
@@ -652,17 +652,17 @@ void CRemoteControl::processAPIDnames()
 	
 	if(pref_ac3_found >= 0) 
 	{
-		printf("CRemoteControl::processAPIDnames: set apid name= %s pid= %X\n", current_PIDs.APIDs[pref_ac3_found].desc, current_PIDs.APIDs[pref_ac3_found].pid);
+		printf("CRemoteControl::processAPIDnames: set apid name= %s pid= 0x%x\n", current_PIDs.APIDs[pref_ac3_found].desc, current_PIDs.APIDs[pref_ac3_found].pid);
 		setAPID(pref_ac3_found);
 	} 
 	else if(pref_found >= 0) 
 	{
-		printf("CRemoteControl::processAPIDnames: set apid name= %s pid= %X\n", current_PIDs.APIDs[pref_found].desc, current_PIDs.APIDs[pref_found].pid);
+		printf("CRemoteControl::processAPIDnames: set apid name= %s pid= 0x%x\n", current_PIDs.APIDs[pref_found].desc, current_PIDs.APIDs[pref_found].pid);
 		setAPID(pref_found);
 	}
 	else if(ac3_found >= 0) 
 	{
-		printf("CRemoteControl::processAPIDnames: set apid name= %s pid= %X\n", current_PIDs.APIDs[ac3_found].desc, current_PIDs.APIDs[ac3_found].pid);
+		printf("CRemoteControl::processAPIDnames: set apid name= %s pid= 0x%x\n", current_PIDs.APIDs[ac3_found].desc, current_PIDs.APIDs[ac3_found].pid);
 		setAPID(ac3_found);
 	}
 	else if ( current_PIDs.PIDs.selected_apid >= current_PIDs.APIDs.size() )

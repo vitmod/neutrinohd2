@@ -44,7 +44,7 @@ void *execute_record_thread(void *c)
 cRecord::cRecord(int num)
 {
 	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);
-	demux_num = LIVE_DEMUX;
+	demux_num = num;
 	fe_num = num;
 	dmx = NULL;
 	record_thread_running = false;
@@ -71,7 +71,7 @@ bool cRecord::Start(int fd, unsigned short vpid, unsigned short * apids, int num
 	int i;
 
 	if (!dmx)
-		dmx = new cDemux( LIVE_DEMUX );
+		dmx = new cDemux( demux_num );
 
 	dmx->Open(DMX_TP_CHANNEL, 2 * 3008 * 62, fe_num );
 	dmx->pesFilter(vpid);

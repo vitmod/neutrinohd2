@@ -44,8 +44,6 @@ extern int AdapterCount;
 
 cDemux *videoDemux = NULL;
 cDemux *audioDemux = NULL;
-//cDemux *pcrDemux = NULL;
-//cDemux * pmtDemux = NULL;
 
 
 static const char * aDMXCHANNELTYPE[] = {
@@ -70,7 +68,7 @@ cDemux::cDemux(int num)
 	adapter_num = 0;	//AdapterIndex
 	
 	// demux index
-	demux_num = 0; //FIXME when sectionsd can handle multi demuxes
+	demux_num = num;
 }
 
 cDemux::~cDemux()

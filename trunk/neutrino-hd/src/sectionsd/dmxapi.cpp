@@ -93,7 +93,7 @@ bool getUTC(UTC_t * const UTC, const bool TDT)
 
 	if(dmxUTC == NULL) 
 	{		
-		dmxUTC = new cDemux( LIVE_DEMUX );
+		dmxUTC = new cDemux( channel?channel->getFeIndex() : 0 );
 		dmxUTC->Open(DMX_PSI_CHANNEL, 4096, channel?channel->getFeIndex() : 0 );		
 	}
 

@@ -152,7 +152,7 @@ extern cAudio * audioDecoder;			/* defined in audio_cs.pp (libcoolstream) */
 extern cDemux * audioDemux;			/* defined in dmx_cs.pp (libcoolstream) */
 extern cDemux * videoDemux;			/* defined in dmx_cs.pp (libcoolstream) */
 cDemux * pcrDemux = NULL;			/* defined in dmx_cs.pp (libcoolstream) */
-extern cDemux * pmtDemux;			/* defined in pmt.pp */
+extern cDemux * pmtDemux;			/* defined in pmt.cpp */
 
 /* the map which stores the wanted cables/satellites/terrestrials */
 scan_list_t scanProviders;
@@ -162,7 +162,7 @@ scan_list_t scanProviders;
 #define FRONTEND_MAX	4
 int AdapterCount = 0;
 int FrontendCount = 0;
-static bool twin_mode = false;
+bool twin_tuned = false;
 
 /* variables for EN 50494 (a.k.a Unicable) */
 int uni_scr = -1;	/* the unicable SCR address,     -1 == no unicable */
@@ -555,7 +555,7 @@ static bool tune_to_channel(CZapitChannel * thischannel, bool &transponder_chang
 	}
 
 	// tune fe (by TP change, nvod, twin_mode)
-	if (transponder_change || current_is_nvod || twin_mode) 
+	if (transponder_change || current_is_nvod || twin_tuned) 
 	{
 		if (CFrontend::getInstance( thischannel->getFeIndex() )->tuneChannel(thischannel, current_is_nvod) == false) 
 		{
@@ -777,7 +777,7 @@ int zapit_to_record(const t_channel_id channel_id)
 			// always compare with fe0
 			if( CFrontend::getInstance(0)->getInfo()->type == CFrontend::getInstance(i)->getInfo()->type )
 			{
-				twin_mode = true;
+				twin_tuned = true;
 				rec_channel->setFeIndex(i);
 			}
 		}
@@ -796,9 +796,6 @@ int zapit_to_record(const t_channel_id channel_id)
 	
 	//TEST: do we need to set ca_pmt_list_managment???
 	rec_channel->getCaPmt()->ca_pmt_list_management = transponder_change ? 0x03 : 0x04;
-	
-	if(twin_mode)
-		twin_mode = false;
 
 	return 0;
 }
@@ -951,11 +948,6 @@ void unsetRecordMode(void)
 	}
 
 	rec_channel_id = 0;
-	
-	// twin mode
-	rec_channel = 0;
-	if(twin_mode)
-		twin_mode = false;
 }
 
 void setPipMode(void)
@@ -2507,7 +2499,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 	if (have_pcr) 
 	{
 		if(!pcrDemux)
-			pcrDemux = new cDemux( LIVE_DEMUX );
+			pcrDemux = new cDemux( thisChannel->getFeIndex() );
 		
 		// open pcr demux
 		if( pcrDemux->Open(DMX_PCR_ONLY_CHANNEL, VIDEO_STREAM_BUFFER_SIZE, thisChannel->getFeIndex() ) < 0 )
@@ -2525,7 +2517,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 	if (have_audio) 
 	{
 		if( !audioDemux )
-			audioDemux = new cDemux( LIVE_DEMUX );
+			audioDemux = new cDemux( thisChannel->getFeIndex() );
 		
 		// open audio demux
 		if( audioDemux->Open(DMX_AUDIO_CHANNEL, AUDIO_STREAM_BUFFER_SIZE, thisChannel->getFeIndex() ) < 0 )
@@ -2543,7 +2535,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 	if (have_video) 
 	{
 		if( !videoDemux )
-			videoDemux = new cDemux( LIVE_DEMUX ); 
+			videoDemux = new cDemux( thisChannel->getFeIndex() ); 
 		
 		// open Video Demux
 		if( videoDemux->Open(DMX_VIDEO_CHANNEL, VIDEO_STREAM_BUFFER_SIZE, thisChannel->getFeIndex() ) < 0 )

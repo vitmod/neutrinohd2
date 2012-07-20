@@ -6945,7 +6945,7 @@ int eit_set_update_filter(int *fd)
 	
         if(eitDmx == NULL) 
 	{	
-		eitDmx = new cDemux( LIVE_DEMUX );		
+		eitDmx = new cDemux( channel?channel->getFeIndex() : 0 );		
 		
                 eitDmx->Open(DMX_PSI_CHANNEL, 4096, channel?channel->getFeIndex() : 0);		
         }

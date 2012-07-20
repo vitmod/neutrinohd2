@@ -820,7 +820,7 @@ int CStreamInfo2::ts_setup(int feindex)
 		return -1;
 
 	// create new dmx object pionter
-	ts_dmx = new cDemux( LIVE_DEMUX );
+	ts_dmx = new cDemux( feindex );
 	
 	// open demux
 	ts_dmx->Open(DMX_TP_CHANNEL, 2 *3008 * 62, feindex);

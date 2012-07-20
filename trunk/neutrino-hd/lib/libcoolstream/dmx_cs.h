@@ -45,9 +45,9 @@
 //#define DEMUX_SOURCE_1 1
 //#define DEMUX_SOURCE_2 2
 
-#define LIVE_DEMUX	0
-#define STREAM_DEMUX	1
-#define RECORD_DEMUX	LIVE_DEMUX
+//#define LIVE_DEMUX	0
+//#define STREAM_DEMUX	1
+//#define RECORD_DEMUX	LIVE_DEMUX
 
 
 

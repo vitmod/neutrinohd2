@@ -502,7 +502,7 @@ int DMX::immediate_start(void)
 	
         if(dmx == NULL) 
 	{
-                dmx = new cDemux( LIVE_DEMUX );
+                dmx = new cDemux( channel?channel->getFeIndex() : 0 );
 		dmx->Open(DMX_PSI_CHANNEL, dmxBufferSizeInKB*1024UL, channel?channel->getFeIndex() : 0);
         }
 	
