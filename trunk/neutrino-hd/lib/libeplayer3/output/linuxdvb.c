@@ -134,13 +134,11 @@ int LinuxDvbOpen(Context_t  *context, char * type)
 			}
 		}
 
-		#if 0 //FIXME: do we need this ???
 		if (ioctl( videofd, VIDEO_CLEAR_BUFFER, NULL) == -1)
 		{
 			linuxdvb_err("ioctl failed with errno %d\n", errno);
 			linuxdvb_err("VIDEO_CLEAR_BUFFER: %s\n", strerror(errno));
 		}
-		#endif
 
 		if (ioctl( videofd, VIDEO_SELECT_SOURCE, (void*)VIDEO_SOURCE_MEMORY) == -1)
 		{
@@ -185,13 +183,11 @@ int LinuxDvbOpen(Context_t  *context, char * type)
 			return cERR_LINUXDVB_ERROR;
 		}
 
-		#if 0 //FIXME: do we need this ???
 		if (ioctl( audiofd, AUDIO_CLEAR_BUFFER, NULL) == -1)
 		{
 			linuxdvb_err("ioctl failed with errno %d\n", errno);
 			linuxdvb_err("AUDIO_CLEAR_BUFFER: %s\n", strerror(errno));
 		}
-		#endif
 
 		if (ioctl( audiofd, AUDIO_SELECT_SOURCE, (void*)AUDIO_SOURCE_MEMORY) == -1)
 		{
@@ -366,13 +362,11 @@ int LinuxDvbStop(Context_t  *context, char * type)
 
 	if (video && videofd != -1) 
 	{
-		#if 0 //FIXME: do we need this ???
 		if (ioctl(videofd, VIDEO_CLEAR_BUFFER, NULL) == -1)
 		{
 			linuxdvb_err("ioctl failed with errno %d\n", errno);
 			linuxdvb_err("VIDEO_CLEAR_BUFFER: %s\n", strerror(errno));
 		}
-		#endif
 
 		/* set back to normal speed (end trickmodes) */
 #ifdef __sh__		
@@ -393,13 +387,11 @@ int LinuxDvbStop(Context_t  *context, char * type)
 	
 	if (audio && audiofd != -1) 
 	{
-		#if 0 //FIXME: do we need this ???
 		if (ioctl(audiofd, AUDIO_CLEAR_BUFFER, NULL) == -1)
 		{
 			linuxdvb_err("ioctl failed with errno %d\n", errno);
 			linuxdvb_err("AUDIO_CLEAR_BUFFER: %s\n", strerror(errno));
 		}
-		#endif
 
 		/* set back to normal speed (end trickmodes) */
 #ifdef __sh__		
@@ -989,13 +981,11 @@ int LinuxDvbSwitch(Context_t  *context, char * type)
 					linuxdvb_err("AUDIO_STOP: %s\n", strerror(errno));
 				}
 				
-				#if 0 //FIXME: do we need really to clear buffer ???
 				if (ioctl(audiofd, AUDIO_CLEAR_BUFFER ,NULL) == -1)
 				{
 					linuxdvb_err("ioctl failed with errno %d\n", errno);
 					linuxdvb_err("AUDIO_CLEAR_BUFFER: %s\n", strerror(errno));
 				}
-				#endif
 				
 				if (writer == NULL)
 				{
@@ -1050,13 +1040,11 @@ int LinuxDvbSwitch(Context_t  *context, char * type)
 					linuxdvb_err("VIDEO_STOP: %s\n", strerror(errno));
 				}
 
-				#if 0 //FIXME: do we need this ???
 				if (ioctl(videofd, VIDEO_CLEAR_BUFFER ,NULL) == -1)
 				{
 					linuxdvb_err("ioctl failed with errno %d\n", errno);
 					linuxdvb_err("VIDEO_CLEAR_BUFFER: %s\n", strerror(errno));
 				}
-				#endif
 
 				linuxdvb_printf(10, "V %s\n", Encoding);
 
