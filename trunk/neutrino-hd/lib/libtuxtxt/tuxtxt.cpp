@@ -6584,7 +6584,7 @@ int GetRCCode()
 				
 					case KEY_INFO:		RCCode = RC_HELP;	break;
 					case KEY_MENU:		RCCode = RC_DBOX;	break;
-#if defined (PLATFORM_GIGABLUE_800SE)
+#if defined (PLATFORM_GIGABLUE)
 					case 0xAE:		RCCode = RC_HOME;	break;
 #else
 					case KEY_HOME:		RCCode = RC_HOME;	break;
