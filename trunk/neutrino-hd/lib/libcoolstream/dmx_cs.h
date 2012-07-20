@@ -37,19 +37,6 @@
 #define AUDIO_STREAM_BUFFER_SIZE        64*1024 //200*188
 #define VIDEO_STREAM_BUFFER_SIZE        64*1024 //200*188
 
-//#define DEMUX_DECODE_0 1
-//#define DEMUX_DECODE_1 2
-//#define DEMUX_DECODE_2 4
-
-//#define DEMUX_SOURCE_0 0
-//#define DEMUX_SOURCE_1 1
-//#define DEMUX_SOURCE_2 2
-
-//#define LIVE_DEMUX	0
-//#define STREAM_DEMUX	1
-//#define RECORD_DEMUX	LIVE_DEMUX
-
-
 
 typedef enum
 {
