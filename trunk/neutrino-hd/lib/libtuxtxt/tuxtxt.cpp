@@ -6581,18 +6581,18 @@ int GetRCCode()
 					case KEY_VOLUMEDOWN:	RCCode = RC_MINUS;	break;
 					case KEY_MUTE:		RCCode = RC_MUTE;	break;
 					case KEY_TEXT:		RCCode = RC_TEXT;	break;
-					//case KEY_HELP:		RCCode = RC_HELP;	break;
+				
 					case KEY_INFO:		RCCode = RC_HELP;	break;
 					case KEY_MENU:		RCCode = RC_DBOX;	break;
 #if defined (PLATFORM_GIGABLUE_800SE)
 					case 0xAE:		RCCode = RC_HOME;	break;
 #else
-					case KEY_EXIT:		RCCode = RC_HOME;	break;
+					case KEY_HOME:		RCCode = RC_HOME;	break;
 #endif					
 					case KEY_POWER:		RCCode = RC_STANDBY;	break;
 #endif
 				}
-				printf("[tuxtxt] new key, code 0x%X (%d)\n", RCCode, KEY_EXIT);
+				printf("[tuxtxt] new key, code 0x%X (%d)\n", RCCode, KEY_HOME);
 				return 1;
 			}
 		}
