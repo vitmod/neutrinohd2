@@ -1243,8 +1243,8 @@ void CMovieBrowser::refreshMovieInfo(void)
 	{
 		bool logo_ok = false;
 		int divx = 720/m_cBoxFrameInfo.iHeight;
-		int picw = 720/divx - 30;
-		int pich = 576/divx - 30;
+		int picw = 720/divx - 50;
+		int pich = 576/divx - 50;
 
 		std::string fname = m_movieSelectionHandler->file.Name;
 		
