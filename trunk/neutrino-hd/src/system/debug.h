@@ -25,8 +25,6 @@
 #ifndef __neutrino_debug__
 #define __neutrino_debug__
 
-//#define DEBUG
-
 
 extern int debug;
 
