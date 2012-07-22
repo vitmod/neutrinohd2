@@ -1005,7 +1005,7 @@ int check_dir(const char * newdir)
 	{
 		switch (s.f_type)	/* f_type is long */
 		{
-			case 0xEF53L:		/*EXT2 & EXT3*/
+			case 0xEF53L:		/*EXT2 & EXT3 & EXT4*/
 			case 0x6969L:		/*NFS*/
 			case 0xFF534D42L:	/*CIFS*/
 			case 0x517BL:		/*SMB*/
@@ -1013,6 +1013,7 @@ int check_dir(const char * newdir)
 			case 0x65735546L:	/*fuse for ntfs*/
 			case 0x58465342L:	/*xfs*/
 			case 0x4d44L:		/*msdos*/
+			case 0x3153464aL:	/*jfs*/
 				return 0;//ok
 			default:
 				fprintf( stderr,"%s Unknow File system type: %i\n",newdir ,s.f_type);
