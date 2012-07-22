@@ -133,6 +133,53 @@ CFrontend * CFrontend::getInstance(int num, int adap)
 	}
 }
 
+//FIXME: too dirty
+CFrontend * CFrontend::killInstance(int num, int adap)
+{
+	switch(num)
+	{
+		case 0:
+		{
+			if(frontend0)
+			{
+				delete frontend0;
+				frontend0 = NULL;
+			}
+		}
+		break;
+		
+		case 1:
+		{
+			if(frontend1)
+			{
+				delete frontend1;
+				frontend1 = NULL;
+			}
+		}
+		break;
+		
+		case 2:
+		{
+			if(frontend2)
+			{
+				delete frontend2;
+				frontend2 = NULL;
+			}
+		}
+		break;
+		
+		case 3:
+		{
+			if(frontend3)
+			{
+				delete frontend3;
+				frontend3 = NULL;
+			}
+		}
+		break;	
+	}
+}
+
 CFrontend::CFrontend(int num, int adap)
 {
 	printf("CFrontend:: CFrontend(%d)\n", num);

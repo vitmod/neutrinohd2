@@ -161,9 +161,9 @@ class CFrontend
 
 	public:
 		//test
-		static CFrontend *getInstance(int num = 0, int adap = 0);
-		//CFrontend(int num = 0);
-		//TEST
+		static CFrontend * getInstance(int num = 0, int adap = 0);
+		static CFrontend * killInstance(int num = 0, int adap = 0);
+		
 		CFrontend(int num = 0, int adap = 0);
 		~CFrontend(void);
 

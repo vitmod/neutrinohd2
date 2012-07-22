@@ -3484,7 +3484,7 @@ int zapit_main_thread(void *data)
 	for(int i = 0; i < FrontendCount; i++)
 	{
 		CFrontend::getInstance(i)->Close();
-		delete CFrontend::getInstance(i);
+		CFrontend::killInstance(i);
 	}
 
 	INFO("frontend deleted");
