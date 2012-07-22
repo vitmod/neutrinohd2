@@ -428,7 +428,8 @@ static int PlaybackPlay(Context_t  *context)
 
         }
 
-    } else
+    } 
+    else
     {
         playback_err("playback already running\n");
         ret = cERR_PLAYBACK_ERROR;
@@ -459,7 +460,8 @@ static int PlaybackPause(Context_t  *context)
         context->playback->BackWard     = 0;
         context->playback->SlowMotion   = 0;
         context->playback->Speed        = 1;
-    } else
+    } 
+    else
     {
         playback_err("playback not playing or already in pause mode\n");
         ret = cERR_PLAYBACK_ERROR;
@@ -493,7 +495,8 @@ static int PlaybackContinue(Context_t  *context)
         context->playback->BackWard     = 0;
         context->playback->SlowMotion   = 0;
         context->playback->Speed        = 1;
-    } else
+    } 
+    else
     {
         playback_err("continue not possible\n");
         ret = cERR_PLAYBACK_ERROR;
@@ -523,7 +526,8 @@ static int PlaybackStop(Context_t  *context)
         context->output->Command(context, OUTPUT_STOP, NULL);
         context->container->selectedContainer->Command(context, CONTAINER_STOP, NULL);
 
-    } else
+    } 
+    else
     {
         playback_err("stop not possible\n");
         ret = cERR_PLAYBACK_ERROR;
@@ -572,7 +576,8 @@ static int PlaybackTerminate(Context_t  *context)
         context->playback->SlowMotion   = 0;
         context->playback->Speed        = 0;
 
-    } else
+    } 
+    else
     {
         playback_err("%p %p %d\n", context, context->playback, context->playback->isPlaying);
 
@@ -623,7 +628,8 @@ static int PlaybackFastForward(Context_t  *context, int* speed)
         playback_printf(20, "Speed: %d x {%d}\n", *speed, context->playback->Speed);
 
         context->output->Command(context, OUTPUT_FASTFORWARD, NULL);
-    } else
+    } 
+    else
     {
         playback_err("fast forward not possible\n");
         ret = cERR_PLAYBACK_ERROR;
@@ -701,7 +707,8 @@ static int PlaybackFastBackward(Context_t  *context,int* speed)
             } else
                 isFBThreadStarted = 1;
         }
-    } else
+    } 
+    else
     {
         playback_err("fast backward not possible\n");
         ret = cERR_PLAYBACK_ERROR;
@@ -752,7 +759,8 @@ static int PlaybackFastBackward(Context_t  *context,int* speed)
             context->playback->isSeeking = 0;
             ret = cERR_PLAYBACK_ERROR;
         }
-    } else
+    } 
+    else
     {
         playback_err("fast backward not possible\n");
         ret = cERR_PLAYBACK_ERROR;
@@ -794,7 +802,8 @@ static int PlaybackSlowMotion(Context_t  *context,int* speed)
         playback_printf(20, "SlowMotion: %d x {%d}\n", *speed, context->playback->SlowMotion);
 
         context->output->Command(context, OUTPUT_SLOWMOTION, NULL);
-    } else
+    } 
+    else
     {
         playback_err("slowmotion not possible\n");
         ret = cERR_PLAYBACK_ERROR;
@@ -884,10 +893,12 @@ static int PlaybackLength(Context_t  *context, double* length)
 
     *length = 0;
 
-    if (context->playback->isPlaying) {
+    if (context->playback->isPlaying) 
+    {
         if (context->container && context->container->selectedContainer)
             context->container->selectedContainer->Command(context, CONTAINER_LENGTH, length);
-    } else
+    } 
+    else
     {
         playback_err("not possible\n");
         ret = cERR_PLAYBACK_ERROR;
@@ -927,7 +938,8 @@ static int PlaybackSwitchAudio(Context_t  *context, int* track)
 
             //PlaybackContinue(context);
         }
-    } else
+    } 
+    else
     {
         playback_err("switch audio not possible\n");
         ret = cERR_PLAYBACK_ERROR;
@@ -977,12 +989,14 @@ static int PlaybackSwitchSubtitle(Context_t  *context, int* track)
             
             
             
-        } else
+        } 
+        else
         {
             ret = cERR_PLAYBACK_ERROR;
             playback_err("no subtitle\n");
         }
-    } else
+    } 
+    else
     {
         playback_err("not possible\n");
         ret = cERR_PLAYBACK_ERROR;
@@ -1022,81 +1036,82 @@ static int Command(void* _context, PlaybackCmd_t command, void * argument)
     playback_printf(20, "Command %d\n", command);
 
 
-    switch(command) {
-    case PLAYBACK_OPEN: {
-        ret = PlaybackOpen(context, (char*)argument);
-        break;
-    }
-    case PLAYBACK_CLOSE: {
-        ret = PlaybackClose(context);
-        break;
-    }
-    case PLAYBACK_PLAY: {
-        ret = PlaybackPlay(context);
-        break;
-    }
-    case PLAYBACK_STOP: {
-        ret = PlaybackStop(context);
-        break;
-    }
-    case PLAYBACK_PAUSE: {	// 4
-        ret = PlaybackPause(context);
-        break;
-    }
-    case PLAYBACK_CONTINUE: {
-        ret = PlaybackContinue(context);
-        break;
-    }
-    case PLAYBACK_TERM: {
-        ret = PlaybackTerminate(context);
-        break;
-    }
-    case PLAYBACK_FASTFORWARD: {
-        ret = PlaybackFastForward(context,(int*)argument);
-        break;
-    }
-    case PLAYBACK_SEEK: {
-        ret = PlaybackSeek(context, (float*)argument);
-        break;
-    }
-    case PLAYBACK_PTS: { // 10
-        ret = PlaybackPts(context, (unsigned long long int*)argument);
-        break;
-    }
-    case PLAYBACK_LENGTH: { // 11
-        ret = PlaybackLength(context, (double*)argument);
-        break;
-    }
-    case PLAYBACK_SWITCH_AUDIO: {
-        ret = PlaybackSwitchAudio(context, (int*)argument);
-        break;
-    }
+    switch(command) 
+    {
+	case PLAYBACK_OPEN: {
+	    ret = PlaybackOpen(context, (char*)argument);
+	    break;
+	}
+	case PLAYBACK_CLOSE: {
+	    ret = PlaybackClose(context);
+	    break;
+	}
+	case PLAYBACK_PLAY: {
+	    ret = PlaybackPlay(context);
+	    break;
+	}
+	case PLAYBACK_STOP: {
+	    ret = PlaybackStop(context);
+	    break;
+	}
+	case PLAYBACK_PAUSE: {	// 4
+	    ret = PlaybackPause(context);
+	    break;
+	}
+	case PLAYBACK_CONTINUE: {
+	    ret = PlaybackContinue(context);
+	    break;
+	}
+	case PLAYBACK_TERM: {
+	    ret = PlaybackTerminate(context);
+	    break;
+	}
+	case PLAYBACK_FASTFORWARD: {
+	    ret = PlaybackFastForward(context,(int*)argument);
+	    break;
+	}
+	case PLAYBACK_SEEK: {
+	    ret = PlaybackSeek(context, (float*)argument);
+	    break;
+	}
+	case PLAYBACK_PTS: { // 10
+	    ret = PlaybackPts(context, (unsigned long long int*)argument);
+	    break;
+	}
+	case PLAYBACK_LENGTH: { // 11
+	    ret = PlaybackLength(context, (double*)argument);
+	    break;
+	}
+	case PLAYBACK_SWITCH_AUDIO: {
+	    ret = PlaybackSwitchAudio(context, (int*)argument);
+	    break;
+	}
 #if defined (ENABLE_LIBASS)    
-    case PLAYBACK_SWITCH_SUBTITLE: {
-        ret = PlaybackSwitchSubtitle(context, (int*)argument);
-        break;
-    }
+	case PLAYBACK_SWITCH_SUBTITLE: {
+	    ret = PlaybackSwitchSubtitle(context, (int*)argument);
+	    break;
+	}
 #endif    
-    case PLAYBACK_INFO: {
-        ret = PlaybackInfo(context, (char**)argument);
-        break;
-    }
-    case PLAYBACK_SLOWMOTION: {
-        ret = PlaybackSlowMotion(context,(int*)argument);
-        break;
-    }
-    case PLAYBACK_FASTBACKWARD: {
-        ret = PlaybackFastBackward(context,(int*)argument);
-        break;
-    }
-    case PLAYBACK_GET_FRAME_COUNT: { // 10
-        ret = PlaybackGetFrameCount(context, (unsigned long long int*)argument);
-        break;
-    }
-    default:
-        playback_err("PlaybackCmd %d not supported!\n", command);
-        ret = cERR_PLAYBACK_ERROR;
-        break;
+	case PLAYBACK_INFO: {
+	    ret = PlaybackInfo(context, (char**)argument);
+	    break;
+	}
+	case PLAYBACK_SLOWMOTION: {
+	    ret = PlaybackSlowMotion(context,(int*)argument);
+	    break;
+	}
+	case PLAYBACK_FASTBACKWARD: {
+	    ret = PlaybackFastBackward(context,(int*)argument);
+	    break;
+	}
+	case PLAYBACK_GET_FRAME_COUNT: { // 10
+	    ret = PlaybackGetFrameCount(context, (unsigned long long int*)argument);
+	    break;
+	}
+	default:
+	    playback_err("PlaybackCmd %d not supported!\n", command);
+	    ret = cERR_PLAYBACK_ERROR;
+	    break;
     }
 
     playback_printf(20, "exiting with value %d\n", ret);
