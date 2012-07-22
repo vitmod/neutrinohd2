@@ -156,6 +156,7 @@ bool cPlayback::Start(char * filename, unsigned short vpid, int vtype, unsigned 
 	//open file
 	if(player && player->playback && player->playback->Command(player, PLAYBACK_OPEN, file) >= 0) 
 	{
+		#if 0
 		//list audio tracks
 		if(player && player->manager && player->manager->audio) 
 		{
@@ -219,7 +220,7 @@ bool cPlayback::Start(char * filename, unsigned short vpid, int vtype, unsigned 
 			}
 		}
 #endif
-
+		#endif
 		/* play it baby  */
 		if(player && player->output && player->playback) 
 		{
@@ -559,7 +560,7 @@ bool cPlayback::SetPosition(int position, bool absolute)
 	return true;
 }
 
-void cPlayback::FindAllPids(uint16_t *apids, unsigned short *ac3flags, uint16_t *numpida, std::string *language)
+void cPlayback::FindAllPids(uint16_t *apids, unsigned short *ac3flags, uint16_t *numpida, std::string * language)
 { 
 	dprintf(DEBUG_INFO, "%s:%s\n", FILENAME, __FUNCTION__);
 
