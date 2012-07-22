@@ -889,7 +889,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	// end movieplayer
 
 	// OSD
-	g_settings.blendmode = configfile.getBool( "blendmode", true);
+	g_settings.blendmode = configfile.getBool( "blendmode", false );
 	g_settings.gtx_alpha = configfile.getInt32( "gtx_alpha", 255);
 	g_settings.gain = configfile.getInt32( "gain", 255);
 	
