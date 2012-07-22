@@ -1011,6 +1011,7 @@ int check_dir(const char * newdir)
 			case 0x517BL:		/*SMB*/
 			case 0x52654973L:	/*REISERFS*/
 			case 0x65735546L:	/*fuse for ntfs*/
+			case 0x5346544eL:	/*ntfs*/
 			case 0x58465342L:	/*xfs*/
 			case 0x4d44L:		/*msdos*/
 			case 0x3153464aL:	/*jfs*/
