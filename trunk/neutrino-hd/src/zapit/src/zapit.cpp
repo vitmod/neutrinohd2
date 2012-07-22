@@ -3487,8 +3487,8 @@ int zapit_main_thread(void *data)
 		CFrontend::killInstance(i);
 	}
 
-	INFO("frontend deleted");
-	INFO("zapit shutdown complete :-)");
+	printf("frontend deleted\n");
+	printf("zapit shutdown complete :-)\n");
 
 	return 0;
 }
