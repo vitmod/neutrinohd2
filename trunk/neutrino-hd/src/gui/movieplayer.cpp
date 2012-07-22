@@ -130,9 +130,7 @@ int jumpminutes = 1;
 static int g_jumpseconds = 0;
 int buffer_time = 0;
 unsigned short g_apids[10];
-#ifdef __sh__
 unsigned short m_apids[10]; // needed to get language from mb
-#endif
 unsigned short g_ac3flags[10];
 unsigned short g_numpida = 0;
 unsigned short g_vpid = 0;
@@ -883,9 +881,7 @@ void CMoviePlayerGui::PlayFile(void)
 			for (int i = 0; i < g_numpida; i++) 
 			{
 				g_apids[i] = 0;
-#ifdef __sh__
 				m_apids[i] = 0;
-#endif
 				g_ac3flags[i] = 0;
 				g_language[i].clear();
 			}
@@ -932,11 +928,8 @@ void CMoviePlayerGui::PlayFile(void)
 
 						for (int i = 0; i < (int)p_movie_info->audioPids.size(); i++) 
 						{
-#ifdef __sh__
 							m_apids[i] = p_movie_info->audioPids[i].epgAudioPid;
-#else							
-							g_apids[i] = p_movie_info->audioPids[i].epgAudioPid;
-#endif
+
 							g_ac3flags[i] = p_movie_info->audioPids[i].atype;
 							g_numpida++;
 
@@ -1055,15 +1048,9 @@ void CMoviePlayerGui::PlayFile(void)
 		if (showaudioselectdialog) 
 		{
 			CMenuWidget APIDSelector(LOCALE_APIDSELECTOR_HEAD, NEUTRINO_ICON_AUDIO, 400);
-			
-			//auch im mb liegen wir die apids erneut, language holen wir vom mb
-#ifndef __sh__
-			if(is_file_player && !g_numpida)
-#endif
-			{
-				// g_apids will be rewritten for mb
-				playback->FindAllPids(g_apids, g_ac3flags, &g_numpida, g_language);
-			}
+
+			// g_apids will be rewritten for mb
+			playback->FindAllPids(g_apids, g_ac3flags, &g_numpida, g_language);
 			
 			if (g_numpida > 0) 
 			{
@@ -1086,12 +1073,8 @@ void CMoviePlayerGui::PlayFile(void)
 					// language name from mb
 					if(!is_file_player)
 					{
-#ifdef __sh__
 						// we use again the apids from mb
 						name_ok = get_movie_info_apid_name(m_apids[count], p_movie_info, &apidtitle);
-#else
-						name_ok = get_movie_info_apid_name(g_apids[count], p_movie_info, &apidtitle);
-#endif
 					}
 					else if (!g_language[count].empty())
 					{
