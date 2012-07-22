@@ -80,7 +80,7 @@ bool cPlayback::Open()
 		//printf("%s\n", player->output->Name);
 	}
 
-	//Registration of output devices
+	// registration of output devices
 	if(player && player->output) 
 	{
 		player->output->Command(player,OUTPUT_ADD, (void*)"audio");
@@ -582,7 +582,7 @@ void cPlayback::FindAllPids(uint16_t *apids, unsigned short *ac3flags, uint16_t 
 
 				// atUnknown, atMPEG, atMP3, atAC3, atDTS, atAAC, atPCM, atOGG, atFLAC
 
-				if(!strncmp("A_MPEG/L3",   TrackList[i+1], 9))
+				if( (!strncmp("A_MPEG/L3",   TrackList[i+1], 9)) || (!strncmp("A_MP3",   TrackList[i+1], 5)) )
 					ac3flags[j] = 4;
 				else if(!strncmp("A_AC3",       TrackList[i+1], 5))
 					ac3flags[j] = 1;
