@@ -1226,7 +1226,7 @@ void CNeutrinoApp::InitLanguageSettings(CMenuWidget &languageSettings)
 
 	char *path[] = {(char *) DATADIR "/neutrino/locale", (char *) "/var/tuxbox/config/locale"};
 
-	for(int p = 0;p < 2;p++) 
+	for(int p = 0; p < 2; p++) 
 	{
 		n = scandir(path[p], &namelist, 0, alphasort);
 		
@@ -1503,13 +1503,6 @@ const CMenuOptionChooser::keyval  VOLUMEBAR_DISP_POS_OPTIONS[VOLUMEBAR_DISP_POS_
 	{ 5 , LOCALE_SETTINGS_POS_HIGHER_CENTER }
 };
 
-#define OPTIONS_BLENDMODE_OPTION_COUNT 2
-const CMenuOptionChooser::keyval OPTIONS_BLENDMODE_OPTIONS[OPTIONS_BLENDMODE_OPTION_COUNT] =
-{
-	{ 0, NONEXISTANT_LOCALE, "non-premultiplied" },
-        { 1, NONEXISTANT_LOCALE, "premultiplied"  }
-};
-
 void CNeutrinoApp::InitColorSettings(CMenuWidget &colorSettings)
 {
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitColorSettings\n");
@@ -1572,17 +1565,10 @@ void CNeutrinoApp::InitColorSettings(CMenuWidget &colorSettings)
 	
 #if !defined (PLATFORM_GIGABLUE) && !defined (PLATFORM_DREAMBOX) && !defined (PLATFORM_XTREND)
 	colorSettings.addItem(GenericMenuSeparatorLine);
-	
-	// blend mode
-	colorSettings.addItem(new CMenuOptionChooser(LOCALE_COLORMENU_BLENDMODE, &g_settings.blendmode, OPTIONS_BLENDMODE_OPTIONS, OPTIONS_BLENDMODE_OPTION_COUNT, true, new CColorMenuBlendModeNotifier(), CRCInput::convertDigitToKey(shortcutOSD++) ));
 
 	// alpha setup
 	CAlphaSetup* chAlphaSetup = new CAlphaSetup(LOCALE_COLORMENU_GTX_ALPHA, &g_settings.gtx_alpha);
 	colorSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_GTX_ALPHA, true, NULL, chAlphaSetup, NULL, CRCInput::convertDigitToKey(shortcutOSD++)));
-	
-	//color gain
-	CColorGainSetup* chColorGainSetup = new CColorGainSetup(LOCALE_COLORMENU_GAIN, &g_settings.gain);
-	colorSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_GAIN, true, NULL, chColorGainSetup, NULL, CRCInput::convertDigitToKey(shortcutOSD++)));
 #endif	
 }
 
@@ -1699,13 +1685,6 @@ void CNeutrinoApp::InitColorSettingsTiming(CMenuWidget &colorSettings_timing)
 }
 
 /* Init LCD Settings */
-#define LCDMENU_STATUSLINE_OPTION_COUNT 2
-const CMenuOptionChooser::keyval LCDMENU_STATUSLINE_OPTIONS[LCDMENU_STATUSLINE_OPTION_COUNT] =
-{
-	{ 0, LOCALE_LCDMENU_STATUSLINE_PLAYTIME },
-	{ 1, LOCALE_LCDMENU_STATUSLINE_VOLUME   }
-};
-
 void CNeutrinoApp::InitLcdSettings(CMenuWidget &lcdSettings)
 {
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitLcdSettings\n");
@@ -1721,13 +1700,7 @@ void CNeutrinoApp::InitLcdSettings(CMenuWidget &lcdSettings)
 	lcdSettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	lcdSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 
-	CLcdNotifier * lcdnotifier = new CLcdNotifier();
-
-	// inverse
-#if 0
-	CMenuOptionChooser * oj1 = new CMenuOptionChooser(LOCALE_LCDMENU_INVERSE, &g_settings.lcd_setting[SNeutrinoSettings::LCD_INVERSE], OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, lcdnotifier, NULL, CRCInput::convertDigitToKey(shortcutVFD++));
-	lcdSettings.addItem(oj1);
-#endif	
+	CLcdNotifier * lcdnotifier = new CLcdNotifier();	
 
 	// vfd power
 	CMenuOptionChooser * oj2 = new CMenuOptionChooser(LOCALE_LCDMENU_POWER, &g_settings.lcd_setting[SNeutrinoSettings::LCD_POWER], OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, lcdnotifier, CRCInput::convertDigitToKey(shortcutVFD++) );
@@ -1759,24 +1732,9 @@ void CNeutrinoApp::InitLcdSettings(CMenuWidget &lcdSettings)
 
 	lcdSettings.addItem( new CMenuForwarder(LOCALE_LCDMENU_SETFPTIME, true, "", this, "setfptime", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
 #endif
-
-	// status line
-#ifndef __sh__
-	CMenuOptionChooser* oj3 = new CMenuOptionChooser(LOCALE_LCDMENU_STATUSLINE, &g_settings.lcd_setting[SNeutrinoSettings::LCD_SHOW_VOLUME], LCDMENU_STATUSLINE_OPTIONS, LCDMENU_STATUSLINE_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutVFD++) );
-
-	lcdSettings.addItem(oj3);
-#endif
 }
 
 // Init Keys Settings
-#define KEYBINDINGMENU_BOUQUETHANDLING_OPTION_COUNT 3
-const CMenuOptionChooser::keyval KEYBINDINGMENU_BOUQUETHANDLING_OPTIONS[KEYBINDINGMENU_BOUQUETHANDLING_OPTION_COUNT] =
-{
-	{ 0, LOCALE_KEYBINDINGMENU_BOUQUETCHANNELS_ON_OK },
-	{ 1, LOCALE_KEYBINDINGMENU_BOUQUETLIST_ON_OK     },
-	{ 2, LOCALE_KEYBINDINGMENU_ALLCHANNELS_ON_OK     }
-};
-
 enum keynames {
 	KEY_TV_RADIO_MODE,
 	KEY_PAGE_UP,
@@ -2415,19 +2373,6 @@ bool CNeutrinoApp::showUserMenu(int button)
 					menu->addItem(menu_item, false);
                                 }
                                 break;
-				
-			// script
-			#if 0
-			case SNeutrinoSettings::ITEM_SCRIPT:
-				{
-					menu_item++;
-					menu_prev = SNeutrinoSettings::ITEM_SCRIPT;
-					keyhelper.get(&key, &icon);
-					menu_item = new CMenuForwarder(LOCALE_MAINMENU_SCRIPTS, true, "", new CPluginList(LOCALE_MAINMENU_SCRIPTS, CPlugins::P_TYPE_SCRIPT), "", key, icon );
-					menu->addItem(menu_item, false);
-                                }
-                                break;
-			#endif
 				
 			// games
 			case SNeutrinoSettings::ITEM_GAME:

@@ -34,6 +34,9 @@ libneutrino_gui2_a_SOURCES = \
 	color.cpp motorcontrol.cpp scale.cpp hdd_menu.cpp \
 	alphasetup.cpp colorgainsetup.cpp dvbsub_select.cpp upnpbrowser.cpp
 
+#libneutrino_gui2_a_SOURCES += \
+#	alphasetup.cpp colorgainsetup.cpp
+
 if BOXTYPE_CUBEREVO
 libneutrino_gui2_a_SOURCES += cam_menu.cpp
 endif

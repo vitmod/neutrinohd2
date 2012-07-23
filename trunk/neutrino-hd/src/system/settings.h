@@ -129,9 +129,9 @@ struct SNeutrinoSettings
 	// END MOVIEPLAYER
 
 	// OSD
-	int blendmode;
+	//int blendmode;
 	unsigned char gtx_alpha;
-	unsigned char gain;
+	//unsigned char gain;
 	
 	char language[25];
 

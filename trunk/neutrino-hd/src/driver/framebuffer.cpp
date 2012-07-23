@@ -449,7 +449,9 @@ int CFrameBuffer::setMode()
 	stride = xRes * 4;
 #else
 	setVideoMode(DEFAULT_XRES, DEFAULT_YRES, DEFAULT_BPP);
-#endif	
+#endif
+
+	setBlendMode(0);
 	
 	// clear frameBuffer
 	paintBackground();

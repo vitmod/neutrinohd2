@@ -889,9 +889,9 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	// end movieplayer
 
 	// OSD
-	g_settings.blendmode = configfile.getBool( "blendmode", false );
+	//g_settings.blendmode = configfile.getBool( "blendmode", false );
 	g_settings.gtx_alpha = configfile.getInt32( "gtx_alpha", 255);
-	g_settings.gain = configfile.getInt32( "gain", 255);
+	//g_settings.gain = configfile.getInt32( "gain", 255);
 	
 	strcpy(g_settings.language, configfile.getString("language", "english").c_str());
 	g_settings.volume_pos = configfile.getInt32( "volume_pos", 1);		//top_left
@@ -1299,9 +1299,9 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	// END MOVIEPLAYER
 
 	// OSD
-	configfile.setBool( "blendmode", g_settings.blendmode);
+	//configfile.setBool( "blendmode", g_settings.blendmode);
 	configfile.setInt32( "gtx_alpha", g_settings.gtx_alpha);
-	configfile.setInt32( "gain", g_settings.gain);
+	//configfile.setInt32( "gain", g_settings.gain);
 
 	configfile.setString("language", g_settings.language);
 	configfile.setInt32( "volume_pos", g_settings.volume_pos);

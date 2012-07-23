@@ -1015,6 +1015,7 @@ int check_dir(const char * newdir)
 			case 0x58465342L:	/*xfs*/
 			case 0x4d44L:		/*msdos*/
 			case 0x3153464aL:	/*jfs*/
+			case 0x4006L:		/*fat*/
 				return 0;//ok
 			default:
 				fprintf( stderr,"%s Unknow File system type: %i\n",newdir ,s.f_type);
