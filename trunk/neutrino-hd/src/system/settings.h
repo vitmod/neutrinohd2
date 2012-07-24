@@ -55,6 +55,11 @@ struct SNeutrinoSettings
 	int video_Format;
 
 	int wss_mode;
+	
+	unsigned char contrast;
+	unsigned char saturation;
+	unsigned char brightness;
+	unsigned char tint;
 	// END VIDEO
 
 	// AUDIO
@@ -131,7 +136,6 @@ struct SNeutrinoSettings
 	// OSD
 	//int blendmode;
 	unsigned char gtx_alpha;
-	//unsigned char gain;
 	
 	char language[25];
 

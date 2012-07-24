@@ -119,8 +119,6 @@
 
 #include "gui/hdd_menu.h"
 
-#include "gui/colorgainsetup.h"
-
 #include <system/setting_helpers.h>
 #include <system/settings.h>
 #include <system/debug.h>
@@ -781,6 +779,11 @@ int CNeutrinoApp::loadSetup(const char * fname)
 
 	//wss	
 	g_settings.wss_mode = configfile.getInt32("wss_mode", WSS_OFF);
+	
+	g_settings.contrast = configfile.getInt32( "contrast", 128);
+	g_settings.saturation = configfile.getInt32( "saturation", 128);
+	g_settings.brightness = configfile.getInt32( "brightness", 128);
+	g_settings.tint = configfile.getInt32( "tint", 128);
 	// end video
 
 	// audio
@@ -889,9 +892,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	// end movieplayer
 
 	// OSD
-	//g_settings.blendmode = configfile.getBool( "blendmode", false );
 	g_settings.gtx_alpha = configfile.getInt32( "gtx_alpha", 255);
-	//g_settings.gain = configfile.getInt32( "gain", 255);
 	
 	strcpy(g_settings.language, configfile.getString("language", "english").c_str());
 	g_settings.volume_pos = configfile.getInt32( "volume_pos", 1);		//top_left
@@ -1221,6 +1222,11 @@ void CNeutrinoApp::saveSetup(const char * fname)
 
 	// wss
 	configfile.setInt32("wss_mode", g_settings.wss_mode);
+	
+	configfile.setInt32( "contrast", g_settings.contrast);
+	configfile.setInt32( "saturation", g_settings.saturation);
+	configfile.setInt32( "brightness", g_settings.brightness);
+	configfile.setInt32( "tint", g_settings.tint);
 	// END VIDEO
 
 	// AUDIO
@@ -1301,7 +1307,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	// OSD
 	//configfile.setBool( "blendmode", g_settings.blendmode);
 	configfile.setInt32( "gtx_alpha", g_settings.gtx_alpha);
-	//configfile.setInt32( "gain", g_settings.gain);
 
 	configfile.setString("language", g_settings.language);
 	configfile.setInt32( "volume_pos", g_settings.volume_pos);

@@ -553,7 +553,7 @@ GENRE.TRAVEL_HOBBIES.5 cooking
 GENRE.TRAVEL_HOBBIES.6 advertisement/shopping
 GENRE.TRAVEL_HOBBIES.7 gardening
 GENRE.UNKNOWN unknown
-gtxalpha.alpha1 Value
+gtxalpha.alpha1 Transparency
 gtxalpha.alpha2 Alpha 2
 hdd_10min 10 min.
 hdd_1min 1 min.
@@ -1477,6 +1477,11 @@ helptext.miscsettingszapitsetup Here you can set up the start-program and mode.
 
 miscsettings.logosdir Sender logos Dir
 
+videomenu.psisetup PSI Setup
+psisetup.contrast Contrast
+psisetup.saturation Saturation
+psisetup.brightness Brightness
+psisetup.tint Tint
 
 
 

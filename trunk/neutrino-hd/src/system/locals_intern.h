@@ -1488,5 +1488,11 @@ const char *locale_real_names[] = {
 	"helptext.miscsettingszapitsetup",
 	
 	"miscsettings.logosdir",
+	
+	"videomenu.psisetup",
+	"psisetup.contrast",
+	"psisetup.saturation",
+	"psisetup.brightness",
+	"psisetup.tint",
 };
 #endif

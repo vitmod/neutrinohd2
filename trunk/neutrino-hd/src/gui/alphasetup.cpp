@@ -77,7 +77,7 @@ int CAlphaSetup::exec(CMenuTarget* parent, const std::string &)
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
-	width = w_max(360, 0);
+	width = w_max(450, 0);
 
 	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
@@ -154,7 +154,11 @@ int CAlphaSetup::exec(CMenuTarget* parent, const std::string &)
 					{
 						if (*alpha < 255) 
 						{
-							*alpha += 0x10;
+							if ( *alpha < 250 )
+								*alpha += 5;
+							else
+								*alpha = 255;
+								
 							paintSlider(x + 10, y + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, ALPHA_SETUP_ICON_ALPHA1_SELECTED, true );
 							frameBuffer->setBlendLevel(*alpha);
 						}
@@ -168,9 +172,13 @@ int CAlphaSetup::exec(CMenuTarget* parent, const std::string &)
 				{
 					if(selected == 0)
 					{
-						if (*alpha >= 0x10) 
+						if (*alpha > 0) 
 						{
-							*alpha -= 0x10;
+							if (* alpha > 5)
+								*alpha -= 5;
+							else
+								*alpha = 0;
+								
 							paintSlider(x + 10, y + hheight, alpha, LOCALE_GTXALPHA_ALPHA1, ALPHA_SETUP_ICON_ALPHA1_SELECTED, true );
 							frameBuffer->setBlendLevel(*alpha);
 						}
@@ -250,15 +258,15 @@ void CAlphaSetup::paintSlider(const int x, const int y, const unsigned char * co
 	int sspos = (*spos)*100/255;
 	char wert[5];
 
-	frameBuffer->paintBoxRel(x+70,y,120,mheight, COL_MENUCONTENT_PLUS_0);
+	frameBuffer->paintBoxRel(x + 200, y, 120, mheight, COL_MENUCONTENT_PLUS_0);
 
-	frameBuffer->paintIcon(NEUTRINO_ICON_VOLUMEBODY, x + 70, y + 2 + mheight / 4);
-	frameBuffer->paintIcon(iconname, x + 73 + sspos, y + mheight / 4);
+	frameBuffer->paintIcon(NEUTRINO_ICON_VOLUMEBODY, x + 200, y + 2 + mheight / 4);
+	frameBuffer->paintIcon(iconname, x + 203 + sspos, y + mheight / 4);
 
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x, y + mheight, width, g_Locale->getText(text), COL_MENUCONTENT, 0, true); // UTF-8
 	
 	sprintf(wert, "%3d", sspos); // UTF-8 encoded
 
-	frameBuffer->paintBoxRel(x + 70 + 120 + 10, y, 50, mheight, COL_MENUCONTENT_PLUS_0);
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + 70 + 120 + 10, y+mheight, width, wert, COL_MENUCONTENT, 0, true); // UTF-8
+	frameBuffer->paintBoxRel(x + 200 + 120 + 10, y, 50, mheight, COL_MENUCONTENT_PLUS_0);
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + 200 + 120 + 10, y+mheight, width, wert, COL_MENUCONTENT, 0, true); // UTF-8
 }

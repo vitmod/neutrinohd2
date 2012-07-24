@@ -108,7 +108,7 @@
 #include "gui/filebrowser.h"
 #include "gui/scale.h"
 
-#include "gui/colorgainsetup.h"
+#include "gui/psisetup.h"
 #include "gui/upnpbrowser.h"
 
 #include <system/setting_helpers.h>
@@ -577,6 +577,12 @@ void CNeutrinoApp::InitVideoSettings(CMenuWidget &videoSettings, CVideoSetupNoti
 
 	// video mode
 	videoSettings.addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEOMODE, &g_settings.video_Mode, VIDEOMENU_VIDEOMODE_OPTIONS, VIDEOMENU_VIDEOMODE_OPTION_COUNT, true, videoSetupNotifier, CRCInput::convertDigitToKey(shortcutVideo++), "", true));
+	
+	// psi setup
+	//videoSettings.addItem(GenericMenuSeparatorLine);
+	
+	//CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
+	//videoSettings.addItem( new CMenuForwarder(LOCALE_VIDEOMENU_PSISETUP, true, NULL, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutVideo++)));
 }
 
 // Init Audio Settings
@@ -1567,9 +1573,15 @@ void CNeutrinoApp::InitColorSettings(CMenuWidget &colorSettings)
 	colorSettings.addItem(GenericMenuSeparatorLine);
 
 	// alpha setup
-	CAlphaSetup* chAlphaSetup = new CAlphaSetup(LOCALE_COLORMENU_GTX_ALPHA, &g_settings.gtx_alpha);
+	CAlphaSetup * chAlphaSetup = new CAlphaSetup(LOCALE_COLORMENU_GTX_ALPHA, &g_settings.gtx_alpha);
 	colorSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_GTX_ALPHA, true, NULL, chAlphaSetup, NULL, CRCInput::convertDigitToKey(shortcutOSD++)));
-#endif	
+#endif
+
+	// psi setup
+	colorSettings.addItem(GenericMenuSeparatorLine);
+	
+	CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
+	colorSettings.addItem( new CMenuForwarder(LOCALE_VIDEOMENU_PSISETUP, true, NULL, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutOSD++)));
 }
 
 void CNeutrinoApp::InitColorThemesSettings(CMenuWidget &colorSettings_Themes)
