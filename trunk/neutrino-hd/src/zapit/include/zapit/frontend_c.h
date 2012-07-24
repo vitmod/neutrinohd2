@@ -203,7 +203,7 @@ class CFrontend
 		fe_code_rate_t 			getCFEC ();
 		const transponder_id_t 		getTsidOnid()    { return currentTransponder.TP_id; }
 		void 				setTsidOnid(transponder_id_t newid)  { currentTransponder.TP_id = newid; }
-		uint32_t 			getRate ();
+		uint32_t 			getRate();
                 void Close();
                 //void Open();
 		//test
