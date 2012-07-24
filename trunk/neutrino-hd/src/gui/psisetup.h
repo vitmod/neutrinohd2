@@ -30,8 +30,8 @@
 */
 
 
-#ifndef __colorgainsetup__
-#define __colorgainsetup__
+#ifndef __psisetup__
+#define __psisetup__
 
 
 #include "widget/menue.h"
@@ -42,7 +42,7 @@
 #include <string>
 
 
-class CColorGainSetup : public CMenuTarget
+class CPSISetup : public CMenuTarget
 {
 	private:
 		CFrameBuffer	*frameBuffer;
@@ -53,24 +53,31 @@ class CColorGainSetup : public CMenuTarget
 		int hheight;		// head font height
 		int mheight; 		// menu font height
 
-		unsigned char * value;
+		unsigned char * contrast;
+		unsigned char * saturation;
+		unsigned char * brightness;
+		unsigned char * tint;
 
 		neutrino_locale_t name;
 
 		CChangeObserver * observer;
 
 		void paint();
-		void setColorGain();
+		void setPSI();
 		void paintSlider(const int x, const int y, const unsigned char * const spos, const neutrino_locale_t text, const char * const iconname, const bool selected);
 
 	public:
 
-		CColorGainSetup(const neutrino_locale_t Name, unsigned char * Value, CChangeObserver* Observer = NULL);
+		CPSISetup(const neutrino_locale_t Name, unsigned char * Contrast, unsigned char * Saturation, unsigned char * Brightness, unsigned char * Tint, CChangeObserver* Observer = NULL);
 
 		void hide();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
+		
+		void setContrast(int contrast);
+		void setSaturation(int saturation);
+		void setBrightness(int brightness);
+		void setTint(int tint);
 };
 
-
-#endif
+#endif		//psisetup.h
 
