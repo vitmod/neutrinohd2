@@ -56,8 +56,8 @@ extern int motorRotationSpeed;
 #define max(x,y)	((x > y) ? x : y)
 
 // channel
-extern bool current_is_nvod;
-extern t_channel_id live_channel_id;
+//extern bool current_is_nvod;
+//extern t_channel_id live_channel_id;
 
 // unicable
 extern int uni_scr;
@@ -192,8 +192,10 @@ CFrontend::CFrontend(int num, int adap)
 	/* frontend index */
 	fenumber = num;
 	
-	slave = fenumber;	// FIXME
+	slave = false;	// FIXME
 	diseqcType = NO_DISEQC;
+	
+	//mode = FE_CONNECTED;
 
 	/* open frontend */
 	Open();
@@ -1040,7 +1042,7 @@ void CFrontend::setFrontend(const struct dvb_frontend_parameters * feparams, boo
 
 void CFrontend::secSetTone(const fe_sec_tone_mode_t toneMode, const uint32_t ms)
 {
-	if (info.type != FE_QPSK)
+	if (slave || info.type != FE_QPSK)
 		return;
 
 	if (currentToneMode == toneMode)
@@ -1061,19 +1063,22 @@ void CFrontend::secSetTone(const fe_sec_tone_mode_t toneMode, const uint32_t ms)
 	#endif
 
 	printf("CFrontend::secSetTone: fe(%d) tone %s\n", fenumber, toneMode == SEC_TONE_ON ? "on" : "off");
-	TIMER_INIT();
-	TIMER_START();
+	//TIMER_INIT();
+	//TIMER_START();
 
 	if (ioctl(fd, FE_SET_TONE, toneMode) == 0) 
 	{
 		currentToneMode = toneMode;
 		usleep(1000 * ms);
 	}
-	TIMER_STOP("FE_SET_TONE took");
+	//TIMER_STOP("FE_SET_TONE took");
 }
 
 void CFrontend::secSetVoltage(const fe_sec_voltage_t voltage, const uint32_t ms)
-{	
+{
+	if (slave || info.type != FE_QPSK)
+		return;
+	
 	if (currentVoltage == voltage)
 		return;
 	
@@ -1108,7 +1113,7 @@ void CFrontend::secResetOverload(void)
 
 void CFrontend::sendDiseqcCommand(const struct dvb_diseqc_master_cmd *cmd, const uint32_t ms)
 {
-	if (info.type != FE_QPSK) 
+	if (slave || info.type != FE_QPSK) 
 		return;
 	
 	printf("CFrontend::sendDiseqcCommand: fe(%d) Diseqc cmd: ", fenumber);
@@ -1127,7 +1132,7 @@ uint32_t CFrontend::getDiseqcReply(const int timeout_ms) const
 
 void CFrontend::sendToneBurst(const fe_sec_mini_cmd_t burst, const uint32_t ms)
 {
-	if (info.type != FE_QPSK) 
+	if (slave || info.type != FE_QPSK) 
 		return;
 	
 	if (ioctl(fd, FE_DISEQC_SEND_BURST, burst) == 0)
@@ -1329,16 +1334,21 @@ uint32_t CFrontend::sendEN50494TuningCommand(const uint32_t frequency, const int
 	if (t < 1024 && uni_scr >= 0 && uni_scr < 8)
 	{
 		fprintf(stderr, "VOLT18=%d TONE_ON=%d, freq=%d bpf=%d ret=%d\n", currentVoltage == SEC_VOLTAGE_18, currentToneMode == SEC_TONE_ON, frequency, bpf, (t + 350) * 4000 - frequency);
-		cmd.msg[3] = (t >> 8)		|	/* highest 3 bits of t */
-			     (uni_scr << 5)	|	/* adress */
-			     (bank << 4)	|	/* not implemented yet */
-			     (horizontal << 3)	|	/* horizontal == 0x08 */
-			     (high_band) << 2;		/* high_band  == 0x04 */
-		cmd.msg[4] = t & 0xFF;
-		fop(ioctl, FE_SET_VOLTAGE, SEC_VOLTAGE_18);
-		usleep(15 * 1000);		/* en50494 says: >4ms and < 22 ms */
-		sendDiseqcCommand(&cmd, 50);	/* en50494 says: >2ms and < 60 ms */
-		fop(ioctl, FE_SET_VOLTAGE, SEC_VOLTAGE_13);
+		
+		if (!slave && info.type == FE_QPSK) 
+		{
+			cmd.msg[3] = (t >> 8)		|	/* highest 3 bits of t */
+				    (uni_scr << 5)	|	/* adress */
+				    (bank << 4)	|	/* not implemented yet */
+				    (horizontal << 3)	|	/* horizontal == 0x08 */
+				    (high_band) << 2;		/* high_band  == 0x04 */
+			cmd.msg[4] = t & 0xFF;
+			fop(ioctl, FE_SET_VOLTAGE, SEC_VOLTAGE_18);
+			usleep(15 * 1000);		/* en50494 says: >4ms and < 22 ms */
+			sendDiseqcCommand(&cmd, 50);	/* en50494 says: >2ms and < 60 ms */
+			fop(ioctl, FE_SET_VOLTAGE, SEC_VOLTAGE_13);
+		}
+		
 		return (t + 350) * 4000 - frequency;
 	}
 	WARN("ooops. t > 1024? (%d) or uni_scr out of range? (%d)", t, uni_scr);
@@ -1492,6 +1502,9 @@ bool CFrontend::setDiseqcSimple(int sat_no, const uint8_t pol, const uint32_t fr
 
 	printf("CFrontend::setDiseqcSimple: fe(%d) diseqc input  %d -> %d\n", fenumber, diseqc, sat_no);
 	currentTransponder.diseqc = sat_no;
+	
+	if (slave)
+		return true;
 
 	if ((sat_no >= 0) && (diseqc != sat_no)) 
 	{
@@ -1599,7 +1612,6 @@ void CFrontend::setDiseqc(int sat_no, const uint8_t pol, const uint32_t frequenc
 
 void CFrontend::setSec(const uint8_t sat_no, const uint8_t pol, const bool high_band)
 {
-	//test
 	if (info.type != FE_QPSK) 
 		return;
 	
@@ -1613,7 +1625,6 @@ void CFrontend::setSec(const uint8_t sat_no, const uint8_t pol, const bool high_
 
 void CFrontend::sendDiseqcPowerOn(void)
 {
-	//test
 	if (info.type != FE_QPSK) 
 		return;
 	
@@ -1632,7 +1643,6 @@ void CFrontend::sendDiseqcPowerOn(void)
 
 void CFrontend::sendDiseqcReset(void)
 {
-	//test
 	if (info.type != FE_QPSK) 
 		return;
 	
@@ -1646,7 +1656,6 @@ void CFrontend::sendDiseqcReset(void)
 
 void CFrontend::sendDiseqcStandby(void)
 {
-	//test
 	if (info.type != FE_QPSK) 
 		return;
 	
@@ -1656,7 +1665,6 @@ void CFrontend::sendDiseqcStandby(void)
 
 void CFrontend::sendDiseqcZeroByteCommand(uint8_t framing_byte, uint8_t address, uint8_t command)
 {
-	//test
 	if (info.type != FE_QPSK) 
 		return;
 	
@@ -1676,7 +1684,6 @@ void CFrontend::sendDiseqcSmatvRemoteTuningCommand(const uint32_t frequency)
 	 * [4] frequency
 	 * [5] frequency */
 	
-	//test
 	if (info.type != FE_QPSK) 
 		return;
 
@@ -1756,7 +1763,6 @@ int CFrontend::driveToSatellitePosition(t_satellite_position satellitePosition, 
 
 static const int gotoXTable[10] = { 0x00, 0x02, 0x03, 0x05, 0x06, 0x08, 0x0A, 0x0B, 0x0D, 0x0E };
 
-/*----------------------------------------------------------------------------*/
 double factorial_div(double value, int x)
 {
 	if (!x)
@@ -1769,7 +1775,6 @@ double factorial_div(double value, int x)
 	return value;
 }
 
-/*----------------------------------------------------------------------------*/
 double powerd(double x, int y)
 {
 	int i = 0;
@@ -1786,7 +1791,6 @@ double powerd(double x, int y)
 	return ans;
 }
 
-/*----------------------------------------------------------------------------*/
 double SIN(double x)
 {
 	int i = 0;
@@ -1962,7 +1966,6 @@ double calcSatHourangle(double Azimuth, double Elevation, double Declination, do
 
 void CFrontend::gotoXX(t_satellite_position pos)
 {
-	//test
 	if (info.type != FE_QPSK) 
 		return;
 	
@@ -2008,47 +2011,5 @@ void CFrontend::gotoXX(t_satellite_position pos)
 	sendMotorCommand(0xE0, 0x31, 0x6E, 2, ((RotorCmd & 0xFF00) / 0x100), RotorCmd & 0xFF, repeatUsals);
 }
 
-//test
-#if 0
-#ifndef FP_IOCTL_GET_ID
-#define FP_IOCTL_GET_ID 0
-#endif
-int readInputPower()
-{
-	int m_slotid = getFrontendIndex() + 1;
-	int power=m_slotid;  // this is needed for read inputpower from the correct tuner !
-	char proc_name[64];
-	sprintf(proc_name, "/proc/stb/fp/lnb_sense%d", m_slotid);
-	FILE *f=fopen(proc_name, "r");
-	if (f)
-	{
-		if (fscanf(f, "%d", &power) != 1)
-			printf("read %s failed!! (%m)\n", proc_name);
-		else
-			printf("%s is %d\n", proc_name, power);
-		fclose(f);
-	}
-	else
-	{
-		// open front prozessor
-		int fp=::open("/dev/dbox/fp0", O_RDWR);
-		if (fp < 0)
-		{
-			printf("couldn't open fp");
-			return -1;
-		}
-		
-		static bool old_fp = (::ioctl(fp, FP_IOCTL_GET_ID) < 0);
-		
-		if ( ioctl( fp, old_fp ? 9 : 0x100, &power ) < 0 )
-		{
-			printf("FP_IOCTL_GET_LNB_CURRENT failed (%m)\n");
-			return -1;
-		}
-		::close(fp);
-	}
 
-	return power;
-}
-#endif
 

@@ -1484,3 +1484,7 @@ psisetup.contrast Kontrast
 psisetup.saturation Saturation
 psisetup.brightness Brightness
 psisetup.tint Tint
+
+colormenu.helpbar Hilfe Leiste
+lcdmenu.menutitlevfd Menu Title in VFD
+

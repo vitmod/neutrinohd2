@@ -1483,6 +1483,6 @@ psisetup.saturation Saturation
 psisetup.brightness Brightness
 psisetup.tint Tint
 
-
-
+colormenu.helpbar Help bar
+lcdmenu.menutitlevfd Menu title on VFD
 

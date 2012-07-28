@@ -567,7 +567,7 @@ void updateLcd(const std::string & sel_filename)
 	}
 	#endif
 	
-#if !defined (PLATFORM_CUBEREVO_250HD) && !defined (PLATFORM_GIGABLUE)
+#if !defined (PLATFORM_CUBEREVO_250HD) && !defined (PLATFORM_GIGABLUE) && !defined (PLATFORM_XTREND)
 	CVFD::getInstance()->showMenuText(0, lcd.c_str(), -1, true);
 #endif	
 }
@@ -745,7 +745,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);
 			
-#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)		
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD) || defined (PLATFORM_DUCKBOX)
 			// hide ts icon
 			CVFD::getInstance()->ShowIcon(VFD_ICON_TV, false);
 #endif			
@@ -977,7 +977,7 @@ void CMoviePlayerGui::PlayFile(void)
 				
 				CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);
 				
-#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)		
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD) || defined (PLATFORM_DUCKBOX)
 				// hide ts icon
 				CVFD::getInstance()->ShowIcon(VFD_ICON_TV, false);
 #endif				
@@ -1026,7 +1026,7 @@ void CMoviePlayerGui::PlayFile(void)
 
 				CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);
 				
-#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)		
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD) || defined (PLATFORM_DUCKBOX)
 				// hide ts icon
 				CVFD::getInstance()->ShowIcon(VFD_ICON_TV, false);
 #endif				
@@ -1171,7 +1171,7 @@ void CMoviePlayerGui::PlayFile(void)
 				delete APIDChanger;
 				showaudioselectdialog = false;
 				CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);
-#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)		
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD) || defined (PLATFORM_DUCKBOX)
 				// hide ts icon
 				CVFD::getInstance()->ShowIcon(VFD_ICON_TV, false);
 #endif				
@@ -1707,7 +1707,7 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 
 				CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);
-#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)		
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD) || defined (PLATFORM_DUCKBOX)
 				// hide ts icon
 				CVFD::getInstance()->ShowIcon(VFD_ICON_TV, false);
 #endif				
@@ -2116,7 +2116,7 @@ void CMoviePlayerGui::PlayFile(void)
 			else if ( msg <= CRCInput::RC_MaxRC ) 
 			{
 				CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);
-#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)		
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD) || defined (PLATFORM_DUCKBOX)
 				// hide ts icon
 				CVFD::getInstance()->ShowIcon(VFD_ICON_TV, false);
 #endif				

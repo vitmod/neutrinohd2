@@ -405,13 +405,14 @@ void CBookmarkManager::paintItem(int pos)
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x+10,ypos+2*fheight, real_width-10, theBookmark.getUrl(), color, fheight, true); // UTF-8
 
 		// LCD Display
-#if 0
-		if(liststart+pos==selected)
+		if(g_settings.menutitle_vfd)
 		{
-			CVFD::getInstance()->showMenuText(0, theBookmark.getName(), -1, true); // UTF-8
-			CVFD::getInstance()->showMenuText(1, theBookmark.getUrl(), -1, true); // UTF-8
+			if(liststart+pos==selected)
+			{
+				CVFD::getInstance()->showMenuText(0, theBookmark.getName(), -1, true); // UTF-8
+				CVFD::getInstance()->showMenuText(1, theBookmark.getUrl(), -1, true); // UTF-8
+			}
 		}
-#endif		
 	}
 	
 #ifdef FB_BLIT
@@ -470,7 +471,11 @@ void CBookmarkManager::paint()
 	unsigned int page_nr = (listmaxshow == 0) ? 0 : (selected / listmaxshow);
 	liststart = page_nr * listmaxshow;
 
+#if defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_XTREND)
+	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);
+#else
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_BOOKMARKMANAGER_NAME));
+#endif
 
 	paintHead();
 	

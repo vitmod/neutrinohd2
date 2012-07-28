@@ -1494,5 +1494,8 @@ const char *locale_real_names[] = {
 	"psisetup.saturation",
 	"psisetup.brightness",
 	"psisetup.tint",
+	
+	"colormenu.helpbar",
+	"lcdmenu.menutitlevfd",
 };
 #endif

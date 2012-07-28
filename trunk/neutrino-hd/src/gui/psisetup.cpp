@@ -60,7 +60,7 @@
 #define PSI_STEP	5
 
 
-CPSISetup::CPSISetup(const neutrino_locale_t Name, unsigned char * Contrast, unsigned char * Saturation, unsigned char * Brightness, unsigned char * Tint, CChangeObserver* Observer)
+CPSISetup::CPSISetup(const neutrino_locale_t Name, unsigned char *Contrast, unsigned char *Saturation, unsigned char *Brightness, unsigned char *Tint, CChangeObserver *Observer)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 	observer = Observer;
@@ -99,10 +99,10 @@ int CPSISetup::exec(CMenuTarget * parent, const std::string &)
 		parent->hide();
 	}
 	
-	unsigned char contrast_old = * contrast;
-	unsigned char saturation_old = * saturation;
-	unsigned char brightness_old = * brightness;
-	unsigned char tint_old = * tint;
+	unsigned char contrast_old = *contrast;
+	unsigned char saturation_old = *saturation;
+	unsigned char brightness_old = *brightness;
+	unsigned char tint_old = *tint;
 
 	setContrast(*contrast);
 	setSaturation(*saturation);

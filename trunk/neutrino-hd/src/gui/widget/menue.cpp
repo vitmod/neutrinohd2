@@ -775,7 +775,6 @@ int CMenuOptionNumberChooser::paint(bool selected)
 	}
 	
 	// paint item
-	//frameBuffer->paintBoxRel(x, y, dx, height, bgcolor); //FIXME
 	frameBuffer->paintBoxRel(x + BORDER_LEFT, y, dx - (BORDER_LEFT + BORDER_RIGHT), height, bgcolor); //FIXME
 
 	const char * l_option;
@@ -798,15 +797,40 @@ int CMenuOptionNumberChooser::paint(bool selected)
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposName,   y + height, dx - (stringstartposName - x), l_optionName, color, 0, true); // UTF-8
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposOption, y + height, dx - (stringstartposOption - x), l_option, color, 0, true); // UTF-8
 
-#if 0
-	if (selected)
+	// help bar
+	if(g_settings.help_bar)
 	{
-		char str[256];
-		snprintf(str, 255, "%s %s", l_optionName, l_option);
-
-		CVFD::getInstance()->showMenuText(0, str, -1, true);
+		if (selected)
+		{
+			// refresh
+			CFrameBuffer::getInstance()->paintBoxRel(x, HEIGHT - 25, dx, 25, COL_MENUHEAD_PLUS_0);
+			
+			// paint left/right icon
+			CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_LEFT, x + BORDER_LEFT, HEIGHT - 25);
+			CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_RIGHT, x + BORDER_LEFT + 16 +5, HEIGHT - 25);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + 16 + 5 + 16 + 5, HEIGHT, dx - (x + BORDER_LEFT + 16 + 5 + 16 + 5 -x), (const char *)"Navi", COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+			
+			// ok icon
+			CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + dx/2 - 20, HEIGHT - 25);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + dx/2 -20 + 24 + 5, HEIGHT, dx - (x + dx/2 -20 + 24 + 5 - x), (const char *)"Enter", COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+			
+			// exit icon
+			CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_HOME, x + dx - BORDER_RIGHT - 24 - 30, HEIGHT - 25);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + dx - BORDER_RIGHT - 30, HEIGHT, dx -(x + dx - BORDER_RIGHT - 30 - x), (const char *)"Exit", COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+		}
 	}
-#endif
+	
+	// menutitle on VFD
+	if(g_settings.menutitle_vfd)
+	{
+		if(selected)
+		{
+			char str[256];
+			snprintf(str, 255, "%s %s", l_optionName, l_option);
+
+			CVFD::getInstance()->showMenuText(0, str, -1, true);
+		}
+	}
 
 	return y + height;
 }
@@ -950,7 +974,6 @@ int CMenuOptionChooser::paint( bool selected )
 	}
 	
 	// paint item
-	//frameBuffer->paintBoxRel(x, y, dx, height, bgcolor); //FIXME
 	frameBuffer->paintBoxRel(x + BORDER_LEFT, y, dx - (BORDER_LEFT + BORDER_RIGHT), height, bgcolor); //FIXME
 
 	neutrino_locale_t option = NONEXISTANT_LOCALE;
@@ -1018,15 +1041,40 @@ int CMenuOptionChooser::paint( bool selected )
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposName,   y + height,dx - (stringstartposName - x), optionNameString.c_str(), color, 0, true); // UTF-8
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposOption, y + height,dx - (stringstartposOption - x), l_option, color, 0, true); // UTF-8
 
-#if 0
-	if (selected)
+	// help bar
+	if(g_settings.help_bar)
 	{
-		char str[256];
-		snprintf(str, 255, "%s %s", optionNameString.c_str(), l_option);
-
-		CVFD::getInstance()->showMenuText(0, str, -1, true);
+		if (selected)
+		{
+			// refresh
+			frameBuffer->paintBoxRel(x, HEIGHT - 25, dx, 25, COL_MENUHEAD_PLUS_0);
+			
+			// paint left/right icon
+			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_LEFT, x + BORDER_LEFT, HEIGHT - 25);
+			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RIGHT, x + BORDER_LEFT + 16 +5, HEIGHT - 25);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + 16 + 5 + 16 + 5, HEIGHT, dx - (x + BORDER_LEFT + 16 + 5 + 16 + 5 -x), (const char *)"Navi", COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+			
+			// ok icon
+			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + dx/2 - 20, HEIGHT - 25);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + dx/2 -20 + 24 + 5, HEIGHT, dx - (x + dx/2 -20 + 24 + 5 - x), (const char *)"Enter", COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+			
+			// exit icon
+			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HOME, x + dx - BORDER_RIGHT - 24 - 30, HEIGHT - 25);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + dx - BORDER_RIGHT - 30, HEIGHT, dx -(x + dx - BORDER_RIGHT - 30 - x), (const char *)"Exit", COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+		}
 	}
-#endif
+	
+	// menutitle on VFD
+	if(g_settings.menutitle_vfd)
+	{
+		if (selected)
+		{
+			char str[256];
+			snprintf(str, 255, "%s %s", optionNameString.c_str(), l_option);
+
+			CVFD::getInstance()->showMenuText(0, str, -1, true);
+		}
+	}
 
 	return y + height;
 }
@@ -1145,7 +1193,6 @@ int CMenuOptionStringChooser::paint( bool selected )
 	}
 	
 	// paint item
-	//CFrameBuffer::getInstance()->paintBoxRel(x, y, dx, height, bgcolor); //FIXME
 	CFrameBuffer::getInstance()->paintBoxRel(x + BORDER_LEFT, y, dx - (BORDER_LEFT + BORDER_RIGHT), height, bgcolor); //FIXME
 
 	const char * l_optionName = g_Locale->getText(optionName);
@@ -1203,15 +1250,40 @@ int CMenuOptionStringChooser::paint( bool selected )
 	else
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposOption, y + height, dx- (stringstartposOption - x), optionValue, color, 0, true);
 
-#if 0
-	if (selected)
+	// help bar
+	if(g_settings.help_bar)
 	{
-		char str[256];
-		snprintf(str, 255, "%s %s", l_optionName, optionValue);
-
-		CVFD::getInstance()->showMenuText(0, str, -1, true);
+		if (selected)
+		{
+			// refresh
+			CFrameBuffer::getInstance()->paintBoxRel(x, HEIGHT - 25, dx, 25, COL_MENUHEAD_PLUS_0);
+			
+			// paint left/right icon
+			CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_LEFT, x + BORDER_LEFT, HEIGHT - 25);
+			CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_RIGHT, x + BORDER_LEFT + 16 +5, HEIGHT - 25);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + 16 + 5 + 16 + 5, HEIGHT, dx - (x + BORDER_LEFT + 16 + 5 + 16 + 5 -x), (const char *)"Navi", COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+			
+			// ok icon
+			CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + dx/2 - 20, HEIGHT - 25);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + dx/2 -20 + 24 + 5, HEIGHT, dx - (x + dx/2 -20 + 24 + 5 - x), (const char *)"Enter", COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+			
+			// exit icon
+			CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_HOME, x + dx - BORDER_RIGHT - 24 - 30, HEIGHT - 25);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + dx - BORDER_RIGHT - 30, HEIGHT, dx -(x + dx - BORDER_RIGHT - 30 - x), (const char *)"Exit", COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+		}
 	}
-#endif
+	
+	// menutitle on VFD
+	if(g_settings.menutitle_vfd)
+	{
+		if (selected)
+		{
+			char str[256];
+			snprintf(str, 255, "%s %s", l_optionName, optionValue);
+
+			CVFD::getInstance()->showMenuText(0, str, -1, true);
+		}
+	}
 
 	return y + height;
 }
@@ -1277,7 +1349,6 @@ int CMenuOptionLanguageChooser::paint( bool selected )
 	}
 	
 	// paint item
-	//CFrameBuffer::getInstance()->paintBoxRel(x, y, dx, height, bgcolor); //FIXME
 	CFrameBuffer::getInstance()->paintBoxRel(x + BORDER_LEFT, y, dx - (BORDER_LEFT + BORDER_RIGHT), height, bgcolor); //FIXME
 
 	if (!(iconName.empty()))
@@ -1295,12 +1366,37 @@ int CMenuOptionLanguageChooser::paint( bool selected )
 	int stringstartposOption = x + offx + BORDER_LEFT;
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposOption, y+height,dx- (stringstartposOption - x), optionValue, color);
 
-#if 0
-	if (selected)
+	// help bar
+	if(g_settings.help_bar)
 	{
-		CVFD::getInstance()->showMenuText(1, optionValue);
+		if (selected)
+		{
+			// refresh
+			CFrameBuffer::getInstance()->paintBoxRel(x, HEIGHT - 25, dx, 25, COL_MENUHEAD_PLUS_0);
+			
+			// paint left/right icon
+			CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_LEFT, x + BORDER_LEFT, HEIGHT - 25);
+			CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_RIGHT, x + BORDER_LEFT + 16 +5, HEIGHT - 25);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + 16 + 5 + 16 + 5, HEIGHT, dx - (x + BORDER_LEFT + 16 + 5 + 16 + 5 -x), (const char *)"Navi", COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+			
+			// ok icon
+			CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + dx/2 - 20, HEIGHT - 25);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + dx/2 -20 + 24 + 5, HEIGHT, dx - (x + dx/2 -20 + 24 + 5 - x), (const char *)"Enter", COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+			
+			// exit icon
+			CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_HOME, x + dx - BORDER_RIGHT - 24 - 30, HEIGHT - 25);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + dx - BORDER_RIGHT - 30, HEIGHT, dx -(x + dx - BORDER_RIGHT - 30 - x), (const char *)"Exit", COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+		}
 	}
-#endif
+	
+	// menutitle on VFD
+	if(g_settings.menutitle_vfd)
+	{
+		if (selected)
+		{
+			CVFD::getInstance()->showMenuText(1, optionValue);
+		}
+	}
 
 	return y + height;
 }
@@ -1390,24 +1486,48 @@ int CMenuForwarder::paint(bool selected)
 
 	const char * option_text = getOption();
 
-	//show MenuForwarder in VFD
-#if 0
-	if (selected)
+	// help bar
+	if(g_settings.help_bar)
 	{
-		char str[256];
-
-		if (option_text != NULL) 
+		if (selected)
 		{
-			snprintf(str, 255, "%s %s", l_text, option_text);
-
-			CVFD::getInstance()->showMenuText(0, str, -1, true);
-		} 
-		else
-		{
-			CVFD::getInstance()->showMenuText(0, l_text, -1, true);
+			// refresh
+			CFrameBuffer::getInstance()->paintBoxRel(x, HEIGHT - 25, dx, 25, COL_MENUHEAD_PLUS_0);
+			
+			// paint left/right icon
+			CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_LEFT, x + BORDER_LEFT, HEIGHT - 25);
+			//CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_RIGHT, x + BORDER_LEFT + 16 +5, HEIGHT - 25);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + 16 + 5, HEIGHT, dx - (x + BORDER_LEFT + 16 + 5 -x), (const char *)"Back", COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+			
+			// ok icon
+			CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + dx/2 - 20, HEIGHT - 25);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + dx/2 -20 + 24 + 5, HEIGHT, dx - (x + dx/2 -20 + 24 + 5 - x), (const char *)"Enter", COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+			
+			// exit icon
+			CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_HOME, x + dx - BORDER_RIGHT - 24 - 30, HEIGHT - 25);
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + dx - BORDER_RIGHT - 30, HEIGHT, dx -(x + dx - BORDER_RIGHT - 30 - x), (const char *)"Exit", COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
 		}
 	}
-#endif
+	
+	// menutitle on VFD
+	if(g_settings.menutitle_vfd)
+	{
+		if (selected)
+		{
+			char str[256];
+
+			if (option_text != NULL) 
+			{
+				snprintf(str, 255, "%s %s", l_text, option_text);
+
+				CVFD::getInstance()->showMenuText(0, str, -1, true);
+			} 
+			else
+			{
+				CVFD::getInstance()->showMenuText(0, l_text, -1, true);
+			}
+		}
+	}
 
 	unsigned char color   = COL_MENUCONTENT;
 	fb_pixel_t    bgcolor = COL_MENUCONTENT_PLUS_0;
@@ -1424,7 +1544,6 @@ int CMenuForwarder::paint(bool selected)
 	}
 	
 	// paint item
-	//frameBuffer->paintBoxRel(x, y, dx, height, bgcolor); //FIXME
 	frameBuffer->paintBoxRel(x + BORDER_LEFT, y, dx -(BORDER_LEFT + BORDER_RIGHT), height, bgcolor); //FIXME
 
 	//local-text
@@ -1569,25 +1688,6 @@ int CMenuForwarderItemMenuIcon::paint(bool selected)
 
 	const char * option_text = getOption();	
 
-	//show MenuForwarder in VFD
-#if 0
-	if (selected)
-	{
-		char str[256];
-
-		if (option_text != NULL) 
-		{
-			snprintf(str, 255, "%s %s", l_text, option_text);
-
-			CVFD::getInstance()->showMenuText(0, str, -1, true);
-		} 
-		else
-		{
-			CVFD::getInstance()->showMenuText(0, l_text, -1, true);
-		}
-	}
-#endif
-
 	unsigned char color   = COL_MENUCONTENT;
 	fb_pixel_t    bgcolor = COL_MENUCONTENT_PLUS_0;
 
@@ -1623,17 +1723,41 @@ int CMenuForwarderItemMenuIcon::paint(bool selected)
 			frameBuffer->paintIcon(itemIcon, x + BORDER_LEFT + (dx/3)*2 + ((( dx - (dx/3)*2 - BORDER_RIGHT )/2) - icon_w/2), ( frameBuffer->getScreenHeight(true) - icon_h + hheight + 25 )/2);  //25:foot height
 		}
 		
-		//help text
-		// refresh
-		frameBuffer->paintBoxRel(x, HEIGHT - 25, dx, 25, COL_MENUHEAD_PLUS_0);
-		
-		// paint help icon
-		frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + BORDER_LEFT - 2, HEIGHT - 25);
-		
-		// help text
-		const char * help_text = getHelpText();
-		
-		g_Font[SNeutrinoSettings::/*FONT_TYPE_EVENTLIST_ITEMSMALL*/FONT_TYPE_EPG_INFO1]->RenderString(stringstartposX, HEIGHT, dx - (stringstartposX - x), help_text, COL_MENUHEAD, 0, true); // UTF-8
+		// help bar
+		if(g_settings.help_bar)
+		{
+			//help text
+			// refresh
+			frameBuffer->paintBoxRel(x, HEIGHT - 25, dx, 25, COL_MENUHEAD_PLUS_0);
+			
+			// paint help icon
+			frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + BORDER_LEFT - 2, HEIGHT - 25);
+			
+			// help text
+			const char * help_text = getHelpText();
+			
+			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(stringstartposX, HEIGHT, dx - (stringstartposX - x), help_text, COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
+		}
+	}
+	
+	// menutitle on VFD
+	if(g_settings.menutitle_vfd)
+	{
+		if (selected)
+		{
+			char str[256];
+
+			if (option_text != NULL) 
+			{
+				snprintf(str, 255, "%s %s", l_text, option_text);
+
+				CVFD::getInstance()->showMenuText(0, str, -1, true);
+			} 
+			else
+			{
+				CVFD::getInstance()->showMenuText(0, l_text, -1, true);
+			}
+		}
 	}
 	
 	// paint item
@@ -1749,15 +1873,14 @@ int CMenuSeparator::paint(bool selected)
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 	height = getHeight();
 
-	//frameBuffer->paintBoxRel(x, y, dx, height, COL_MENUCONTENT_PLUS_0);
 	frameBuffer->paintBoxRel(x + BORDER_LEFT, y, dx - BORDER_LEFT - BORDER_RIGHT, height, COL_MENUCONTENTDARK_PLUS_0 );
 
 	if ((type & LINE))
 	{
 		frameBuffer->paintBoxRel(x + BORDER_LEFT, y, dx - BORDER_LEFT - BORDER_RIGHT, height, COL_MENUCONTENT_PLUS_0);
 		
-		frameBuffer->paintHLineRel(x + BORDER_LEFT /*+ BORDER_LEFT/4*/, dx - BORDER_LEFT - BORDER_RIGHT /*- 2 - BORDER_RIGHT/4*/, y + (height >> 1), COL_MENUCONTENTDARK_PLUS_0/*COL_MENUCONTENT_PLUS_3*/ );
-		frameBuffer->paintHLineRel(x + BORDER_LEFT /*+ BORDER_LEFT/4*/, dx - BORDER_LEFT - BORDER_RIGHT /*- 2 - BORDER_RIGHT/4*/, y + (height >> 1) + 1, COL_MENUCONTENTDARK_PLUS_0 /*COL_MENUCONTENT_PLUS_1*/ );
+		frameBuffer->paintHLineRel(x + BORDER_LEFT, dx - BORDER_LEFT - BORDER_RIGHT, y + (height >> 1), COL_MENUCONTENTDARK_PLUS_0 );
+		frameBuffer->paintHLineRel(x + BORDER_LEFT, dx - BORDER_LEFT - BORDER_RIGHT, y + (height >> 1) + 1, COL_MENUCONTENTDARK_PLUS_0 );
 	}
 
 	if ((type & STRING))
@@ -1782,12 +1905,15 @@ int CMenuSeparator::paint(bool selected)
 
 			g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y+height,dx- (stringstartposX- x) , l_text, COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
 
-#if 0
-			if (selected)
+			// help bar
+			if(g_settings.help_bar)
 			{
-				CVFD::getInstance()->showMenuText(0, l_text, -1, true); // UTF-8
+				if (selected)
+				{
+					// refresh
+					frameBuffer->paintBoxRel(x, HEIGHT - 25, dx, 25, COL_MENUHEAD_PLUS_0);
+				}
 			}
-#endif
 		}
 	}
 
@@ -1826,15 +1952,14 @@ int CMenuSeparatorItemMenuIcon::paint(bool selected)
 	height = getHeight();
 
 	frameBuffer->paintBoxRel(x + BORDER_LEFT, y, (dx/3)*2, height, COL_MENUCONTENTDARK_PLUS_0 );
-	//frameBuffer->paintBoxRel(x + BORDER_LEFT, y, (dx/3)*2, height, COL_MENUCONTENT_PLUS_0 );
 
 	if ((type & LINE))
 	{
 		//repaint thr dark box 
 		frameBuffer->paintBoxRel(x + BORDER_LEFT, y, (dx/3)*2, height, COL_MENUCONTENT_PLUS_0 );
 		
-		frameBuffer->paintHLineRel(x + BORDER_LEFT /*+ BORDER_LEFT/4*/, (dx/3)*2 /*- 2 - BORDER_RIGHT/4*/, y + (height >> 1), COL_MENUCONTENTDARK_PLUS_0 /*COL_MENUCONTENT_PLUS_3*/);
-		frameBuffer->paintHLineRel(x + BORDER_LEFT /*+ BORDER_LEFT/4*/, (dx/3)*2 /*- 2- BORDER_RIGHT/4*/, y + (height >> 1) + 1, COL_MENUCONTENTDARK_PLUS_0 /*COL_MENUCONTENT_PLUS_1*/);
+		frameBuffer->paintHLineRel(x + BORDER_LEFT, (dx/3)*2, y + (height >> 1), COL_MENUCONTENTDARK_PLUS_0);
+		frameBuffer->paintHLineRel(x + BORDER_LEFT, (dx/3)*2, y + (height >> 1) + 1, COL_MENUCONTENTDARK_PLUS_0);
 	}
 
 	if ((type & STRING))
@@ -1858,13 +1983,6 @@ int CMenuSeparatorItemMenuIcon::paint(bool selected)
 			frameBuffer->paintBoxRel(stringstartposX - 5, y, stringwidth + 10, height, COL_MENUCONTENT_PLUS_0);
 
 			g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y + height, (dx/3)*2 - (stringstartposX- x) , l_text, COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
-
-#if 0
-			if (selected)
-			{
-				CVFD::getInstance()->showMenuText(0, l_text, -1, true); // UTF-8
-			}
-#endif
 		}
 	}
 

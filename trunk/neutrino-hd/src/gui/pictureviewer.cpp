@@ -198,11 +198,9 @@ int CPictureViewerGui::show()
 
 	int res = -1;
 
-#if defined (PLATFORM_GIGABLUE)
-	//CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);
+#if defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_XTREND)
 	CVFD::getInstance()->setMode(CVFD::MODE_PIC);
 #else	
-	//CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_PICTUREVIEWER_HEAD));
 	CVFD::getInstance()->setMode(CVFD::MODE_PIC, g_Locale->getText(LOCALE_PICTUREVIEWER_HEAD));
 #endif
 
@@ -513,7 +511,7 @@ int CPictureViewerGui::show()
 				CNFSSmallMenu nfsMenu;
 				nfsMenu.exec(this, "");
 				update=true;
-#if defined (PLATFORM_GIGABLUE)
+#if defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_XTREND)
 				CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);
 #else
 				CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_PICTUREVIEWER_HEAD));
@@ -727,7 +725,7 @@ void CPictureViewerGui::view(unsigned int index, bool unscaled)
 {
 	selected=index;
 	
-#if !defined (PLATFORM_CUBEREVO_250HD) && !defined (PLATFORM_GIGABLUE)	
+#if !defined (PLATFORM_CUBEREVO_250HD) && !defined (PLATFORM_GIGABLUE) && !defined (PLATFORM_XTREND)
 	CVFD::getInstance()->showMenuText(0, playlist[index].Name.c_str());
 #endif	
 	char timestring[19];

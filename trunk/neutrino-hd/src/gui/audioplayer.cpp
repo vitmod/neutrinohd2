@@ -348,7 +348,7 @@ int CAudioPlayerGui::show()
 
 	int ret = -1;
 
-#if defined (PLATFORM_GIGABLUE)
+#if defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_XTREND)
 	CVFD::getInstance()->setMode( CVFD::MODE_AUDIO );
 #else
 	CVFD::getInstance()->setMode(CVFD::MODE_AUDIO, g_Locale->getText(m_inetmode? LOCALE_INETRADIO_NAME : LOCALE_AUDIOPLAYER_HEAD));
@@ -655,7 +655,7 @@ int CAudioPlayerGui::show()
 					{
 						savePlaylist();
 
-#if defined (PLATFORM_GIGABLUE)
+#if defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_XTREND)
 						CVFD::getInstance()->setMode(CVFD::MODE_AUDIO);
 #else
 						CVFD::getInstance()->setMode(CVFD::MODE_AUDIO, g_Locale->getText(m_inetmode? LOCALE_INETRADIO_NAME : LOCALE_AUDIOPLAYER_HEAD));
@@ -742,7 +742,7 @@ int CAudioPlayerGui::show()
 					{
 						case 0:	
 							scanXmlFile(RADIO_STATION_XML_FILE); 	
-#if defined (PLATFORM_GIGABLUE)
+#if defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_XTREND)
 							CVFD::getInstance()->setMode(CVFD::MODE_AUDIO);
 #else
 							CVFD::getInstance()->setMode(CVFD::MODE_AUDIO, g_Locale->getText(m_inetmode? LOCALE_INETRADIO_NAME : LOCALE_AUDIOPLAYER_HEAD));
@@ -754,7 +754,7 @@ int CAudioPlayerGui::show()
 							break;
 							
 						case 2:	readDir_ic();
-#if defined (PLATFORM_GIGABLUE)
+#if defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_XTREND)
 							CVFD::getInstance()->setMode(CVFD::MODE_AUDIO);
 #else
 							CVFD::getInstance()->setMode(CVFD::MODE_AUDIO, g_Locale->getText(m_inetmode? LOCALE_INETRADIO_NAME : LOCALE_AUDIOPLAYER_HEAD));
@@ -878,7 +878,7 @@ int CAudioPlayerGui::show()
 		{
 			CNFSSmallMenu nfsMenu;
 			nfsMenu.exec(this, "");
-#if defined (PLATFORM_GIGABLUE)
+#if defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_XTREND)
 			CVFD::getInstance()->setMode(CVFD::MODE_AUDIO);
 #else
 			CVFD::getInstance()->setMode(CVFD::MODE_AUDIO, g_Locale->getText(m_inetmode? LOCALE_INETRADIO_NAME : LOCALE_AUDIOPLAYER_HEAD));
@@ -1473,7 +1473,7 @@ bool CAudioPlayerGui::openFilebrowser(void)
 		result = true;
 	}
 	
-#if defined (PLATFORM_GIGABLUE)
+#if defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_XTREND)
 	CVFD::getInstance()->setMode(CVFD::MODE_AUDIO);
 #else
 	CVFD::getInstance()->setMode(CVFD::MODE_AUDIO, g_Locale->getText(m_inetmode? LOCALE_INETRADIO_NAME : LOCALE_AUDIOPLAYER_HEAD));
@@ -1556,7 +1556,7 @@ bool CAudioPlayerGui::openSCbrowser(void)
 		result = true;
 	}
 	
-#if defined (PLATFORM_GIGABLUE)
+#if defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_XTREND)
 	CVFD::getInstance()->setMode(CVFD::MODE_AUDIO);
 #else
 	CVFD::getInstance()->setMode(CVFD::MODE_AUDIO, g_Locale->getText(m_inetmode? LOCALE_INETRADIO_NAME : LOCALE_AUDIOPLAYER_HEAD));
@@ -1666,17 +1666,18 @@ void CAudioPlayerGui::paintItem(int pos)
 		else
 			snprintf(dura, 8, "%ld:%02ld", m_playlist[pos + m_liststart].MetaData.total_time / 60, m_playlist[pos + m_liststart].MetaData.total_time % 60);
 		int w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(dura) + 5;
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + 10, ypos + m_fheight, m_width - 30 - w,
-				tmp, color, m_fheight, true); // UTF-8
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - 15 - w, ypos + m_fheight,
-				w, dura, color, m_fheight);
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + 10, ypos + m_fheight, m_width - 30 - w, tmp, color, m_fheight, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - 15 - w, ypos + m_fheight, w, dura, color, m_fheight);
+		
+#if !defined (PLATFORM_CUBEREVO_250HD) && !defined (PLATFORM_GIGABLUE) && !defined (PLATFORM_XTREND)		
 		if ((pos + m_liststart) == m_selected)
 		{
 			if (m_state == CAudioPlayerGui::STOP)
-			{
-				CVFD::getInstance()->showAudioTrack(m_playlist[pos + m_liststart].MetaData.artist, m_playlist[pos + m_liststart].MetaData.title, m_playlist[pos + m_liststart].MetaData.album);
+			{	  
+				CVFD::getInstance()->showAudioTrack(m_playlist[pos + m_liststart].MetaData.artist, m_playlist[pos + m_liststart].MetaData.title, m_playlist[pos + m_liststart].MetaData.album);				
 			}
 		}
+#endif		
 	}
 }
 
@@ -2355,11 +2356,13 @@ void CAudioPlayerGui::updateTimes(const bool force)
 			}
 			updateTotal = true;
 		}
+		
 		if ((m_time_played != CAudioPlayer::getInstance()->getTimePlayed()))
 		{
 			m_time_played = CAudioPlayer::getInstance()->getTimePlayed();
 			updatePlayed = true;
 		}
+		
 		if(!m_screensaver)
 		{
 			char tot_time[11];
@@ -2378,6 +2381,7 @@ void CAudioPlayerGui::updateTimes(const bool force)
 				if(m_time_total > 0)
 					g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + m_width - w1 - 10, m_y + 4 + m_fheight, w1, tot_time, COL_MENUCONTENTSELECTED);
 			}
+			
 			if (updatePlayed || (m_state == CAudioPlayerGui::PAUSE))
 			{
 				m_frameBuffer->paintBoxRel(m_x + m_width - w1 - w2 - 16, m_y + 4, w2 + 5, m_fheight, COL_MENUCONTENTSELECTED_PLUS_0);
@@ -2390,10 +2394,12 @@ void CAudioPlayerGui::updateTimes(const bool force)
 			}			
 		}
 		
+#if !defined (PLATFORM_CUBEREVO_250HD) && !defined (PLATFORM_GIGABLUE) && !defined (PLATFORM_XTREND)		
 		if((updatePlayed || updateTotal) && m_time_total != 0)
 		{
 			CVFD::getInstance()->showAudioProgress(100 * m_time_played / m_time_total, CNeutrinoApp::getInstance()->isMuted());
-		}		
+		}
+#endif		
 	}
 	
 #ifdef FB_BLIT
@@ -2408,7 +2414,7 @@ void CAudioPlayerGui::paintLCD()
 		case CAudioPlayerGui::STOP:
 			CVFD::getInstance()->showAudioPlayMode(CVFD::AUDIO_MODE_STOP);
 			
-#if 0
+#ifdef VFD_UPDATE
 			CVFD::getInstance()->showAudioProgress(0, CNeutrinoApp::getInstance()->isMuted());
 #endif
 			break;
@@ -2416,15 +2422,17 @@ void CAudioPlayerGui::paintLCD()
 			CVFD::getInstance()->showAudioPlayMode(CVFD::AUDIO_MODE_PLAY);
 
 			// audio-track
+#if !defined (PLATFORM_CUBEREVO_250HD) && !defined (PLATFORM_GIGABLUE) && !defined (PLATFORM_XTREND)			
 			CVFD::getInstance()->showAudioTrack(m_curr_audiofile.MetaData.artist, m_curr_audiofile.MetaData.title, m_curr_audiofile.MetaData.album);
+#endif			
 			
-#if 0
+#ifdef VFD_UPDATE
 			if(m_curr_audiofile.FileType != CFile::STREAM_AUDIO && m_time_total != 0)
 				CVFD::getInstance()->showAudioProgress(100 * m_time_played / m_time_total, CNeutrinoApp::getInstance()->isMuted());
 #endif
 
 #ifdef INCLUDE_UNUSED_STUFF
-#if 0
+#ifdef VFD_UPDATE
 			else
 				CVFD::getInstance()->showAudioProgress(100 * CAudioPlayer::getInstance()->getScBuffered() / 65536, CNeutrinoApp::getInstance()->isMuted());
 #endif			
@@ -2433,17 +2441,23 @@ void CAudioPlayerGui::paintLCD()
 			break;
 		case CAudioPlayerGui::PAUSE:
 			CVFD::getInstance()->showAudioPlayMode(CVFD::AUDIO_MODE_PAUSE);
+#if !defined (PLATFORM_CUBEREVO_250HD) && !defined (PLATFORM_GIGABLUE) && !defined (PLATFORM_XTREND)			
 			CVFD::getInstance()->showAudioTrack(m_curr_audiofile.MetaData.artist, m_curr_audiofile.MetaData.title, m_curr_audiofile.MetaData.album);
+#endif			
 			break;
 			
 		case CAudioPlayerGui::FF:
 			CVFD::getInstance()->showAudioPlayMode(CVFD::AUDIO_MODE_FF);
+#if !defined (PLATFORM_CUBEREVO_250HD) && !defined (PLATFORM_GIGABLUE) && !defined (PLATFORM_XTREND)			
 			CVFD::getInstance()->showAudioTrack(m_curr_audiofile.MetaData.artist, m_curr_audiofile.MetaData.title, m_curr_audiofile.MetaData.album);
+#endif			
 			break;
 			
 		case CAudioPlayerGui::REV:
 			CVFD::getInstance()->showAudioPlayMode(CVFD::AUDIO_MODE_REV);
+#if !defined (PLATFORM_CUBEREVO_250HD) && !defined (PLATFORM_GIGABLUE) && !defined (PLATFORM_XTREND)			
 			CVFD::getInstance()->showAudioTrack(m_curr_audiofile.MetaData.artist, m_curr_audiofile.MetaData.title, m_curr_audiofile.MetaData.album);
+#endif			
 			break;
 	}
 }

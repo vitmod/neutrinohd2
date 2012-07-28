@@ -522,9 +522,14 @@ void CStreamInfo2::paint (int mode)
 		// -- tech Infos, PIG, small signal graph
 		head_string = g_Locale->getText (LOCALE_STREAMINFO_HEAD);
 
-#if 0
-		CVFD::getInstance ()->setMode (CVFD::MODE_MENU_UTF8, head_string);
+		if(g_settings.menutitle_vfd)
+		{
+#if defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_XTREND)		  
+			CVFD::getInstance ()->setMode (CVFD::MODE_MENU_UTF8);
+#else
+			CVFD::getInstance ()->setMode (CVFD::MODE_MENU_UTF8, head_string);
 #endif
+		}
 
 		// paint backround, title pig, etc
 		frameBuffer->paintBoxRel (0, 0, max_width, max_height, COL_MENUHEAD_PLUS_0);

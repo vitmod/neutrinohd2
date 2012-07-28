@@ -306,7 +306,7 @@ int CBouquetList::show(bool bShowChannelList)
 
 	//if(Bouquets.size()==0)
 	//	return res;
-#if defined (PLATFORM_GIGABLUE)
+#if defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_XTREND)
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);
 #else
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, "");
@@ -554,11 +554,12 @@ void CBouquetList::paintItem(int pos)
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 
 		frameBuffer->paintBoxRel(x, ypos, width - 15, fheight, bgcolor);
-
-#if 0		  		
-		if(npos < (int) Bouquets.size())
-			CVFD::getInstance()->showMenuText(0, name, -1, true);
-#endif		
+		
+		if(g_settings.menutitle_vfd)
+		{
+			if(npos < (int) Bouquets.size())
+				CVFD::getInstance()->showMenuText(0, name, -1, true);		
+		}
 	} 
 	else 
 	{

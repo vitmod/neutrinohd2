@@ -84,22 +84,38 @@ typedef struct dvb_frontend_parameters FrontendParameters;
 
 #define MAX_LNBS	64	/* due to Diseqc 1.1  (2003-01-10 rasc) */
 
-//TEST
-class CFrontend;
-typedef std::map<int, CFrontend*> fe_map_t;
-typedef fe_map_t::iterator fe_map_iterator_t;
-//
 
+//#define MAKE_FE_KEY(adapter, number) ((adapter << 8) | (number & 0xFF))
+//#define FECONFIGFILE      CONFIGDIR "/zapit/frontend.conf"
+
+//typedef std::map<unsigned short, CFrontend*> fe_map_t;
+//typedef fe_map_t::iterator fe_map_iterator_t;
 
 class CFrontend
 {
+	public:
+		/*
+		typedef enum {
+			FE_CONNECTED,
+			FE_SINGLE,
+			FE_LOOP,
+			FE_NOTCONNECTED,
+		} fe_mode_t;
+		*/
+	  
 	private:
+		/* config file where to store frontend config */
+		//CConfigFile		configfile;
+		
 		int fd;
 		int fe_adapter;
-		int fe_number;
+		int fenumber;
+		bool slave;
+		bool standby;
 		
-		fe_map_t		femap;
-
+		//fe_map_t	femap;
+		//fe_mode_t	mode;
+		
 		/* tuning finished flag */
 		bool tuned;
 		
@@ -113,6 +129,13 @@ class CFrontend
 		
 		/* current satellite position */
 		int32_t currentSatellitePosition;
+		
+		/**/
+		double gotoXXLatitude;
+		double gotoXXLongitude;
+		int gotoXXLaDirection;
+		int gotoXXLoDirection;
+		int repeatUsals;
 		
 		/* how often to repeat DiSEqC 1.1 commands */
 		uint8_t diseqcRepeats;
@@ -129,10 +152,8 @@ class CFrontend
 
 		/* current Transponderdata */
 		TP_params currentTransponder;
+		
 		struct dvb_frontend_parameters curfe;
-		bool slave;
-		int fenumber;
-		bool standby;
 		uint32_t getDiseqcReply(const int timeout_ms) const;
 		struct dvb_frontend_parameters	getFrontend(void) const;
 
@@ -143,24 +164,17 @@ class CFrontend
 		void	sendDiseqcPowerOn(void);
 		void	sendDiseqcReset(void);
 		void	sendDiseqcSmatvRemoteTuningCommand(const uint32_t frequency);
-		//TEST
+
 		uint32_t sendEN50494TuningCommand(const uint32_t frequency, const int high_band, const int horizontal, const int bank);
 		void	sendDiseqcStandby(void);
 		void	sendDiseqcZeroByteCommand(const uint8_t frm, const uint8_t addr, const uint8_t cmd);
 		void	sendToneBurst(const fe_sec_mini_cmd_t burst, const uint32_t ms);
-		//int	setFrontend(const struct dvb_frontend_parameters *feparams, bool nowait = false);
-		//TEST
 		void	setFrontend(const struct dvb_frontend_parameters *feparams, bool nowait = false);
-		//
 		void	setSec(const uint8_t sat_no, const uint8_t pol, const bool high_band);
 		void	set12V(bool enable);
 		void	reset(void);
 		
-		//TEST
-		//CFrontend(int num = 0, int adap = 0);
-
 	public:
-		//test
 		static CFrontend * getInstance(int num = 0, int adap = 0);
 		static CFrontend * killInstance(int num = 0, int adap = 0);
 		
@@ -204,9 +218,8 @@ class CFrontend
 		const transponder_id_t 		getTsidOnid()    { return currentTransponder.TP_id; }
 		void 				setTsidOnid(transponder_id_t newid)  { currentTransponder.TP_id = newid; }
 		uint32_t 			getRate();
+		
                 void Close();
-                //void Open();
-		//test
 		bool Open();
 		
 		bool sendUncommittedSwitchesCommand(int input);
@@ -219,8 +232,6 @@ class CFrontend
 		void setLnbOffsets(int32_t _lnbOffsetLow, int32_t _lnbOffsetHigh, int32_t _lnbSwitch);
 
 		struct dvb_frontend_event getEvent(void);
-		//test
-		//void getEvent(void);
 };
 
 #endif /* __zapit_frontend_h__ */

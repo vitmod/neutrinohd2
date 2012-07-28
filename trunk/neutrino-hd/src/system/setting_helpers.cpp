@@ -446,8 +446,15 @@ bool CAudioSetupNotifier::changeNotify(const neutrino_locale_t OptionName, void 
 	}
 	else if (ARE_LOCALES_EQUAL(OptionName, LOCALE_AUDIOMENU_AVSYNC)) 
 	{
+#ifdef __sh__	  
 		videoDecoder->SetSyncMode(g_settings.avsync);
-		audioDecoder->SetSyncMode(g_settings.avsync);		
+#else			
+		audioDecoder->SetSyncMode(g_settings.avsync);
+		
+		//videoDemux->SetSyncMode(g_settings.avsync);
+		//audioDemux->SetSyncMode(g_settings.avsync);
+		//pcrDemux->SetSyncMode((g_settings.avsync);
+#endif		
 	}
 	else if( ARE_LOCALES_EQUAL(OptionName, LOCALE_AUDIOMENU_AC3_DELAY) )
 	{

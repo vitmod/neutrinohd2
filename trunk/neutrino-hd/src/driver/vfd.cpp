@@ -522,13 +522,10 @@ void CVFD::setMode(const MODES m, const char * const title)
 #endif
 
 	// sow title
-	//if (mode != MODE_MENU_UTF8)
-	//{
 	if(strlen(title))
 	{
 		ShowText((char *) title);
 	}
-	//}
 
 	mode = m;
 

@@ -1694,15 +1694,13 @@ int CInfoViewer::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 			showIcon_Resolution();
 
 		// show failure..!
-#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD) || defined (PLATFORM_DUCKBOX)
 		CVFD::getInstance()->showServicename ("(" + g_RemoteControl->getCurrentChannelName () + ')');
 #endif		
 		dprintf(DEBUG_NORMAL, "CInfoViewer::handleMsg: zap failed!\n");
 		showFailure();
 
-#if 0
-		CVFD::getInstance()->showPercentOver (255);
-#endif		
+		CVFD::getInstance()->showPercentOver (255);		
 
 		return messages_return::handled;
   	} 
@@ -1718,15 +1716,13 @@ int CInfoViewer::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 		if ((*(t_channel_id *) data) == channel_id) 
 		{
 	  		// show failure..!
-#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD)			  			
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD) || defined (PLATFORM_DUCKBOX)
 	  		CVFD::getInstance()->showServicename ("(" + g_RemoteControl->getCurrentChannelName () + ')');
 #endif			
 	  		dprintf(DEBUG_NORMAL, "CInfoViewer::handleMsg: zap failed!\n");
 	  		showFailure ();
 
-#if 0
-	  		CVFD::getInstance()->showPercentOver(255);
-#endif			
+	  		CVFD::getInstance()->showPercentOver(255);			
 		}
 		return messages_return::handled;
   	} 
@@ -2221,7 +2217,7 @@ void CInfoViewer::showLcdPercentOver()
 				runningPercent = MIN ((unsigned) ((float) (jetzt - info_CurrentNext.current_zeit.startzeit) / (float) info_CurrentNext.current_zeit.dauer * 100.), 100);
 		}
 
-		CVFD::getInstance()->showPercentOver (runningPercent);
+		CVFD::getInstance()->showPercentOver(runningPercent);
 	}
 }
 

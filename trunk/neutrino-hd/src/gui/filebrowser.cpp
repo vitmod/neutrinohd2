@@ -1285,10 +1285,11 @@ void CFileBrowser::paintItem(unsigned int pos)
 
 		if ( actual_file->Name.length() > 0 )
 		{
-#if 0
-			if (liststart+pos==selected)
-				CVFD::getInstance()->showMenuText(0, FILESYSTEM_ENCODING_TO_UTF8_STRING(actual_file->getFileName()).c_str(), -1, true); // UTF-8
-#endif				
+			if(g_settings.menutitle_vfd)
+			{
+				if (liststart+pos==selected)
+					CVFD::getInstance()->showMenuText(0, FILESYSTEM_ENCODING_TO_UTF8_STRING(actual_file->getFileName()).c_str(), -1, true); // UTF-8
+			}
 
 			switch(actual_file->getType())
 			{
@@ -1479,7 +1480,7 @@ void CFileBrowser::paint()
 	//if (filelist[0].Name.length() != 0)
 	//	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, x+ width- 30, y+ 5 );
 
-#if defined (PLATFORM_GIGABLUE)
+#if defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_XTREND)
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);
 #else
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_FILEBROWSER_HEAD));

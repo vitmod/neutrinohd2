@@ -41,9 +41,6 @@ CTransponder::CTransponder()
 	originalNetworkId = 0;
 	transportStreamId = 0;
 	updated = 0;
-	
-	//test
-	//FeIndex = 0;	/* fe(0) */
 }
 
 unsigned int CTransponder::getFrequency()
@@ -141,10 +138,6 @@ unsigned int CTransponder::getTsidOnid()
 	return (transportStreamId << 16) | originalNetworkId;
 }
 
-//test
-/*const uint8_t CTransponder::getFeIndex()
-{
-	return FeIndex;
-}*/
+
 
 

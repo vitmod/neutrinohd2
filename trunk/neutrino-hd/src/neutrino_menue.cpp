@@ -1457,45 +1457,6 @@ void CNeutrinoApp::InitStreamingSettings(CMenuWidget &streamingSettings)
 	streamingSettings.addItem(new CMenuForwarder(LOCALE_MOVIEPLAYER_DEFDIR, true, g_settings.network_nfs_moviedir, this, "moviedir") ); 
 }
 
-// Init Fonts Settings
-class CMenuNumberInput : public CMenuForwarder, CMenuTarget, CChangeObserver
-{
-	private:
-		CChangeObserver * observer;
-		CConfigFile     * configfile;
-		int32_t           defaultvalue;
-		char              value[11];
-	
-	protected:
-	
-		virtual const char * getOption(void)
-		{
-			sprintf(value, "%u", configfile->getInt32(locale_real_names[text], defaultvalue));
-			return value;
-		}
-	
-		virtual bool changeNotify(const neutrino_locale_t OptionName, void * Data)
-		{
-			configfile->setInt32(locale_real_names[text], atoi(value));
-			return observer->changeNotify(OptionName, Data);
-		}
-	
-	
-	public:
-		CMenuNumberInput(const neutrino_locale_t Text, const int32_t DefaultValue, CChangeObserver * const _observer, CConfigFile * const _configfile) : CMenuForwarder(Text, true, NULL, this)
-		{
-			observer     = _observer;
-			configfile   = _configfile;
-			defaultvalue = DefaultValue;
-		}
-	
-		int exec(CMenuTarget * parent, const std::string & actionKey)
-		{
-			CStringInput input(text, (char *)getOption(), 3, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2, "0123456789 ", this);
-			return input.exec(parent, actionKey);
-		}
-};
-
 // Init Color Settings
 /* volbar position */
 #define VOLUMEBAR_DISP_POS_OPTIONS_COUNT 6
@@ -1559,6 +1520,9 @@ void CNeutrinoApp::InitColorSettings(CMenuWidget &colorSettings)
 	
 	// volumebar position
 	colorSettings.addItem(new CMenuOptionChooser(LOCALE_EXTRA_VOLUME_POS, &g_settings.volume_pos, VOLUMEBAR_DISP_POS_OPTIONS, VOLUMEBAR_DISP_POS_OPTIONS_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutOSD++), "", true ));
+	
+	// help bar
+	colorSettings.addItem(new CMenuOptionChooser(LOCALE_COLORMENU_HELPBAR, &g_settings.help_bar, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutOSD++) ));
 
 	// osd-timing
 	CMenuWidget *colorSettings_timing = new CMenuWidget(LOCALE_COLORMENU_TIMING, NEUTRINO_ICON_SETTINGS);
@@ -1578,10 +1542,10 @@ void CNeutrinoApp::InitColorSettings(CMenuWidget &colorSettings)
 #endif
 
 	// psi setup
-	colorSettings.addItem(GenericMenuSeparatorLine);
+	//colorSettings.addItem(GenericMenuSeparatorLine);
 	
-	CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
-	colorSettings.addItem( new CMenuForwarder(LOCALE_VIDEOMENU_PSISETUP, true, NULL, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutOSD++)));
+	//CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
+	//colorSettings.addItem( new CMenuForwarder(LOCALE_VIDEOMENU_PSISETUP, true, NULL, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutOSD++)));
 }
 
 void CNeutrinoApp::InitColorThemesSettings(CMenuWidget &colorSettings_Themes)
@@ -1604,9 +1568,6 @@ void CNeutrinoApp::InitColorThemesSettings(CMenuWidget &colorSettings_Themes)
 	
 	// gray
 	colorSettings_Themes.addItem( new CMenuForwarder(LOCALE_COLORTHEMEMENU_GRAY, true, NULL, this, "theme_ru") );
-	
-	// dark blue
-	colorSettings_Themes.addItem(new CMenuForwarder(LOCALE_COLORTHEMEMENU_DBLUE_THEME, true, NULL, this, "theme_dblue"));
 	
 	// dvb2k
 	colorSettings_Themes.addItem(new CMenuForwarder(LOCALE_COLORTHEMEMENU_DVB2K_THEME, true, NULL, this, "theme_dvb2k"));
@@ -1721,8 +1682,13 @@ void CNeutrinoApp::InitLcdSettings(CMenuWidget &lcdSettings)
 	//scroll text ein/aus (250hd has only 4 digits)
 #if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_2000HD) || defined (PLATFORM_CUBEREVO_9500HD) || defined (PLATFORM_DUCKBOX)
 	lcdSettings.addItem(new CMenuOptionChooser(LOCALE_LCDMENU_SCROLLTEXT, &g_settings.lcd_setting[SNeutrinoSettings::LCD_SCROLL_TEXT], OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, this, CRCInput::convertDigitToKey(shortcutVFD++) ));
-#endif	
+#endif
 
+	// menutitle on vfd
+	lcdSettings.addItem(new CMenuOptionChooser(LOCALE_LCDMENU_MENUTITLEVFD, &g_settings.menutitle_vfd, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutVFD++) ));
+
+	//
+	lcdSettings.addItem(GenericMenuSeparatorLine);
 	//
 	CVfdControler * lcdsliders = new CVfdControler(LOCALE_LCDMENU_HEAD, NULL);
 
@@ -1885,7 +1851,6 @@ void CNeutrinoApp::InitKeySettings(CMenuWidget &keySettings, CMenuWidget &bindSe
 		&g_settings.key_list_end,
 
 		&g_settings.key_channelList_cancel,
-		//&g_settings.key_channelList_sort,
 		&g_settings.key_channelList_reload,
 		&g_settings.key_channelList_addrecord,
 		&g_settings.key_channelList_addremind,

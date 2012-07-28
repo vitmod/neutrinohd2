@@ -134,7 +134,6 @@ struct SNeutrinoSettings
 	// END MOVIEPLAYER
 
 	// OSD
-	//int blendmode;
 	unsigned char gtx_alpha;
 	
 	char language[25];
@@ -238,6 +237,8 @@ struct SNeutrinoSettings
 	int screen_height;
 	
 	int volume_pos;
+	int help_bar;
+	int menutitle_vfd;
 	// END OSD
 
 	// KEYS

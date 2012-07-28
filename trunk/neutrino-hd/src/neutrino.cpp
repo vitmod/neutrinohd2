@@ -577,60 +577,6 @@ void CNeutrinoApp::setupColors_red()
 	g_settings.menu_Head_red=40;
 }
 
-//CNeutrinoApp -  setup Color Sheme (darkblue)
-void CNeutrinoApp::setupColors_dblue()
-{
-	g_settings.menu_Head_alpha = 0;
-	g_settings.menu_Head_red   = 0;
-	g_settings.menu_Head_green = 0;
-	g_settings.menu_Head_blue  = 50;
-
-	g_settings.menu_Head_Text_alpha = 0;
-	g_settings.menu_Head_Text_red   = 95;
-	g_settings.menu_Head_Text_green = 100;
-	g_settings.menu_Head_Text_blue  = 100;
-
-	g_settings.menu_Content_alpha = 20;
-	g_settings.menu_Content_red   = 0;
-	g_settings.menu_Content_green = 0;
-	g_settings.menu_Content_blue  = 20;
-
-	g_settings.menu_Content_Text_alpha = 0;
-	g_settings.menu_Content_Text_red   = 100;
-	g_settings.menu_Content_Text_green = 100;
-	g_settings.menu_Content_Text_blue  = 100;
-
-	g_settings.menu_Content_Selected_alpha = 15;
-	g_settings.menu_Content_Selected_red   = 0;
-	g_settings.menu_Content_Selected_green = 65;
-	g_settings.menu_Content_Selected_blue  = 0;
-
-	g_settings.menu_Content_Selected_Text_alpha  = 0;
-	g_settings.menu_Content_Selected_Text_red    = 0;
-	g_settings.menu_Content_Selected_Text_green  = 0;
-	g_settings.menu_Content_Selected_Text_blue   = 0;
-
-	g_settings.menu_Content_inactive_alpha = 20;
-	g_settings.menu_Content_inactive_red   = 0;
-	g_settings.menu_Content_inactive_green = 0;
-	g_settings.menu_Content_inactive_blue  = 15;
-
-	g_settings.menu_Content_inactive_Text_alpha  = 0;
-	g_settings.menu_Content_inactive_Text_red    = 55;
-	g_settings.menu_Content_inactive_Text_green  = 70;
-	g_settings.menu_Content_inactive_Text_blue   = 85;
-
-	g_settings.infobar_alpha = 20;
-	g_settings.infobar_red   = 0;
-	g_settings.infobar_green = 0;
-	g_settings.infobar_blue  = 20;
-
-	g_settings.infobar_Text_alpha = 0;
-	g_settings.infobar_Text_red   = 100;
-	g_settings.infobar_Text_green = 100;
-	g_settings.infobar_Text_blue  = 100;
-}
-
 // CNeutrinoApp -  setup Color Sheme (dvb2000)
 void CNeutrinoApp::setupColors_dvb2k()
 {
@@ -780,10 +726,10 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	//wss	
 	g_settings.wss_mode = configfile.getInt32("wss_mode", WSS_OFF);
 	
-	g_settings.contrast = configfile.getInt32( "contrast", 128);
-	g_settings.saturation = configfile.getInt32( "saturation", 128);
-	g_settings.brightness = configfile.getInt32( "brightness", 128);
-	g_settings.tint = configfile.getInt32( "tint", 128);
+	g_settings.contrast = configfile.getInt32( "contrast", 130);
+	g_settings.saturation = configfile.getInt32( "saturation", 130);
+	g_settings.brightness = configfile.getInt32( "brightness", 130);
+	g_settings.tint = configfile.getInt32( "tint", 130);
 	// end video
 
 	// audio
@@ -896,6 +842,8 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	
 	strcpy(g_settings.language, configfile.getString("language", "english").c_str());
 	g_settings.volume_pos = configfile.getInt32( "volume_pos", 1);		//top_left
+	g_settings.help_bar = configfile.getInt32( "help_bar", 1);		//on
+	g_settings.menutitle_vfd = configfile.getInt32( "menutitle_vfd", 0);	// off
 
 	// themes
 	//gray colors default	
@@ -1305,12 +1253,11 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	// END MOVIEPLAYER
 
 	// OSD
-	//configfile.setBool( "blendmode", g_settings.blendmode);
 	configfile.setInt32( "gtx_alpha", g_settings.gtx_alpha);
 
 	configfile.setString("language", g_settings.language);
-	configfile.setInt32( "volume_pos", g_settings.volume_pos);
 
+	// theme
 	configfile.setInt32( "menu_Head_alpha", g_settings.menu_Head_alpha );
 	configfile.setInt32( "menu_Head_red", g_settings.menu_Head_red );
 	configfile.setInt32( "menu_Head_green", g_settings.menu_Head_green );
@@ -1373,6 +1320,10 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	// menue timing
 	for (int i = 0; i < TIMING_SETTING_COUNT; i++)
 		configfile.setInt32(locale_real_names[timing_setting_name[i]], g_settings.timing[i]);
+	
+	configfile.setInt32( "volume_pos", g_settings.volume_pos);
+	configfile.setInt32( "help_bar", g_settings.help_bar);
+	configfile.setInt32( "menutitle_vfd", g_settings.menutitle_vfd);
 	// END OSD
 
 	// KEYS
@@ -4607,7 +4558,7 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 		CVFD::getInstance()->Clear();
 		
 		//the fp timer 
-#if defined (PLATFORM_GIGABLUE)
+#if !defined (PLATFORM_CUBEREVO) && !defined (PLATFORM_CUBEREVO_MINI) && !defined (PLATFORM_CUBEREVO_MINI2) && !defined (PLATFORM_CUBEREVO_MINI_FTA) && !defined (PLATFORM_CUBEREVO_250HD) && !defined (PLATFORM_CUBEREVO_2000HD) && !defined (PLATFORM_CUBEREVO_9500HD)
 
 		CVFD::getInstance()->setMode(CVFD::MODE_STANDBY);
 #endif		
@@ -4668,8 +4619,6 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 			
 		// set fan off
 		CVFD::getInstance()->setFan(false);
-#else
-		printf("not implemtend yet...\n");
 #endif
 	} 
 	else 
@@ -4680,8 +4629,6 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 			
 		// set fan on
 		CVFD::getInstance()->setFan(true);
-#else
-		printf("not implemtend yet...\n");
 #endif
 
 		// set fb active
@@ -4956,11 +4903,6 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 	}
 	else if (actionKey=="theme_classic") {
 		setupColors_classic();
-		colorSetupNotifier->changeNotify(NONEXISTANT_LOCALE, NULL);
-	}
-	else if (actionKey=="theme_dblue") 
-	{
-		setupColors_dblue();
 		colorSetupNotifier->changeNotify(NONEXISTANT_LOCALE, NULL);
 	}
 	else if (actionKey=="theme_dvb2k") 

@@ -94,7 +94,7 @@ static t_channel_id pip_channel_id;
 int rezapTimeout;
 
 bool sortNames;
-bool mcemode = false;
+//bool mcemode = false;
 bool sortlist = false;
 int scan_pids = false;
 
@@ -653,12 +653,12 @@ static void restore_channel_pids(CZapitChannel * thischannel)
 		tuxtx_set_pid(0, 0, (char *) thischannel->getTeletextLang());
 	}
 	
-	/* restore saved stereo / left / right channel mode */
+	/* set saved vol */
 	//audioDecoder->setVolume(volume_left, volume_right);
 	
-	//TEST
-	if(audioDecoder)
-		audioDecoder->setChannel(audio_mode);
+	// audio mode
+	//if(audioDecoder)
+	//	audioDecoder->setChannel(audio_mode);
 }
 
 // return 0, -1 fails
@@ -2552,8 +2552,8 @@ int startPlayBack(CZapitChannel * thisChannel)
 	// select audio output and start audio
 	if (have_audio) 
 	{
-		if(audioDecoder->setChannel(audio_mode) < 0 )
-			return -1;
+		//if(audioDecoder->setChannel(audio_mode) < 0 )
+		//	return -1;
 		
 		// set source
 		if(audioDecoder)

@@ -343,9 +343,9 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 	{
 		if ( strncmp(value, dispval, size) != 0)
 		{
-#if 0
-			CVFD::getInstance()->showMenuText(1, value, selected+1);
-#endif
+			if(g_settings.menutitle_vfd)
+				CVFD::getInstance()->showMenuText(1, value, selected+1);
+
 			strncpy(dispval, value, size);
 		}
 

@@ -905,7 +905,7 @@ int CMovieBrowser::exec(const char* path)
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
-#if defined (PLATFORM_GIGABLUE)
+#if defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_XTREND)
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);
 #else
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_MOVIEBROWSER_HEAD));
@@ -1123,7 +1123,7 @@ int CMovieBrowser::paint(void)
 {
 	TRACE("[mb]->Paint\r\n");
 
-#if defined (PLATFORM_GIGABLUE)
+#if defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_XTREND)
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);
 #else
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_MOVIEBROWSER_HEAD));
@@ -1301,7 +1301,7 @@ void CMovieBrowser::refreshLCD(void)
 		//lcd->showMenuText(0, " ", -1, true); // UTF-8
 		//lcd->showMenuText(1, " ", -1, true); // UTF-8
 	}
-#if !defined (PLATFORM_GIGABLUE)	
+#if !defined (PLATFORM_CUBEREVO_250HD) && !defined (PLATFORM_GIGABLUE) && !defined (PLATFORM_XTREND)	
 	else
 	{
 		CVFD::getInstance()->showMenuText(0, m_movieSelectionHandler->epgTitle.c_str(), -1, true); // UTF-8
@@ -3657,7 +3657,7 @@ int CMenuSelector::paint( bool selected )
 	frameBuffer->blit(x, y, dx, height);
 #endif
 
-#if !defined (PLATFORM_GIGABLUE)
+#if !defined (PLATFORM_CUBEREVO_250HD) && !defined (PLATFORM_GIGABLUE) && !defined (PLATFORM_XTREND)
 	if (selected)
 		CVFD::getInstance()->showMenuText(0, optionName, -1, true); // UTF-8
 #endif		

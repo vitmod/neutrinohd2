@@ -45,7 +45,7 @@
 class CPSISetup : public CMenuTarget
 {
 	private:
-		CFrameBuffer	*frameBuffer;
+		CFrameBuffer *frameBuffer;
 		int x;
 		int y;
 		int width;
@@ -53,14 +53,14 @@ class CPSISetup : public CMenuTarget
 		int hheight;		// head font height
 		int mheight; 		// menu font height
 
-		unsigned char * contrast;
-		unsigned char * saturation;
-		unsigned char * brightness;
-		unsigned char * tint;
+		unsigned char *contrast;
+		unsigned char *saturation;
+		unsigned char *brightness;
+		unsigned char *tint;
 
 		neutrino_locale_t name;
 
-		CChangeObserver * observer;
+		CChangeObserver *observer;
 
 		void paint();
 		void setPSI();
@@ -68,10 +68,10 @@ class CPSISetup : public CMenuTarget
 
 	public:
 
-		CPSISetup(const neutrino_locale_t Name, unsigned char * Contrast, unsigned char * Saturation, unsigned char * Brightness, unsigned char * Tint, CChangeObserver* Observer = NULL);
+		CPSISetup(const neutrino_locale_t Name, unsigned char *Contrast, unsigned char *Saturation, unsigned char *Brightness, unsigned char *Tint, CChangeObserver *Observer = NULL);
 
 		void hide();
-		int exec(CMenuTarget* parent, const std::string & actionKey);
+		int exec(CMenuTarget *parent, const std::string &actionKey);
 		
 		void setContrast(int contrast);
 		void setSaturation(int saturation);
