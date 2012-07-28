@@ -581,22 +581,34 @@ void cVideo::SetSyncMode(int mode)
 void cVideo::SetInput(int val)
 { 
 	const char *input[] = {"encoder", "scart", "aux"};
+	const char *sb[] = {"on", "off", "off"};
 	
 	printf("cVideo::SetInput: %s\n", input[val]);	
 
 	int fd_avs_input;
 	
 	if( fd_avs_input = open("/proc/stb/avs/0/input", O_RDWR) < 0)
-	{
 		perror("cannot open /proc/stb/avs/0/input");
-		return;
-	}
 
+	if(fd_avs_input > 0)
+	{
+		write(fd_avs_input, input[val], strlen(input[val]));
 	
-	//write(fd_avs_input, "encoder", 7);
-	write(fd_avs_input, input[val], strlen(input[val]));
+		close(fd_avs_input);
+	}
+	else
+		printf("error %m\n");
 	
-	close(fd_avs_input);
+//#if defined (PLATFORM_DUCKBOX)	
+	int fd_sb;
+	if(fd_sb = open("/proc/stb/avs/0/standby", O_RDWR) < 0)
+		perror("cannot open /proc/stb/avs/0/standby");
+	
+	if(fd_sb > 0)
+	{
+		write(fd_sb, sb[val], strlen(sb[val]));
+	}
+//#endif	
 }
 
 /* Pig */
