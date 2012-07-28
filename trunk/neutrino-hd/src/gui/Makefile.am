@@ -1,5 +1,16 @@
 AM_CPPFLAGS = -fno-rtti -fno-exceptions
 
+BUILT_SOURCES  = svn_version.h
+
+svn_version.h:
+	@if test -d .svn ; then \
+		sleep 180 && rm svn_version.h & echo "#define SVNVERSION \"$$(svnversion -n || echo svn_oops!)\" " > svn_version.h ; \
+	else \
+		rm svn_version.h; echo '#define BUILT_DATE "'`date`'"' > svn_version.h ; \
+	fi
+
+noinst_HEADERS = svn_version.h
+
 SUBDIRS = widget bedit
 
 INCLUDES = \

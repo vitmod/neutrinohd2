@@ -37,6 +37,12 @@
 #include <system/flashtool.h>
 #include <video_cs.h>
 
+#include "svn_version.h"
+
+
+#define SVN_REV "SVN Rev.:"
+#define GIT_REV "GIT Build:"
+
 #include <gui/pictureviewer.h>
 extern CPictureViewer * g_PicViewer;
 
@@ -172,6 +178,11 @@ void CImageInfo::paint()
 	const char * version   = config.getString("version",   "1200201205091849").c_str();
 	const char * docs      = config.getString("docs",   "http://wiki.neutrino-hd.de").c_str();
 	const char * forum     = config.getString("forum",   "http://www.dgstation-forum.org").c_str();
+#ifdef SVNVERSION
+	const char * builddate     = config.getString("builddate",     SVNVERSION).c_str();
+#else
+	const char * builddate     = config.getString("builddate",     BUILT_DATE).c_str();
+#endif	
 
 	static CFlashVersionInfo versionInfo(version);
 	const char * releaseCycle = versionInfo.getReleaseCycle();
@@ -192,7 +203,15 @@ void CImageInfo::paint()
 	ypos += iheight;
 	paintLine(xpos    , font_info, g_Locale->getText(LOCALE_IMAGEINFO_VERSION));
 	paintLine(xpos+125, font_info, releaseCycle);
-	//paintLine(xpos+125, font_info, version);
+	
+	// svn/git built date
+	ypos += iheight;
+#ifdef SVNVERSION
+	paintLine(xpos    , font_info, SVN_REV);
+#else
+	paintLine(xpos    , font_info, GIT_REV);
+#endif
+	paintLine(xpos + 125, font_info, builddate );	
 	
 	// image type
 	ypos += iheight;

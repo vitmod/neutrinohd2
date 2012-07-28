@@ -4640,6 +4640,7 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 
 		// vfd mode
 		CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
+		
 #if defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_GIGABLUE)		
 		char tmp[5];
 		

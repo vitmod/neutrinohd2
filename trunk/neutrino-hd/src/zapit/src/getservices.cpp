@@ -558,7 +558,7 @@ int LoadServices(bool only_current)
 		}
 	}
 
-	// Parse services.xml
+	// parse services.xml
 	parser = parseXmlFile(SERVICES_XML);
 
 	if (parser != NULL) 
@@ -567,61 +567,64 @@ int LoadServices(bool only_current)
 
 		while (search) 
 		{
-			if(FrontendCount > 1)
+			if( CFrontend::getInstance(0)->getInfo()->type == FE_QPSK)
 			{
-				if( CFrontend::getInstance(0)->getInfo()->type == FE_QPSK)
+				if (!(strcmp(xmlGetName(search), "sat"))) 
 				{
-					if (!(strcmp(xmlGetName(search), "sat"))) 
-					{
-						// position
-						t_satellite_position position = xmlGetSignedNumericAttribute(search, "position", 10);
-						char * name = xmlGetAttribute(search, "name");
+					// position
+					t_satellite_position position = xmlGetSignedNumericAttribute(search, "position", 10);
+					char * name = xmlGetAttribute(search, "name");
 
-						if(satellitePositions.find(position) == satellitePositions.end()) 
-						{
-							init_sat(position);
+					if(satellitePositions.find(position) == satellitePositions.end()) 
+					{
+						init_sat(position);
 							
-							satellitePositions[position].name = name;
-						}
-						
-						satellitePositions[position].feindex = 0;
+						satellitePositions[position].name = name;
 					}
+					
+					// type //needed to resort list for scan menue
+					satellitePositions[position].type = DVB_S;
+					satellitePositions[position].feindex = 0;
 				}
-				else if( CFrontend::getInstance(0)->getInfo()->type == FE_QAM)
+			}
+			else if( CFrontend::getInstance(0)->getInfo()->type == FE_QAM)
+			{
+				if (!(strcmp(xmlGetName(search), "cable"))) 
 				{
-					if (!(strcmp(xmlGetName(search), "cable"))) 
-					{
-						// position
-						t_satellite_position position = xmlGetSignedNumericAttribute(search, "position", 10);
-						char * name = xmlGetAttribute(search, "name");
+					// position
+					t_satellite_position position = xmlGetSignedNumericAttribute(search, "position", 10);
+					char * name = xmlGetAttribute(search, "name");
 
-						if(satellitePositions.find(position) == satellitePositions.end()) 
-						{
-							init_sat(position); // this will reset feindex to 
+					if(satellitePositions.find(position) == satellitePositions.end()) 
+					{
+						init_sat(position); // this will reset feindex to 
 							
-							satellitePositions[position].name = name;
-						}
-						
-						satellitePositions[position].feindex = 0;
+						satellitePositions[position].name = name;
 					}
+					
+					// type //needed to resort list for scan menue
+					satellitePositions[position].type = DVB_C;
+					satellitePositions[position].feindex = 0;
 				}
-				else if( CFrontend::getInstance(0)->getInfo()->type == FE_OFDM)
+			}
+			else if( CFrontend::getInstance(0)->getInfo()->type == FE_OFDM)
+			{
+				if (!(strcmp(xmlGetName(search), "terrestrial"))) 
 				{
-					if (!(strcmp(xmlGetName(search), "terrestrial"))) 
-					{
-						// position
-						t_satellite_position position = xmlGetSignedNumericAttribute(search, "position", 10);
-						char * name = xmlGetAttribute(search, "name");
+					// position
+					t_satellite_position position = xmlGetSignedNumericAttribute(search, "position", 10);
+					char * name = xmlGetAttribute(search, "name");
 
-						if(satellitePositions.find(position) == satellitePositions.end()) 
-						{
-							init_sat(position); // this will reset feindex to 
+					if(satellitePositions.find(position) == satellitePositions.end()) 
+					{
+						init_sat(position); // this will reset feindex to 
 							
-							satellitePositions[position].name = name;
-						}
-						
-						satellitePositions[position].feindex = 0;
+						satellitePositions[position].name = name;
 					}
+					
+					// type //needed to resort list for scan menue
+					satellitePositions[position].type = DVB_T;
+					satellitePositions[position].feindex = 0;
 				}
 			}
 
