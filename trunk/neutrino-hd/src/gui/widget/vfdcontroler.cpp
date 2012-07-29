@@ -47,7 +47,7 @@
 
 #include <math.h>
 
-#define BRIGHTNESSFACTOR 0.15 // 0 - 15
+#define BRIGHTNESSFACTOR 0.07 // 0 - 7
 
 
 CVfdControler::CVfdControler(const neutrino_locale_t Name, CChangeObserver* Observer)
@@ -57,7 +57,7 @@ CVfdControler::CVfdControler(const neutrino_locale_t Name, CChangeObserver* Obse
 	mheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
 	observer = Observer;
 	name = Name;
-	width = w_max(390, 0);
+	width = w_max(450, 0);
 	height = h_max(hheight+ mheight* 3+ +mheight/2, 0);
 	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth()-width) >> 1);
 	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight()-height)>>1);
@@ -166,22 +166,20 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 				switch (selected) 
 				{
 					case 0:
-						//if (brightness < 15) 
-						if(brightness < 255)
+						if (brightness < DEFAULT_LCD_BRIGHTNESS) 
 						{
-							//brightness ++;
-							brightness += 0x10;
+							brightness ++;
+							
 							paintSlider(x+10, y+hheight, brightness, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESS, true);
 							setVfd();
 						}
 						break;
 						
 					case 1:
-						//if (brightnessstandby < 15) 
-						if(brightnessstandby < 255)
+						if (brightnessstandby < DEFAULT_LCD_STANDBYBRIGHTNESS) 
 						{
-							//brightnessstandby ++;
-							brightnessstandby += 0x10;
+							brightnessstandby ++;
+							
 							paintSlider(x+10, y+hheight+mheight, brightnessstandby, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESSSTANDBY, true);
 							setVfd();
 						}
@@ -193,22 +191,20 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 				switch (selected) 
 				{
 					case 0:
-						//if (brightness > 0) 
-						if(brightness >= 0x10)
+						if (brightness > 0) 
 						{
-							//brightness--;
-							brightness -= 0x10;
+							brightness--;
+							
 							paintSlider(x+10, y+hheight, brightness, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESS, true);
 							setVfd();
 						}
 						break;
 						
 					case 1:
-						//if (brightnessstandby > 0) 
-						if (brightnessstandby >= 0x10) 
+						if (brightnessstandby > 0) 
 						{
-							//brightnessstandby--;
-							brightnessstandby -= 0x10;
+							brightnessstandby--;
+							
 							paintSlider(x+10, y+hheight+mheight, brightnessstandby, BRIGHTNESSFACTOR, LOCALE_LCDCONTROLER_BRIGHTNESSSTANDBY, true);
 							setVfd();
 						}
@@ -286,21 +282,19 @@ void CVfdControler::paint()
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x+10, y+hheight+mheight*3+mheight/2, width, g_Locale->getText(LOCALE_OPTIONS_DEFAULT), COL_MENUCONTENT, 0, true); // UTF-8
 }
 
-void CVfdControler::paintSlider(int x, int y, /*unsigned int spos*/unsigned char spos, float factor, const neutrino_locale_t text, bool selected)
+void CVfdControler::paintSlider(int x, int y, unsigned int spos, float factor, const neutrino_locale_t text, bool selected)
 {
-	int sspos = spos*100/255;
-	
 	int startx = 200;
 	char wert[5];
 
 	frameBuffer->paintBoxRel(x + startx, y, 120, mheight, COL_MENUCONTENT_PLUS_0);
 	frameBuffer->paintIcon(NEUTRINO_ICON_VOLUMEBODY, x + startx, y+2+mheight/4);
-	frameBuffer->paintIcon(selected ? NEUTRINO_ICON_VOLUMESLIDER2BLUE : NEUTRINO_ICON_VOLUMESLIDER2, (int)(x + (startx+3)+sspos/*(spos / factor)*/), y+mheight/4);
+	frameBuffer->paintIcon(selected ? NEUTRINO_ICON_VOLUMESLIDER2BLUE : NEUTRINO_ICON_VOLUMESLIDER2, (int)(x + (startx + 3) + (spos / factor)), y + mheight/4);
 
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x, y+mheight, width, g_Locale->getText(text), COL_MENUCONTENT, 0, true); // UTF-8
 	
 	// wert //FIXME
-	sprintf(wert, "%3d", sspos ); // UTF-8 encoded
+	sprintf(wert, "%3d", spos ); // UTF-8 encoded
 
 	frameBuffer->paintBoxRel(x + startx + 120 + 10, y, 50, mheight, COL_MENUCONTENT_PLUS_0);
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + startx + 120 + 10, y+mheight, width, wert, COL_MENUCONTENT, 0, true); // UTF-8

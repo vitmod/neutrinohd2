@@ -842,6 +842,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	
 	strcpy(g_settings.language, configfile.getString("language", "english").c_str());
 	g_settings.volume_pos = configfile.getInt32( "volume_pos", 1);		//top_left
+	g_settings.help_txt = configfile.getInt32( "help_txt", 1);		//on
 	g_settings.help_bar = configfile.getInt32( "help_bar", 1);		//on
 	g_settings.menutitle_vfd = configfile.getInt32( "menutitle_vfd", 0);	// off
 
@@ -1322,6 +1323,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 		configfile.setInt32(locale_real_names[timing_setting_name[i]], g_settings.timing[i]);
 	
 	configfile.setInt32( "volume_pos", g_settings.volume_pos);
+	configfile.setInt32( "help_txt", g_settings.help_txt);
 	configfile.setInt32( "help_bar", g_settings.help_bar);
 	configfile.setInt32( "menutitle_vfd", g_settings.menutitle_vfd);
 	// END OSD

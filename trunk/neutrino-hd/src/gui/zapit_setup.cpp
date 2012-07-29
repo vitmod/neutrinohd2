@@ -97,7 +97,6 @@ void CZapitSetup::showMenu()
 	zapit->setSelected(selected);
 	
 	// intros
-	//zapit->addItem(GenericMenuSeparator);
 	zapit->addItem(GenericMenuBack);
 	zapit->addItem(GenericMenuSeparatorLine);
 	

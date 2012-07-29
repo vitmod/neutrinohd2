@@ -59,7 +59,7 @@ class CVfdControler : public CMenuTarget
 
 		void paint();
 		void setVfd();
-		void paintSlider(int x, int y, /*unsigned int spos*/unsigned char spos, float factor, const neutrino_locale_t text, bool selected);
+		void paintSlider(int x, int y, unsigned int spos, float factor, const neutrino_locale_t text, bool selected);
 
 	public:
 

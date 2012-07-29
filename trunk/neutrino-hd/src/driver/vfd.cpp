@@ -201,17 +201,6 @@ void CVFD::setlcdparameter(int dimm, const int power)
 	if(!has_vfd) 
 		return;
 
-	if(dimm < 0)
-		dimm = 0;
-	else if(dimm > 7)
-		dimm = 7;
-
-	if(!power)
-		dimm = 0;
-
-	if(brightness == dimm)
-		return;
-
 	brightness = dimm;
 
 	dprintf(DEBUG_DEBUG, "CVFD::setlcdparameter dimm %d power %d\n", dimm, power);

@@ -1487,7 +1487,6 @@ int CMenuForwarder::paint(bool selected)
 	const char * option_text = getOption();
 
 	// help bar
-	#if 0
 	if(g_settings.help_bar)
 	{
 		if (selected)
@@ -1509,7 +1508,6 @@ int CMenuForwarder::paint(bool selected)
 			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + dx - BORDER_RIGHT - 30, HEIGHT, dx -(x + dx - BORDER_RIGHT - 30 - x), (const char *)"Exit", COL_MENUCONTENTINACTIVE, 0, true); // UTF-8
 		}
 	}
-	#endif
 	
 	// menutitle on VFD
 	if(g_settings.menutitle_vfd)
@@ -1726,7 +1724,7 @@ int CMenuForwarderItemMenuIcon::paint(bool selected)
 		}
 		
 		// help bar
-		if(g_settings.help_bar)
+		if(g_settings.help_txt)
 		{
 			//help text
 			// refresh

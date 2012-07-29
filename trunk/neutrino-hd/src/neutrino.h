@@ -46,6 +46,7 @@
 #include <daemonc/remotecontrol.h>    		/* st_rmsg      */
 
 #include <zapit/client/zapitclient.h>
+#include <gui/scan_setup.h>
 
 #include <string>
 

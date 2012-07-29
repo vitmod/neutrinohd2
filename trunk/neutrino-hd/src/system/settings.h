@@ -238,6 +238,7 @@ struct SNeutrinoSettings
 	
 	int volume_pos;
 	int help_bar;
+	int help_txt;
 	int menutitle_vfd;
 	// END OSD
 
@@ -448,8 +449,8 @@ extern const int               default_timing     [TIMING_SETTING_COUNT];
 extern const neutrino_locale_t timing_setting_name[TIMING_SETTING_COUNT];
 
 // lcdd
-#define DEFAULT_LCD_BRIGHTNESS			0xFF
-#define DEFAULT_LCD_STANDBYBRIGHTNESS		0xFF
+#define DEFAULT_LCD_BRIGHTNESS			0x07
+#define DEFAULT_LCD_STANDBYBRIGHTNESS		0x07
 #define DEFAULT_LCD_CONTRAST			0x0F
 #define DEFAULT_LCD_POWER			0x01
 #define DEFAULT_LCD_INVERSE			0x00
@@ -479,54 +480,5 @@ const int PARENTALLOCK_PROMPT_ONSTART        = 1;
 const int PARENTALLOCK_PROMPT_CHANGETOLOCKED = 2;
 const int PARENTALLOCK_PROMPT_ONSIGNAL       = 3;
 
-// scan settings
-#define MAX_SATELLITES 80
-
-
-class CScanSettings
-{
-	public:
-		CConfigFile	configfile;
-		
-		int		bouquetMode;
-		int		scanType;
-		int		diseqcMode;
-		uint32_t	diseqcRepeat;
-		char            satNameNoDiseqc[50];
-		
-		int		scanSectionsd;
-		int		scan_mode;
-		int		TP_fec;
-		int		TP_pol;
-		int		TP_mod;
-		char		TP_freq[10];
-		char		TP_rate[9];
-	
-		//DVB-T
-		int		TP_band;
-		int 		TP_HP;
-		int 		TP_LP;
-		int		TP_const;
-		int		TP_trans;
-		int		TP_guard;
-		int		TP_hierarchy;
-	
-		CScanSettings();
-	
-		void useDefaults();
-		bool loadSettings(const char * const fileName);
-		bool saveSettings(const char * const fileName);
-};
-
-class CTPSelectHandler : public CMenuTarget
-{
-	private:
-		int feindex;
-	
-	public:
-		int exec(CMenuTarget* parent,  const std::string &actionkey);
-		
-		CTPSelectHandler(int num = 0);
-};
 
 #endif

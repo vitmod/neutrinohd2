@@ -35,7 +35,6 @@ int log_level = 0;
 	if (i < log_level) \
 		fprintf(stderr, arg);
 
-
 void getCurrentPIGSettings(int* left, int* top, int* width, int* height);
 void getCurrentASPECTSettings();
 void setCurrentPIGSettings(int left, int top, int width, int height);

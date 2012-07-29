@@ -35,6 +35,8 @@
 
 #include <string>
 
+#define get_set CNeutrinoApp::getInstance()->getScanSettings()
+
 class CScanSetup : public CMenuTarget
 {
 	private:
@@ -50,6 +52,52 @@ class CScanSetup : public CMenuTarget
 		CScanSetup(int num = 0);
 		~CScanSetup();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
+};
+
+class CTPSelectHandler : public CMenuTarget
+{
+	private:
+		int feindex;
+	
+	public:
+		int exec(CMenuTarget* parent,  const std::string &actionkey);
+		
+		CTPSelectHandler(int num = 0);
+};
+
+class CScanSettings
+{
+	public:
+		CConfigFile	configfile;
+		
+		int		bouquetMode;
+		int		scanType;
+		int		diseqcMode;
+		uint32_t	diseqcRepeat;
+		char            satNameNoDiseqc[50];
+		
+		int		scanSectionsd;
+		int		scan_mode;
+		int		TP_fec;
+		int		TP_pol;
+		int		TP_mod;
+		char		TP_freq[10];
+		char		TP_rate[9];
+	
+		//DVB-T
+		int		TP_band;
+		int 		TP_HP;
+		int 		TP_LP;
+		int		TP_const;
+		int		TP_trans;
+		int		TP_guard;
+		int		TP_hierarchy;
+	
+		CScanSettings();
+	
+		void useDefaults();
+		bool loadSettings(const char * const fileName);
+		bool saveSettings(const char * const fileName);
 };
 
 

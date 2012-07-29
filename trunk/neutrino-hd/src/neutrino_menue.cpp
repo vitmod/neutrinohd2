@@ -552,7 +552,6 @@ void CNeutrinoApp::InitVideoSettings(CMenuWidget &videoSettings, CVideoSetupNoti
 	int shortcutVideo = 1;
 	
 	// intros
-	//videoSettings.addItem(GenericMenuSeparator);
 	videoSettings.addItem(GenericMenuBack);
 	videoSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
@@ -718,7 +717,6 @@ void CNeutrinoApp::InitParentalLockSettings(CMenuWidget &parentallockSettings)
 	int shortcutLock = 1;
 	
 	// intrso
-	//parentallockSettings.addItem(GenericMenuSeparator);
 	parentallockSettings.addItem(GenericMenuBack);
 	parentallockSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
@@ -758,12 +756,11 @@ void CNeutrinoApp::InitServiceSettings(CMenuWidget &service, CMenuWidget & Tuner
 	if(FrontendCount > 1)
 	{
 		// intros
-		//TunerSetup.addItem(GenericMenuSeparator);
 		TunerSetup.addItem(GenericMenuBack);
 		TunerSetup.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 		
-		//TunerSetup.addItem(new CMenuForwarderNonLocalized("Tuner Mode", false, "independant", NULL ));
-		//TunerSetup.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+		TunerSetup.addItem(new CMenuForwarderNonLocalized("Tuner Mode", false, "independant", NULL ));
+		TunerSetup.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 		
 		for(int i=0; i<FrontendCount; i++)
 		{
@@ -819,7 +816,6 @@ void CNeutrinoApp::InitServiceSettings(CMenuWidget &service, CMenuWidget & Tuner
 	CMenuWidget * updateSettings = new CMenuWidget(LOCALE_SERVICEMENU_UPDATE, NEUTRINO_ICON_UPDATE, 550);
 		
 	// intros
-	//updateSettings->addItem(GenericMenuSeparator);
 	updateSettings->addItem(GenericMenuBack);
 	updateSettings->addItem(GenericMenuSeparatorLine);
 	
@@ -831,7 +827,6 @@ void CNeutrinoApp::InitServiceSettings(CMenuWidget &service, CMenuWidget & Tuner
 	CMenuWidget * mtdexpert = new CMenuWidget(LOCALE_FLASHUPDATE_EXPERTFUNCTIONS, NEUTRINO_ICON_UPDATE);
 		
 	// intros
-	//mtdexpert->addItem(GenericMenuSeparator);
 	mtdexpert->addItem(GenericMenuBack);
 	mtdexpert->addItem(GenericMenuSeparatorLine);
 		
@@ -926,7 +921,6 @@ void CNeutrinoApp::InitAudioplayerSettings(CMenuWidget &audioplayerSettings)
 	int shortcutAudioPlayer = 1;
 	
 	// intros
-	//audioplayerSettings.addItem(GenericMenuSeparator);
 	audioplayerSettings.addItem(GenericMenuBack);
 	audioplayerSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
@@ -979,7 +973,6 @@ void CNeutrinoApp::InitPicViewerSettings(CMenuWidget &PicViewerSettings)
 	int shortcutPicViewer = 1;
 	
 	// intros
-	//PicViewerSettings.addItem(GenericMenuSeparator);
 	PicViewerSettings.addItem(GenericMenuBack);
 	PicViewerSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
@@ -1030,12 +1023,8 @@ void CNeutrinoApp::InitMiscSettings(CMenuWidget &miscSettings, CMenuWidget &misc
 	
 	int shortcutMiscSettings = 1;
 
-	// intros
-	//miscSettings.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::EMPTY) );
-	
 	// general
 	// intros
-	//miscSettingsGeneral.addItem(GenericMenuSeparator);
 	miscSettingsGeneral.addItem(GenericMenuBack);
 	miscSettingsGeneral.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
@@ -1123,7 +1112,6 @@ void CNeutrinoApp::InitMiscSettings(CMenuWidget &miscSettings, CMenuWidget &misc
 	int shortcutMiscChannel = 1;
 	
 	// intros
-	//miscSettingsChannelList.addItem(GenericMenuSeparator);
 	miscSettingsChannelList.addItem(GenericMenuBack);
 	miscSettingsChannelList.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
@@ -1155,7 +1143,6 @@ void CNeutrinoApp::InitMiscSettings(CMenuWidget &miscSettings, CMenuWidget &misc
 	int shortcutMiscEpg = 1;
 	
 	// intros
-	//miscSettingsEPG.addItem(GenericMenuSeparator);
 	miscSettingsEPG.addItem(GenericMenuBack);
 	miscSettingsEPG.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
@@ -1192,7 +1179,6 @@ void CNeutrinoApp::InitMiscSettings(CMenuWidget &miscSettings, CMenuWidget &misc
 	int shortcutMiscFileBrowser = 1;
 	
 	// intros
-	//miscSettingsFileBrowser.addItem(GenericMenuSeparator);
 	miscSettingsFileBrowser.addItem(GenericMenuBack);
 	miscSettingsFileBrowser.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
@@ -1221,7 +1207,6 @@ void CNeutrinoApp::InitLanguageSettings(CMenuWidget &languageSettings)
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitLanguageSettings\n");
 	
 	// intros
-	//languageSettings.addItem(GenericMenuSeparator);
 	languageSettings.addItem(GenericMenuBack);
 	languageSettings.addItem(GenericMenuSeparatorLine);
 
@@ -1297,7 +1282,6 @@ void CNeutrinoApp::InitNetworkSettings(CMenuWidget &networkSettings)
 	CMenuOptionChooser* oj = new CMenuOptionChooser(LOCALE_NETWORKMENU_SETUPONSTARTUP, &network_automatic_start, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true);
 
 	// intros
-	//networkSettings.addItem(GenericMenuSeparator);
 	networkSettings.addItem(GenericMenuBack);
 	networkSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
@@ -1383,7 +1367,6 @@ void CNeutrinoApp::InitRecordingSettings(CMenuWidget &recordingSettings)
 	CMenuForwarder* fRecDir = new CMenuForwarder(LOCALE_RECORDINGMENU_DEFDIR, true, g_settings.network_nfs_recordingdir, this, "recordingdir");
 
 	// intros
-	//recordingSettings.addItem(GenericMenuSeparator);
 	recordingSettings.addItem(GenericMenuBack);
 	recordingSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
@@ -1403,7 +1386,7 @@ void CNeutrinoApp::InitRecordingSettings(CMenuWidget &recordingSettings)
 	recordingSettings.addItem(aoj2);
 	recordingSettings.addItem(aoj3);
 
-	//test
+	//
 	recordingSettings.addItem(GenericMenuSeparatorLine);
 	
 	//epg in name format
@@ -1445,7 +1428,6 @@ void CNeutrinoApp::InitStreamingSettings(CMenuWidget &streamingSettings)
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitStreamingSettings\n");
 	
 	// intros
-	//streamingSettings.addItem(GenericMenuSeparator);
 	streamingSettings.addItem(GenericMenuBack);
 	streamingSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
@@ -1480,7 +1462,6 @@ void CNeutrinoApp::InitColorSettings(CMenuWidget &colorSettings)
 	int shortcutOSD = 1;
 	
 	// intros
-	//colorSettings.addItem(GenericMenuSeparator);
 	colorSettings.addItem(GenericMenuBack);
 	colorSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
@@ -1521,6 +1502,9 @@ void CNeutrinoApp::InitColorSettings(CMenuWidget &colorSettings)
 	// volumebar position
 	colorSettings.addItem(new CMenuOptionChooser(LOCALE_EXTRA_VOLUME_POS, &g_settings.volume_pos, VOLUMEBAR_DISP_POS_OPTIONS, VOLUMEBAR_DISP_POS_OPTIONS_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutOSD++), "", true ));
 	
+	// help text
+	colorSettings.addItem(new CMenuOptionChooser(LOCALE_COLORMENU_HELPTXT, &g_settings.help_txt, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutOSD++) ));
+	
 	// help bar
 	colorSettings.addItem(new CMenuOptionChooser(LOCALE_COLORMENU_HELPBAR, &g_settings.help_bar, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutOSD++) ));
 
@@ -1551,7 +1535,6 @@ void CNeutrinoApp::InitColorSettings(CMenuWidget &colorSettings)
 void CNeutrinoApp::InitColorThemesSettings(CMenuWidget &colorSettings_Themes)
 {
 	// intros
-	//colorSettings_Themes.addItem(GenericMenuSeparator);
 	colorSettings_Themes.addItem(GenericMenuBack);
 	colorSettings_Themes.addItem(GenericMenuSeparatorLine);
 	
@@ -1579,7 +1562,7 @@ void CNeutrinoApp::InitColorThemesSettings(CMenuWidget &colorSettings_Themes)
 void CNeutrinoApp::InitColorSettingsMenuColors(CMenuWidget &colorSettings_menuColors)
 {
 	// intros
-	//colorSettings_menuColors.addItem(GenericMenuSeparator);
+	colorSettings_menuColors.addItem(GenericMenuSeparator);
 	colorSettings_menuColors.addItem(GenericMenuBack);
 
 	CColorChooser* chHeadcolor = new CColorChooser(LOCALE_COLORMENU_BACKGROUND, &g_settings.menu_Head_red, &g_settings.menu_Head_green, &g_settings.menu_Head_blue, &g_settings.menu_Head_alpha, colorSetupNotifier);
@@ -1626,7 +1609,7 @@ void CNeutrinoApp::InitColorSettingsMenuColors(CMenuWidget &colorSettings_menuCo
 void CNeutrinoApp::InitColorSettingsStatusBarColors(CMenuWidget &colorSettings_statusbarColors)
 {
 	// intros
-	//colorSettings_statusbarColors.addItem(GenericMenuSeparator);
+	colorSettings_statusbarColors.addItem(GenericMenuSeparator);
 	colorSettings_statusbarColors.addItem(GenericMenuBack);
 
 	CColorChooser* chInfobarcolor = new CColorChooser(LOCALE_COLORMENU_BACKGROUND, &g_settings.infobar_red, &g_settings.infobar_green, &g_settings.infobar_blue,&g_settings.infobar_alpha, colorSetupNotifier);
@@ -1643,7 +1626,6 @@ void CNeutrinoApp::InitColorSettingsStatusBarColors(CMenuWidget &colorSettings_s
 void CNeutrinoApp::InitColorSettingsTiming(CMenuWidget &colorSettings_timing)
 {
 	// intros
-	//colorSettings_timing.addItem(GenericMenuSeparator);
 	colorSettings_timing.addItem(GenericMenuBack);
 	colorSettings_timing.addItem(GenericMenuSeparatorLine);
 
@@ -1665,7 +1647,6 @@ void CNeutrinoApp::InitLcdSettings(CMenuWidget &lcdSettings)
 	int shortcutVFD = 1;
 	
 	// intros
-	//lcdSettings.addItem(GenericMenuSeparator);
 	lcdSettings.addItem(GenericMenuBack);
 	lcdSettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
@@ -1813,7 +1794,6 @@ void CNeutrinoApp::InitKeySettings(CMenuWidget &keySettings, CMenuWidget &bindSe
 	int shortcutkeysettings = 1;
 	
 	// intros
-	//keySettings.addItem(GenericMenuSeparator);
 	keySettings.addItem(GenericMenuBack);
 	keySettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	
