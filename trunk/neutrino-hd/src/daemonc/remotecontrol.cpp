@@ -225,6 +225,7 @@ int CRemoteControl::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data
 		}
 	}
 
+#if 0
     	if ( msg == NeutrinoMessages::EVT_CURRENTEPG ) 
 	{
 		CSectionsdClient::CurrentNextInfo * info_CN = (CSectionsdClient::CurrentNextInfo*) data;
@@ -294,6 +295,52 @@ int CRemoteControl::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data
 		//}
 
 	    	return messages_return::handled;
+	}
+	#endif
+	if ( msg == NeutrinoMessages::EVT_CURRENTEPG ) 
+	{
+		CSectionsdClient::CurrentNextInfo* info_CN = (CSectionsdClient::CurrentNextInfo*) data;
+
+		t_channel_id chid = (info_CN->current_uniqueKey >> 16);
+		if(chid != (current_channel_id&0xFFFFFFFFFFFFULL) && chid != (current_sub_channel_id&0xFFFFFFFFFFFFULL))
+			return messages_return::handled;
+		
+		dprintf(DEBUG_INFO, "CRemoteControl::handleMsg got  EVT_CURRENTEPG, uniqueKey %llx chid %llx flags %x\n", info_CN->current_uniqueKey, current_channel_id, info_CN->flags);
+		dprintf(DEBUG_INFO, "CRemoteControl::handleMsg comparing: uniqueKey %llx chid %llx\n", info_CN->current_uniqueKey >> 16, current_channel_id & 0xFFFFFFFFFFFFULL);
+
+		/* current event came for current channel */
+		if ( info_CN->current_uniqueKey != current_EPGid )
+		{
+			if ( current_EPGid != 0 )
+			{
+				/* new event, not channel. get pids */
+				g_Zapit->getPIDS( current_PIDs );
+				has_unresolved_ctags = true;
+				// infobar indicate on epg change
+				g_InfoViewer->showEpgInfo();
+			}
+
+			current_EPGid= info_CN->current_uniqueKey;
+
+			if ( has_unresolved_ctags )
+				processAPIDnames();
+
+			if ( info_CN->flags & CSectionsdClient::epgflags::current_has_linkagedescriptors ) {
+				subChannels.clear();
+				getSubChannels();
+			}
+
+			if ( needs_nvods )
+				getNVODs();
+		}
+
+		// is_video_started is only false if channel is locked
+		if ((!is_video_started) &&
+				(info_CN->current_fsk == 0 || g_settings.parentallock_prompt == PARENTALLOCK_PROMPT_CHANGETOLOCKED))
+			g_RCInput->postMsg(NeutrinoMessages::EVT_PROGRAMLOCKSTATUS, 0x100, false);
+		else
+			g_RCInput->postMsg(NeutrinoMessages::EVT_PROGRAMLOCKSTATUS, info_CN->current_fsk, false);
+		return messages_return::handled;
 	}
 	else if ( msg == NeutrinoMessages::EVT_NEXTEPG )
 	{
@@ -425,6 +472,7 @@ int CRemoteControl::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data
 		
 		return messages_return::handled;
 	}
+	#if 0
 	else if ( ( msg == NeutrinoMessages::EVT_TIMER ) && ( data == current_programm_timer ) )
 	{
 		//printf("new program !\n");
@@ -435,6 +483,7 @@ int CRemoteControl::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data
 
  		return messages_return::handled;
 	}
+	#endif
 	else
 		return messages_return::unhandled;
 }
