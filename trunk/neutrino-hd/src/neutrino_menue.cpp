@@ -759,9 +759,6 @@ void CNeutrinoApp::InitServiceSettings(CMenuWidget &service, CMenuWidget & Tuner
 		TunerSetup.addItem(GenericMenuBack);
 		TunerSetup.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 		
-		TunerSetup.addItem(new CMenuForwarderNonLocalized("Tuner Mode", false, "independant", NULL ));
-		TunerSetup.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
-		
 		for(int i=0; i<FrontendCount; i++)
 		{
 			char tbuf[255];
