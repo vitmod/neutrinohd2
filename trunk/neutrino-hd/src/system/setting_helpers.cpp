@@ -445,16 +445,13 @@ bool CAudioSetupNotifier::changeNotify(const neutrino_locale_t OptionName, void 
 		audioDecoder->SetHdmiDD(g_settings.hdmi_dd );
 	}
 	else if (ARE_LOCALES_EQUAL(OptionName, LOCALE_AUDIOMENU_AVSYNC)) 
-	{
-#ifdef __sh__	  
-		videoDecoder->SetSyncMode(g_settings.avsync);
-#else			
+	{	  
+		videoDecoder->SetSyncMode(g_settings.avsync);			
 		audioDecoder->SetSyncMode(g_settings.avsync);
 		
 		//videoDemux->SetSyncMode(g_settings.avsync);
 		//audioDemux->SetSyncMode(g_settings.avsync);
-		//pcrDemux->SetSyncMode((g_settings.avsync);
-#endif		
+		//pcrDemux->SetSyncMode((g_settings.avsync);		
 	}
 	else if( ARE_LOCALES_EQUAL(OptionName, LOCALE_AUDIOMENU_AC3_DELAY) )
 	{
@@ -851,7 +848,7 @@ bool CTZChangeNotifier::changeNotify(const neutrino_locale_t, void * Data)
 	if(found) 
 	{
 		printf("CTZChangeNotifier::changeNotify: Timezone: %s -> %s\n", name.c_str(), zone.c_str());
-		std::string cmd = "cp /share/zoneinfo/" + zone + " /etc/localtime";
+		std::string cmd = "cp /usr/share/zoneinfo/" + zone + " /etc/localtime";
 		printf("exec %s\n", cmd.c_str());
 		system(cmd.c_str());
 		cmd = ":" + zone;
@@ -909,11 +906,8 @@ int CDataResetNotifier::exec(CMenuTarget* parent, const std::string& actionKey)
 
 		audioDecoder->SetHdmiDD(g_settings.hdmi_dd );
 
-		//audioDecoder->SetSpdifDD(g_settings.spdif_dd ? true : false);
-		//
-		
 		CNeutrinoApp::getInstance()->loadColors(NEUTRINO_SETTINGS_FILE);
-		//CNeutrinoApp::getInstance()->SetupFonts();
+
 		CNeutrinoApp::getInstance()->SetupTiming();
 		
 		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MISCSETTINGS_RESET));
@@ -1029,7 +1023,8 @@ int check_dir(const char * newdir)
 			  break;
 		}
 	}
-		return 1;//error			  
+	
+	return 1;//error			  
 }
 
 
