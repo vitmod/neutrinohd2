@@ -219,8 +219,8 @@ void CHintBoxExt::refresh(bool toround)
 	}
 	
 	// paint shadow (buttom , right)
-	//m_window->paintBoxRel(m_width-20, borderwidth, borderwidth+20, m_height - borderwidth, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);//round
-	//m_window->paintBoxRel(borderwidth, m_height-20, m_width, borderwidth+20, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
+	m_window->paintBoxRel(m_width-20, borderwidth, borderwidth+20, m_height - borderwidth, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);//round
+	m_window->paintBoxRel(borderwidth, m_height-20, m_width, borderwidth+20, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 	
 	// title
 	m_window->paintBoxRel(0, 0, m_width, m_theight, (CFBWindow::color_t)COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);//round
@@ -237,7 +237,7 @@ void CHintBoxExt::refresh(bool toround)
 	int stringstartposX = 10 + (m_width >> 1) - (neededWidth >> 1);
 	m_window->RenderString( g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], stringstartposX, m_theight, m_width - (stringstartposX) , g_Locale->getText(m_caption), (CFBWindow::color_t)COL_MENUHEAD, 0, true); // UTF-8
 
-	// background of text panel
+	// menu text panel
 	m_window->paintBoxRel(0, m_theight, m_width, (m_maxEntriesPerPage + 1) * m_fheight, (CFBWindow::color_t)COL_MENUCONTENT_PLUS_0, toround ? RADIUS_MID : 0, CORNER_BOTTOM);//round
 
 	int yPos  = m_theight + (m_fheight >> 1);
