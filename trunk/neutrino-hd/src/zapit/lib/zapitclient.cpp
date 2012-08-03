@@ -35,7 +35,7 @@
 #include <zapit/client/msgtypes.h>
 #include <zapit/client/zapittools.h>
 
-unsigned char CZapitClient::getVersion() const
+const unsigned char CZapitClient::getVersion() const
 {
 	return CZapitMessages::ACTVERSION;
 }

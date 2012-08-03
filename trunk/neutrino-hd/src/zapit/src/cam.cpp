@@ -26,7 +26,7 @@
 #include <messagetools.h>   /* get_length_field_size */
 
 
-unsigned char CCam::getVersion(void) const
+const unsigned char CCam::getVersion(void) const
 {
 	return 0x9F;
 }
