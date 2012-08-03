@@ -3737,7 +3737,7 @@ _repeat:
 		{
 			char * recDir = ((CTimerd::RecordingInfo*)data)->recordingDir;
 
-			// etherwake
+			// ether-wake
 			for(int i=0 ; i < NETWORK_NFS_NR_OF_ENTRIES ; i++) 
 			{
 				if (strcmp(g_settings.network_nfs_local_dir[i],recDir) == 0) 
@@ -4904,7 +4904,8 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 		setupColors_neutrino();
 		colorSetupNotifier->changeNotify(NONEXISTANT_LOCALE, NULL);
 	}
-	else if (actionKey=="theme_classic") {
+	else if (actionKey=="theme_classic") 
+	{
 		setupColors_classic();
 		colorSetupNotifier->changeNotify(NONEXISTANT_LOCALE, NULL);
 	}
@@ -4922,36 +4923,6 @@ int CNeutrinoApp::exec(CMenuTarget* parent, const std::string & actionKey)
 	{
 		setupColors_red();
 		colorSetupNotifier->changeNotify(NONEXISTANT_LOCALE, NULL);
-	}
-	else if(actionKey=="savescansettings") 
-	{
-		// hint box
-		CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MAINSETTINGS_SAVESETTINGSNOW_HINT)); // UTF-8
-		hintBox->paint();
-		
-		// save scan.conf
-		if(!scanSettings.saveSettings(NEUTRINO_SCAN_SETTINGS_FILE)) 
-			dprintf(DEBUG_NORMAL, "CNeutrinoApp::exec: error while saving scan-settings!\n");
-		
-		if( CFrontend::getInstance(tuner_to_scan)->getInfo()->type == FE_QPSK )
-		{
-			SaveMotorPositions();
-			
-			//diseqc type
-			g_Zapit->setDiseqcType((diseqc_t)scanSettings.diseqcMode, tuner_to_scan);
-			
-			// diseqc repeat
-			g_Zapit->setDiseqcRepeat(scanSettings.diseqcRepeat, tuner_to_scan);
-		
-			//gotoxx
-			zapitCfg.gotoXXLatitude = strtod(zapit_lat, NULL);
-			zapitCfg.gotoXXLongitude = strtod(zapit_long, NULL);
-			
-			setZapitConfig(&zapitCfg);
-		}
-		
-		hintBox->hide();
-		delete hintBox;
 	}
 	else if(actionKey=="savesettings") 
 	{
