@@ -568,7 +568,10 @@ int CTimerList::show()
 		frameBuffer->blit();
 #endif		
 	}
+	
 	hide();
+	
+	CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 
 	return(res);
 }
