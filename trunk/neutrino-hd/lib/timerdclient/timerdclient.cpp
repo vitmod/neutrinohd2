@@ -29,7 +29,7 @@
 #include <timerdclient/timerdclient.h>
 
 
-unsigned char   CTimerdClient::getVersion   () const
+const unsigned char   CTimerdClient::getVersion() const
 {
 	return CTimerdMsg::ACTVERSION;
 }

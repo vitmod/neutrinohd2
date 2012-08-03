@@ -21,7 +21,7 @@
 
 */
 
-#include <stdio.h>
+#include <cstdio>
 #include <cstring>
 #include <eventserver.h>
 
@@ -29,12 +29,12 @@
 #include <sectionsdclient/sectionsdMsg.h>
 
 
-const unsigned char CSectionsdClient::getVersion   () const
+const unsigned char   CSectionsdClient::getVersion() const
 {
 	return sectionsd::ACTVERSION;
 }
 
-const char * CSectionsdClient::getSocketName() const
+const          char * CSectionsdClient::getSocketName() const
 {
 	return SECTIONSD_UDS_NAME;
 }
@@ -84,7 +84,7 @@ void CSectionsdClient::registerEvent(const unsigned int eventID, const unsigned 
 	msg2.clientID = clientID;
 
 	strcpy(msg2.udsName, udsName);
-	
+
 	send(sectionsd::CMD_registerEvents, (char*)&msg2, sizeof(msg2));
 
 	close_connection();
@@ -174,7 +174,7 @@ void CSectionsdClient::setServiceChanged(const t_channel_id channel_id, const bo
 	sectionsd::commandSetServiceChanged msg;
 
 	msg.channel_id   = channel_id;
-	msg.requestEvent = requestEvent; 
+	msg.requestEvent = requestEvent;
 
 	send(sectionsd::serviceChanged, (char *)&msg, sizeof(msg));
 
@@ -298,6 +298,7 @@ bool CSectionsdClient::getNVODTimesServiceKey(const t_channel_id channel_id, CSe
 	}
 }
 
+
 bool CSectionsdClient::getCurrentNextServiceKey(const t_channel_id channel_id, CSectionsdClient::responseGetCurrentNextInfoChannelID& current_next)
 {
 	if (send(sectionsd::currentNextInformationID, (char*)&channel_id, sizeof(channel_id)))
@@ -340,6 +341,8 @@ bool CSectionsdClient::getCurrentNextServiceKey(const t_channel_id channel_id, C
 		return false;
 	}
 }
+
+
 
 CChannelEventList CSectionsdClient::getChannelEvents(const bool tv_mode, t_channel_id *p_requested_channels, int size_requested_channels)
 {
@@ -385,12 +388,12 @@ CChannelEventList CSectionsdClient::getChannelEvents(const bool tv_mode, t_chann
 }
 
 //GU:EPG
-/* This function does initiate a search for a keyword in all EPG Event of the Channel channel_id in sectionsd. 
-   The parameter search_typ does specify the search mode 
-	 0: none 			-> all EPG events of the channel are returned  
-	 1: keyword search in EPG Title 			 
-	 2: keyword search in EPG short description (INFO1)			
-	 3: keyword search in EPG description (INFO2)			 
+/* This function does initiate a search for a keyword in all EPG Event of the Channel channel_id in sectionsd.
+   The parameter search_typ does specify the search mode
+	 0: none 			-> all EPG events of the channel are returned
+	 1: keyword search in EPG Title
+	 2: keyword search in EPG short description (INFO1)
+	 3: keyword search in EPG description (INFO2)
   In case of a match, the EPG event is added to the Eventlist eList.
   */
 bool CSectionsdClient::getEventsServiceKeySearchAdd(CChannelEventList& eList,const t_channel_id channel_id,char search_typ,std::string& search_text)
@@ -404,26 +407,26 @@ bool CSectionsdClient::getEventsServiceKeySearchAdd(CChannelEventList& eList,con
 	char* pSData = new char[nBufSize];
 	char* pSData_ptr = pSData;
 
-	*(t_channel_id*)pSData_ptr = channel_id;   
+	*(t_channel_id*)pSData_ptr = channel_id;
 	pSData_ptr += sizeof(t_channel_id);
-	*pSData_ptr = search_typ;   
+	*pSData_ptr = search_typ;
 	pSData_ptr += sizeof(char);
 	strcpy(pSData_ptr,search_text.c_str());
-	
+
 	if (send(sectionsd::allEventsChannelIDSearch, pSData, nBufSize))
 	{
-		int nBufSize = readResponse();
+		int nBufSize2 = readResponse();
 
-		if( nBufSize > 0)
+		if( nBufSize2 > 0)
 		{
-			char* pData = new char[nBufSize];
-			receive_data(pData, nBufSize);
+			char* pData = new char[nBufSize2];
+			receive_data(pData, nBufSize2);
 
 			char* dp = pData;
 
-			//int a = eList.size();
+//			int a = eList.size();
 
-			while(dp < pData + nBufSize)
+			while(dp < pData + nBufSize2)
 			{
 				CChannelEvent aEvent;
 
@@ -444,7 +447,7 @@ bool CSectionsdClient::getEventsServiceKeySearchAdd(CChannelEventList& eList,con
 
 				eList.push_back(aEvent);
 			}
-			//int b = eList.size() -a;
+//			int b = eList.size() -a;
 			delete[] pData;
 		}
 	}
@@ -497,92 +500,74 @@ CChannelEventList CSectionsdClient::getEventsServiceKey(const t_channel_id chann
 	close_connection();
 	return eList;
 }
-
 void showhexdumpa (char *label, unsigned char * from, int len)
 {
-	int i, j, k;
-	char buf[128];
-	char abuf[128];
-	unsigned char fl, ol;
+  int i, j, k;
+  char buf[128];
+  char abuf[128];
+  unsigned char fl, ol;
 
-	fl = len / 16;
-	ol = len % 16;
-	if (label) 
-	{
-		time_t tt = time (0);
-		printf("\n%s -- %s", label, ctime (&tt));
-		printf("----------------------------------------------------\n");
-	}
+  fl = len / 16;
+  ol = len % 16;
+  if (label) {
+        time_t tt = time (0);
+        printf("\n%s -- %s", label, ctime (&tt));
+        printf("----------------------------------------------------\n");
+  }
 
-	for (i = 0; i < fl; i++) 
-	{
-		j = i * 16;
-		sprintf (buf, "%03X: %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x", i * 16, from[j + 0], from[j + 1], from[j + 2], from[j + 3], from[j + 4], from[j + 5], from[j + 6], from[j + 7], from[j + 8], from[j + 9], from[j + 10], from[j + 11], from[j + 12], from[j + 13], from[j + 14], from[j + 15]);
-		printf ("%s  ", buf);
-		
-		for (k = 0; k < 16; k++) 
-		{
-			abuf[k] = (from[j + k] >= 0x20 && from[j + k] <= 0x7b) ? from[j + k] : 0x2E;
-		}
-		abuf[16] = 0;
-		printf("%s\n", abuf);
-	}
-	
-	if (ol) 
-	{
-		j = fl * 16;
-		sprintf (buf, "%03X: ", j);
-		
-		for (i = 0; i < ol; i++) 
-		{
-			sprintf (&buf[5 + i * 3], "%02x ", from[j + i]);
-			abuf[i] = (from[j + i] >= 0x20 && from[j + i] <= 0x7b) ? from[j + i] : 0x2E;
-		}
-		abuf[ol] = 0;
-		
-		for (i = ol; i < 16; i++)
-			sprintf (&buf[5 + i * 3], "   ");
-		
-		printf ("%s ", buf);
-		printf ("%s\n", abuf);
-	}
-	printf ("\n");
+  for (i = 0; i < fl; i++) {
+        j = i * 16;
+        sprintf (buf, "%03X: %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x", i * 16, from[j + 0], from[j + 1], from[j + 2], from[j + 3], from[j + 4], from[j + 5], from[j + 6], from[j + 7], from[j + 8], from[j + 9], from[j + 10], from[j + 11], from[j + 12], from[j + 13], from[j + 14], from[j + 15]);
+        printf ("%s  ", buf);
+        for (k = 0; k < 16; k++) {
+          abuf[k] = (from[j + k] >= 0x20 && from[j + k] <= 0x7b) ? from[j + k] : 0x2E;
+        }
+        abuf[16] = 0;
+        printf("%s\n", abuf);
+  }
+  if (ol) {
+        j = fl * 16;
+        sprintf (buf, "%03X: ", j);
+        for (i = 0; i < ol; i++) {
+          sprintf (&buf[5 + i * 3], "%02x ", from[j + i]);
+          abuf[i] = (from[j + i] >= 0x20 && from[j + i] <= 0x7b) ? from[j + i] : 0x2E;
+        }
+        abuf[ol] = 0;
+        for (i = ol; i < 16; i++)
+          sprintf (&buf[5 + i * 3], "   ");
+        printf ("%s ", buf);
+        printf ("%s\n", abuf);
+  }
+  printf ("\n");
 }
 
 // 21.07.2005 - rainerk
 // Convert line-terminated extended events to vector of strings
-char * CSectionsdClient::parseExtendedEvents(char * dp, CEPGData * epgdata) 
-{
+char * CSectionsdClient::parseExtendedEvents(char * dp, CEPGData * epgdata) {
 	char * pItemDescriptions = dp, * pItemDescriptionStart;
 	dp+=strlen(dp)+1;
 	char * pItems = dp, * pItemStart;
 	dp+=strlen(dp)+1;
 	/* Clear vector since epgdata seems to be reused */
 	epgdata->itemDescriptions.clear();
-	
-	while (*pItemDescriptions) 
-	{
+	while (*pItemDescriptions) {
 		pItemDescriptionStart = pItemDescriptions;
-		while (*pItemDescriptions && '\n' != *pItemDescriptions) 
-		{
+		while (*pItemDescriptions && '\n' != *pItemDescriptions) {
 			pItemDescriptions++;
 		}
 		char pp = *pItemDescriptions;
 		*pItemDescriptions = 0;
 		epgdata->itemDescriptions.push_back(pItemDescriptionStart);
-		/*printf("CSectionsdClient::parseExtendedEvents: desc %s\n", pItemDescriptionStart);*/
+/*printf("CSectionsdClient::parseExtendedEvents: desc %s\n", pItemDescriptionStart);*/
 		if(!pp)
 			break;
 		pItemDescriptions++;
 	}
-	
 	/* Clear vector since epgdata seems to be reused */
 	epgdata->items.clear();
-	while (*pItems) 
-	{
+	while (*pItems) {
 		pItemStart = pItems;
-		while (*pItems && '\n' != *pItems) 
-		{
+		while (*pItems && '\n' != *pItems) {
 			pItems++;
 		}
 		char pp = *pItemDescriptions;
@@ -622,7 +607,7 @@ bool CSectionsdClient::getActualEPGServiceKey(const t_channel_id channel_id, CEP
 			dp+=strlen(dp)+1;
 			// 21.07.2005 - rainerk
 			// Convert line-terminated extended events to vector of strings
-			//showhexdumpa("Data:", (unsigned char *)pData, nBufSize);
+//showhexdumpa("Data:", (unsigned char *)pData, nBufSize);
 			dp = parseExtendedEvents(dp, epgdata);
 
 			// *dp is the length, dp+1 is the chararray[]
@@ -649,12 +634,13 @@ bool CSectionsdClient::getActualEPGServiceKey(const t_channel_id channel_id, CEP
 	return false;
 }
 
+
 bool CSectionsdClient::getEPGid(const event_id_t eventid, const time_t starttime, CEPGData * epgdata)
 {
 	sectionsd::commandGetEPGid msg;
 
 	msg.eventid   = eventid;
-	msg.starttime = starttime; 
+	msg.starttime = starttime;
 
 	if (send(sectionsd::epgEPGid, (char *)&msg, sizeof(msg)))
 	{
@@ -704,6 +690,7 @@ bool CSectionsdClient::getEPGid(const event_id_t eventid, const time_t starttime
 	return false;
 }
 
+
 bool CSectionsdClient::getEPGidShort(const event_id_t eventid, CShortEPGData * epgdata)
 {
 	if (send(sectionsd::epgEPGidShort, (char*)&eventid, sizeof(eventid)))
@@ -728,7 +715,8 @@ bool CSectionsdClient::getEPGidShort(const event_id_t eventid, CShortEPGData * e
 			dp+=strlen(dp)+1;
 			epgdata->info2 = dp;
 			dp+=strlen(dp)+1;
-			//printf("titel: %s\n",epgdata->title.c_str());
+//			printf("titel: %s\n",epgdata->title.c_str());
+
 
 			delete[] pData;
 			return true;
@@ -738,10 +726,9 @@ bool CSectionsdClient::getEPGidShort(const event_id_t eventid, CShortEPGData * e
 	}
 
 	close_connection();
-	
+
 	return false;
 }
-
 #ifdef ENABLE_PPT
 void CSectionsdClient::setPrivatePid(const unsigned short pid)
 {
@@ -751,7 +738,6 @@ void CSectionsdClient::setPrivatePid(const unsigned short pid)
 	close_connection();
 }
 #endif
-
 #if 0
 void CSectionsdClient::setSectionsdScanMode(const int scanMode)
 {
@@ -799,9 +785,9 @@ void CSectionsdClient::setConfig(const epg_config config)
 	msg->network_ntprefresh	= config.network_ntprefresh;
 	msg->network_ntpenable	= config.network_ntpenable;
 	msg->epg_extendedcache	= config.epg_extendedcache;
-	//config.network_ntpserver:
+//	config.network_ntpserver:
 	strcpy(&pData[sizeof(sectionsd::commandSetConfig)], config.network_ntpserver.c_str());
-	//config.epg_dir:
+//	config.epg_dir:
 	strcpy(&pData[sizeof(sectionsd::commandSetConfig) + config.network_ntpserver.length() + 1], config.epg_dir.c_str());
 
 	send(sectionsd::setConfig, (char*)pData, sizeof(sectionsd::commandSetConfig) + config.network_ntpserver.length() + 1 + config.epg_dir.length() + 1);

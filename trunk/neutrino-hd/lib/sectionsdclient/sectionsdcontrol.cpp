@@ -23,35 +23,17 @@
  *
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-
 #include <cstring>
+#include <cstdio>
 
 #include <sectionsdclient/sectionsdclient.h>
 
 CSectionsdClient client;
 
-void usage()
-{
-	printf("\t--pause\t\tsetPauseScanning true\n");
-	printf("\t--nopause\tsetPauseScanning false\n");
-	printf("\t--state\t\tget Scanning state\n");
-	printf("\t--saveepg\twriting epg cach\n");
-	printf("\t--readepg\tReading epg cache\n");
-	printf("\t--dump\t\tdump epg daten\n");
-		
-	exit(0);
-}
-
 int main(int argc, char** argv)
 {
 	for (int i = 1; i < argc; i++)
 	{
-		if (!strcmp(argv[i], "--help"))
-		{
-			usage();
-		}else
 		if (!strcmp(argv[i], "--pause"))
 		{
 			printf("setPauseScanning true\n");
