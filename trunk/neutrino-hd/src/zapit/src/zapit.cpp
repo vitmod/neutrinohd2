@@ -701,7 +701,7 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0, bool 
 	live_channel_id = channel->getChannelID();
 	saveZapitSettings(false, false);
 
-	printf("[zapit] zap to %s(%llx) fe(%d)\n", channel->getName().c_str(), live_channel_id, channel->getFeIndex() );
+	printf("%s zap to %s(%llx) fe(%d)\n", __FUNCTION__, channel->getName().c_str(), live_channel_id, channel->getFeIndex() );
 
 	// tune it
 	if(!tune_to_channel(channel, transponder_change))
