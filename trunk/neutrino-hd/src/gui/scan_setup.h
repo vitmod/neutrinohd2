@@ -44,8 +44,6 @@ class CScanSetup : public CMenuTarget
 		int x, y, width, height, menue_width, hheight, mheight;
 		
 		int feindex;
-		
-		//tuner mode: notconnected, indepandant, loop
 
 		void hide();
 		void showScanService();

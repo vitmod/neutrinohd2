@@ -89,10 +89,6 @@ CScanSetup::CScanSetup(int num)
 	
 	//FIXME
 	tuner_to_scan = num;
-	
-	//load scan settings 
-	//if( !scanSettings.loadSettings(NEUTRINO_SCAN_SETTINGS_FILE, feindex) ) 
-	//	dprintf(DEBUG_NORMAL, "CScanSetup::CScanSetup: Loading of scan settings failed. Using defaults.\n");
 }
 
 CScanSetup::~CScanSetup()
@@ -294,14 +290,13 @@ const CMenuOptionChooser::keyval OPTIONS_EAST0_WEST1_OPTIONS[OPTIONS_EAST0_WEST1
 };
 
 // 
-//#define FRONTEND_MODE_OPTION_COUNT 4
-//const CMenuOptionChooser::keyval FRONTEND_MODE_OPTIONS[FRONTEND_MODE_OPTION_COUNT] =
-//{
-//	{ 0, NONEXISTANT_LOCALE, "connected"  },
-//	{ 1, NONEXISTANT_LOCALE, "not connected" },
-//	{ 2, NONEXISTANT_LOCALE, "independant" },
-//	{ 3, NONEXISTANT_LOCALE, "loop" },
-//};
+#define FRONTEND_MODE_OPTION_COUNT 3
+const CMenuOptionChooser::keyval FRONTEND_MODE_OPTIONS[FRONTEND_MODE_OPTION_COUNT] =
+{
+	{ 0, NONEXISTANT_LOCALE, "single"  },
+	{ 1, NONEXISTANT_LOCALE, "loop" },
+	{ 2, NONEXISTANT_LOCALE, "not connected" },
+};
 
 void CScanSetup::showScanService()
 {
@@ -340,8 +335,6 @@ void CScanSetup::showScanService()
 	
 	satSetup->addItem(GenericMenuBack);
 	satSetup->addItem(GenericMenuSeparatorLine);
-		
-	int sfound = 0;
 
 	// satfind menu
 	CMenuWidget * satfindMenu = new CMenuWidget(LOCALE_MOTORCONTROL_HEAD, NEUTRINO_ICON_SETTINGS);
@@ -371,9 +364,6 @@ void CScanSetup::showScanService()
 			{
 				satSelect->addOption(sit->second.name.c_str());
 				dprintf(DEBUG_DEBUG, "[neutrino] fe(%d) Adding sat menu for %s position %d\n", sit->second.feindex, sit->second.name.c_str(), sit->first);
-				
-				if (strcmp(scanSettings.satNameNoDiseqc, sit->second.name.c_str()) == 0) 
-					sfound = 1;
 
 				CMenuWidget * tempsat = new CMenuWidget(sit->second.name.c_str(), NEUTRINO_ICON_SETTINGS);
 				
@@ -439,9 +429,6 @@ void CScanSetup::showScanService()
 			{
 				satSelect->addOption(sit->second.name.c_str());
 				dprintf(DEBUG_DEBUG, "[neutrino] fe(%d) Adding cable menu for %s position %d\n", sit->second.feindex, sit->second.name.c_str(), sit->first);
-				
-				if (strcmp(scanSettings.satNameNoDiseqc, sit->second.name.c_str()) == 0) 
-					sfound = 1;
 			}
 		}
 	}
@@ -455,9 +442,6 @@ void CScanSetup::showScanService()
 			{
 				satSelect->addOption(sit->second.name.c_str());
 				dprintf(DEBUG_DEBUG, "CNeutrinoApp::InitScanSettings fe(%d) Adding terrestrial menu for %s position %d\n", sit->second.feindex, sit->second.name.c_str(), sit->first);
-	
-				if (strcmp(scanSettings.satNameNoDiseqc, sit->second.name.c_str()) == 0) 
-					sfound = 1;
 			}
 		}
 	}
@@ -507,46 +491,9 @@ void CScanSetup::showScanService()
 		// rotor swap east/west
 		motorMenu->addItem( new CMenuOptionChooser(LOCALE_EXTRA_ROTORSWAP, &g_settings.rotor_swap, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true ));
 	}
-		
-	if(!sfound && satellitePositions.size() ) 
-	{
-		sit = satellitePositions.begin();	
-		strcpy(scanSettings.satNameNoDiseqc, sit->second.name.c_str());
-		
-		#if 0
-		for(sit = satellitePositions.end(); sit != satellitePositions.begin(); sit--) 
-		{
-			if (CFrontend::getInstance(feindex)->getInfo()->type == FE_QPSK) 
-			{
-				// satname
-				if(sit->second.type == DVB_S)
-				{
-					strcpy(scanSettings.satNameNoDiseqc, sit->second.name.c_str());
-				}
-			}
-			else if (CFrontend::getInstance(feindex)->getInfo()->type == FE_QAM) 
-			{
-				// satname
-				if(sit->second.type == DVB_C)
-				{
-					strcpy(scanSettings.satNameNoDiseqc, sit->second.name.c_str());
-				}
-			}
-			else if (CFrontend::getInstance(feindex)->getInfo()->type == FE_OFDM) 
-			{
-				// satname
-				if(sit->second.type == DVB_T)
-				{
-					strcpy(scanSettings.satNameNoDiseqc, sit->second.name.c_str());
-				}
-			}
-		}
-		#endif
-	}
 	
 	//FIXME:
 	// fe mode: connected, independant, loop
-	scansetup->addItem(GenericMenuSeparatorLine);
 	scansetup->addItem(new CMenuForwarderNonLocalized("Tuner Mode", false, "independant", NULL ));
 	scansetup->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 
