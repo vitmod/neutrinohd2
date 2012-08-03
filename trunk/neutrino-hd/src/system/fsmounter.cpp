@@ -252,8 +252,8 @@ CFSMounter::MountRes CFSMounter::mount(const char * const ip, const char * const
 	}
 	else if(fstype == CIFS)
 	{
-		cmd << "mount -t cifs " << ip << "/" << dir << " " << local_dir << " -o username=" << username
-		<< ",password=" << password << ",unc=//" << ip << "/" << dir << "," << options1;
+		cmd << "mount -t cifs //" << ip << "/" << dir << " " << local_dir << " -o username=" << username
+		<< ",password=" << password << "," << options1;
 	}
         else if(fstype == SMBFS)
 	{
