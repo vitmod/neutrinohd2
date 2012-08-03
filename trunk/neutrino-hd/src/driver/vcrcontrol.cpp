@@ -272,12 +272,12 @@ bool CVCRControl::CVCRDevice::Record(const t_channel_id channel_id, int mode, co
 	// zapit
 	if(channel_id != 0)	// wenn ein channel angegeben ist
 	{
+		// zap for live stream
 		if(g_Zapit->getCurrentServiceID() != channel_id)	// eventually not tuned
-		{
-			g_Zapit->zapTo_serviceID(channel_id);		// zap-it
-		}
-		else
-			g_Zapit->zapTo_record(channel_id);		// tuned, so we use zapit to record
+			g_Zapit->zapTo_serviceID(channel_id);		// for live stream
+
+		// zap for record
+		g_Zapit->zapTo_record(channel_id);			// for recording
 	}
 
 	// apids
@@ -382,12 +382,12 @@ void CVCRControl::CFileAndServerDevice::CutBackNeutrino(const t_channel_id chann
 				CNeutrinoApp::getInstance()->handleMsg( NeutrinoMessages::CHANGEMODE , NeutrinoMessages::mode_standby);
 		}
 		
+		// zap for live stream
 		if(g_Zapit->getCurrentServiceID() != channel_id) 
-		{
 			g_Zapit->zapTo_serviceID(channel_id);
-		}
-		else
-			g_Zapit->zapTo_record(channel_id);
+		
+		// zap to record
+		g_Zapit->zapTo_record(channel_id);
 	}
 
 #ifndef __sh__
