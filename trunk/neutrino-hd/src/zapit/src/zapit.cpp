@@ -436,15 +436,15 @@ void start_camd(bool forupdate = false)
 	if(!channel)
 		return;
 	
-	static int camask = 1; // demux 0
+	static int camask = channel->getDemuxIndex(); // demux 0
 
 	if(currentMode & RECORD_MODE) 
 	{
 		if(rec_channel_id != live_channel_id) 
 		{
 			/* zap from rec. channel */
-			camask = 1;
-			cam1->setCaPmt(channel->getCaPmt(), 0, 1); // demux 0
+			//camask = 1;
+			cam1->setCaPmt(channel->getCaPmt(), 0, channel->getDemuxIndex()); // demux 0
 		}
 		else if(forupdate) 
 		{ 
@@ -455,7 +455,7 @@ void start_camd(bool forupdate = false)
 		else 
 		{
 			// zap back to rec. channel
-			camask =  1 /*5*/; 	//
+			camask =  rec_channel->getDemuxIndex() /*5*/; 	//
 					
 			cam0->setCaPmt(channel->getCaPmt(), 0, camask, true); // update
 			cam1->sendMessage(0, 0); // stop/close
@@ -463,8 +463,8 @@ void start_camd(bool forupdate = false)
 	} 
 	else 
 	{
-		camask = 1; //demux 0
-		cam0->setCaPmt(channel->getCaPmt(), 0, camask );
+		//camask = 1; //demux 0
+		cam0->setCaPmt(channel->getCaPmt(), 0, channel->getDemuxIndex()/*camask*/ );
 	}
 }
 
@@ -939,12 +939,12 @@ void unsetRecordMode(void)
 		cam0->sendMessage(0, 0); // stop
 	else if(live_channel_id == rec_channel_id) 
 	{
-		cam0->setCaPmt(channel->getCaPmt(), 0, 1, true); // demux 0, update
+		cam0->setCaPmt(channel->getCaPmt(), 0, channel->getDemuxIndex(), true); // demux 0, update
 	} 
 	else 
 	{
 		cam1->sendMessage(0, 0); // stop
-		cam0->setCaPmt(channel->getCaPmt(), 0, 1); // start
+		cam0->setCaPmt(channel->getCaPmt(), 0, channel->getDemuxIndex()); // start
 	}
 
 	rec_channel_id = 0;
@@ -981,12 +981,12 @@ void unsetPipMode(void)
 	}
 	else if(live_channel_id == pip_channel_id) 
 	{
-		cam0->setCaPmt(channel->getCaPmt(), 0, 1, true); // demux 0, update
+		cam0->setCaPmt(channel->getCaPmt(), 0, channel->getDemuxIndex(), true); // demux 0, update
 	} 
 	else 
 	{
 		cam1->sendMessage(0, 0); // stop
-		cam0->setCaPmt(channel->getCaPmt(), 0, 1 ); // start
+		cam0->setCaPmt(channel->getCaPmt(), 0, channel->getDemuxIndex() ); // start
 	}
 
 	pip_channel_id = 0;
@@ -2499,7 +2499,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 	if (have_pcr) 
 	{
 		if(!pcrDemux)
-			pcrDemux = new cDemux( thisChannel->getFeIndex() );
+			pcrDemux = new cDemux( thisChannel->getDemuxIndex() );
 		
 		// open pcr demux
 		if( pcrDemux->Open(DMX_PCR_ONLY_CHANNEL, VIDEO_STREAM_BUFFER_SIZE, thisChannel->getFeIndex() ) < 0 )
@@ -2517,7 +2517,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 	if (have_audio) 
 	{
 		if( !audioDemux )
-			audioDemux = new cDemux( thisChannel->getFeIndex() );
+			audioDemux = new cDemux( thisChannel->getDemuxIndex() );
 		
 		// open audio demux
 		if( audioDemux->Open(DMX_AUDIO_CHANNEL, AUDIO_STREAM_BUFFER_SIZE, thisChannel->getFeIndex() ) < 0 )
@@ -2535,7 +2535,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 	if (have_video) 
 	{
 		if( !videoDemux )
-			videoDemux = new cDemux( thisChannel->getFeIndex() ); 
+			videoDemux = new cDemux( thisChannel->getDemuxIndex() ); 
 		
 		// open Video Demux
 		if( videoDemux->Open(DMX_VIDEO_CHANNEL, VIDEO_STREAM_BUFFER_SIZE, thisChannel->getFeIndex() ) < 0 )
@@ -2685,7 +2685,7 @@ int stopPlayBack(bool stopemu)
 			// if we recording and rec == live, only update camask on cam0, else stop cam1
 			if(live_channel_id == rec_channel_id)
 			{
-				cam0->setCaPmt(channel->getCaPmt(), 0, 1/*4*/, true); // demux0+ 2, update
+				cam0->setCaPmt(channel->getCaPmt(), 0, channel->getDemuxIndex(), true); // demux0+ 2, update
 			}
 			else
 				cam1->sendMessage(0, 0);

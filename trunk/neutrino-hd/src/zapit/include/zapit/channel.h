@@ -239,6 +239,8 @@ class CZapitChannel
 		
 		int getFeIndex() const { return FeIndex; }
 		void setFeIndex(int pFeIndex)				{ FeIndex = pFeIndex; }
+		
+		int getDemuxIndex() const {return FeIndex; }
 };
 
 #endif /* __zapit_channel_h__ */

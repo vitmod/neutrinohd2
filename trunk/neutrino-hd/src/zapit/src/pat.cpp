@@ -32,7 +32,7 @@ int parse_pat(CZapitChannel * const channel)
 	if (!channel)
 		return -1;
 
-	cDemux * dmx = new cDemux( channel->getFeIndex() );
+	cDemux * dmx = new cDemux( channel->getDemuxIndex() );
 	
 	//open
 	dmx->Open(DMX_PSI_CHANNEL, PAT_SIZE, channel->getFeIndex() );

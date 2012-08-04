@@ -349,7 +349,7 @@ void * streamts_live_thread(void *data)
 		return 0;
 	}
 
-	cDemux * dmx = new cDemux( channel?channel->getFeIndex():0 );
+	cDemux * dmx = new cDemux( channel?channel->getDemuxIndex():0 );
 	
 	dmx->Open(DMX_TP_CHANNEL, 2 * 3008 * 62, channel?channel->getFeIndex():0);	
 	
@@ -358,7 +358,7 @@ void * streamts_live_thread(void *data)
 		dmx->addPid(pids[i]);
 
 	if(channel)
-		cam0->setCaPmt(channel->getCaPmt(), 0, 1, true); // demux 0 + 1, update
+		cam0->setCaPmt(channel->getCaPmt(), 0, channel->getDemuxIndex(), true); // demux 0 + 1, update
 
 	ssize_t r;
 
@@ -381,7 +381,7 @@ void * streamts_live_thread(void *data)
 	printf("[streamts] Exiting LIVE STREAM thread, fd %d\n", fd);
 	
         if(channel)
-		cam0->setCaPmt(channel->getCaPmt(), 0, 1, true); // demux 0, update
+		cam0->setCaPmt(channel->getCaPmt(), 0, channel->getDemuxIndex(), true); // demux 0, update
 	
 	delete dmx;
 	free(buf);

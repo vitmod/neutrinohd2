@@ -824,7 +824,7 @@ int CStreamInfo2::ts_setup(int feindex)
 	if(vpid == 0 && apid == 0)
 		return -1;
 
-	// create new dmx object pionter
+	// create new dmx object
 	ts_dmx = new cDemux( feindex );
 	
 	// open demux
