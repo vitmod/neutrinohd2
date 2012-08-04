@@ -625,7 +625,7 @@ void CInfoViewer::showTitle (const int ChanNum, const std::string & Channel, con
 		unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd (g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR]);
 
 		int res = messages_return::none;
-		//time_t ta, tb;
+		time_t ta, tb;
 
 		while (!(res & (messages_return::cancel_info | messages_return::cancel_all))) 
 		{
@@ -637,10 +637,10 @@ void CInfoViewer::showTitle (const int ChanNum, const std::string & Channel, con
 				if (difftime (time (&tb), ta) > 1.1) 
 				{
 					time (&ta);
-					info_CurrentNext = getEPG (channel_id);
+					info_CurrentNext = getEPG(channel_id, info_CurrentNext);
 					if ((info_CurrentNext.flags & (CSectionsdClient::epgflags::has_current))) 
 					{
-						show_Data ();
+						show_Data();
 						showLcdPercentOver ();
 					}
 				}
