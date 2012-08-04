@@ -261,6 +261,7 @@ bool CMovieInfo::saveMovieInfo(MI_MOVIE_INFO & movie_info, CFile * file)
 	{
 		file_xml.Name = file->Name;
 	}
+	
 	TRACE("[mi] saveXml: %s\r\n", file_xml.Name.c_str());
 
 	if (result == true) 
@@ -383,7 +384,7 @@ bool CMovieInfo::parseXmlTree(char *text, MI_MOVIE_INFO * movie_info)
 							pids.atype = atoi(xam2->GetAttributeValue((char *)MI_XML_TAG_ATYPE));
 							pids.selected = atoi(xam2->GetAttributeValue((char *)MI_XML_TAG_SELECTED));
 							pids.epgAudioPidName = xam2->GetAttributeValue((char *)MI_XML_TAG_NAME);
-//printf("MOVIE INFO: apid %d type %d name %s selected %d\n", pids.epgAudioPid, pids.atype, pids.epgAudioPidName.c_str(), pids.selected);
+							//printf("MOVIE INFO: apid %d type %d name %s selected %d\n", pids.epgAudioPid, pids.atype, pids.epgAudioPidName.c_str(), pids.selected);
 							movie_info->audioPids.push_back(pids);
 						}
 					}
@@ -755,7 +756,7 @@ bool CMovieInfo::parseXmlQuickFix(char *text, MI_MOVIE_INFO * movie_info)
 						audio_pids.epgAudioPidName.append(&text[pos + pos2 + 1], pos3 - pos2 - 1);
 				}
 			}
-			printf("MOVIE INFO: apid %d type %d name %s selected %d\n", audio_pids.epgAudioPid, audio_pids.atype, audio_pids.epgAudioPidName.c_str(), audio_pids.selected);
+			//printf("MOVIE INFO: apid %d type %d name %s selected %d\n", audio_pids.epgAudioPid, audio_pids.atype, audio_pids.epgAudioPidName.c_str(), audio_pids.selected);
 			movie_info->audioPids.push_back(audio_pids);
 		}
 		/* parse bookmarks */
@@ -835,25 +836,31 @@ bool CMovieInfo::addNewBookmark(MI_MOVIE_INFO * movie_info, MI_BOOKMARK & new_bo
 {
 	TRACE("[mi] addNewBookmark\r\n");
 	bool result = false;
-	if (movie_info != NULL) {
+	if (movie_info != NULL) 
+	{
 		// search for free entry 
 		bool loop = true;
-		for (int i = 0; i < MI_MOVIE_BOOK_USER_MAX && loop == true; i++) {
-			if (movie_info->bookmarks.user[i].pos == 0) {
+		for (int i = 0; i < MI_MOVIE_BOOK_USER_MAX && loop == true; i++) 
+		{
+			if (movie_info->bookmarks.user[i].pos == 0) 
+			{
 				// empty entry found
 				result = true;
 				loop = false;
 				movie_info->bookmarks.user[i].pos = new_bookmark.pos;
 				movie_info->bookmarks.user[i].length = new_bookmark.length;
 				//if(movie_info->bookmarks.user[i].name.empty())
-				if (movie_info->bookmarks.user[i].name.size() == 0) {
+				if (movie_info->bookmarks.user[i].name.size() == 0) 
+				{
 					if (new_bookmark.length == 0)
 						movie_info->bookmarks.user[i].name = g_Locale->getText(LOCALE_MOVIEBROWSER_BOOK_NEW);
 					if (new_bookmark.length < 0)
 						movie_info->bookmarks.user[i].name = g_Locale->getText(LOCALE_MOVIEBROWSER_BOOK_TYPE_BACKWARD);
 					if (new_bookmark.length > 0)
 						movie_info->bookmarks.user[i].name = g_Locale->getText(LOCALE_MOVIEBROWSER_BOOK_TYPE_FORWARD);
-				} else {
+				} 
+				else 
+				{
 					movie_info->bookmarks.user[i].name = new_bookmark.name;
 				}
 			}
