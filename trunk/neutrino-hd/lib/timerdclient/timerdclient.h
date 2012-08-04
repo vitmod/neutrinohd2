@@ -36,11 +36,11 @@
 
 class CTimerdClient:private CBasicClient
 {
- private:
-	virtual const unsigned char   getVersion() const;
-	virtual const          char * getSocketName() const;
+	private:
+		virtual const unsigned char   getVersion() const;
+		virtual const          char * getSocketName() const;
 
- public:
+	public:
 		enum events
 		{
 			EVT_SHUTDOWN = 1,
