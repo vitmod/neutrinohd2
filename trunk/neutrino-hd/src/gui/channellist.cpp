@@ -1772,12 +1772,13 @@ void CChannelList::paintItem(int pos)
 
 	if(!autoshift && CNeutrinoApp::getInstance()->recordingstatus && curr < chanlist.size()) 
 	{
-		//iscurrent = (chanlist[curr]->channel_id >> 16) == (rec_channel_id >> 16);
+		iscurrent = (chanlist[curr]->channel_id >> 16) == (rec_channel_id >> 16);
+		
 		//if(FrontendCount == 1) // single tuner
-		{
-			if(chanlist[curr]->channel_id >> 16 == rec_channel_id >> 16)
-				iscurrent = false;
-		}
+		//{
+			//if(chanlist[curr]->channel_id >> 16 == rec_channel_id >> 16)
+			//	iscurrent = false;
+		//}
 	
 		printf("CChannelList::paintItem: recording %llx current %llx current = %s\n", rec_channel_id, chanlist[liststart + pos]->channel_id, iscurrent? "yes" : "no");
 	}
@@ -1804,6 +1805,7 @@ void CChannelList::paintItem(int pos)
 	} 
 	else 
 	{
+		//FIXME: twin
 		color = iscurrent ? COL_MENUCONTENT : COL_MENUCONTENTINACTIVE;
 		bgcolor = iscurrent ? COL_MENUCONTENT_PLUS_0 : COL_MENUCONTENTINACTIVE_PLUS_0;
 		
