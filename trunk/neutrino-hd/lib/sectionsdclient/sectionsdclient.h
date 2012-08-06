@@ -32,12 +32,12 @@
 
 class CShortEPGData
 {
- public:
-	std::string title;
-	std::string info1;
-	std::string info2;
+	public:
+		std::string title;
+		std::string info1;
+		std::string info2;
 
-	CShortEPGData()
+		CShortEPGData()
 		{
 			title = "";
 			info1 = "";
@@ -49,39 +49,39 @@ class CEPGData;
 
 class CChannelEvent
 {
- public:
-	t_channel_id       get_channel_id(void) const { return GET_CHANNEL_ID_FROM_EVENT_ID(eventID); }
-	event_id_t         eventID;
-	std::string        description;
-	std::string        text;
-	time_t             startTime;
-	unsigned           duration;
-	t_channel_id 	   channelID; 
+	public:
+		t_channel_id       get_channel_id(void) const { return GET_CHANNEL_ID_FROM_EVENT_ID(eventID); }
+		event_id_t         eventID;
+		std::string        description;
+		std::string        text;
+		time_t             startTime;
+		unsigned           duration;
+		t_channel_id 	   channelID; 
 };
 
 typedef std::vector<CChannelEvent> CChannelEventList;
 
 class CSectionsdClient : private CBasicClient
 {
- private:
-	virtual const unsigned char   getVersion() const;
-	virtual const    char * getSocketName() const;
+	private:
+		virtual const unsigned char   getVersion() const;
+		virtual const    char * getSocketName() const;
 
-	int readResponse(char* data = NULL, unsigned int size = 0);
-	bool send(const unsigned char command, const char* data = NULL, const unsigned int size = 0);
-	char * parseExtendedEvents(char * dp, CEPGData * epgdata);
+		int readResponse(char* data = NULL, unsigned int size = 0);
+		bool send(const unsigned char command, const char* data = NULL, const unsigned int size = 0);
+		char * parseExtendedEvents(char * dp, CEPGData * epgdata);
 
- public:
-	enum SIlanguageMode_t {
-		ALL,
-		FIRST_FIRST,
-		FIRST_ALL,
-		ALL_FIRST,
-		ALL_ALL,
-		LANGUAGE_MODE_OFF
-	};
+	public:
+		enum SIlanguageMode_t {
+			ALL,
+			FIRST_FIRST,
+			FIRST_ALL,
+			ALL_FIRST,
+			ALL_ALL,
+			LANGUAGE_MODE_OFF
+		};
 
-	enum events
+		enum events
 		{
 			EVT_TIMESET,
 			EVT_GOT_CN_EPG,
@@ -90,154 +90,153 @@ class CSectionsdClient : private CBasicClient
 			EVT_WRITE_SI_FINISHED
 		};
 
-	struct epgflags {
-		enum
-		{
-			has_anything = 0x01,
-			has_later = 0x02,
-			has_current = 0x04,
-			not_broadcast = 0x08,
-			has_next = 0x10,
-			has_no_current= 0x20,
-			current_has_linkagedescriptors= 0x40
+		struct epgflags {
+			enum
+			{
+				has_anything = 0x01,
+				has_later = 0x02,
+				has_current = 0x04,
+				not_broadcast = 0x08,
+				has_next = 0x10,
+				has_no_current= 0x20,
+				current_has_linkagedescriptors= 0x40
+			};
 		};
-	};
 
-	struct responseGetComponentTags
-	{
-		std::string   component;        // Text aus dem Component Descriptor
-		unsigned char componentType;    // Component Descriptor
-		unsigned char componentTag;     // Component Descriptor
-		unsigned char streamContent;    // Component Descriptor
-	};
-	typedef std::vector<responseGetComponentTags> ComponentTagList;
+		struct responseGetComponentTags
+		{
+			std::string   component;        // Text aus dem Component Descriptor
+			unsigned char componentType;    // Component Descriptor
+			unsigned char componentTag;     // Component Descriptor
+			unsigned char streamContent;    // Component Descriptor
+		};
+		typedef std::vector<responseGetComponentTags> ComponentTagList;
 
-	struct responseGetLinkageDescriptors
-	{
-		std::string           name;
-		t_transport_stream_id transportStreamId;
-		t_original_network_id originalNetworkId;
-		t_service_id          serviceId;
-	};
-	typedef std::vector<responseGetLinkageDescriptors> LinkageDescriptorList;
+		struct responseGetLinkageDescriptors
+		{
+			std::string           name;
+			t_transport_stream_id transportStreamId;
+			t_original_network_id originalNetworkId;
+			t_service_id          serviceId;
+		};
+		typedef std::vector<responseGetLinkageDescriptors> LinkageDescriptorList;
 
-	struct sectionsdTime
-	{
-		time_t startzeit;
-		unsigned dauer;
-	} __attribute__ ((packed)) ;
+		struct sectionsdTime
+		{
+			time_t startzeit;
+			unsigned dauer;
+		} __attribute__ ((packed)) ;
 
-	struct responseGetNVODTimes
-	{
-		t_service_id                    service_id;
-		t_original_network_id           original_network_id;
-		t_transport_stream_id           transport_stream_id;
-		CSectionsdClient::sectionsdTime zeit;
-	};
-	typedef std::vector<responseGetNVODTimes> NVODTimesList;
+		struct responseGetNVODTimes
+		{
+			t_service_id                    service_id;
+			t_original_network_id           original_network_id;
+			t_transport_stream_id           transport_stream_id;
+			CSectionsdClient::sectionsdTime zeit;
+		};
+		typedef std::vector<responseGetNVODTimes> NVODTimesList;
 
-	struct responseGetCurrentNextInfoChannelID
-	{
-		event_id_t                      current_uniqueKey;
-		CSectionsdClient::sectionsdTime current_zeit;
-		std::string                     current_name;
-		char                            current_fsk;
-		event_id_t                      next_uniqueKey;
-		CSectionsdClient::sectionsdTime next_zeit;
-		std::string                     next_name;
-		unsigned                        flags;
-	};
+		struct responseGetCurrentNextInfoChannelID
+		{
+			event_id_t                      current_uniqueKey;
+			CSectionsdClient::sectionsdTime current_zeit;
+			std::string                     current_name;
+			char                            current_fsk;
+			event_id_t                      next_uniqueKey;
+			CSectionsdClient::sectionsdTime next_zeit;
+			std::string                     next_name;
+			unsigned                        flags;
+		};
 
-	struct CurrentNextInfo : public responseGetCurrentNextInfoChannelID
-	{};
+		struct CurrentNextInfo : public responseGetCurrentNextInfoChannelID
+		{};
 
-	typedef struct
-	{
-		int scanMode;
-		int epg_cache;
-		int epg_old_events;
-		int epg_max_events;
-		int network_ntprefresh;
-		int network_ntpenable;
-		int epg_extendedcache;
-		std::string network_ntpserver;
-		std::string epg_dir;
-	} epg_config;
+		typedef struct
+		{
+			int scanMode;
+			int epg_cache;
+			int epg_old_events;
+			int epg_max_events;
+			int network_ntprefresh;
+			int network_ntpenable;
+			int epg_extendedcache;
+			std::string network_ntpserver;
+			std::string epg_dir;
+		} epg_config;
 
-	bool getComponentTagsUniqueKey(const event_id_t uniqueKey, CSectionsdClient::ComponentTagList& tags);
+		bool getComponentTagsUniqueKey(const event_id_t uniqueKey, CSectionsdClient::ComponentTagList& tags);
 
-	bool getLinkageDescriptorsUniqueKey(const event_id_t uniqueKey, CSectionsdClient::LinkageDescriptorList& descriptors);
+		bool getLinkageDescriptorsUniqueKey(const event_id_t uniqueKey, CSectionsdClient::LinkageDescriptorList& descriptors);
 
-	bool getNVODTimesServiceKey(const t_channel_id channel_id, CSectionsdClient::NVODTimesList& nvod_list);
+		bool getNVODTimesServiceKey(const t_channel_id channel_id, CSectionsdClient::NVODTimesList& nvod_list);
 
-	bool getCurrentNextServiceKey(const t_channel_id channel_id, CSectionsdClient::responseGetCurrentNextInfoChannelID& current_next);
+		bool getCurrentNextServiceKey(const t_channel_id channel_id, CSectionsdClient::responseGetCurrentNextInfoChannelID& current_next);
 
-	bool getIsTimeSet();
+		bool getIsTimeSet();
 
-//	void setEventsAreOldInMinutes(const unsigned short minutes);
+		//void setEventsAreOldInMinutes(const unsigned short minutes);
 
-	void setPauseScanning(const bool doPause);
+		void setPauseScanning(const bool doPause);
 
-	bool getIsScanningActive();
+		bool getIsScanningActive();
 
-	void setPauseSorting(const bool doPause);
+		void setPauseSorting(const bool doPause);
 
-	void setServiceChanged(const t_channel_id channel_id, const bool requestEvent);
+		void setServiceChanged(const t_channel_id channel_id, const bool requestEvent);
 
-	CChannelEventList getChannelEvents(const bool tv_mode = true, t_channel_id* = NULL, int size = 0);
+		CChannelEventList getChannelEvents(const bool tv_mode = true, t_channel_id* = NULL, int size = 0);
 
-	CChannelEventList getEventsServiceKey(const t_channel_id channel_id);
+		CChannelEventList getEventsServiceKey(const t_channel_id channel_id);
 
-	bool getEventsServiceKeySearchAdd(CChannelEventList& evtlist,const t_channel_id channel_id,char m_search_typ,std::string& m_search_text);
+		bool getEventsServiceKeySearchAdd(CChannelEventList& evtlist,const t_channel_id channel_id,char m_search_typ,std::string& m_search_text);
 
-	bool getEPGid(const event_id_t eventid, const time_t starttime, CEPGData * epgdata);
+		bool getEPGid(const event_id_t eventid, const time_t starttime, CEPGData * epgdata);
 
-	bool getActualEPGServiceKey(const t_channel_id channel_id, CEPGData * epgdata);
+		bool getActualEPGServiceKey(const t_channel_id channel_id, CEPGData * epgdata);
 
-	bool getEPGidShort(const event_id_t eventid, CShortEPGData * epgdata);
+		bool getEPGidShort(const event_id_t eventid, CShortEPGData * epgdata);
 
-	void setPrivatePid(const unsigned short pid);
+		void setPrivatePid(const unsigned short pid);
 
-//	void setSectionsdScanMode(const int scanMode);
+		//void setSectionsdScanMode(const int scanMode);
 
-	void freeMemory();
+		void freeMemory();
 
-	void readSIfromXML(const char * epgxmlname);
+		void readSIfromXML(const char * epgxmlname);
 
-	void writeSI2XML(const char * epgxmlname);
+		void writeSI2XML(const char * epgxmlname);
 
-	/*
-	  ein beliebiges Event anmelden
-	*/
-	void registerEvent(const unsigned int eventID, const unsigned int clientID, const char * const udsName);
+		/*
+		  ein beliebiges Event anmelden
+		*/
+		void registerEvent(const unsigned int eventID, const unsigned int clientID, const char * const udsName);
 
-	/*
-	  ein beliebiges Event abmelden
-	*/
-	void unRegisterEvent(const unsigned int eventID, const unsigned int clientID);
+		/*
+		  ein beliebiges Event abmelden
+		*/
+		void unRegisterEvent(const unsigned int eventID, const unsigned int clientID);
 
-	void setConfig(const epg_config config);
-	void dumpStatus(void);
-
+		void setConfig(const epg_config config);
+		void dumpStatus(void);
 };
 
 class CEPGData
 {
- public:
-	uint64_t eventID;
-	CSectionsdClient::sectionsdTime	epg_times;
-	std::string                     title;
-	std::string                     info1;
-	std::string                     info2;
-	// 21.07.2005 - extended event data
-	std::vector<std::string>		itemDescriptions;
-	std::vector<std::string>		items;
-	char                            fsk;
-	unsigned char                   table_id;
-	std::string                     contentClassification;
-	std::string                     userClassification;
+	public:
+		uint64_t eventID;
+		CSectionsdClient::sectionsdTime	epg_times;
+		std::string                     title;
+		std::string                     info1;
+		std::string                     info2;
+		// 21.07.2005 - extended event data
+		std::vector<std::string>		itemDescriptions;
+		std::vector<std::string>		items;
+		char                            fsk;
+		unsigned char                   table_id;
+		std::string                     contentClassification;
+		std::string                     userClassification;
 
-	CEPGData()
+		CEPGData()
 		{
 			eventID               =  0;
 			title                 = "";
@@ -248,7 +247,6 @@ class CEPGData
 			contentClassification = "";
 			userClassification    = "";
 		};
-
 };
 
 #endif
