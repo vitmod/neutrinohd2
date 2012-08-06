@@ -32,11 +32,7 @@
 #include <time.h>          /* ctime */
 #include <dmxapi.h>
 
-#if HAVE_TRIPLEDRAGON
-#include <dmx_td.h>
-#else
 #include <dmx_cs.h>
-#endif
 
 #include "SIutils.hpp"
 #include "debug.h"
@@ -130,7 +126,6 @@ bool getUTC(UTC_t * const UTC, const bool TDT)
 
 	if(dmxUTC == NULL) {
 		dmxUTC = new cDemux(channel?channel->getDemuxIndex() : 0);
-		//dmxUTC->Open(DMX_PSI_CHANNEL);
 		dmxUTC->Open(DMX_PSI_CHANNEL, 4096, channel?channel->getFeIndex() : 0 );
 	}
 

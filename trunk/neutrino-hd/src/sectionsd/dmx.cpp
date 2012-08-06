@@ -55,8 +55,8 @@ extern void showProfiling(std::string text);
 
 DMX::DMX(const unsigned short p, const unsigned short bufferSizeInKB, const bool c, int dmx_source)
 {
-	dmx_num = dmx_source;
 	fd = -1;
+	dmx_num = dmx_source;
 	lastChanged = time_monotonic();
 	filter_index = 0;
 	pID = p;
@@ -108,11 +108,12 @@ void DMX::closefd(void)
 	if (isOpen())
 	{
 		//close(fd);
-#if HAVE_TRIPLEDRAGON
-		dmx->Close();
-#else
 		dmx->Stop();
-#endif
+		//dmx->Close();
+		//delete dmx;
+		//dmx = NULL;
+		close();
+
 		fd = -1;
 	}
 }
@@ -475,46 +476,27 @@ int DMX::immediate_start(void)
 		dprintf("DMX::immediate_start: realPausecounter !=0 (%d)!\n", real_pauseCounter);
 		return 0;
 	}
-#if 0
-	if ((fd = open(DEMUX_DEVICE, O_RDWR|O_NONBLOCK)) == -1)
-	{
-		perror("[sectionsd] open dmx");
-		return 2;
-	}
 
-	if (ioctl(fd, DMX_SET_BUFFER_SIZE, (unsigned long)(dmxBufferSizeInKB*1024UL)) == -1)
-	{
-		closefd();
-		perror("[sectionsd] DMX: DMX_SET_BUFFER_SIZE");
-		return 3;
-	}
-#endif
 	if(dmx == NULL) 
 	{
-		dmx = new cDemux(/*dmx_num*/ channel?channel->getDemuxIndex() : 0);
-		//dmx->Open(DMX_PSI_CHANNEL, dmxBufferSizeInKB*1024UL);
+		dmx = new cDemux( /*channel?channel->getDemuxIndex() : 0*/ dmx_num);
 		dmx->Open(DMX_PSI_CHANNEL, dmxBufferSizeInKB*1024UL, channel?channel->getFeIndex() : 0);
 	}
 
 	fd = 1;
 
-	/* setfilter() only if this is no dummy filter... */
-#if 0
-	if (filters[filter_index].filter && filters[filter_index].mask &&
-			!setfilter(fd, pID, filters[filter_index].filter, filters[filter_index].mask, DMX_IMMEDIATE_START | DMX_CHECK_CRC))
-#endif
-		if (filters[filter_index].filter && filters[filter_index].mask)
-		{
-			unsigned char filter[DMX_FILTER_SIZE];
-			unsigned char mask[DMX_FILTER_SIZE];
+	if (filters[filter_index].filter && filters[filter_index].mask)
+	{
+		unsigned char filter[DMX_FILTER_SIZE];
+		unsigned char mask[DMX_FILTER_SIZE];
 
-			filter[0] = filters[filter_index].filter;
-			mask[0] = filters[filter_index].mask;
-			dmx->sectionFilter(pID, filter, mask, 1);
-			//FIXME error check
-			//closefd();
-			//return 4;
-		}
+		filter[0] = filters[filter_index].filter;
+		mask[0] = filters[filter_index].mask;
+		dmx->sectionFilter(pID, filter, mask, 1);
+		//FIXME error check
+		//closefd();
+		//return 4;
+	}
 	/* this is for dmxCN only... */
 	eit_version = 0xff;
 	return 0;

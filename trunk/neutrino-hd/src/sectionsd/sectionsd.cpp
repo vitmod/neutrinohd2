@@ -246,7 +246,7 @@ static DMX dmxSDT(0x11, 0x42, 0xff, 0x42, 0xff, 256);
 extern CZapitChannel * channel;			/* zapit.cpp */
 
 
-static DMX dmxEIT(0x12, 3000 /*320*/);
+static DMX dmxEIT(0x12, 3000 );
 static DMX dmxCN(0x12, 512, false, 1);
 
 #ifdef ENABLE_FREESATEPG
@@ -254,7 +254,7 @@ static DMX dmxFSEIT(3842, 320);
 #endif
 
 #ifdef UPDATE_NETWORKS
-static DMX dmxSDT(0x11, 512, true, 1);
+static DMX dmxSDT(0x11, 512, true);
 static DMX dmxNIT(0x10, 128);
 #endif
 
@@ -1380,7 +1380,8 @@ static void removeWasteEvents()
 
 	MySIeventsOrderUniqueKey::iterator e = mySIeventsOrderUniqueKey.begin();
 
-	while ((e != mySIeventsOrderUniqueKey.end()) && (!messaging_zap_detected)) {
+	while ((e != mySIeventsOrderUniqueKey.end()) && (!messaging_zap_detected)) 
+	{
 		unlockEvents();
 		validevent = true;
 		haslinkage = false;
@@ -1394,7 +1395,8 @@ static void removeWasteEvents()
 					last_service_id);
 			}
 		}
-		else {
+		else 
+		{
 			for (unsigned int i = 0; i < e->second->linkage_descs.size(); i++)
 				if ((e->second->linkage_descs[i].linkageType == 0xB0) ||
 						(e->second->linkage_descs[i].linkageType == 0x00))
@@ -1402,8 +1404,10 @@ static void removeWasteEvents()
 					haslinkage = true;
 					break;
 				}
+				
 //			printf("here1\n");
-			if (validevent && !haslinkage) {
+			if (validevent && !haslinkage) 
+			{
 //				printf("here2\n");
 				if (service_parser != NULL) {
 //					printf("here3\n");
@@ -7080,8 +7084,7 @@ int eit_set_update_filter(int *fd)
 	}
 
 	if(eitDmx == NULL) {
-		eitDmx = new cDemux(/*2*/ channel?channel->getDemuxIndex() : 0);
-		//eitDmx->Open(DMX_PSI_CHANNEL);
+		eitDmx = new cDemux( channel?channel->getDemuxIndex() : 0);
 		eitDmx->Open(DMX_PSI_CHANNEL, 4096, channel?channel->getFeIndex() : 0);
 	}
 
@@ -7101,7 +7104,7 @@ int eit_set_update_filter(int *fd)
 	mask[2] = 0xFF;
 
 	int timeout = 0;
-#if !HAVE_COOL_HARDWARE
+#if 0
 	filter[3] = (cur_eit << 1) | 0x01;
 	mask[3] = (0x1F << 1) | 0x01;
 	mode[3] = 0x1F << 1;
@@ -7122,7 +7125,12 @@ int eit_stop_update_filter(int *fd)
 {
 	printf("[sectionsd] stop eit update filter\n");
 	if(eitDmx)
+	{
 		eitDmx->Stop();
+		
+		delete eitDmx;
+		eitDmx = NULL;
+	}
 
 	*fd = -1;
 	return 0;
@@ -7961,7 +7969,7 @@ static void *cnThread(void *)
 					dprintf("dmxCN: waking up again - requested from .change()\n");
 					// fix EPG problems on IPBox
 					// http://tuxbox-forum.dreambox-fan.de/forum/viewtopic.php?p=367937#p367937
-#if HAVE_IPBOX_HARDWARE
+#if 0
 					dmxCN.change(0);
 #endif
 				}
