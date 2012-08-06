@@ -625,13 +625,14 @@ void CInfoViewer::showTitle (const int ChanNum, const std::string & Channel, con
 		unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd (g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR]);
 
 		int res = messages_return::none;
-		time_t ta, tb;
 
 		while (!(res & (messages_return::cancel_info | messages_return::cancel_all))) 
 		{
 			g_RCInput->getMsgAbsoluteTimeout (&msg, &data, &timeoutEnd);
 			
-#if 0
+#if 1
+			time_t ta, tb;
+			
 			if (!(info_CurrentNext.flags & (CSectionsdClient::epgflags::has_current))) 
 			{
 				if (difftime (time (&tb), ta) > 1.1) 
@@ -1785,6 +1786,7 @@ void CInfoViewer::showButton_SubServices ()
 
 CSectionsdClient::CurrentNextInfo CInfoViewer::getEPG(const t_channel_id for_channel_id, CSectionsdClient::CurrentNextInfo &info)
 {
+  #if 0
 	static CSectionsdClient::CurrentNextInfo oldinfo;
 
 	//g_Sectionsd->getCurrentNextServiceKey (for_channel_id & 0xFFFFFFFFFFFFULL, info);
@@ -1798,12 +1800,58 @@ CSectionsdClient::CurrentNextInfo CInfoViewer::getEPG(const t_channel_id for_cha
 		{
 			CSectionsdClient::CurrentNextInfo * _info = new CSectionsdClient::CurrentNextInfo;
 			*_info = info;
+			//memcpy(&_info, &info, sizeof(CSectionsdClient::CurrentNextInfo));
+			
 			neutrino_msg_t msg;
+			
 			if (info.flags & CSectionsdClient::epgflags::has_current)
 				msg = NeutrinoMessages::EVT_CURRENTEPG;
 			else
 				msg = NeutrinoMessages::EVT_NEXTEPG;
 			
+			g_RCInput->postMsg(msg, (unsigned) _info, false );
+		} 
+		else 
+		{
+			t_channel_id *p = new t_channel_id;
+			*p = for_channel_id;
+			g_RCInput->postMsg (NeutrinoMessages::EVT_NOEPG_YET, (const neutrino_msg_data_t) p, false);	// data is pointer to allocated memory
+		}
+		oldinfo = info;
+		//memcpy(&oldinfo, &info, sizeof(CSectionsdClient::CurrentNextInfo));
+	}
+
+	return info;
+#endif
+	static CSectionsdClient::CurrentNextInfo oldinfo;
+
+	//g_Sectionsd->getCurrentNextServiceKey (for_channel_id & 0xFFFFFFFFFFFFULL, info);
+	sectionsd_getCurrentNextServiceKey(for_channel_id & 0xFFFFFFFFFFFFULL, info);
+
+	printf("CInfoViewer::getEPG: old uniqueKey %llx new %llx\n", oldinfo.current_uniqueKey, info.current_uniqueKey);
+
+	/* of there is no EPG, send an event so that parental lock can work */
+	if (info.current_uniqueKey == 0 && info.next_uniqueKey == 0) 
+	{
+		oldinfo = info;
+		t_channel_id *p = new t_channel_id;
+		*p = for_channel_id;
+		g_RCInput->postMsg (NeutrinoMessages::EVT_NOEPG_YET, (const neutrino_msg_data_t) p, false);
+		return info;
+	}
+
+	if (info.current_uniqueKey != oldinfo.current_uniqueKey || info.next_uniqueKey != oldinfo.next_uniqueKey) 
+	{
+		if (info.flags & (CSectionsdClient::epgflags::has_current | CSectionsdClient::epgflags::has_next)) 
+		{
+			CSectionsdClient::CurrentNextInfo * _info = new CSectionsdClient::CurrentNextInfo;
+			*_info = info;
+			neutrino_msg_t msg;
+			
+			if (info.flags & CSectionsdClient::epgflags::has_current)
+				msg = NeutrinoMessages::EVT_CURRENTEPG;
+			else
+				msg = NeutrinoMessages::EVT_NEXTEPG;
 			g_RCInput->postMsg(msg, (unsigned) _info, false );
 		} 
 		else 
@@ -1822,7 +1870,6 @@ CSectionsdClient::CurrentNextInfo CInfoViewer::getEPG(const t_channel_id for_cha
 
 void CInfoViewer::showSNR()
 {
-  #if 1
   	char percent[10];
   	uint16_t ssig, ssnr;
   	int sw, snr, sig, posx, posy;
@@ -1886,7 +1933,6 @@ void CInfoViewer::showSNR()
 				posx = posx + barwidth + 2;
 				sw = BoxStartX + ChanWidth - posx;
 
-				//frameBuffer->paintBoxRel(posx, posy, sw, height, COL_INFOBAR_PLUS_0);
 				g_SignalFont->RenderString (posx, posy + height, sw, percent, COL_INFOBAR);
 			}
 
@@ -1902,13 +1948,11 @@ void CInfoViewer::showSNR()
 				posx = posx + barwidth + 2;
 				sw = BoxStartX + ChanWidth - posx -4;
 				
-				//frameBuffer->paintBoxRel (posx, posy, sw, height-2, COL_INFOBAR_PLUS_0);
 				g_SignalFont->RenderString (posx, posy + height, sw, percent, COL_INFOBAR);
 			}
 		
 		}
   	}
- #endif
 }
 
 void CInfoViewer::show_Data(bool calledFromEvent)
