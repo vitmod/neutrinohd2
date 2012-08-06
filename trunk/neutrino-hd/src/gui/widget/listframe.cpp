@@ -676,7 +676,7 @@ void CListFrame::hide(void)
 	if(frameBuffer == NULL) 
 		return;
 	
-	TRACE("[CListFrame]->hide %s\n", m_textTitle.c_str());
+	dprintf(DEBUG_DEBUG, "[CListFrame]->hide %s\n", m_textTitle.c_str());
 
 	frameBuffer->paintBackgroundBoxRel(m_cFrame.iX - 10, m_cFrame.iY - 10, m_cFrame.iWidth + 10, m_cFrame.iHeight + 10);
 	
@@ -685,7 +685,7 @@ void CListFrame::hide(void)
 
 void CListFrame::paint(void)
 {
-	TRACE("[CListFrame]->paint %s\n", m_textTitle.c_str());
+	dprintf(DEBUG_DEBUG, "[CListFrame]->paint %s\n", m_textTitle.c_str());
 	frameBuffer = CFrameBuffer::getInstance();
 	refresh();
 }
