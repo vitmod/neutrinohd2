@@ -67,12 +67,6 @@ class CTPSelectHandler : public CMenuTarget
 
 class CScanSettings
 {
-	private:
-		//int feindex;
-		
-		uint32_t	getConfigValue(int num, const char * name, uint32_t defval);
-		void		setConfigValue(int num, const char * name, uint32_t val);
-		
 	public:
 		CConfigFile	configfile;
 		
@@ -98,14 +92,12 @@ class CScanSettings
 		int		TP_trans;
 		int		TP_guard;
 		int		TP_hierarchy;
-		
-		//tuner mode: notconnected, indepandant, loop
 	
 		CScanSettings();
 	
 		void useDefaults();
-		bool loadSettings(const char * const fileName, int feIndex = 0);
-		bool saveSettings(const char * const fileName, int feIndex = 0);
+		bool loadSettings(const char * const fileName);
+		bool saveSettings(const char * const fileName);
 };
 
 
