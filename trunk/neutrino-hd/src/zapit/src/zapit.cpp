@@ -124,7 +124,6 @@ bool sdt_wakeup;
 
 /* the conditional access module */
 CCam *cam0 = NULL;
-CCam *cam1 = NULL;
 
 /* the configuration file */
 CConfigFile config(',', false);
@@ -431,41 +430,18 @@ CZapitClient::responseGetLastChannel load_settings(void)
 }
 
 // start cam
-void start_camd(bool forupdate = false)
+void sendCaPmt(bool forupdate = false)
 {
 	if(!channel)
 		return;
 	
-	static int camask = 1; // demux 0
-
-	if(currentMode & RECORD_MODE) 
-	{
-		if(rec_channel_id != live_channel_id) 
-		{
-			/* zap from rec. channel */
-			camask = 1;
-			cam1->setCaPmt(channel->getCaPmt(), 0, camask); // demux 0
-		}
-		else if(forupdate) 
-		{ 
-			//FIXME broken!
-			/* forupdate means pmt update  for live channel, using old camask */
-			cam0->setCaPmt(channel->getCaPmt(), 0, camask, true);// update
-		}
-		else 
-		{
-			// zap back to rec. channel
-			camask =  1; 	//
-					
-			cam0->setCaPmt(channel->getCaPmt(), 0, camask, true); // update
-			cam1->sendMessage(0, 0); // stop/close
-		}
-	} 
-	else 
-	{
-		camask = 1; //demux 0
-		cam0->setCaPmt(channel->getCaPmt(), 0, camask );
-	}
+	// ca cam
+	cam0->setCaPmt( channel->getCaPmt() );
+	
+	// ci cam
+#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_9500HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_DUCKBOX) || defined (PLATFORM_DREAMBOX)
+	ci->SendCaPMT(channel->getCaPmt()); 
+#endif	
 }
 
 // save pids
@@ -742,7 +718,7 @@ int zapit(const t_channel_id channel_id, bool in_nvod, bool forupdate = 0, bool 
 
 	printf("[zapit] sending capmt....\n");
 
-	start_camd(forupdate);
+	sendCaPmt(forupdate);
 	
 	// send caid
 	int caid = 1;
@@ -931,22 +907,6 @@ void unsetRecordMode(void)
  
 	eventServer->sendEvent(CZapitClient::EVT_RECORDMODE_DEACTIVATED, CEventServer::INITID_ZAPIT );
 
-	/* if we on rec. channel, just update pmt with new camask,
-	* else we must stop cam1 and start cam0 for current live channel
-	* in standby should be no cam1 running.
-	*/
-	if(standby)
-		cam0->sendMessage(0, 0); // stop
-	else if(live_channel_id == rec_channel_id) 
-	{
-		cam0->setCaPmt(channel->getCaPmt(), 0, 1, true ); // demux 0, update
-	} 
-	else 
-	{
-		cam1->sendMessage(0, 0); // stop
-		cam0->setCaPmt(channel->getCaPmt(), 0, 1 ); // start
-	}
-
 	rec_channel_id = 0;
 }
 
@@ -970,24 +930,6 @@ void unsetPipMode(void)
 	currentMode &= ~PIP_MODE;
  
 	eventServer->sendEvent(CZapitClient::EVT_PIPMODE_DEACTIVATED, CEventServer::INITID_ZAPIT );
-
-	/* if we on rec. channel, just update pmt with new camask,
-	* else we must stop cam1 and start cam0 for current live channel
-	* in standby should be no cam1 running.
-	*/
-	if(standby)
-	{
-		cam0->sendMessage(0,0); // stop
-	}
-	else if(live_channel_id == pip_channel_id) 
-	{
-		cam0->setCaPmt(channel->getCaPmt(), 0, 1, true); // demux 0, update
-	} 
-	else 
-	{
-		cam1->sendMessage(0, 0); // stop
-		cam0->setCaPmt(channel->getCaPmt(), 0, 1 ); // start
-	}
 
 	pip_channel_id = 0;
 }
@@ -1951,7 +1893,7 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 			startPlayBack(channel);
 			
 			//start cam
-			start_camd();
+			sendCaPmt();
 			
 			break;
 	
@@ -2677,27 +2619,6 @@ int startPlayBack(CZapitChannel * thisChannel)
 
 int stopPlayBack(bool stopemu)
 {
-	// in record mode we stop one cam1, while cam continue to decrypt recording channel
-	if(stopemu) 
-	{
-		if(currentMode & RECORD_MODE) 
-		{
-			// if we recording and rec == live, only update camask on cam0, else stop cam1
-			if(live_channel_id == rec_channel_id)
-			{
-				cam0->setCaPmt(channel->getCaPmt(), 0, 1, true); // demux0+ 2, update
-			}
-			else
-				cam1->sendMessage(0, 0);
-		} 
-		else 
-		{
-			cam0->sendMessage(0, 0);
-			
-			unlink("/tmp/pmt.tmp"); 
-		}
-	}
-
 	printf("[zapit] stopPlayBack: standby %d forced %d\n", standby, playbackStopForced);
 
 	if (!playing)
@@ -2824,18 +2745,11 @@ void leaveStandby(void)
 				  CFrontend::getInstance(i)->setDiseqcType(diseqcType);
 			}
 		}
-
-		if (!cam0) 
-		{
-			cam0 = new CCam();
-		}
-		
-		rename("/tmp/pmt.tmp.off", "/tmp/pmt.tmp");
 	}
 
-	if (!cam1) 
+	if (!cam0) 
 	{
-		cam1 = new CCam();
+		cam0 = new CCam();
 	}
 
 	standby = false;
@@ -3429,7 +3343,7 @@ int zapit_main_thread(void *data)
 					} 
 					else 
 					{
-						start_camd(true);
+						sendCaPmt(true);
 						pmt_set_update_filter(channel, &pmt_update_fd);
 					}
 						

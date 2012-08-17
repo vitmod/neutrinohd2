@@ -482,11 +482,6 @@ int parse_pmt(CZapitChannel * const channel)
 
 	if( !(currentMode & RECORD_MODE) && !scan_runs) 
 	{
-		// send pmt to cam
-#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_9500HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_DUCKBOX) || defined (PLATFORM_DREAMBOX)
-		ci->SendPMT(buffer, pmtlen);
-#endif		
-		
 		// write /tmp/pmt.tmp
 		fout = fopen("/tmp/pmt.tmp","wb"); 
 		
@@ -609,10 +604,6 @@ int parse_pmt(CZapitChannel * const channel)
 		
 		channel->setCaPmt(caPmt);
 	}
-	
-#if defined (PLATFORM_CUBEREVO) || defined (PLATFORM_CUBEREVO_MINI) || defined (PLATFORM_CUBEREVO_MINI2) || defined (PLATFORM_CUBEREVO_MINI_FTA) || defined (PLATFORM_CUBEREVO_250HD) || defined (PLATFORM_CUBEREVO_9500HD) || defined (PLATFORM_GIGABLUE) || defined (PLATFORM_DUCKBOX) || defined (PLATFORM_DREAMBOX)
-        ci->SendCaPMT(caPmt); 
-#endif
 
 	channel->setPidsFlag();
 
