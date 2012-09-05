@@ -85,23 +85,27 @@ typedef struct dvb_frontend_parameters FrontendParameters;
 #define MAX_LNBS	64	/* due to Diseqc 1.1  (2003-01-10 rasc) */
 
 
-//#define MAKE_FE_KEY(adapter, number) ((adapter << 8) | (number & 0xFF))
-//#define FECONFIGFILE      CONFIGDIR "/zapit/frontend.conf"
-
-//typedef std::map<unsigned short, CFrontend*> fe_map_t;
-//typedef fe_map_t::iterator fe_map_iterator_t;
-
 class CFrontend
 {
 	public:
-		/*
-		typedef enum {
-			FE_CONNECTED,
-			FE_SINGLE,
-			FE_LOOP,
-			FE_NOTCONNECTED,
-		} fe_mode_t;
-		*/
+		fe_mode_t	mode;
+		
+		/* usals config */
+		int useGotoXX;
+		double gotoXXLatitude;
+		double gotoXXLongitude;
+		int gotoXXLaDirection;
+		int gotoXXLoDirection;
+		int repeatUsals;
+		int motorRotationSpeed;
+		
+		int32_t lastSatellitePosition;
+		
+		/* how often to repeat DiSEqC 1.1 commands */
+		uint8_t diseqcRepeats;
+		
+		/* DiSEqC type of attached hardware */
+		diseqc_t diseqcType;
 	  
 	private:
 		/* config file where to store frontend config */
@@ -112,9 +116,6 @@ class CFrontend
 		int fenumber;
 		bool slave;
 		bool standby;
-		
-		//fe_map_t	femap;
-		//fe_mode_t	mode;
 		
 		/* tuning finished flag */
 		bool tuned;
@@ -131,17 +132,6 @@ class CFrontend
 		int32_t currentSatellitePosition;
 		
 		/**/
-		double gotoXXLatitude;
-		double gotoXXLongitude;
-		int gotoXXLaDirection;
-		int gotoXXLoDirection;
-		int repeatUsals;
-		
-		/* how often to repeat DiSEqC 1.1 commands */
-		uint8_t diseqcRepeats;
-		
-		/* DiSEqC type of attached hardware */
-		diseqc_t diseqcType;
 		int diseqc;
 		uint8_t uncommitedInput;
 		
@@ -175,13 +165,10 @@ class CFrontend
 		void	reset(void);
 		
 	public:
-		static CFrontend * getInstance(int num = 0, int adap = 0);
-		static CFrontend * killInstance(int num = 0, int adap = 0);
-		
 		CFrontend(int num = 0, int adap = 0);
 		~CFrontend(void);
 
-		static fe_code_rate_t	getCodeRate(const uint8_t fec_inner, int system = 0);
+		static fe_code_rate_t		getCodeRate(const uint8_t fec_inner, int system = 0);
 		uint8_t				getDiseqcPosition(void) const		{ return currentTransponder.diseqc; }
 		uint8_t				getDiseqcRepeats(void) const		{ return diseqcRepeats; }
 		diseqc_t			getDiseqcType(void) const		{ return diseqcType; }
@@ -189,6 +176,7 @@ class CFrontend
 		static fe_modulation_t		getModulation(const uint8_t modulation);
 		uint8_t				getPolarization(void) const;
 		const struct dvb_frontend_info *getInfo(void) const			{ return &info; };
+		const struct dvb_frontend_parameters * getfeparams(void) const {return &curfe;}
 
 		uint32_t			getBitErrorRate(void) const;
 		uint16_t			getSignalNoiseRatio(void) const;
@@ -210,12 +198,18 @@ class CFrontend
 		void 				positionMotor(uint8_t motorPosition);
 		void				sendMotorCommand(uint8_t cmdtype, uint8_t address, uint8_t command, uint8_t num_parameters, uint8_t parameter1, uint8_t parameter2, int repeat = 0);
 		void 				gotoXX(t_satellite_position pos);
+		
 		const bool 			tuneChannel (CZapitChannel *channel, bool nvod);
 		const bool 			retuneChannel (void);
 		const bool 			retuneTP (bool nowait = true);
 
 		fe_code_rate_t 			getCFEC ();
 		const transponder_id_t 		getTsidOnid()    { return currentTransponder.TP_id; }
+		bool				sameTsidOnid(transponder_id_t tpid)
+						{
+							return (currentTransponder.TP_id == 0)
+								|| (tpid == currentTransponder.TP_id);
+						}
 		void 				setTsidOnid(transponder_id_t newid)  { currentTransponder.TP_id = newid; }
 		uint32_t 			getRate();
 		
@@ -232,6 +226,8 @@ class CFrontend
 		void setLnbOffsets(int32_t _lnbOffsetLow, int32_t _lnbOffsetHigh, int32_t _lnbSwitch);
 
 		struct dvb_frontend_event getEvent(void);
+		int getFeIndex() {return fenumber;}
 };
+
 
 #endif /* __zapit_frontend_h__ */

@@ -73,7 +73,8 @@ extern cDemux *audioDemux;
 extern cDemux *pcrDemux;
 
 // dvbsub
-extern int dvbsub_init(int source);
+//extern int dvbsub_init(int source);
+extern int dvbsub_init();
 extern int dvbsub_stop();
 extern int dvbsub_close();
 extern int dvbsub_start(int pid);
@@ -93,12 +94,16 @@ extern void tuxtx_set_pid(int pid, int page, const char * cc);
 //extern int tuxtx_subtitle_running(int *pid, int *page, int *running);
 extern int tuxtx_main(int _rc, int pid, int page, int source );
 
-extern int tuner_to_scan;		//defined in scan_setup.cpp
+//extern int tuner_to_scan;		//defined in scan_setup.cpp
+extern CFrontend * live_fe;
+extern CScanSettings * scanSettings;
+extern CFrontend * getFE(int index);
 
 extern "C" int pinghost( const char *hostname );
 
-CSatelliteSetupNotifier::CSatelliteSetupNotifier()
+CSatelliteSetupNotifier::CSatelliteSetupNotifier(int num)
 {
+	feindex = num;
 }
 
 /* items1 enabled for advanced diseqc settings, items2 for diseqc != NO_DISEQC, items3 disabled for NO_DISEQC */
@@ -111,17 +116,14 @@ bool CSatelliteSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
 	{
 		for(it = items1.begin(); it != items1.end(); it++) 
 		{
-			//(*it)->init(-1, 0, 0, 0);
 			(*it)->setActive(false);
 		}
 		for(it = items2.begin(); it != items2.end(); it++) 
 		{
-			//(*it)->init(-1, 0, 0, 0);
 			(*it)->setActive(false);
 		}
 		for(it = items3.begin(); it != items3.end(); it++) 
 		{
-			//(*it)->init(-1, 0, 0, 0);
 			(*it)->setActive(false);
 		}
 	}
@@ -129,17 +131,14 @@ bool CSatelliteSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
 	{
 		for(it = items1.begin(); it != items1.end(); it++) 
 		{
-			//(*it)->init(-1, 0, 0, 0);
 			(*it)->setActive(false);
 		}
 		for(it = items2.begin(); it != items2.end(); it++) 
 		{
-			//(*it)->init(-1, 0, 0, 0);
 			(*it)->setActive(true);
 		}
 		for(it = items3.begin(); it != items3.end(); it++) 
 		{
-			//(*it)->init(-1, 0, 0, 0);
 			(*it)->setActive(true);
 		}
 	}
@@ -147,23 +146,20 @@ bool CSatelliteSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
 	{
 		for(it = items1.begin(); it != items1.end(); it++) 
 		{
-			//(*it)->init(-1, 0, 0, 0);
 			(*it)->setActive(true);
 		}
 		for(it = items2.begin(); it != items2.end(); it++) 
 		{
-			//(*it)->init(-1, 0, 0, 0);
 			(*it)->setActive(false);
 		}
 		for(it = items3.begin(); it != items3.end(); it++) 
 		{
-			//(*it)->init(-1, 0, 0, 0);
 			(*it)->setActive(true);
 		}
 	}
 
-	g_Zapit->setDiseqcType((diseqc_t) type, tuner_to_scan);
-	g_Zapit->setDiseqcRepeat( CNeutrinoApp::getInstance()->getScanSettings().diseqcRepeat, tuner_to_scan );
+	g_Zapit->setDiseqcType((diseqc_t) type, feindex);
+	g_Zapit->setDiseqcRepeat( scanSettings->diseqcRepeat, feindex );
 
 	return true;
 }
@@ -201,13 +197,13 @@ bool CDHCPNotifier::changeNotify(const neutrino_locale_t, void * data)
 {
 	CNeutrinoApp::getInstance()->networkConfig.inet_static = ((*(int*)(data)) == 0);
 	
-	for(int x=0;x<5;x++)
+	for(int x=0; x<5; x++)
 		toDisable[x]->setActive(CNeutrinoApp::getInstance()->networkConfig.inet_static);
 	
 	return true;
 }
 
-// onoff notifier
+// onoff notifier needed by moviebrowser
 COnOffNotifier::COnOffNotifier( CMenuItem* a1,CMenuItem* a2,CMenuItem* a3,CMenuItem* a4,CMenuItem* a5)
 {
         number = 0;
@@ -231,40 +227,6 @@ bool COnOffNotifier::changeNotify(const neutrino_locale_t, void *Data)
 			toDisable[i]->setActive(true);
 	}
 	
-	return true;
-}
-
-// recording notifier
-CRecordingNotifier::CRecordingNotifier(CMenuItem* i1 , CMenuItem* i2 , CMenuItem* i3 ,
-                                       CMenuItem* i4 , CMenuItem* i5 , CMenuItem* i6 ,
-                                       CMenuItem* i7 , CMenuItem* i8 , CMenuItem* i9)
-{
-	toDisable[ 0] = i1;
-	toDisable[ 1] = i2;
-	toDisable[ 2] = i3;
-	toDisable[ 3] = i4;
-	toDisable[ 4] = i5;
-	toDisable[ 5] = i6;
-	toDisable[ 6] = i7;
-	toDisable[ 7] = i8;
-	toDisable[ 8] = i9;
-}
-
-bool CRecordingNotifier::changeNotify(const neutrino_locale_t, void *)
-{
-	if ((g_settings.recording_type == CNeutrinoApp::RECORDING_OFF) || (g_settings.recording_type == CNeutrinoApp::RECORDING_FILE))
-	{
-		for(int i = 0; i < 8; i++) 
-		{
-			toDisable[i]->setActive(false);
-		}
-
-		if (g_settings.recording_type == CNeutrinoApp::RECORDING_FILE)
-		{
-			toDisable[7]->setActive(true);
-		}
-	}
-
 	return true;
 }
 
@@ -317,6 +279,7 @@ bool CSectionsdConfigNotifier::changeNotify(const neutrino_locale_t, void *)
         return true;
 }
 
+/*
 bool CTouchFileNotifier::changeNotify(const neutrino_locale_t, void * data)
 {
 	if ((*(int *)data) != 0)
@@ -331,6 +294,7 @@ bool CTouchFileNotifier::changeNotify(const neutrino_locale_t, void * data)
 		remove(filename);
 	return true;
 }
+*/
 
 // color setup notifier
 bool CColorSetupNotifier::changeNotify(const neutrino_locale_t, void *)
@@ -515,19 +479,6 @@ bool CTimingSettingsNotifier::changeNotify(const neutrino_locale_t OptionName, v
 	return false;
 }
 
-// font size notifier
-bool CFontSizeNotifier::changeNotify(const neutrino_locale_t, void *)
-{
-	CHintBox hintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_FONTSIZE_HINT)); // UTF-8
-	hintBox.paint();
-
-	CNeutrinoApp::getInstance()->SetupFonts();
-
-	hintBox.hide();
-
-	return true;
-}
-
 // rec apids notifier
 bool CRecAPIDSettingsNotifier::changeNotify(const neutrino_locale_t, void *)
 {
@@ -560,9 +511,6 @@ int CSubtitleChangeExec::exec(CMenuTarget * parent, const std::string & actionKe
 {
 	printf("CSubtitleChangeExec::exec: action %s\n", actionKey.c_str());
 	
-	// get current service info
-	CZapitClient::CCurrentServiceInfo si = g_Zapit->getCurrentServiceInfo();
-	
 	if(actionKey == "off") 
 	{
 		// tuxtxt stop
@@ -570,7 +518,7 @@ int CSubtitleChangeExec::exec(CMenuTarget * parent, const std::string & actionKe
 		
 		// dvbsub stop
 		dvbsub_stop();
-		dvbsub_close();
+		//dvbsub_close();
 		
 		return menu_return::RETURN_EXIT;
 	}
@@ -584,10 +532,11 @@ int CSubtitleChangeExec::exec(CMenuTarget * parent, const std::string & actionKe
 		tuxtx_stop_subtitle();
 		
 		// dvbsub stop and close
-		dvbsub_stop();
-		dvbsub_close();
+		//dvbsub_stop();
+		//dvbsub_close();
+		//dvbsub_init(live_fe->getFeIndex() );
 		
-		dvbsub_init(si.FeIndex);
+		dvbsub_pause();
 		dvbsub_start(pid);
 	} 
 	else 
@@ -603,17 +552,14 @@ int CSubtitleChangeExec::exec(CMenuTarget * parent, const std::string & actionKe
 		printf("CSubtitleChangeExec::exec: TTX, pid %x page %x lang %s\n", pid, page, ptr);
 		
 		dvbsub_stop();
-		dvbsub_close();
+		//dvbsub_close();
 		
 		tuxtx_stop_subtitle();
 		
 		tuxtx_set_pid(pid, page, ptr);
 		
-		//if(g_RemoteControl->current_PIDs.PIDs.vtxtpid != 0)
-		//	tuxtxt_start( g_RemoteControl->current_PIDs.PIDs.vtxtpid, si.FeIndex );
-		
 		// start tuxtxt
-		tuxtx_main(g_RCInput->getFileHandle(), pid, page, si.FeIndex ); // this 
+		tuxtx_main(g_RCInput->getFileHandle(), pid, page, live_fe->getFeIndex() ); // this 
 	}
 	
         return menu_return::RETURN_EXIT;
@@ -915,20 +861,10 @@ int CDataResetNotifier::exec(CMenuTarget* parent, const std::string& actionKey)
 
 	if(delete_chan) 
 	{
-		system("rm -f /var/tuxbox/config/zapit/*.xml");
+		system("rm -f /var/tuxbox/config/zapit/services.xml");
 		g_Zapit->reinitChannels();
 	}
 
-	return true;
-}
-
-// blendmodenotifier
-bool CColorMenuBlendModeNotifier::changeNotify(const neutrino_locale_t, void * data)
-{
-	int mode = * (int *) data;
-	
-	CFrameBuffer::getInstance()->setBlendMode(mode);
-  
 	return true;
 }
 
@@ -973,6 +909,72 @@ bool CLangSelectNotifier::changeNotify(const neutrino_locale_t, void *)
 		sectionsd_set_languages(v_languages);
 	
 	return true;
+}
+
+// scansetup notifier
+CScanSetupNotifier::CScanSetupNotifier(int num)
+{
+	feindex = num;
+}
+
+/* items1 enabled for advanced diseqc settings, items2 for diseqc != NO_DISEQC, items3 disabled for NO_DISEQC */
+bool CScanSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
+{
+	std::vector<CMenuItem*>::iterator it;
+	int FeMode = *((int*) Data);
+	
+	printf("CScanSetupNotifier::changeNotify: Femode:%d\n", FeMode);
+
+	if ( (FeMode == FE_NOTCONNECTED) || (FeMode == FE_LOOP) ) 
+	{
+		for(it = items1.begin(); it != items1.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+		for(it = items2.begin(); it != items2.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+		for(it = items3.begin(); it != items3.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+	}
+	else
+	{
+		for(it = items1.begin(); it != items1.end(); it++) 
+		{
+			(*it)->setActive(true);
+		}
+		for(it = items2.begin(); it != items2.end(); it++) 
+		{
+			(*it)->setActive(true);
+		}
+		for(it = items3.begin(); it != items3.end(); it++) 
+		{
+			(*it)->setActive(true);
+		}
+	}
+
+	return true;
+}
+
+void CScanSetupNotifier::addItem(int list, CMenuItem* item)
+{
+	switch(list) 
+	{
+		case 0:
+			items1.push_back(item);
+			break;	
+		case 1:
+			items2.push_back(item);
+			break;
+		case 2:
+			items3.push_back(item);
+			break;
+		default:
+			break;
+	}
 }
 
 // mkdir (0755)

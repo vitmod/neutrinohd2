@@ -53,12 +53,11 @@
 #include <zapit/client/zapittools.h>
 
 #include <daemonc/remotecontrol.h>
+
+
 extern CPlugins       * g_PluginList;    /* neutrino.cpp */
 extern CRemoteControl * g_RemoteControl; /* neutrino.cpp */
 
-//#define PLUGINDIR_VAR "/var/tuxbox/plugins"
-//#define PLUGINDIR_HDD "/hdd/tuxbox/plugins"
-//#define PLUGINDIR_USB "/mnt/usb/tuxbox/plugins"
 
 bool CPlugins::plugin_exists(const std::string & filename)
 {
@@ -149,9 +148,6 @@ void CPlugins::loadPlugins()
 	number_of_plugins = 0;
 	plugin_list.clear();
 
-	//scanDir(PLUGINDIR_HDD);
-	//scanDir(PLUGINDIR_USB);
-	//scanDir(PLUGINDIR_VAR);
 	scanDir(PLUGINDIR);
 	
 	sort(plugin_list.begin(), plugin_list.end());
@@ -298,7 +294,6 @@ void CPlugins::startPlugin(const char * const name)
 
 }
 
-//int mysystem(char * cmd, char * arg1, char * arg2);
 void CPlugins::startScriptPlugin(int number)
 {
 	const char *script = plugin_list[number].pluginfile.c_str();
@@ -368,6 +363,11 @@ void CPlugins::startPlugin(int number,int param)
 	{
 		// filehandle pointer
 		startparam = makeParam(P_ID_FBUFFER, frameBuffer->getFileHandle(), startparam);
+		startparam = makeParam(P_ID_LFBUFFER, (int)frameBuffer->getFrameBufferPointer(), startparam);
+		startparam = makeParam(P_ID_XRESFBUFFER, frameBuffer->getScreenWidth(true), startparam);
+		startparam = makeParam(P_ID_YRESFBUFFER, frameBuffer->getScreenHeight(true), startparam);
+		startparam = makeParam(P_ID_STRIDEFBUFFER, frameBuffer->getStride(), startparam);
+		startparam = makeParam(P_ID_MEMFBUFFER, frameBuffer->getAvailableMem(), startparam);
 	}
 	
 	// rc
@@ -426,7 +426,7 @@ void CPlugins::startPlugin(int number,int param)
 
 	strcpy(depstring, plugin_list[number].depend.c_str());
 
-	argc=0;
+	argc = 0;
 	if ( depstring[0] )
 	{
 		p=depstring;
@@ -445,11 +445,11 @@ void CPlugins::startPlugin(int number,int param)
 		}
 	}
 	
-	for ( i=0; i<argc; i++ )
+	for ( i = 0; i <argc; i++ )
 	{
 		std::string libname = argv[i];
 		printf("[CPlugins] try load shared lib : %s\n",argv[i]);
-		libhandle[i] = dlopen ( *argv[i] == '/' ?
+		libhandle[i] = dlopen( *argv[i] == '/' ?
 					argv[i] : (PLUGINDIR "/"+libname).c_str(),
 					RTLD_NOW | RTLD_GLOBAL );
 		if ( !libhandle[i] )
@@ -478,14 +478,6 @@ void CPlugins::startPlugin(int number,int param)
 			{
 				printf("[CPlugins] try exec...\n");
 				
-				
-				if (plugin_list[number].fb) 
-				{			  
-					//frameBuffer->setMode(720, 576, 8);
-					//frameBuffer->paletteSet();
-				}
-				
-
 				execPlugin(startparam);
 				dlclose(handle);
 				printf("[CPlugins] exec done...\n");
@@ -508,14 +500,7 @@ void CPlugins::startPlugin(int number,int param)
 
 		// restore fb
 		if (plugin_list[number].fb)
-		{
-			// restore FB mode 
-			//if (sizeof(fb_pixel_t) != 1)
-			//	frameBuffer->setMode(720, 576, 8 * sizeof(fb_pixel_t));
-			
-			//frameBuffer->paletteSet();
-			//frameBuffer->paintBackgroundBox(0, 0, 720, 576);
-			
+		{	
 #ifdef FB_BLIT
 			frameBuffer->blit();
 #endif			

@@ -66,6 +66,7 @@
 #include <zapit/frontend_c.h>
 
 #include <gui/epgplus.h>
+#include <system/debug.h>
 
 
 extern CBouquetList * bouquetList;      		/* neutrino.cpp */
@@ -93,7 +94,7 @@ int info_height = 0;
 bool new_mode_active = 0;
 
 extern int FrontendCount;			// defined in zapit.cpp
-
+extern CFrontend * getFE(int index);		// defined in zapit.cpp
 
 extern CBouquetManager *g_bouquetManager;
 
@@ -511,9 +512,12 @@ int CChannelList::show()
 
 	new_mode_active = 0;
 	
-	int  fw = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getWidth();
-	width  = w_max (((g_settings.channellist_extended)?(frameBuffer->getScreenWidth() / 20 * (fw+6)):(frameBuffer->getScreenWidth() / 20 * (fw+5))), 100);
-	height = h_max ((frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20 * 2));
+	// windows size
+	//int  fw = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getWidth();
+	//width  = w_max (((g_settings.channellist_extended)?(frameBuffer->getScreenWidth() / 20 * (fw+6)):(frameBuffer->getScreenWidth() / 20 * (fw+5))), 100);
+	//height = h_max ((frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20 * 2));
+	width = w_max (768, 70);
+	height = h_max (576, 50 + 30); // 30 for the bottom button box.
 
 	if (chanlist.empty()) 
 	{
@@ -596,13 +600,9 @@ int CChannelList::show()
 		}
 		else if( msg == CRCInput::RC_blue ) //epgplus
 		{
-			CEPGplusHandler * tmpEPGplusHandler = NULL;
-			tmpEPGplusHandler = new CEPGplusHandler();
-			
-			tmpEPGplusHandler->exec(NULL, "");
-			
-			if(tmpEPGplusHandler)
-				delete tmpEPGplusHandler;
+			hide();
+			CEPGplusHandler eplus;
+			eplus.exec(NULL, "");
 			
 			loop = false;
 		}
@@ -1165,7 +1165,7 @@ void CChannelList::zapTo(int pos, bool forceStoreToLastChannels)
 
 	CZapitChannel * chan = chanlist[pos];
 	
-	printf("CChannelList::zapTo me %x %s tuned %d new %d %s -> %llx\n", (int) this, name.c_str(), tuned, pos, chan->name.c_str(), chan->channel_id);
+	printf("CChannelList::zapTo me %s tuned %d new %d %s -> %llx\n", name.c_str(), tuned, pos, chan->name.c_str(), chan->channel_id);
 	
 	if ( pos !=(int)tuned ) 
 	{
@@ -1772,15 +1772,21 @@ void CChannelList::paintItem(int pos)
 
 	if(!autoshift && CNeutrinoApp::getInstance()->recordingstatus && curr < chanlist.size()) 
 	{
-		iscurrent = (chanlist[curr]->channel_id >> 16) == (rec_channel_id >> 16);
-		
-		//if(FrontendCount == 1) // single tuner
-		//{
-			//if(chanlist[curr]->channel_id >> 16 == rec_channel_id >> 16)
-			//	iscurrent = false;
-		//}
+		CZapitChannel * live_chan = getChannel(live_channel_id);
+		CZapitChannel * rec_chan = getChannel(rec_channel_id);
+			
+		if(FrontendCount > 1)
+		{
+			// twin
+			if( getFE(rec_chan->getFeIndex())->mode == FE_LOOP)
+				iscurrent = SAME_TRANSPONDER(chanlist[curr]->channel_id, rec_channel_id);
+			else if( (rec_chan->getFeIndex() != live_chan->getFeIndex()) && getFE(rec_chan->getFeIndex())->mode != FE_LOOP)
+				iscurrent = true;
+		}
+		else
+			iscurrent = SAME_TRANSPONDER(chanlist[curr]->channel_id, rec_channel_id);
 	
-		printf("CChannelList::paintItem: recording %llx current %llx current = %s\n", rec_channel_id, chanlist[liststart + pos]->channel_id, iscurrent? "yes" : "no");
+		dprintf(DEBUG_INFO, "CChannelList::paintItem: recording %llx current %llx current = %s\n", rec_channel_id, chanlist[liststart + pos]->channel_id, iscurrent? "yes" : "no");
 	}
 	
 	if (curr == selected) 
@@ -1805,7 +1811,6 @@ void CChannelList::paintItem(int pos)
 	} 
 	else 
 	{
-		//FIXME: twin
 		color = iscurrent ? COL_MENUCONTENT : COL_MENUCONTENTINACTIVE;
 		bgcolor = iscurrent ? COL_MENUCONTENT_PLUS_0 : COL_MENUCONTENTINACTIVE_PLUS_0;
 		

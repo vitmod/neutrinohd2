@@ -71,9 +71,6 @@ class CZapitClient : public CBasicClient
 			EVT_SDT_CHANGED,
 			EVT_SERVICES_CHANGED,
 
-			EVT_PIPMODE_ACTIVATED,
-			EVT_PIPMODE_DEACTIVATED,
-			
 			EVT_PMT_CHANGED,
 			
 			LAST_EVENT_MARKER             // <- no actual event, needed by pzapit
@@ -237,8 +234,39 @@ class CZapitClient : public CBasicClient
 
 				int FeIndex;
 		};
+		
+		//TEST
+		class CRecordServiceInfo
+		{
+			public:
+				t_original_network_id onid;
+				t_service_id           sid;
+				t_transport_stream_id tsid;
+				unsigned short	vpid;
+				unsigned short  vtype;
+				unsigned short	apid;
+				unsigned short	pcrpid;
+				unsigned short	vtxtpid;
+				unsigned int	tsfrequency;
+				unsigned char	polarisation;
+				unsigned char	diseqc;
+				unsigned short  pmtpid;
+				unsigned short  pmt_version;
+				uint32_t	rate;
+				fe_code_rate	fec;
+
+				int FeIndex;
+		};
+		//
 
 		struct responseGetPIDs
+		{
+			responseGetOtherPIDs	PIDs;
+			APIDList		APIDs;
+			SubPIDList  		SubPIDs;
+		};
+		
+		struct responseGetRecordPIDs
 		{
 			responseGetOtherPIDs	PIDs;
 			APIDList		APIDs;
@@ -257,6 +285,7 @@ class CZapitClient : public CBasicClient
 		};
 		typedef std::vector<responseGetSatelliteList> SatelliteList;
 
+		#if 0
 		struct responseFESignal
 		{
 			unsigned int  sig;
@@ -268,6 +297,7 @@ class CZapitClient : public CBasicClient
 			// int          has_sync;
 			// int          has_carrier;
 		};
+		#endif
 
 
 	public:
@@ -308,6 +338,10 @@ class CZapitClient : public CBasicClient
 
 		/* return the current (tuned) ServiceID */
 		t_channel_id getCurrentServiceID();
+		
+		//TEST
+		/* return the record (tuned) ServiceID */
+		t_channel_id getRecordServiceID();
 
 		/* return the current satellite position */
 		int32_t getCurrentSatellitePosition();
@@ -359,9 +393,17 @@ class CZapitClient : public CBasicClient
 
 		/* get current APID-List */
 		void getPIDS( responseGetPIDs& pids );
+		
+		/* get record channel APID-List */
+		void getRecordPIDS( responseGetRecordPIDs& pids );
 
 		/* get info about the current serivice */
 		CZapitClient::CCurrentServiceInfo getCurrentServiceInfo();
+		
+		//TEST
+		/* get info about the current serivice */
+		CZapitClient::CRecordServiceInfo getRecordServiceInfo();
+		//
 
 		/* transfer SubService-List to zapit */
 		void setSubServices( subServiceList& subServices );
@@ -430,15 +472,9 @@ class CZapitClient : public CBasicClient
 		void setScanMotorPosList( ScanMotorPosList& motorPosList );
 
 		/* set diseqcType*/
-		#if 0
-		void setDiseqcType(const diseqc_t diseqc);
-		#endif
-		//test
 		void setDiseqcType(const diseqc_t diseqc, int feindex=0);
 
 		/* set diseqcRepeat*/
-		//void setDiseqcRepeat(const uint32_t repeat);
-		//test
 		void setDiseqcRepeat(const uint32_t repeat, int feindex=0);
 
 		/* set diseqcRepeat*/
@@ -446,9 +482,12 @@ class CZapitClient : public CBasicClient
 
 		/* set Scan-Type for channel search */
 		void setScanType(const scanType mode);
+		
+		/* set fe mode */
+		void setFEMode(const fe_mode_t mode, int feindex = 0);
 
 		/* get FrontEnd Signal Params */ 
-		void getFESignal (struct responseFESignal& f);
+		//void getFESignal (struct responseFESignal& f);
 
 		/****************************************/
 		/*					*/
@@ -531,12 +570,8 @@ class CZapitClient : public CBasicClient
 		void setAudioMode(int mode);
 		void getAudioMode(int * mode);
 		void setVideoSystem(int video_system);
-
-		//test
-		void getAspectRatio(int *ratio);
-		void setAspectRatio(int ratio);
-		void getMode43(int *m43);
-		void setMode43(int m43);
+		
+		void addFrontend();
 
 		/****************************************/
 		/*					*/

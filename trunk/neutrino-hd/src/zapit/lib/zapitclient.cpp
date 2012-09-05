@@ -107,6 +107,34 @@ CZapitClient::CCurrentServiceInfo CZapitClient::getCurrentServiceInfo()
 	return response;
 }
 
+//TEST
+/* get record SID */
+t_channel_id CZapitClient::getRecordServiceID()
+{
+	send(CZapitMessages::CMD_GET_RECORD_SERVICEID);
+
+	CZapitMessages::responseGetRecordServiceID response;
+	CBasicClient::receive_data((char* )&response, sizeof(response));
+
+	close_connection();
+
+	return response.record_channel_id;
+}
+
+/* get record Service Infos */
+CZapitClient::CRecordServiceInfo CZapitClient::getRecordServiceInfo()
+{
+	send(CZapitMessages::CMD_GET_RECORD_SERVICEINFO);
+
+	CZapitClient::CRecordServiceInfo response;
+	CBasicClient::receive_data((char* )&response, sizeof(response));
+
+	close_connection();
+	
+	return response;
+}
+//
+
 /* get lastchannel */
 void CZapitClient::getLastChannel(unsigned int &channumber, char &mode)
 {
@@ -162,7 +190,7 @@ unsigned int CZapitClient::zapTo_serviceID(const t_channel_id channel_id)
 	return response.zapStatus;
 }
 
-//TEST
+// zap to record
 unsigned int CZapitClient::zapTo_record(const t_channel_id channel_id)
 {
 	CZapitMessages::commandZaptoServiceID msg;
@@ -296,6 +324,46 @@ void CZapitClient::getPIDS(responseGetPIDs& pids)
 
 	close_connection();
 }
+
+//TEST
+void CZapitClient::getRecordPIDS(responseGetRecordPIDs& pids)
+{
+	CZapitMessages::responseGeneralInteger responseInteger;
+	responseGetAPIDs                       responseAPID;
+	responseGetSubPIDs                     responseSubPID;
+
+	send(CZapitMessages::CMD_GETRECORDPIDS);
+
+	CBasicClient::receive_data((char* )&(pids.PIDs), sizeof(pids.PIDs));
+
+	pids.APIDs.clear();
+
+	if (CBasicClient::receive_data((char* )&responseInteger, sizeof(responseInteger)))
+	{
+		pids.APIDs.reserve(responseInteger.number);
+
+		while (responseInteger.number-- > 0)
+		{
+			CBasicClient::receive_data((char*)&responseAPID, sizeof(responseAPID));
+			pids.APIDs.push_back(responseAPID);
+		};
+	}
+	
+	pids.SubPIDs.clear();
+	if (CBasicClient::receive_data((char* )&responseInteger, sizeof(responseInteger)))
+	{
+		pids.SubPIDs.reserve(responseInteger.number);
+
+		while (responseInteger.number-- > 0)
+		{
+			CBasicClient::receive_data((char*)&responseSubPID, sizeof(responseSubPID));
+			pids.SubPIDs.push_back(responseSubPID);
+		};
+	}
+
+	close_connection();
+}
+//
 
 // zapto Nvod subservice
 void CZapitClient::zaptoNvodSubService(const int num)
@@ -776,18 +844,17 @@ void CZapitClient::setScanType(const scanType mode)
   	close_connection();
 }
 
-/* query Frontend Signal parameters */
-void CZapitClient::getFESignal (struct responseFESignal &f)
+/* set fe mode */
+void CZapitClient::setFEMode(const fe_mode_t mode, int feindex)
 {
-	struct responseFESignal rsignal;
+	//printf("CZapitClient::%s\n", __FUNCTION__);
+	
+	CZapitMessages::commandSetFEMode msg;
 
-	send(CZapitMessages::CMD_GET_FE_SIGNAL);
-	CBasicClient::receive_data((char *) &rsignal, sizeof(rsignal));
+	msg.mode = mode;
+	msg.feindex = feindex;
 
-	f.sig = rsignal.sig;
-	f.snr = rsignal.snr;
-	f.ber = rsignal.ber;
-
+	send(CZapitMessages::CMD_SCANSETFEMODE, (char*)&msg, sizeof(msg));
 	close_connection();
 }
 
@@ -1080,65 +1147,12 @@ bool CZapitClient::isRecordModeActive()
 	return response.activated;
 }
 
-// set PIP mode
-void CZapitClient::setPipMode(const bool activate)
+/* add frontend */
+void CZapitClient::addFrontend()
 {
-	CZapitMessages::commandSetPipMode msg;
-	msg.activate = activate;
-	send(CZapitMessages::CMD_SET_PIP_MODE, (char*)&msg, sizeof(msg));
+	send(CZapitMessages::CMD_ADD_FRONTEND);
 	close_connection();
 }
-
-// is PIP mode active
-bool CZapitClient::isPipModeActive()
-{
-	send(CZapitMessages::CMD_GET_PIP_MODE);
-
-	CZapitMessages::responseGetPipModeState response;
-	CBasicClient::receive_data((char* )&response, sizeof(response));
-
-	close_connection();
-	return response.activated;
-}
-
-// get aspect ratio
-void CZapitClient::getAspectRatio(int *ratio)
-{
-	CZapitMessages::commandInt msg;
-	send(CZapitMessages::CMD_GET_ASPECTRATIO, 0, 0);
-	CBasicClient::receive_data((char* )&msg, sizeof(msg));
-	* ratio = msg.val;
-	close_connection();
-}
-
-// set aspect ratio
-void CZapitClient::setAspectRatio(int ratio)
-{
-	CZapitMessages::commandInt msg;
-	msg.val = ratio;
-	send(CZapitMessages::CMD_SET_ASPECTRATIO, (char*)&msg, sizeof(msg));
-	close_connection();
-}
-
-// get mode34
-void CZapitClient::getMode43(int *m43)
-{
-	CZapitMessages::commandInt msg;
-	send(CZapitMessages::CMD_GET_MODE43, 0, 0);
-	CBasicClient::receive_data((char* )&msg, sizeof(msg));
-	* m43 = msg.val;
-	close_connection();
-}
-
-/* set mode 34 */
-void CZapitClient::setMode43(int m43)
-{
-	CZapitMessages::commandInt msg;
-	msg.val = m43;
-	send(CZapitMessages::CMD_SET_MODE43, (char*)&msg, sizeof(msg));
-	close_connection();
-}
-//
 
 /* register event */
 void CZapitClient::registerEvent(const unsigned int eventID, const unsigned int clientID, const char * const udsName)

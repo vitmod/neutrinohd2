@@ -38,6 +38,8 @@
 #include <dmx_cs.h>
 #include <math.h>
 
+#include <gui/scan_setup.h>
+
 extern CBouquetManager *g_bouquetManager;
 extern CZapitClient::scanType scanType;
 extern tallchans allchans;   			//  defined in zapit.cpp
@@ -53,10 +55,12 @@ std::string lastServiceName;
 std::map <t_channel_id, uint8_t> service_types;
 
 extern CEventServer *eventServer;
-extern int scan_pids;
+extern CScanSettings * scanSettings;
 extern t_channel_id live_channel_id;
 
-int add_to_scan(transponder_id_t TsidOnid, FrontendParameters *feparams, uint8_t polarity, bool fromnit = 0);
+CFrontend * getFE(int index);
+
+int add_to_scan(transponder_id_t TsidOnid, FrontendParameters *feparams, uint8_t polarity, bool fromnit = 0, int feindex = 0);
 
 void generic_descriptor(const unsigned char * const)
 {
@@ -264,7 +268,7 @@ int satellite_delivery_system_descriptor(const unsigned char * const buffer, t_t
 	transponder_id_t TsidOnid;
 	int modulationSystem, modulationType, rollOff, fec_inner;
 
-	if (CFrontend::getInstance(feindex)->getInfo()->type != FE_QPSK)
+	if ( getFE(feindex)->getInfo()->type != FE_QPSK)
 		return -1;
 
 	//freq
@@ -334,7 +338,7 @@ int satellite_delivery_system_descriptor(const unsigned char * const buffer, t_t
 
 	TsidOnid = CREATE_TRANSPONDER_ID_FROM_SATELLITEPOSITION_ORIGINALNETWORK_TRANSPORTSTREAM_ID(freq, satellitePosition, original_network_id, transport_stream_id);
 
-	add_to_scan(TsidOnid, &feparams, polarization, true);
+	add_to_scan(TsidOnid, &feparams, polarization, true, feindex);
 
 	return 0;
 }
@@ -344,7 +348,7 @@ int cable_delivery_system_descriptor(const unsigned char * const buffer, t_trans
 {
 	transponder_id_t TsidOnid;
 
-	if (CFrontend::getInstance(feindex)->getInfo()->type != FE_QAM)
+	if ( getFE(feindex)->getInfo()->type != FE_QAM)
 		return -1;
 
 	FrontendParameters feparams;
@@ -386,11 +390,11 @@ int cable_delivery_system_descriptor(const unsigned char * const buffer, t_trans
 	//mod
 	feparams.u.qam.modulation = CFrontend::getModulation(buffer[8]);
 
-	freq = feparams.frequency/1000;
+	freq = feparams.frequency/100;
 
        TsidOnid = CREATE_TRANSPONDER_ID_FROM_SATELLITEPOSITION_ORIGINALNETWORK_TRANSPORTSTREAM_ID(freq, satellitePosition, original_network_id, transport_stream_id);
 
-        add_to_scan(TsidOnid, &feparams, 0);
+        add_to_scan(TsidOnid, &feparams, 0, true, feindex);
 
 	return 0;
 }
@@ -420,7 +424,7 @@ uint8_t fix_service_type(uint8_t type)
 
 int parse_pat(int feindex = 0);
 int pat_get_pmt_pid(CZapitChannel * const channel);
-int parse_pmt(CZapitChannel * const channel);
+int parse_pmt(CZapitChannel * const channel, int dmx_num = 0);
 
 /* 0x48 */
 void service_descriptor(const unsigned char * const buffer, const t_service_id service_id, const t_transport_stream_id transport_stream_id, const t_original_network_id original_network_id, t_satellite_position satellitePosition, freq_id_t freq, bool free_ca, int feindex)
@@ -595,8 +599,10 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 
 		if(tpchange) 
 		{
-			cDemux * dmx = new cDemux( feindex ); 
+			int demux_index = 0; //feindex;
+			cDemux * dmx = new cDemux( demux_index ); 
 			dmx->Open(DMX_PSI_CHANNEL, 1024, feindex);
+			
 			if (!((dmx->sectionFilter(0x10, filter, mask, 5, 10000) < 0) || (dmx->Read(buff, 1024) < 0))) 
 			{
 				network_descriptors_length = ((buff[8] & 0x0F) << 8) | buff[9];
@@ -667,7 +673,7 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 				int bouquetId;
 				char pname[100];
 				
-				if (CFrontend::getInstance(feindex)->getInfo()->type == FE_QPSK)
+				if ( getFE(feindex)->getInfo()->type == FE_QPSK)
 					snprintf(pname, 100, "[%c%03d.%d] %s", satellitePosition > 0? 'E' : 'W', abs(satellitePosition)/10, abs(satellitePosition)%10, providerName.c_str());
 				else
 					snprintf(pname, 100, "%s", providerName.c_str());
@@ -692,7 +698,7 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 			break;
 	}
 
-	if(scan_pids && channel) 
+	if( /*scanSettings->scan_pids &&*/ channel) 
 	{
 		if(tpchange)
 			parse_pat(feindex);
@@ -703,14 +709,9 @@ void service_descriptor(const unsigned char * const buffer, const t_service_id s
 		{
 			if(!parse_pmt(channel)) 
 			{
-				//if(channel->getPreAudioPid() == 0 && channel->getVideoPid() == 0)
-					//printf("[scan] Channel %s dont have A/V pids !\n", channel->getName().c_str());
-
 				if ((channel->getPreAudioPid() != 0) || (channel->getVideoPid() != 0)) 
 				{
 					channel->setPidsFlag();
-					//if(channel->getServiceType() == 1)
-						//live_channel_id = channel->getChannelID();
 				}
 			}
 		}
@@ -932,7 +933,7 @@ void subtitling_descriptor(const unsigned char * const)
 /* 0x5A */ //FIXME is brocken :-(
 int terrestrial_delivery_system_descriptor(const unsigned char * const buffer, t_transport_stream_id transport_stream_id, t_original_network_id original_network_id, t_satellite_position satellitePosition, freq_id_t freq, int feindex)
 {
-	if (CFrontend::getInstance(feindex)->getInfo()->type != FE_OFDM)
+	if ( getFE(feindex)->getInfo()->type != FE_OFDM)
 		return -1;
 
 	FrontendParameters feparams;
@@ -970,7 +971,7 @@ int terrestrial_delivery_system_descriptor(const unsigned char * const buffer, t
 
 	TsidOnid = CREATE_TRANSPONDER_ID_FROM_SATELLITEPOSITION_ORIGINALNETWORK_TRANSPORTSTREAM_ID(freq, satellitePosition, original_network_id, transport_stream_id);
 
-	add_to_scan(TsidOnid, &feparams, 0);
+	add_to_scan(TsidOnid, &feparams, 0, true, feindex);
 
 
 	return 0;

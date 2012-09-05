@@ -34,6 +34,11 @@
 
 #include <driver/screen_max.h>
 
+
+//extern Zapit_config zapitCfg;	//defined in neutrino.cpp
+//void setZapitConfig(Zapit_config * Cfg);
+//void getZapitConfig(Zapit_config *Cfg);
+
 //option off0_on1
 #define OPTIONS_OFF0_ON1_OPTION_COUNT 2
 const CMenuOptionChooser::keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTION_COUNT] =
@@ -58,6 +63,15 @@ const CMenuOptionChooser::keyval OPTIONS_LASTMODE_OPTIONS[OPTIONS_LASTMODE_OPTIO
         { 1, NONEXISTANT_LOCALE, "TV"  }
 };
 
+/*
+#define SECTIONSD_SCAN_OPTIONS_COUNT 3
+const CMenuOptionChooser::keyval SECTIONSD_SCAN_OPTIONS[SECTIONSD_SCAN_OPTIONS_COUNT] =
+{
+	{ 0, LOCALE_OPTIONS_OFF },
+	{ 1, LOCALE_OPTIONS_ON  },
+	{ 2, LOCALE_OPTIONS_ON_WITHOUT_MESSAGES  }
+};
+*/
 
 CZapitSetup::CZapitSetup()
 {
@@ -78,6 +92,11 @@ int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 	if(actionKey == "save_action") 
 	{
 		CNeutrinoApp::getInstance()->exec(NULL, "savesettings");
+		
+		//zapitCfg.saveLastChannel = g_settings.uselastchannel;
+		//setZapitConfig(&zapitCfg);
+		//g_Zapit->reinitChannels();
+		
 		showMenu();
 		return menu_return::RETURN_EXIT;
 	}
@@ -111,6 +130,15 @@ void CZapitSetup::showMenu()
 	zapit->addItem(zapit1 = new CMenuOptionChooser(LOCALE_ZAPITSETUP_LAST_MODE, &g_settings.lastChannelMode, OPTIONS_LASTMODE_OPTIONS, OPTIONS_LASTMODE_OPTION_COUNT, !g_settings.uselastchannel, this, CRCInput::convertDigitToKey(shortcut++) ));
 	zapit->addItem(zapit2 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_TV, !g_settings.uselastchannel, g_settings.StartChannelTV, new CSelectChannelWidget(), "tv", CRCInput::convertDigitToKey(shortcut++) ));
 	zapit->addItem(zapit3 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_RADIO, !g_settings.uselastchannel, g_settings.StartChannelRadio, new CSelectChannelWidget(), "radio", CRCInput::convertDigitToKey(shortcut++) ));
+	
+	//
+	//getZapitConfig(&zapitCfg);
+	
+	//zapit->addItem(GenericMenuSeparatorLine);
+	//zapit->addItem(new CMenuOptionChooser(LOCALE_EXTRA_ZAPIT_MAKE_BOUQUET, (int *)&zapitCfg.makeRemainingChannelsBouquet, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcut++) ));
+	//zapit->addItem(new CMenuOptionChooser(LOCALE_EXTRA_ZAPIT_SAVE_LAST, (int *)&zapitCfg.saveLastChannel, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true));
+
+	//zapit->addItem( new CMenuOptionChooser(LOCALE_ZAPIT_SCANSDT, (int *)&zapitCfg.scanSDT, SECTIONSD_SCAN_OPTIONS, SECTIONSD_SCAN_OPTIONS_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcut++)) );
 
 	zapit->exec(NULL, "");
 	zapit->hide();

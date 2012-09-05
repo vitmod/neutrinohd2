@@ -420,7 +420,7 @@ unsigned short parse_ES_info(const unsigned char * const buffer, CZapitChannel *
 int curpmtpid;
 int pmt_caids[11] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-int parse_pmt(CZapitChannel * const channel)
+int parse_pmt(CZapitChannel * const channel, int dmx_num)
 {
 	unsigned short i;
 	unsigned char buffer[PMT_SIZE];
@@ -442,7 +442,8 @@ int parse_pmt(CZapitChannel * const channel)
 		return -1;
 	}
 	
-	cDemux * dmx = new cDemux( channel->getDemuxIndex() ); 
+	int demux_index = dmx_num; //channel->getDemuxIndex()
+	cDemux * dmx = new cDemux( demux_index ); 
 	
 	// open
 	dmx->Open(DMX_PSI_CHANNEL, PMT_SIZE, channel->getFeIndex());
@@ -471,7 +472,7 @@ int parse_pmt(CZapitChannel * const channel)
 	
 	delete dmx;
 	
-	// current pnt pid
+	// current pnmt pid
 	curpmtpid = channel->getPmtPid();
 
 	// pmt.tmp
@@ -558,13 +559,14 @@ int parse_pmt(CZapitChannel * const channel)
 
 	printf("[pmt]parse_pmt: fe(%d) pcr pid: old 0x%x new 0x%x\n", channel->getFeIndex(), channel->getPcrPid(), ((buffer[8] & 0x1F) << 8) + buffer[9]);
 
+	// ci
 	if(channel->getCaPmt() != 0) 
 	{
 		if(channel->getCaPmt()->version_number != caPmt->version_number)
 			channel->resetPids();
 	}
 	
-	/* pmt */
+	/* capmt descriptor*/
 	section_length = ((buffer[1] & 0x0F) << 8) + buffer[2];
 	channel->setPcrPid(((buffer[8] & 0x1F) << 8) + buffer[9]);
 	program_info_length = ((buffer[10] & 0x0F) << 8) | buffer[11];
@@ -585,16 +587,18 @@ int parse_pmt(CZapitChannel * const channel)
 		}
 	}
 
-	/* pmt ES_Info */
+	/* capmt parse ES_Info */
 	for (i = 12 + program_info_length; i < section_length - 1; i += ES_info_length + 5)
 		ES_info_length = parse_ES_info(buffer + i, channel, caPmt);
 
 	if(scan_runs) 
 	{
+		// ci
 		if(channel->getCaPmt() != 0)
 			delete channel->getCaPmt();
 		
 		channel->setCaPmt(NULL);
+		
 		delete caPmt;
 	} 
 	else 
@@ -621,7 +625,8 @@ int pmt_set_update_filter(CZapitChannel * const channel, int * fd )
 
 	if(pmtDemux == NULL) 
 	{
-		pmtDemux = new cDemux( channel->getDemuxIndex() );
+		int demux_index = 0; //channel->getDemuxIndex()
+		pmtDemux = new cDemux( demux_index );
 		
 		// open 
 		pmtDemux->Open(DMX_PSI_CHANNEL, PMT_SIZE, channel->getFeIndex() ); // this indicate fe num
@@ -645,17 +650,19 @@ int pmt_set_update_filter(CZapitChannel * const channel, int * fd )
 	mask[4] = 0xFF;
 
 	printf("[pmt] pmt_set_update_filter: fe(%d) sid 0x%x pid 0x%x version 0x%x\n", channel->getFeIndex(), channel->getServiceId(), channel->getPmtPid(), channel->getCaPmt()->version_number);
-#if 0
-	filter[3] = (((channel->getCaPmt()->version_number + 1) & 0x01) << 1) | 0x01;
-	mask[3] = (0x01 << 1) | 0x01;
 	
-	pmtDemux->sectionFilter(channel->getPmtPid(), filter, mask, 5);
-#else
+#if 1
 	filter[3] = (channel->getCaPmt()->version_number << 1) | 0x01;
 	mask[3] = (0x1F << 1) | 0x01;
 	mode[3] = 0x1F << 1;
 	
 	pmtDemux->sectionFilter(channel->getPmtPid(), filter, mask, 5, 0, mode);
+#else
+	// orig
+	filter[3] = (((channel->getCaPmt()->version_number + 1) & 0x01) << 1) | 0x01;
+	mask[3] = (0x01 << 1) | 0x01;
+	
+	pmtDemux->sectionFilter(channel->getPmtPid(), filter, mask, 5);
 #endif
 
 	*fd = 1;
@@ -670,8 +677,6 @@ int pmt_stop_update_filter(int * fd)
 	if (pmtDemux)
 	{
 		pmtDemux->Stop();
-		
-		//pmtDemux->Close();
 		
 		delete pmtDemux; // delte closes demuxes
 

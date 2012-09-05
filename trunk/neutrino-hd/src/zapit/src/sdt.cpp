@@ -33,7 +33,7 @@
 
 #include <dmx_cs.h>
 
-#define SDT_SIZE 1026
+#define SDT_SIZE 1024
 
 
 int parse_sdt(t_transport_stream_id *p_transport_stream_id,t_original_network_id *p_original_network_id,t_satellite_position satellitePosition, freq_id_t freq, int feindex)
@@ -43,7 +43,8 @@ int parse_sdt(t_transport_stream_id *p_transport_stream_id,t_original_network_id
 
 	memset(secdone, 0, 255);
 
-	cDemux * dmx = new cDemux( feindex );
+	int demux_index = 0; //feindex;
+	cDemux * dmx = new cDemux( demux_index );
 	
 	//open
 	dmx->Open(DMX_PSI_CHANNEL, SDT_SIZE, feindex);
@@ -69,15 +70,13 @@ int parse_sdt(t_transport_stream_id *p_transport_stream_id,t_original_network_id
 	unsigned char filter[DMX_FILTER_SIZE];
 	unsigned char mask[DMX_FILTER_SIZE];
 
-	int flen;
-	flen = 5;
 	memset(filter, 0x00, DMX_FILTER_SIZE);
 	memset(mask, 0x00, DMX_FILTER_SIZE);
 
 	filter[0] = 0x42;
 	mask[0] = 0xFF;
 
-	if (dmx->sectionFilter(0x11, filter, mask, flen) < 0) 
+	if (dmx->sectionFilter(0x11, filter, mask, 1) < 0) 
 	{
 		delete dmx;
 		return -1;
@@ -237,7 +236,8 @@ extern tallchans curchans;
 
 int parse_current_sdt( const t_transport_stream_id p_transport_stream_id, const t_original_network_id p_original_network_id, t_satellite_position satellitePosition, freq_id_t freq, int feindex)
 { 
-	cDemux * dmx = new cDemux( feindex );
+	int demux_index = 0; //feindex;
+	cDemux * dmx = new cDemux( demux_index );
 	
 	/* open */
 	dmx->Open(DMX_PSI_CHANNEL, SDT_SIZE, feindex);

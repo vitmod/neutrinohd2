@@ -27,6 +27,9 @@ INCLUDES = \
 	@CURL_CFLAGS@ \
 	@FREETYPE_CFLAGS@
 
+if !ENABLE_GSTREAMER
+INCLUDES += -I$(top_srcdir)/lib/libeplayer3/include
+endif
 
 noinst_LIBRARIES = libtimerlist.a libneutrino_gui.a libneutrino_gui2.a
 
@@ -35,7 +38,7 @@ libneutrino_gui_a_SOURCES = \
 	favorites.cpp sleeptimer.cpp screensetup.cpp \
 	epgview.cpp infoviewer.cpp scan.cpp update.cpp \
 	filebrowser.cpp audioplayer.cpp nfs.cpp pictureviewer.cpp \
-	movieplayer.cpp rc_lock.cpp bookmarkmanager.cpp \
+	movieplayer.cpp rc_lock.cpp \
 	timeosd.cpp epgplus.cpp epg_menu.cpp \
 	streaminfo2.cpp dboxinfo.cpp \
 	plugins.cpp imageinfo.cpp audio_select.cpp moviebrowser.cpp movieinfo.cpp \
@@ -78,10 +81,6 @@ endif
 
 if BOXTYPE_XTREND
 libneutrino_gui2_a_SOURCES += cam_menu.cpp
-endif
-
-if ENABLE_TEST_MENU
-libneutrino_gui2_a_SOURCES += test_menu.cpp
 endif
 
 libtimerlist_a_SOURCES = timerlist.cpp

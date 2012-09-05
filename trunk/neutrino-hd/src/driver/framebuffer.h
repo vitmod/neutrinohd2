@@ -36,7 +36,11 @@
 
 // stmfb
 #ifdef __sh__
+#if defined (PLATFORM_DUCKBOX)
+#include <linux/stmfb.h>
+#else
 #include <stgfb/stmfb/linux/video/stmfb.h>
+#endif
 #endif
 
 // 32 bit
@@ -53,7 +57,7 @@ typedef struct fb_var_screeninfo t_fb_var_screeninfo;
 
 // resolution
 #if defined (FB_BLIT)
-#define DEFAULT_XRES		960 
+#define DEFAULT_XRES		960
 #define DEFAULT_YRES		720
 #else
 #define DEFAULT_XRES		1280
@@ -167,9 +171,10 @@ class CFrameBuffer
 		unsigned int getScreenHeight(bool real = false); 
 		unsigned int getScreenX();
 		unsigned int getScreenY();
+		unsigned int getAvailableMem() const;             // size of a available mem occupied by the framebuffer
 		
 		bool getActive() const;                     // is framebuffer active?
-		void setActive(bool enable);                     // is framebuffer active?
+		void setActive(bool enable);                // is framebuffer active?
 
 		void setBlendMode(uint8_t mode);
 		void setBlendLevel(int blev);

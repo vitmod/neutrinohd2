@@ -35,10 +35,8 @@ int usage (const char * basename)
 	std::cout << "Usage:" << std::endl 
 		<< basename << " <options>" << std::endl
 		<< "   options:" << std::endl
-		//test
 		<< "\t-gi\t\tget current channel id: " << " -gi" << std::endl
 		<< "\t-gsi\t\tget current service info: " << " -gsi" << std::endl
-		//
 		<< "\t-ra\t\tbouquet list: " << std::endl
 		<< "\t-ra <bouquet-number>\t\tchannel list: " << std::endl
 		<< "\t-ra <bouquet-number> <channel-number\t\tzap by number: " << std::endl
@@ -47,7 +45,6 @@ int usage (const char * basename)
 		<< "\t-dr <count>\t\tset diseqc repeats: " << std::endl
 		<< "\t-ra\t\ttoggles radio mode" << std::endl
 		<< "\t-re\t\tswitch record mode on/off: " << std::endl
-		<< "\t--pe\t\tswitch pip mode on/off: " << std::endl
 		<< "\t-p\t\tstart/stop playback: " << std::endl
 		<< "\t-a <audio-number>\t\tchange audio pid: " << std::endl
 		<< "\t-c\t\treload channels bouquets: " << std::endl
@@ -63,19 +60,11 @@ int usage (const char * basename)
 		<< "\t-kill\t\tshutdown zapit: " << std::endl
 		<< "\t-esb\t\tenter standby: " << std::endl
 		<< "\t-lsb\t\tleave standby: " << std::endl
-		//test
-		<< "\t-var\t\tget aspect ratio: " << std::endl
-		<< "\t-var <aspectratio>\tset aspect ratio: " << std::endl
-#if 0
-		//FIXME howto read aspect mode back?
-		<< "\t-vm43\t\tget 4:3 mode: " << std::endl
-#endif
-		<< "\t-vm43 <4:3mode>\tset 4:3 mode: " << std::endl
-		//
         	<< "\t--1080\t\tswitch to hd 1080i mode: " << std::endl
         	<< "\t--pal\t\tswitch to pal mode: " << std::endl
         	<< "\t--720\t\tswitch to hd 720p mode: " << std::endl
-		<< "\t-m <cmdtype> <addr> <cmd> <number of parameters> <parameter 1> <parameter 2>\t\tsend diseqc 1.2 motor command: " << std::endl;
+		<< "\t-m <cmdtype> <addr> <cmd> <number of parameters> <parameter 1> <parameter 2>\t\tsend diseqc 1.2 motor command: " << std::endl
+		<< "\t-af\t\tadd tuner: " << std::endl;
 
 	return -1;
 }
@@ -97,15 +86,10 @@ int main (int argc, char** argv)
 	int mute = -1;
 	int volume = -1;
 	int nvod = -1;
-	//test
-	int arat = -1;
-	int m43 = -1;
-	//
 	const char * channelName = NULL;
 
 	bool playback = false;
 	bool recordmode = false;
-	bool pipmode = false;
 	bool radio = false;
 	bool reload = false;
 	bool register_neutrino = false;
@@ -122,12 +106,9 @@ int main (int argc, char** argv)
 	bool sendMotorCommand = false;
 	bool quiet = false;
 
-	//test
 	bool getchannel = false;
-	bool aspectratio = false;
-	bool mode43 = false;
 	bool getserviceinfo = false;
-	//
+
 	uint8_t motorCmdType = 0;
 	uint8_t motorCmd = 0;
 	uint8_t motorNumParameters = 0;
@@ -137,6 +118,8 @@ int main (int argc, char** argv)
 	uint32_t  diseqc[5];
 	unsigned int tmp;
 	int scan_mode = 1;
+	
+	bool add_tuner = false;
 
 	/* command line */
 	for (i = 1; i < argc; i++)
@@ -258,32 +241,6 @@ int main (int argc, char** argv)
 			recordmode = true;
 			continue;
 		}
-		else if (!strncmp(argv[i], "--pe", 4))
-		{
-			pipmode = true;
-			continue;
-		}
-		else if (!strncmp(argv[i], "-var", 4))
-		{
-			aspectratio = true;
-			if (i < argc - 1)
-				sscanf(argv[++i], "%d", &arat);
-			continue;
-		}
-		else if (!strncmp(argv[i], "-vm43", 5))
-		{
-			mode43 = true;
-			if (i < argc - 1)
-			{
-				sscanf(argv[++i], "%d", &m43);
-				continue;
-			}
-#if 0 
-			//FIXME howto read aspect mode back?
-			continue;
-#endif
-		}
-		//
 		else if (!strncmp(argv[i], "-sb", 3))
 		{
 			savebouquets = true;
@@ -330,18 +287,6 @@ int main (int argc, char** argv)
                         set_hd = VIDEO_STD_1080I50;
                         continue;
                 }
-                #if 0
-                else if (!strncmp(argv[i], "--1083", 6))
-                {
-                        set_hd = 9;
-                        continue;
-                }
-                else if (!strncmp(argv[i], "--1082", 6))
-                {
-                        set_hd = 10;
-                        continue;
-		}
-		#endif
                 else if (!strncmp(argv[i], "--720", 5))
                 {
                         set_hd = VIDEO_STD_720P50;
@@ -360,7 +305,6 @@ int main (int argc, char** argv)
 				continue;
 			}
 		}
-		//test
 		else if (!strncmp(argv[i], "-gi", 3))
 		{
 			getchannel = true;
@@ -371,11 +315,15 @@ int main (int argc, char** argv)
 			getserviceinfo = true;
 			continue;
 		}
-		//
 		else if (i < argc - 1)
 		{
 			if ((sscanf(argv[i], "%d", &bouquet) > 0) && (sscanf(argv[++i], "%u", &channel) > 0))
 				continue;
+		}
+		else if (!strncmp(argv[i], "-af", 4))
+		{
+			add_tuner = true;
+			continue;
 		}
 		else if (sscanf(argv[i], "%d", &bouquet) > 0)
 			continue;
@@ -385,18 +333,6 @@ int main (int argc, char** argv)
 
 	/* create zapit client */
 	CZapitClient zapit;
-
-#if 0
-	TP_params TP;
-	TP.TP_id = 12345;
-        TP.polarization = 1;
-        TP.feparams.Frequency = 11727000;
-        TP.feparams.u.qpsk.SymbolRate = 27500000;
-        TP.feparams.u.qpsk.FEC_inner = (CodeRate) 3;
-
-	zapit.scan_TP(TP);
-	exit(0);
-#endif
 
 	/* send diseqc 1.2 motor command */
 	if (sendMotorCommand)
@@ -493,38 +429,6 @@ int main (int argc, char** argv)
 		zapit.setRecordMode(!zapit.isRecordModeActive());
 		return 0;
 	}
-	
-	if (pipmode)
-	{
-		zapit.setPipMode(!zapit.isPipModeActive());
-		return 0;
-	}
-	
-	//aspectratio
-	if (aspectratio)
-	{
-		if(arat >= 0)
-			zapit.setAspectRatio(arat);
-		else
-		{
-			zapit.getAspectRatio(&arat);
-			printf("%d\n", arat);
-		}
-		return 0;
-	}
-	
-	//mode34
-	if (mode43)
-	{
-		if(m43 >= 0)
-			zapit.setMode43(m43);
-		else
-		{
-			zapit.getMode43(&m43);
-			printf("%d\n",m43);
-		}
-		return 0;
-	}
 
 	if (savebouquets)
 	{
@@ -609,7 +513,6 @@ int main (int argc, char** argv)
                 return 0;
         }
 
-	//test
 	if (getchannel)
 	{
 		t_channel_id channelid = zapit.getCurrentServiceID();
@@ -617,26 +520,12 @@ int main (int argc, char** argv)
 		return 0;
 	}
 	
-	//test
 	if(getserviceinfo)
 	{
 		CZapitClient::CCurrentServiceInfo si;
 		si = zapit.getCurrentServiceInfo();
 
 		printf("frequency = %d.%d MHz\n", si.tsfrequency/1000, si.tsfrequency%1000);
-
-		#if 0
-		if (si.polarisation != 2) /* only satellite has polarisation */
-		{
-			printf(" (%c)\n", (si.polarisation == HORIZONTAL) ? 'h' : 'v');
-			//satellite
-			printf("diseqc = %d\n", si.diseqc);
-		}
-		else
-		{
-			printf("\n");
-		}
-		#endif
 		
 		printf("onid = 0x%04x\n", si.onid);
 		printf("sid = 0x%04x\n", si.sid);
@@ -756,6 +645,12 @@ int main (int argc, char** argv)
 				std::cout << ", ac3";
 			std::cout << ")" << std::endl;
 		}
+	}
+	
+	if(add_tuner)
+	{
+		zapit.addFrontend();
+		return 0;
 	}
 
 	return 0;

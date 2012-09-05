@@ -125,6 +125,8 @@ struct SNeutrinoSettings
 
 	int recording_epg_for_filename;
 	int recording_save_in_channeldir;
+	
+	int  recording_zap_on_announce;
 	// END RECORDING
 
 	// MOVIEPLAYER
@@ -365,7 +367,6 @@ struct SNeutrinoSettings
 	int mb_preview;
 	char timezone[150];
 
-	int show_ca;
 	int radiotext_enable;
 	
 	std::string logos_dir;

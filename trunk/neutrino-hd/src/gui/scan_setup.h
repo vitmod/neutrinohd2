@@ -35,24 +35,7 @@
 
 #include <string>
 
-#define get_set CNeutrinoApp::getInstance()->getScanSettings()
 
-class CScanSetup : public CMenuTarget
-{
-	private:
-		CFrameBuffer *frameBuffer;
-		int x, y, width, height, menue_width, hheight, mheight;
-		
-		int feindex;
-
-		void hide();
-		void showScanService();
-
-	public:
-		CScanSetup(int num = 0);
-		~CScanSetup();
-		int exec(CMenuTarget* parent, const std::string & actionKey);
-};
 
 class CTPSelectHandler : public CMenuTarget
 {
@@ -67,6 +50,12 @@ class CTPSelectHandler : public CMenuTarget
 
 class CScanSettings
 {
+	private:
+		int feindex;
+		
+		uint32_t	getConfigValue(int num, const char * name, uint32_t defval);
+		void		setConfigValue(int num, const char * name, uint32_t val);
+		
 	public:
 		CConfigFile	configfile;
 		
@@ -92,13 +81,32 @@ class CScanSettings
 		int		TP_trans;
 		int		TP_guard;
 		int		TP_hierarchy;
+		
+		int femode;
+		
+		//int scan_pids;
 	
-		CScanSettings();
+		CScanSettings(int num = 0);
 	
-		void useDefaults();
-		bool loadSettings(const char * const fileName);
-		bool saveSettings(const char * const fileName);
+		bool loadSettings(const char * const fileName, int index = 0);
+		bool saveSettings(const char * const fileName, int index = 0);
 };
 
+class CScanSetup : public CMenuTarget
+{
+	private:
+		CFrameBuffer *frameBuffer;
+		int x, y, width, height, menue_width, hheight, mheight;
+		
+		int feindex;
+
+		void hide();
+		void showScanService();
+		
+	public:
+		CScanSetup(int num = 0);
+		~CScanSetup();
+		int exec(CMenuTarget* parent, const std::string & actionKey);
+};
 
 #endif

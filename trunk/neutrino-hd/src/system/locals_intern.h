@@ -1486,6 +1486,7 @@ const char *locale_real_names[] = {
 	"helptext.miscsettingsepg",
 	"helptext.miscsettingsfilebrowser",
 	"helptext.miscsettingszapitsetup",
+	"helptext.miscsettingspsisetup",
 	
 	"miscsettings.logosdir",
 	
@@ -1498,5 +1499,11 @@ const char *locale_real_names[] = {
 	"colormenu.helptxt",
 	"colormenu.helpbar",
 	"lcdmenu.menutitlevfd",
+	
+	"scansetup.tunermode",
+	"scansetup.tunermode_single",
+	"scansetup.tunermode_twin",
+	"scansetup.tunermode_loop",
+	"scansetup.tunermode_notconnected",
 };
 #endif

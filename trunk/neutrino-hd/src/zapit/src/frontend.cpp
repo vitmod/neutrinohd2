@@ -38,11 +38,7 @@
 #include <zapit/satconfig.h>
 
 
-extern double gotoXXLatitude, gotoXXLongitude;
-extern int gotoXXLaDirection, gotoXXLoDirection;
-extern int repeatUsals;
 extern transponder_list_t transponders;
-extern int motorRotationSpeed;
 
 #define SOUTH		0
 #define NORTH		1
@@ -55,13 +51,9 @@ extern int motorRotationSpeed;
 #define min(x,y)	((x < y) ? x : y)
 #define max(x,y)	((x > y) ? x : y)
 
-// channel
-//extern bool current_is_nvod;
-//extern t_channel_id live_channel_id;
-
 // unicable
-extern int uni_scr;
-extern int uni_qrg;
+//extern int uni_scr;
+//extern int uni_qrg;
 
 
 #define diff(x,y)	(max(x,y) - min(x,y))
@@ -84,105 +76,9 @@ extern int uni_qrg;
 		 label, timer_msec, tmin, tmax);
 
 
-//FIXME: the dvb frontend device
-CFrontend *frontend0 = NULL;
-CFrontend *frontend1 = NULL;
-CFrontend *frontend2 = NULL;
-CFrontend *frontend3 = NULL;
-
-//FIXME: too dirty
-CFrontend * CFrontend::getInstance(int num, int adap)
-{
-	switch(num)
-	{
-		case 0:
-		{
-			if(!frontend0)
-				frontend0 = new CFrontend();
-			
-			return frontend0;
-		}
-		break;
-		
-		case 1:
-		{
-			if(!frontend1)
-				frontend1 = new CFrontend(1);
-				
-			return frontend1;
-		}
-		break;
-		
-		case 2:
-		{
-			if(!frontend2)
-				frontend2 = new CFrontend(2);
-				
-			return frontend2;
-		}
-		break;
-		
-		case 3:
-		{
-			if(!frontend3)
-				frontend3 = new CFrontend(3);
-				
-			return frontend3;
-		}
-		break;		
-	}
-}
-
-//FIXME: too dirty
-CFrontend * CFrontend::killInstance(int num, int adap)
-{
-	switch(num)
-	{
-		case 0:
-		{
-			if(frontend0)
-			{
-				delete frontend0;
-				frontend0 = NULL;
-			}
-		}
-		break;
-		
-		case 1:
-		{
-			if(frontend1)
-			{
-				delete frontend1;
-				frontend1 = NULL;
-			}
-		}
-		break;
-		
-		case 2:
-		{
-			if(frontend2)
-			{
-				delete frontend2;
-				frontend2 = NULL;
-			}
-		}
-		break;
-		
-		case 3:
-		{
-			if(frontend3)
-			{
-				delete frontend3;
-				frontend3 = NULL;
-			}
-		}
-		break;	
-	}
-}
-
 CFrontend::CFrontend(int num, int adap)
 {
-	printf("CFrontend:: CFrontend(%d)\n", num);
+	printf("CFrontend:: CFrontend(%d, %d)\n", adap, num);
 	
 	fd = -1;
 	
@@ -195,10 +91,10 @@ CFrontend::CFrontend(int num, int adap)
 	slave = false;	// FIXME
 	diseqcType = NO_DISEQC;
 	
-	//mode = FE_CONNECTED;
+	mode = (fe_mode_t)FE_SINGLE;
 
 	/* open frontend */
-	Open();
+	//Open();
 
 	memset(&curfe, 0, sizeof(curfe));
 	
@@ -222,7 +118,7 @@ bool CFrontend::Open(void)
 	char filename[256];
 
 	sprintf(filename, "/dev/dvb/adapter%d/frontend%d", fe_adapter, fenumber);
-	printf("CFrontend::Open: fe(%d) %s\n", fenumber, filename);
+	//printf("CFrontend::Open: fe(%d, %d) %s\n", fe_adapter, fenumber, filename);
 
 	if (fd < 0) 
 	{
@@ -271,7 +167,7 @@ bool CFrontend::Open(void)
 
 void CFrontend::Close(void)
 {
-	if (!slave && diseqcType > MINI_DISEQC)
+	if (/* !slave*/ (mode != FE_LOOP) && diseqcType > MINI_DISEQC)
 		sendDiseqcStandby();
 
 //FIXME FEQAM
@@ -482,7 +378,7 @@ struct dvb_frontend_parameters CFrontend::getFrontend(void) const
 
 uint32_t CFrontend::getBitErrorRate(void) const
 {
-	uint32_t ber=0;
+	uint32_t ber = 0;
 
 	if(ioctl(fd, FE_READ_BER, &ber) < 0)
 	      perror("FE_READ_BER");
@@ -492,7 +388,7 @@ uint32_t CFrontend::getBitErrorRate(void) const
 
 uint16_t CFrontend::getSignalStrength(void) const
 {
-	uint16_t strength;
+	uint16_t strength = 0;
 
 	if(ioctl(fd, FE_READ_SIGNAL_STRENGTH, &strength) < 0)
 	      perror("FE_READ_SIGNAL_STRENGHT");
@@ -502,7 +398,7 @@ uint16_t CFrontend::getSignalStrength(void) const
 
 uint16_t CFrontend::getSignalNoiseRatio(void) const
 {
-	uint16_t snr=0;
+	uint16_t snr = 0;
 
 	if(ioctl(fd, FE_READ_SNR, &snr) < 0)
 		perror("FE_READ_SNR");
@@ -975,7 +871,7 @@ void CFrontend::setFrontend(const struct dvb_frontend_parameters *feparams, bool
 }
 #else //api3
 void CFrontend::setFrontend(const struct dvb_frontend_parameters * feparams, bool nowait)
-{
+{	
 	fe_modulation_t modulation = QAM_16;
 	fe_code_rate_t fec_inner = FEC_3_4;
 	
@@ -1042,7 +938,7 @@ void CFrontend::setFrontend(const struct dvb_frontend_parameters * feparams, boo
 
 void CFrontend::secSetTone(const fe_sec_tone_mode_t toneMode, const uint32_t ms)
 {
-	if (slave || info.type != FE_QPSK)
+	if ( /*slave*/ (mode == FE_LOOP) || info.type != FE_QPSK)
 		return;
 
 	if (currentToneMode == toneMode)
@@ -1076,7 +972,7 @@ void CFrontend::secSetTone(const fe_sec_tone_mode_t toneMode, const uint32_t ms)
 
 void CFrontend::secSetVoltage(const fe_sec_voltage_t voltage, const uint32_t ms)
 {
-	if (slave || info.type != FE_QPSK)
+	if (/*slave*/ (mode == FE_LOOP) || info.type != FE_QPSK)
 		return;
 	
 	if (currentVoltage == voltage)
@@ -1113,7 +1009,7 @@ void CFrontend::secResetOverload(void)
 
 void CFrontend::sendDiseqcCommand(const struct dvb_diseqc_master_cmd *cmd, const uint32_t ms)
 {
-	if (slave || info.type != FE_QPSK) 
+	if ( /*slave*/ (mode == FE_LOOP) || info.type != FE_QPSK) 
 		return;
 	
 	printf("CFrontend::sendDiseqcCommand: fe(%d) Diseqc cmd: ", fenumber);
@@ -1132,7 +1028,7 @@ uint32_t CFrontend::getDiseqcReply(const int timeout_ms) const
 
 void CFrontend::sendToneBurst(const fe_sec_mini_cmd_t burst, const uint32_t ms)
 {
-	if (slave || info.type != FE_QPSK) 
+	if ( /*slave*/ (mode == FE_LOOP) || info.type != FE_QPSK) 
 		return;
 	
 	if (ioctl(fd, FE_DISEQC_SEND_BURST, burst) == 0)
@@ -1246,6 +1142,9 @@ void CFrontend::positionMotor(uint8_t motorPosition)
 
 bool CFrontend::setInput(CZapitChannel * channel, bool nvod)
 {
+	if(mode == FE_NOTCONNECTED)
+		return false;
+	
 	transponder_list_t::iterator tpI;
 	transponder_id_t ct = channel->getTransponderId();
 
@@ -1289,7 +1188,6 @@ void CFrontend::setInput(t_satellite_position satellitePosition, uint32_t freque
 	if(info.type == FE_QPSK)
 			setLnbOffsets(sit->second.lnbOffsetLow, sit->second.lnbOffsetHigh, sit->second.lnbSwitch);
 
-
 	// set diseqc
 	if (diseqcType != DISEQC_ADVANCED) 
 	{
@@ -1318,6 +1216,7 @@ void CFrontend::setInput(t_satellite_position satellitePosition, uint32_t freque
 /* frequency is the IF-frequency (950-2100), what a stupid spec...
    high_band, horizontal, bank are actually bool (0/1)
    bank specifies the "switch bank" (as in Mini-DiSEqC A/B) */
+#if 0
 uint32_t CFrontend::sendEN50494TuningCommand(const uint32_t frequency, const int high_band, const int horizontal, const int bank)
 {
 	uint32_t uni_qrgs[] = { 1284, 1400, 1516, 1632, 1748, 1864, 1980, 2096 };
@@ -1335,7 +1234,7 @@ uint32_t CFrontend::sendEN50494TuningCommand(const uint32_t frequency, const int
 	{
 		fprintf(stderr, "VOLT18=%d TONE_ON=%d, freq=%d bpf=%d ret=%d\n", currentVoltage == SEC_VOLTAGE_18, currentToneMode == SEC_TONE_ON, frequency, bpf, (t + 350) * 4000 - frequency);
 		
-		if (!slave && info.type == FE_QPSK) 
+		if (/* !slave*/ (mode != FE_LOOP) && info.type == FE_QPSK) 
 		{
 			cmd.msg[3] = (t >> 8)		|	/* highest 3 bits of t */
 				    (uni_scr << 5)	|	/* adress */
@@ -1355,9 +1254,13 @@ uint32_t CFrontend::sendEN50494TuningCommand(const uint32_t frequency, const int
 	
 	return 0;
 }
+#endif
 
 const bool CFrontend::tuneChannel(CZapitChannel * channel, bool nvod)
 {
+	if(mode == FE_NOTCONNECTED)
+		return false;
+	
 	printf("CFrontend::tuneChannel: fe(%d) tpid %llx\n", fenumber, currentTransponder.TP_id);
 
 	transponder_list_t::iterator transponder = transponders.find(currentTransponder.TP_id);
@@ -1503,7 +1406,8 @@ bool CFrontend::setDiseqcSimple(int sat_no, const uint8_t pol, const uint32_t fr
 	printf("CFrontend::setDiseqcSimple: fe(%d) diseqc input  %d -> %d\n", fenumber, diseqc, sat_no);
 	currentTransponder.diseqc = sat_no;
 	
-	if (slave)
+	//if (slave)
+	if(mode == FE_LOOP)
 		return true;
 
 	if ((sat_no >= 0) && (diseqc != sat_no)) 
@@ -1547,7 +1451,8 @@ void CFrontend::setDiseqc(int sat_no, const uint8_t pol, const uint32_t frequenc
 	if (info.type != FE_QPSK) 
 		return;
 
-	if (slave)
+	//if (slave)
+	if(mode == FE_LOOP)
 		return;
 
 	//secSetVoltage(polarity, 15);	/* first of all set the "polarization" */

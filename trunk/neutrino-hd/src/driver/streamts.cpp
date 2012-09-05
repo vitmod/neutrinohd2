@@ -41,15 +41,9 @@
 //#define PACKET_SIZE	1448
 #define PACKET_SIZE	7*TS_SIZE
 
-//unsigned char * buf;
 
-extern CZapitChannel *channel;
-extern CCam *cam0;
+extern CZapitChannel * live_channel;
 
-//test
-//extern bool twin_tuned;
-
-//int demuxfd[MAXPIDS];
 
 static unsigned char exit_flag = 0;
 static unsigned int writebuf_size = 0;
@@ -349,16 +343,14 @@ void * streamts_live_thread(void *data)
 		return 0;
 	}
 
-	cDemux * dmx = new cDemux( channel?channel->getDemuxIndex():0 );
+	int demux_index = 0; //live_channel? live_channel->getDemuxIndex() : 0
+	cDemux * dmx = new cDemux( demux_index );
 	
-	dmx->Open(DMX_TP_CHANNEL, 2 * 3008 * 62, channel?channel->getFeIndex():0);	
+	dmx->Open(DMX_TP_CHANNEL, 2 * 3008 * 62, live_channel? live_channel->getFeIndex():0);	
 	
 	dmx->pesFilter(pids[0]);
 	for(int i = 1; i < demuxfd_count; i++)
 		dmx->addPid(pids[i]);
-
-	if(channel)
-		cam0->setCaPmt(channel->getCaPmt(), 0, 1, true); // demux 0 + 1, update
 
 	ssize_t r;
 
@@ -370,18 +362,15 @@ void * streamts_live_thread(void *data)
 	{
 		r = dmx->Read(buf, IN_SIZE, 100);
 		
-#if 0
-		printf("ts: read %d\n", r);
-#endif		
-		
 		if(r > 0)
 			packet_stdout(fd, buf, r, NULL);
 	}
 
 	printf("[streamts] Exiting LIVE STREAM thread, fd %d\n", fd);
 	
-        if(channel)
-		cam0->setCaPmt(channel->getCaPmt(), 0, 1, true); // demux 0, update
+	for(int i = 1; i < demuxfd_count; i++)
+		dmx->removePid(pids[i]);
+	dmx->Stop();
 	
 	delete dmx;
 	free(buf);

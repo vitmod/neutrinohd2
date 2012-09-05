@@ -345,6 +345,11 @@ fb_pixel_t * CFrameBuffer::getFrameBufferPointer() const
 		return (fb_pixel_t *) virtual_fb;
 }
 
+unsigned int CFrameBuffer::getAvailableMem() const
+{
+	return available;
+}
+
 bool CFrameBuffer::getActive() const
 {
 	return (active || (virtual_fb != NULL));
@@ -364,7 +369,7 @@ t_fb_var_screeninfo *CFrameBuffer::getScreenInfo()
 void CFrameBuffer::setVideoMode(unsigned int nxRes, unsigned int nyRes, unsigned int nbpp)
 {
 	screeninfo.xres_virtual = screeninfo.xres = nxRes;
-	screeninfo.yres_virtual = (screeninfo.yres=nyRes)*2;
+	screeninfo.yres_virtual = (screeninfo.yres = nyRes)*2;
 	screeninfo.height = 0;
 	screeninfo.width = 0;
 	screeninfo.xoffset = screeninfo.yoffset = 0;
@@ -399,15 +404,16 @@ void CFrameBuffer::setVideoMode(unsigned int nxRes, unsigned int nyRes, unsigned
 	// num of pages
 	m_number_of_pages = screeninfo.yres_virtual / nyRes;
 	
-	if (ioctl(fd, FBIOPUT_VSCREENINFO, &screeninfo)<0)
+	if (ioctl(fd, FBIOPUT_VSCREENINFO, &screeninfo) < 0)
 	{
 		// try single buffering
-		screeninfo.yres_virtual = screeninfo.yres=nyRes;
+		screeninfo.yres_virtual = screeninfo.yres = nyRes;
 
 		if (ioctl(fd, FBIOPUT_VSCREENINFO, &screeninfo) < 0)
 		{
 			perror("FBIOPUT_VSCREENINFO");
 		}
+		
 		printf("CFrameBuffer::setVideoMode: double buffering not available.\n");
 	} 
 	else
@@ -442,7 +448,7 @@ int CFrameBuffer::setMode()
 	
 	dprintf(DEBUG_NORMAL, "CFrameBuffer::setMode: FB: %dx%dx%d\n", DEFAULT_XRES, DEFAULT_YRES, DEFAULT_BPP);
 
-#ifdef __sh__	
+#ifdef __sh__
 	xRes = DEFAULT_XRES;
 	yRes = DEFAULT_YRES;
 	bpp = DEFAULT_BPP;

@@ -46,8 +46,10 @@ class CSatelliteSetupNotifier : public CChangeObserver
 		std::vector<CMenuItem*> items1;
 		std::vector<CMenuItem*> items2;
 		std::vector<CMenuItem*> items3;
+		
+		int feindex;
 	public:
-		CSatelliteSetupNotifier();
+		CSatelliteSetupNotifier(int num = 0);
 		void addItem(int list, CMenuItem* item);
 		bool changeNotify(const neutrino_locale_t, void * Data);
 };
@@ -56,31 +58,21 @@ class CSatelliteSetupNotifier : public CChangeObserver
 class CDHCPNotifier : public CChangeObserver
 {
 	private:
-		CMenuForwarder* toDisable[5];
+		CMenuForwarder * toDisable[5];
 	public:
 		CDHCPNotifier( CMenuForwarder*, CMenuForwarder*, CMenuForwarder*, CMenuForwarder*, CMenuForwarder*);
 		bool changeNotify(const neutrino_locale_t, void * data);
 };
 
-// onoff notifier
+// onoff notifier //needed by moviebrowser
 class COnOffNotifier : public CChangeObserver
 {
         private:
                 int number;
-                CMenuItem* toDisable[5];
+                CMenuItem * toDisable[5];
         public:
-                COnOffNotifier (CMenuItem* a1,CMenuItem* a2 = NULL,CMenuItem* a3 = NULL,CMenuItem* a4 = NULL,CMenuItem* a5 = NULL);
+                COnOffNotifier(CMenuItem* a1, CMenuItem* a2 = NULL, CMenuItem* a3 = NULL, CMenuItem* a4 = NULL, CMenuItem* a5 = NULL);
                 bool changeNotify(const neutrino_locale_t, void *Data);
-};
-
-// recording notifier
-class CRecordingNotifier : public CChangeObserver
-{
-	private:
-		CMenuItem* toDisable[9];
-	public:
-		CRecordingNotifier(CMenuItem*, CMenuItem*, CMenuItem*, CMenuItem*, CMenuItem*, CMenuItem*, CMenuItem*, CMenuItem*, CMenuItem*);
-		bool changeNotify(const neutrino_locale_t OptionName, void*);
 };
 
 // recording safety notifier
@@ -119,20 +111,6 @@ class CSectionsdConfigNotifier : public CChangeObserver
 {
         public:
                 bool changeNotify(const neutrino_locale_t, void * );
-};
-
-// touch file notifier
-class CTouchFileNotifier : public CChangeObserver
-{
-	const char * filename;
-	
-	public:
-		inline CTouchFileNotifier(const char * file_to_modify)
-		{
-			filename = file_to_modify;
-		};
-		
-		bool changeNotify(const neutrino_locale_t, void * data);
 };
 
 // color setup notifier
@@ -175,13 +153,6 @@ class CTimingSettingsNotifier : public CChangeObserver
 {
 	public:
 		bool changeNotify(const neutrino_locale_t OptionName, void *);
-};
-
-// font size notifier
-class CFontSizeNotifier : public CChangeObserver
-{
-	public:
-		bool changeNotify(const neutrino_locale_t, void *);
 };
 
 // rec apids notifier
@@ -249,13 +220,6 @@ class CDataResetNotifier : public CMenuTarget
 		int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
-// blend mode
-class CColorMenuBlendModeNotifier : public CChangeObserver
-{
-	public:
-		bool changeNotify(const neutrino_locale_t, void * data);
-};
-
 // language select notifier
 class CLangSelectNotifier : public CChangeObserver
 {
@@ -265,6 +229,21 @@ class CLangSelectNotifier : public CChangeObserver
 	public:
 		CLangSelectNotifier(CMenuItem *);
 		bool changeNotify(const neutrino_locale_t, void * /*data*/);
+};
+
+// scan setup notifier
+class CScanSetupNotifier : public CChangeObserver
+{
+	private:
+		std::vector<CMenuItem*> items1;
+		std::vector<CMenuItem*> items2;
+		std::vector<CMenuItem*> items3;
+		
+		int feindex;
+	public:
+		CScanSetupNotifier(int num = 0);
+		void addItem(int list , CMenuItem* item);
+		bool changeNotify(const neutrino_locale_t, void * Data);
 };
 
 int safe_mkdir(char * path);

@@ -49,6 +49,8 @@
 #include "gui/bouquetlist.h"
 #include <gui/widget/stringinput.h>
 
+#include <gui/epgplus.h>
+
 extern CBouquetList * bouquetList;
 extern t_channel_id live_channel_id;
 
@@ -224,10 +226,13 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 	neutrino_msg_data_t data;
 	bool in_search = 0;
 
-	int fw = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getWidth();
-	int fh = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
-	width  = w_max (62 * fw, 40);
-	height = h_max (23 * fh, 20);
+	// windows size
+	//int fw = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getWidth();
+	//int fh = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
+	//width  = w_max (62 * fw, 20);
+	//height = h_max (23 * fh, 20);
+	width = w_max (768, 70);
+	height = h_max (576, 50 + 30); // 30 for the bottom button box.
 
 	iheight = 30;	// info bar height (see below, hard coded at this time)
 	theight  = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_TITLE]->getHeight();
@@ -351,11 +356,11 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 		}
 
 		#if 0
-		//FIXME: this is too stupid
+		//FIXME: ???
 		else if (msg == (neutrino_msg_t)g_settings.key_channelList_sort)
 		{
 			unsigned long long selected_id = evtlist[selected].eventID;
-			if(sort_mode==0)
+			if(sort_mode == 0)
 			{
 				sort_mode++;
 				sort(evtlist.begin(),evtlist.end(),sortByDescription);
@@ -374,7 +379,7 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 			}
 			
 			// find selected
-			for ( selected=0 ; selected < evtlist.size(); selected++ )
+			for ( selected = 0 ; selected < evtlist.size(); selected++ )
 			{
 				if ( evtlist[selected].eventID == selected_id )
 					break;
@@ -388,7 +393,6 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 			paintHead(channel_id);
 			paint(channel_id);
 			showFunctionBar(true);
-
 		}
 		#endif
 		
@@ -505,7 +509,14 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 				loop = false;
 			}
 		}
-		else if ( msg==CRCInput::RC_left || msg==CRCInput::RC_red )		  
+		else if (msg == CRCInput::RC_epg)
+		{
+			hide();
+			CEPGplusHandler eplus;
+			eplus.exec(NULL, "");
+			loop = false;
+		}
+		else if ( msg==CRCInput::RC_left )		  
 		{
 			loop = false;
 		}
@@ -828,7 +839,6 @@ void  EventList::showFunctionBar(bool show)
 	}
 	#endif
 	
-	#if 1
 	// Button: Event Reload/Refresh
 	if ((unsigned int) g_settings.key_channelList_reload != CRCInput::RC_nokey)
 	{
@@ -848,7 +858,6 @@ void  EventList::showFunctionBar(bool show)
 		//iconw = frameBuffer->getIconWidth(icon)+4;
 		//g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(bx+iconw, by+bh-h_offset, bw-30, btncaption, COL_INFOBAR_SHADOW + 1, 0, true); // UTF-8
 	}
-	#endif
 }
 
 int CEventListHandler::exec(CMenuTarget* parent, const std::string &actionkey)

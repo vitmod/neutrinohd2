@@ -68,12 +68,6 @@ CBEBouquetWidget::CBEBouquetWidget()
 	state = beDefault;
 	blueFunction = beRename;
 	
-	//test
-	#if 0
-	g_bouquetManager->clearAll();
-	g_bouquetManager->loadBouquets(true);
-	#endif
-	//
 	Bouquets = &g_bouquetManager->Bouquets;
 }
 
@@ -113,7 +107,6 @@ void CBEBouquetWidget::paintItem(int pos)
 		if ((*Bouquets)[current]->bHidden)
 			frameBuffer->paintIcon(NEUTRINO_ICON_HIDDEN, x + 37, ypos);
 
-		//g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x+68, ypos+ fheight, width-68, (*Bouquets)[current]->Name, color, 0, true);
 		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x+68, ypos+ fheight, width-68, (*Bouquets)[current]->bFav ? g_Locale->getText(LOCALE_FAVORITES_BOUQUETNAME) : (*Bouquets)[current]->Name, color, 0, true);
 	}
 }
@@ -210,14 +203,8 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string & actionKey)
         x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - width) / 2;
         y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height) / 2;
 	
-	//test
-	#if 0
-	g_bouquetManager->clearAll();
-	g_bouquetManager->loadBouquets(true);
-	#endif
-	//
-
 	Bouquets = &g_bouquetManager->Bouquets;
+	
 	paintHead();
 	paint();
 	paintFoot();
@@ -251,47 +238,23 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string & actionKey)
 						case CMessageBox::mbrYes :
 							loop=false;
 							saveChanges();
-							
-							//test
-							#if 0
-							g_bouquetManager->clearAll();
-							g_bouquetManager->loadBouquets();
-							#endif
-							//
 						break;
+						
 						case CMessageBox::mbrNo :
 							loop=false;
 							discardChanges();
-							
-							//test
-							#if 0
-							g_bouquetManager->clearAll();
-							g_bouquetManager->loadBouquets();
-							#endif
-							//
 						break;
+						
 						case CMessageBox::mbrCancel :
 							paintHead();
 							paint();
 							paintFoot();
-							
-							//test
-							#if 0
-							g_bouquetManager->clearAll();
-							g_bouquetManager->loadBouquets();
-							#endif
-							//
 						break;
 					}
 				}
 				else
 				{
 					loop = false;
-					
-					//test
-					g_bouquetManager->clearAll();
-					g_bouquetManager->loadBouquets();
-					//
 				}
 			}
 			else if (state == beMoving)
@@ -400,15 +363,15 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string & actionKey)
 				if (state == beDefault)
 					switch (blueFunction)
 					{
-					case beRename:
-						renameBouquet();
-						break;
-					case beHide:
-						switchHideBouquet();
-						break;
-					case beLock:
-						switchLockBouquet();
-						break;
+						case beRename:
+							renameBouquet();
+							break;
+						case beHide:
+							switchHideBouquet();
+							break;
+						case beLock:
+							switchLockBouquet();
+							break;
 					}
 			}
 		}
@@ -474,7 +437,9 @@ int CBEBouquetWidget::exec(CMenuTarget* parent, const std::string & actionKey)
 		frameBuffer->blit();
 #endif		
 	}
+	
 	hide();
+	
 	return res;
 }
 
@@ -489,6 +454,7 @@ void CBEBouquetWidget::deleteBouquet()
 	//g_Zapit->deleteBouquet(selected);
 	//Bouquets.clear();
 	//g_Zapit->getBouquets(Bouquets, true, true);
+	
 	g_bouquetManager->deleteBouquet(selected);
 	Bouquets = &g_bouquetManager->Bouquets;
 	if (selected >= Bouquets->size())
@@ -505,11 +471,13 @@ void CBEBouquetWidget::addBouquet()
 		//g_Zapit->addBouquet(ZapitTools::Latin1_to_UTF8(newName.c_str()).c_str());
 		//Bouquets.clear();
 		//g_Zapit->getBouquets(Bouquets, true, true);
+		
 		g_bouquetManager->addBouquet(newName, true);
 		Bouquets = &g_bouquetManager->Bouquets;
 		selected = Bouquets->empty() ? 0 : (Bouquets->size() - 1);
 		bouquetsChanged = true;
 	}
+	
 	paintHead();
 	paint();
 	paintFoot();
@@ -530,6 +498,7 @@ void CBEBouquetWidget::finishMoveBouquet()
 		//g_Zapit->moveBouquet(origPosition, newPosition);
 		//Bouquets.clear();
 		//g_Zapit->getBouquets(Bouquets, true, true);
+		
 		Bouquets = &g_bouquetManager->Bouquets;
 		bouquetsChanged = true;
 	}
@@ -628,9 +597,9 @@ void CBEBouquetWidget::saveChanges()
 	hintBox->paint();
 	
 	g_Zapit->saveBouquets();
-	//test
+	
 	g_Zapit->reinitChannels();
-	//
+	
 	hintBox->hide();
 	delete hintBox;
 }
