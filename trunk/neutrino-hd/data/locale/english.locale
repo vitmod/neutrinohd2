@@ -808,7 +808,7 @@ moviebrowser.error_no_movies No movies found
 moviebrowser.foot_filter Filter:
 moviebrowser.foot_play Start movie
 moviebrowser.foot_sort Sort:
-moviebrowser.head TS MovieBrowser
+moviebrowser.head Moviebrowser
 moviebrowser.head_filter Filter movies by category:
 moviebrowser.head_playlist Last played:
 moviebrowser.head_recordlist Last recorded:
@@ -1474,6 +1474,7 @@ helptext.miscsettingschannellist Here you can set up channel lists.
 helptext.miscsettingsepg Here you can set up EPG.
 helptext.miscsettingsfilebrowser Here you can set up the filebrowser.
 helptext.miscsettingszapitsetup Here you can set up the start-program and mode.
+helptext.miscsettingspsisetup Here you can set up video contrast
 
 miscsettings.logosdir Sender logos Dir
 
@@ -1486,4 +1487,10 @@ psisetup.tint Tint
 colormenu.helptxt Help text
 colormenu.helpbar Help bar
 lcdmenu.menutitlevfd Menu title on VFD
+
+scansetup.tunermode Tuner mode
+scansetup.tunermode_single single
+scansetup.tunermode_twin twin
+scansetup.tunermode_loop loop
+scansetup.tunermode_notconnected not connected
 
