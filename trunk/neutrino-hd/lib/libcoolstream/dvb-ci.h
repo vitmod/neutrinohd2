@@ -15,6 +15,11 @@
 #define MAX_MMI_TEXT_LEN 255
 #define MAX_MMI_CHOICE_TEXT_LEN 255
 
+#define TUNER_A		0
+#define TUNER_B		1
+#define TUNER_C		2
+#define TUNER_D		3
+
 typedef struct
 {
         int slot;
@@ -51,9 +56,18 @@ typedef struct
 #define T_DATA_MORE         0xA1	// convey data from higher      constructed h<->m
 				 // layers
 
-typedef enum {eDataTimeout, eDataError, eDataReady, eDataWrite, eDataStatusChanged} eData;
+typedef enum {
+	eDataTimeout, 
+	eDataError, 
+	eDataReady, 
+	eDataWrite, 
+	eDataStatusChanged
+} eData;
 
-typedef enum {eStatusNone, eStatusWait} eStatus;
+typedef enum {
+	eStatusNone, 
+	eStatusWait
+} eStatus;
 
 struct queueData
 {
@@ -109,7 +123,7 @@ typedef struct
 	std::priority_queue<queueData> sendqueue;
 
         CCaPmt      *caPmt;
-
+	int source;
 } tSlot;
 
 
@@ -121,26 +135,15 @@ typedef void (*SEND_MSG_HOOK) (unsigned int msg, unsigned int data);
 class cDvbCi {
 	private:
 		int slots;
-		bool init;
-		int pmtlen;
-		unsigned char * pmtbuf;
-		void SendPMT();
-		pthread_mutex_t ciMutex;
 
-#if 1
 	        std::list<tSlot*> slot_data;
                 pthread_t     slot_thread;
-#endif
 	public:
-		bool Init(void);
-		bool SendPMT(unsigned char *data, int len);
-                bool SendCaPMT(CCaPmt *caPmt);
+                bool SendCaPMT(CCaPmt *caPmt, int source = TUNER_A);
 
-		bool SendDateTime(void);
-#if 1
+		//bool SendDateTime(void);
                 void slot_pollthread(void *c);
-                void setSource(tSlot* slot);
-#endif
+                void setSource(/*tSlot**/int slot, int source);
  
 		//
 		cDvbCi(int Slots);

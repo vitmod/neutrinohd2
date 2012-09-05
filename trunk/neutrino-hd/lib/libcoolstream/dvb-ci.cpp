@@ -34,6 +34,7 @@ static const char * FILENAME = "dvb-ci.cpp";
 #define TAG_ENTER_MENU                       0x9f8022
 
 extern CRCInput *g_RCInput;
+extern int FrontendCount;
 
 bool cDvbCi::checkQueueSize(tSlot* slot)
 {
@@ -156,7 +157,6 @@ int asn_1_decode(uint16_t * length, unsigned char * asn_1_array,
 
 	return -1;
 }
-
 
 //wait for a while for some data und read it if some
 eData waitData(int fd, unsigned char* buffer, int* len)
@@ -431,16 +431,30 @@ void cDvbCi::process_tpdu(tSlot* slot, unsigned char tpdu_tag, __u8* data, int a
 }
 
 
-void cDvbCi::setSource(tSlot* slot)
+void cDvbCi::setSource(int slot, int source)
 {
     char buf[64];
-    snprintf(buf, 64, "/proc/stb/tsmux/ci%d_input", slot->slot);
+    snprintf(buf, 64, "/proc/stb/tsmux/ci%d_input", slot);
     FILE *ci = fopen(buf, "wb");
-/* konfetti: neutrino currently serves only tuner A so
- * we do not need a source here!
- */
-   fprintf(ci, "A");
-   fclose(ci);
+
+    #if 1
+    switch(source)
+    {
+      case TUNER_A:
+	fprintf(ci, "A");
+	break;
+      case TUNER_B:
+	fprintf(ci, "B");
+	break;
+      case TUNER_C:
+	fprintf(ci, "C");
+      case TUNER_D:
+	fprintf(ci, "D");
+	break;
+    }
+    #endif
+    //fprintf(ci, "A");
+    fclose(ci);
 }
 
 void cDvbCi::slot_pollthread(void *c)
@@ -505,7 +519,7 @@ void cDvbCi::slot_pollthread(void *c)
 
 		              slot->camIsReady = true;
                               
-                              setSource(slot);
+                              //setSource(slot);
                 	  } else
 			  {
                              //noop
@@ -696,24 +710,7 @@ void* execute_thread(void *c)
    return NULL;
 }
 
-/* ********************************** */
-
-bool cDvbCi::Init(void)
-{
-	printf("%s:%s\n", FILENAME, __FUNCTION__);
-        return true;
-}
-
-bool cDvbCi::SendPMT(unsigned char *data, int len)
-{
-	printf("%s:%s\n", FILENAME, __FUNCTION__);
-
-//Dagobert: noop here, we need do deal with capmt rather then
-//with raw pmt
-        return true;
-}
-
-bool cDvbCi::SendCaPMT(CCaPmt *caPmt)
+bool cDvbCi::SendCaPMT(CCaPmt *caPmt, int source)
 {
 	printf("%s:%s\n", FILENAME, __FUNCTION__);
 
@@ -742,6 +739,9 @@ bool cDvbCi::SendCaPMT(CCaPmt *caPmt)
 
                    if ((*it)->hasCAManager)
 		      (*it)->camgrSession->sendSPDU(0x90, 0, 0, buffer, len);
+		   
+		    //set source
+		    setSource((*it)->slot, source);
                }
                
 /* konfetti: if cam is not ready we must store caPmt too, because
@@ -757,12 +757,14 @@ bool cDvbCi::SendCaPMT(CCaPmt *caPmt)
         return true;
 }
 
+/*
 bool cDvbCi::SendDateTime(void)
 {
 	printf("%s:%s\n", FILENAME, __FUNCTION__);
 
         return false;
 }
+*/
 
 //
 cDvbCi::cDvbCi(int Slots) {

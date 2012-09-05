@@ -26,6 +26,8 @@
 #include <sys/select.h>
 #include <poll.h>
 
+#include <errno.h>
+
 #include "dmx_cs.h"
 #include <zapit/frontend_c.h>
 
@@ -159,7 +161,7 @@ bool cDemux::Stop(void)
 	return true;
 }
 
-int cDemux::Read(unsigned char *buff, const size_t /*int*/ len, int Timeout)
+int cDemux::Read(unsigned char * const buff, int len, int Timeout)
 {
 	int rc;
 	struct pollfd ufds;
@@ -169,6 +171,7 @@ int cDemux::Read(unsigned char *buff, const size_t /*int*/ len, int Timeout)
 
 	if (Timeout > 0)	/* used in pmt_update_filter */
 	{
+retry:	  
 		rc = ::poll(&ufds, 1, Timeout);
 		if (!rc)
 		{
@@ -176,15 +179,18 @@ int cDemux::Read(unsigned char *buff, const size_t /*int*/ len, int Timeout)
 		}
 		else if (rc < 0)
 		{
+			if (errno == EINTR)
+				goto retry;
 			/* we consciously ignore EINTR, since it does not happen in practice */
 			return -1;
 		}
-		
+		#if 0
 		if (ufds.revents & POLLERR) /* POLLERR means buffer error, i.e. buffer overflow */
 		{
 			//fprintf(stderr, "[cDemux::Read] received POLLERR, fd %d\n", demux_fd);
 			return -1;
 		}
+		#endif
 		
 		if (ufds.revents & POLLHUP) /* we get POLLHUP if e.g. a too big DMX_BUFFER_SIZE was set */
 		{
@@ -199,7 +205,7 @@ int cDemux::Read(unsigned char *buff, const size_t /*int*/ len, int Timeout)
 		}
 	}
 
-	rc = read(demux_fd, buff, len);
+	rc = ::read(demux_fd, buff, len);
 	
 	//printf("cDemux::Read: fd %d ret: %d\n", demux_fd, rc);
 	
@@ -433,9 +439,23 @@ void cDemux::addPid(unsigned short Pid)
 	return;
 }
 
+// remove pid
+void cDemux::removePid(unsigned short Pid)
+{
+	dprintf(DEBUG_INFO, "%s:%s type=%s Pid=0x%x\n", FILENAME, __FUNCTION__, aDMXCHANNELTYPE[type], Pid);	
+
+	if(demux_fd <= 0)
+		return;
+
+	if (ioctl(demux_fd, DMX_REMOVE_PID, &Pid) < 0)
+		perror("DMX_ADD_PID");
+	
+	return;
+}
+
 void cDemux::getSTC(int64_t * STC)
 { 
-	dprintf(DEBUG_INFO, "%s:%s dmx(%d) type=%s STC=\n", FILENAME, __FUNCTION__, demux_num, aDMXCHANNELTYPE[type]);	
+	dprintf(DEBUG_DEBUG, "%s:%s dmx(%d) type=%s STC=\n", FILENAME, __FUNCTION__, demux_num, aDMXCHANNELTYPE[type]);	
 	
 	#if 0
 	struct dmx_stc stc;
