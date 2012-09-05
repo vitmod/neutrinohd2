@@ -1,3 +1,4 @@
+AM_CFLAGS = -Wall -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -D_LARGEFILE64_SOURCE
 
 INCLUDES = \
 	-I$(top_srcdir)/lib \
@@ -7,8 +8,11 @@ INCLUDES = \
 	-I$(top_srcdir)/src/zapit/include/client \
 	-I$(top_srcdir)/lib/connection \
 	-I$(top_srcdir)/lib/libconfigfile \
-	-I$(top_srcdir)/lib/libeventserver \
-	-I$(top_srcdir)/lib/libeplayer3
+	-I$(top_srcdir)/lib/libeventserver
+
+if !ENABLE_GSTREAMER
+INCLUDES += -I$(top_srcdir)/lib/libeplayer3/include
+endif
 
 noinst_LIBRARIES = libcoolstream.a
 

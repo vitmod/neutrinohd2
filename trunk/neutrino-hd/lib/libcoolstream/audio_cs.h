@@ -23,9 +23,13 @@
 
 #include <config.h>
 
-
+// stm_ioctl
 #ifdef __sh__
+#if defined (PLATFORM_DUCKBOX)
+#include <linux/dvb/stm_ioctls.h>
+#else
 #include <player2/linux/include/linux/dvb/stm_ioctls.h>
+#endif
 #endif
 
 
@@ -82,7 +86,7 @@ class cAudio
 		int clipfd; /* for pcm playback */	
 		
 		// for pcm soft decoder
-#elif defined (ENABLE_PCMSOFTDECODER)
+#else
 		int uNoOfChannels;
 		int uSampleRate;
 		int uBitsPerSample;
