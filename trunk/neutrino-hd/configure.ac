@@ -41,45 +41,14 @@ AC_ARG_ENABLE(restore-prev-mode,
 #AC_SUBST(VORBISIDEC_CFLAGS)
 #AC_SUBST(VORBISIDEC_LIBS)
 
-
-# TEST_MENU
-AC_ARG_ENABLE(testmenu,
-	AS_HELP_STRING(--enable-testmenu,include Neutrino TEST_MENU support),
-	,[enable_testmenu=no])
-AM_CONDITIONAL(ENABLE_TEST_MENU,test "$enable_testmenu" = "yes")
-
-if test "$enable_test" = "yes"; then
-AC_DEFINE(ENABLE_TEST_MENU,1,[include test menu in gui])
-fi
-
-# PVR
-AC_ARG_ENABLE(pvr,
-	AS_HELP_STRING(--enable-pvr,enable playing TS throught dvr support),
-	,[enable_pvr=no])
-AM_CONDITIONAL(ENABLE_PVR,test "$enable_pvr" = "yes")
-
-if test "$enable_pvr" = "yes"; then
-AC_DEFINE(ENABLE_PVR,1,[enable playing TS throught dvr support])
-fi
-
-# libeplayer3
-AC_ARG_ENABLE(libeplayer3,
-	AS_HELP_STRING(--enable-libeplayer3,include Neutrino TDT libeplayer3 as player engine support),
-	,[enable_libeplayer3=no])
-AM_CONDITIONAL(ENABLE_LIBEPLAYER3,test "$enable_libeplayer3" = "yes")
-
-if test "$enable_libeplayer3" = "yes"; then
-AC_DEFINE(ENABLE_LIBEPLAYER3,1,[include libeplayer3 engine])
-fi
-
 # libass
 AC_ARG_ENABLE(libass,
-	AS_HELP_STRING(--enable-libass,include libass to avoid media subtilte support),
+	AS_HELP_STRING(--enable-libass,include libass to avoid subtitle support),
 	,[enable_libass=no])
 AM_CONDITIONAL(ENABLE_LIBASS,test "$enable_libass" = "yes")
 
 if test "$enable_libass" = "yes"; then
-AC_DEFINE(ENABLE_LIBASS,1,[include libass to avoid media subtilte support])
+AC_DEFINE(ENABLE_LIBASS,1,[include libass to avoid subtitle support])
 fi
 
 # gstreamer
@@ -92,16 +61,6 @@ if test "$enable_gstreamer" = "yes"; then
 AC_DEFINE(ENABLE_GSTREAMER,1,[include gstreamer engine])
 fi
 
-# PCM soft decoder
-AC_ARG_ENABLE(pcmsoftdecoder,
-	AS_HELP_STRING(--enable-pcmsoftdecoder,include PCM Soft decoder as audio player support),
-	,[enable_pcmsoftdecoder=no])
-AM_CONDITIONAL(ENABLE_PCMSOFTDECODER,test "$enable_pcmsoftdecoder" = "yes")
-
-if test "$enable_pcmsoftdecoder" = "yes"; then
-AC_DEFINE(ENABLE_PCMSOFTDECODER,1,[include pcm soft decoder])
-fi
-
 # dsp
 AC_ARG_ENABLE(dsp,
 	AS_HELP_STRING(--enable-dsp,include DSP as audio player support),
@@ -112,6 +71,15 @@ if test "$enable_dsp" = "yes"; then
 AC_DEFINE(ENABLE_DSP,1,[include dsp as audio player])
 fi
 
+# lcd
+AC_ARG_ENABLE(lcd,
+	AS_HELP_STRING(--enable-lcd,include lcd support),
+	,[enable_lcd=no])
+AM_CONDITIONAL(ENABLE_LCD,test "$enable_lcd" = "yes")
+
+if test "$enable_lcd" = "yes"; then
+AC_DEFINE(ENABLE_LCD,1,[include lcd support])
+fi
 
 AC_OUTPUT([
 Makefile
