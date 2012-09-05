@@ -2170,8 +2170,6 @@ int Init( int source )
 		{
 			FTC_Manager_Done(manager);
 			FT_Done_FreeType(library);
-			
-			//munmap(lfb, fix_screeninfo.smem_len);		/* unmap framebuffer */
 
 			return 0;
 		}
@@ -2257,9 +2255,6 @@ void CleanUp()
 	FTC_Manager_Done(manager);
 	FT_Done_FreeType(library);
 
-	/* unmap framebuffer */
-	//munmap(lfb, fix_screeninfo.smem_len);
-
 	if (hotlistchanged)
 		savehotlist();
 
@@ -2322,7 +2317,8 @@ int GetTeletextPIDs(int source)
         unsigned char mask[DMX_FILTER_SIZE];
 	int res;
 
-        cDemux * dmx = new cDemux( source );
+	int demux_index = 0; //source;
+        cDemux * dmx = new cDemux( demux_index );
 	dmx->Open(DMX_PSI_CHANNEL, 1024, source );
 
         memset(filter, 0x00, DMX_FILTER_SIZE);
@@ -5044,9 +5040,8 @@ fprintf(stderr, "national_subset_local = %d\n", national_subset_local);
 			for (Bit = xfactor * (sbit->left + TTFShiftX); Bit > 0; Bit--) /* fill left margin */
 			{
 				for (f = factor-1; f >= 0; f--)
-					//setPixel(x, saveRow + f + yoffset + PosY + ((sbit->height - Row) * factor), bgcolor);
 					memcpy((p + f * CFrameBuffer::getInstance()->getStride() ), bgra[bgcolor], 4);/*bgcolor*/
-					//memmove((p + f*fix_screeninfo.line_length),bgra[bgcolor],4);/*bgcolor*/
+				
 				p += 4;
 				x += 1;
 				if (!usettf)
