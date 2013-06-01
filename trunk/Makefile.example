@@ -4,7 +4,7 @@
 #
 # prerequisite packages need to be installed,
 # no checking is done for that
-# 2013.05.24 modded by mohousch to build nhd2-exp (mipsel)
+# 2013.05.24 modded by mohousch to build nhd2-exp (mipsel/arm)
 ####################################################
 CDK = $(PWD)/build-gb800se/tmp/sysroots/i686-linux
 TARGETPREFIX = $(PWD)/build-gb800se/tmp/sysroots/mipsel-oe-linux
@@ -45,7 +45,8 @@ export PKG_CONFIG_PATH = $(PREFIX)/lib/pkgconfig
 export PKG_CONFIG_LIBDIR = "$(TARGETPREFIX)/usr/lib/pkgconfig"
 
 BOXTYPE = gb800se
-DEST = $(PWD)/$(BOXTYPE)
+#DEST = $(PWD)/$(BOXTYPE)
+DEST = $(TARGETPREFIX)
 
 N_SRC  = $(PWD)/nhd2-exp
 PLUGINS_SRC = $(PWD)/plugins
