@@ -4,15 +4,16 @@
 #
 # prerequisite packages need to be installed,
 # no checking is done for that
-# 2013.05.24 modded by mohousch to build nhd2-exp (mipsel/arm)
+# 2013.05.24 modded by mohousch to build nhd2-exp (mipsel)
 ####################################################
+
+HOST = mipsel-oe-linux
 CDK = $(PWD)/build-gb800se/tmp/sysroots/i686-linux
 TARGETPREFIX = $(PWD)/build-gb800se/tmp/sysroots/mipsel-oe-linux
-PREFIX = $(TARGETPREFIX)/usr
-HOST = mipsel-oe-linux
-TARGET = $(CDK)/usr/mipsel/$(HOST)
 
 PATH := $(CDK)/usr/mipsel/bin/:$(PATH)
+
+TARGET = $(CDK)/usr/mipsel/$(HOST)
 
 CC = $(TARGET)-gcc
 CPP = $(TARGET)-cpp
@@ -26,32 +27,30 @@ OBJDUMP = $(TARGET)-objdump
 BJCOPY = $(TARGET)-objcopy
 STRIP = $(TARGET)-strip
 
-DVBINCLUDES = $(PWD)/build-gb800se/tmp/sysroots/i686-linux/usr/include/linux/dvb
+DVBINCLUDES = $(TARGETPREFIX)/usr/include/linux/dvb
 
 N_CFLAGS = "-Wall -g0 -O2 \
 		-D__KERNEL_STRICT_NAMES \
-		-I$(PREFIX)/include -I$(TARGETPREFIX)/include -I$(DVBINCLUDES) -I$(PREFIX)/include/gstreamer-0.10"
+		-I$(TARGETPREFIX)/usr/include -I$(TARGETPREFIX)/include -I$(DVBINCLUDES) -I$(TARGETPREFIX)/usr/include/gstreamer-0.10"
 
 N_CXXFLAGS = "-Wall -g0 -O2 \
 		-D__KERNEL_STRICT_NAMES \
-		 -I$(PREFIX)/include -I$(TARGETPREFIX)/include -I$(DVBUNCLUDES) -I$(PREFIX)/include/gstreamer-0.10"
+		 -I$(TARGETPREFIX)/usr/include -I$(TARGETPREFIX)/include -I$(DVBUNCLUDES) -I$(TARGETPREFIX)/usr/include/gstreamer-0.10"
 
-N_LDFLAGS = "-L$(TARGETPREFIX)/lib -L$(PREFIX)/lib -Wl,-rpath-link,-lcurl -ldl"
+N_LDFLAGS = "-L$(TARGETPREFIX)/lib -L$(TARGETPREFIX)/usr/lib -Wl,-rpath-link,-lcurl -ldl"
 
 FREETYPE_CONFIG = $(CDK)/usr/mipsel/bin/freetype-config
 CURL_CONFIG = $(CDK)/usr/mipsel/bin/curl-config
 
-export PKG_CONFIG_PATH = $(PREFIX)/lib/pkgconfig
+export PKG_CONFIG_PATH = $(TARGETPREFIX)/usr/lib/pkgconfig
 export PKG_CONFIG_LIBDIR = "$(TARGETPREFIX)/usr/lib/pkgconfig"
 
 BOXTYPE = gb800se
-#DEST = $(PWD)/$(BOXTYPE)
-DEST = $(TARGETPREFIX)
+DEST = $(PWD)/$(BOXTYPE)
+#DEST = $(TARGETPREFIX)
 
 N_SRC  = $(PWD)/nhd2-exp
-PLUGINS_SRC = $(PWD)/plugins
 
-# neutrino
 neutrino: $(N_SRC)/config.status
 	$(MAKE) -C $(N_SRC) install DESTDIR=$(DEST)
 
