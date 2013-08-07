@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary some screenshots from NHD2 GUI.
 
 = Screenshots =
 https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/channellist.png
@@ -26,7 +26,5 @@ https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/features.png
 https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/plugins.png
 
 https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/boxinfo.png
-
-
 
 
