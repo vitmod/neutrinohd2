@@ -2,3 +2,9 @@
 
 = Screenshots =
 https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/channellist.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/eventlist.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/epgview.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/epgplus.png
