@@ -8,3 +8,25 @@ https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/eventlist.pn
 https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/epgview.png
 
 https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/epgplus.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/infoviewer.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/tuxtxt.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/webtv.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/mainmenu.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/setup.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/service.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/features.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/plugins.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/boxinfo.png
+
+
+
+
