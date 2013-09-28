@@ -1,28 +1,38 @@
 #summary some screenshots from NHD2 GUI.
 
 = Screenshots =
-https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/channellist.png
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/01.png
 
-https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/eventlist.png
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/02.png
 
-https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/epgview.png
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/03.png
 
-https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/epgplus.png
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/04.png
 
-https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/infoviewer.png
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/05.png
 
-https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/tuxtxt.png
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/06.png
 
-https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/webtv.png
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/07.png
 
-https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/mainmenu.png
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/08.png
 
-https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/setup.png
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/09.png
 
-https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/service.png
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/10.png
 
-https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/features.png
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/11.png
 
-https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/plugins.png
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/12.png
 
-https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/boxinfo.png
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/13.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/14.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/15.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/16.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/17.png
+
+https://neutrinohd2.googlecode.com/svn/wiki/images/nhd2-screenshots/18.png
