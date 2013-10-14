@@ -4,7 +4,7 @@
 
 apt-get install autoconf libtool libavformat-dev libswscale-dev g++ libopenthreads-dev libglew-dev freeglut3-dev libao-dev libcurl4-gnutls-dev libfreetype6-dev libid3tag0-dev libmad0-dev libogg-dev libpng12-dev liblua5.2-dev libgif-dev libjpeg-turbo8-dev libvorbis-dev.
 
-* mkdir neutrino-pc
+mkdir neutrino-pc
 == ==
 * cd neutrino-pc
 == ==
