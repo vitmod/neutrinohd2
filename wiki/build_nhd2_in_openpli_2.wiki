@@ -1,0 +1,24 @@
+#summary building NHD2 for mipsel based STB in openpli2.0.
+
+cd to you openpli2.0 dir than:
+
+= checkout makefile =
+svn checkout http://neutrinohd2.googlecode.com/svn/trunk neutrino-mipsel
+
+= =
+cd neutrino-mipsel
+
+= =
+rename or copy Makefile.example to Makefile
+== ==
+= to build neutrino =
+make neutrino
+
+= to update neutrino Source Code =
+make neutrino-update
+
+= to clean neutrino build =
+make neutrino-clean
+
+= to distclean neutrino build =
+make neutrino-distclean
