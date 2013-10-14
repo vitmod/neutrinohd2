@@ -15,6 +15,9 @@ rename or copy Makefile.native to Makefile
 = to build neutrino =
 make neutrino
 
+= to start neutrino =
+make run
+
 = to update neutrino Source Code =
 make neutrino-update
 
