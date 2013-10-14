@@ -30,16 +30,28 @@ make neutrino-distclean
 
 = mapped keyboard keys =
 ESC = HOME KEY
+= =
 F1 = RED KEY
+==
 F2 = GREEN KEY
+==
 F3 = YELLOW KEY
+==
 F4 = BLUE KEY
-
+==
+==
 F5 = PLAY KEY
+==
 F6 = STOP KEY
+==
 F7 = PAUSE KEY
+==
 F8 = FORWARD KEY
+==
 F9 = BACKWARD KEY
+==
 M = MENU KEY
+==
 - = MUTE KEY
+==
 RETURN = OK KEY
