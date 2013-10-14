@@ -6,20 +6,20 @@ apt-get install autoconf libtool libavformat-dev libswscale-dev g++ libopenthrea
 
 mkdir neutrino-pc
 == ==
-* cd neutrino-pc
+cd neutrino-pc
 == ==
-* wget https://neutrinohd2.googlecode.com/svn/ ... ile.native
+wget https://neutrinohd2.googlecode.com/svn/ ... ile.native
 == ==
-* rename or copy Makefile.native to Makefile
+rename or copy Makefile.native to Makefile
 == ==
 = to build neutrino =
-* make neutrino
+make neutrino
 
 = to update neutrino Source Code =
-* make neutrino-update
+make neutrino-update
 
 = to clean neutrino build =
-* make neutrino-clean
+make neutrino-clean
 
 = to distclean neutrino build =
-* make neutrino-distclean
+make neutrino-distclean
