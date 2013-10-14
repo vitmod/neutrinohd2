@@ -3,7 +3,7 @@ at the first many thanks to seife for the Makefile.
 
 = HowTO =
 
-apt-get install autoconf libtool libavformat-dev libswscale-dev g++ libopenthreads-dev libglew-dev freeglut3-dev libcurl4-gnutls-dev libfreetype6-dev libid3tag0-dev libmad0-dev libogg-dev libpng12-dev libgif-dev libjpeg62-dev libvorbis-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libblkid-dev libflac-dev 
+sudo apt-get install autoconf libtool libavformat-dev libswscale-dev g++ libopenthreads-dev libglew-dev freeglut3-dev libcurl4-gnutls-dev libfreetype6-dev libid3tag0-dev libmad0-dev libogg-dev libpng12-dev libgif-dev libjpeg62-dev libvorbis-dev libgstreamer0.10-dev libgstreamer-plugins-base0.10-dev libblkid-dev libflac-dev 
 
 
 == check out makefiles ==
