@@ -11,22 +11,20 @@ svn checkout http://neutrinohd2.googlecode.com/svn/trunk neutrino-pc
 = =
 cd neutrino-pc
 == ==
-rename or copy Makefile.native to Makefile
-== ==
 = to build neutrino =
-make neutrino
+make -f Makefile.native neutrino
 
 = to start neutrino =
-make run
+make -f Makefile.native run
 
 = to update neutrino Source Code =
-make neutrino-update
+make -f Makefile.native neutrino-update
 
 = to clean neutrino build =
-make neutrino-clean
+make -f Makefile.native neutrino-clean
 
 = to distclean neutrino build =
-make neutrino-distclean
+make -f Makefile.native neutrino-distclean
 
 = mapped keyboard keys =
 ESC = HOME KEY
