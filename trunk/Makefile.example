@@ -7,9 +7,11 @@
 # 2013.05.24 modded by mohousch to build nhd2-exp (mipsel)
 ####################################################
 
+BOXTYPE = gb800se
+
 HOST = mipsel-oe-linux
-CDK = $(PWD)/build-gb800se/tmp/sysroots/i686-linux
-TARGETPREFIX = $(PWD)/build-gb800se/tmp/sysroots/mipsel-oe-linux
+CDK = $(PWD)/../build-$(BOXTYPE)/tmp/sysroots/i686-linux
+TARGETPREFIX = $(PWD)/../build-$(BOXTYPE)/tmp/sysroots/mipsel-oe-linux
 
 PATH := $(CDK)/usr/mipsel/bin/:$(PATH)
 
@@ -31,11 +33,11 @@ DVBINCLUDES = $(TARGETPREFIX)/usr/include/linux/dvb
 
 N_CFLAGS = "-Wall -g0 -O2 \
 		-D__KERNEL_STRICT_NAMES \
-		-I$(TARGETPREFIX)/usr/include -I$(TARGETPREFIX)/include -I$(DVBINCLUDES) -I$(TARGETPREFIX)/usr/include/gstreamer-0.10"
+		-I$(TARGETPREFIX)/usr/include -I$(TARGETPREFIX)/include -I$(DVBINCLUDES)"
 
 N_CXXFLAGS = "-Wall -g0 -O2 \
 		-D__KERNEL_STRICT_NAMES \
-		 -I$(TARGETPREFIX)/usr/include -I$(TARGETPREFIX)/include -I$(DVBUNCLUDES) -I$(TARGETPREFIX)/usr/include/gstreamer-0.10"
+		 -I$(TARGETPREFIX)/usr/include -I$(TARGETPREFIX)/include -I$(DVBUNCLUDES)"
 
 N_LDFLAGS = "-L$(TARGETPREFIX)/lib -L$(TARGETPREFIX)/usr/lib -Wl,-rpath-link,-lcurl -ldl"
 
@@ -45,9 +47,7 @@ CURL_CONFIG = $(CDK)/usr/mipsel/bin/curl-config
 export PKG_CONFIG_PATH = $(TARGETPREFIX)/usr/lib/pkgconfig
 export PKG_CONFIG_LIBDIR = "$(TARGETPREFIX)/usr/lib/pkgconfig"
 
-BOXTYPE = gb800se
 DEST = $(PWD)/$(BOXTYPE)
-#DEST = $(TARGETPREFIX)
 
 N_SRC  = $(PWD)/nhd2-exp
 
