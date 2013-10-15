@@ -33,11 +33,11 @@ DVBINCLUDES = $(TARGETPREFIX)/usr/include/linux/dvb
 
 N_CFLAGS = "-Wall -g0 -O2 \
 		-D__KERNEL_STRICT_NAMES \
-		-I$(TARGETPREFIX)/usr/include -I$(TARGETPREFIX)/include -I$(DVBINCLUDES)"
+		-I$(TARGETPREFIX)/usr/include -I$(TARGETPREFIX)/include -I$(DVBINCLUDES) -I$(TARGETPREFIX)/usr/include/gstreamer-0.10"
 
 N_CXXFLAGS = "-Wall -g0 -O2 \
 		-D__KERNEL_STRICT_NAMES \
-		 -I$(TARGETPREFIX)/usr/include -I$(TARGETPREFIX)/include -I$(DVBUNCLUDES)"
+		 -I$(TARGETPREFIX)/usr/include -I$(TARGETPREFIX)/include -I$(DVBUNCLUDES) -I$(TARGETPREFIX)/usr/include/gstreamer-0.10"
 
 N_LDFLAGS = "-L$(TARGETPREFIX)/lib -L$(TARGETPREFIX)/usr/lib -Wl,-rpath-link,-lcurl -ldl"
 
