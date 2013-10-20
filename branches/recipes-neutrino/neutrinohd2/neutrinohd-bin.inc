@@ -75,9 +75,10 @@ DEPENDS = "\
 	libid3tag \
 	libpng \
 	libungif \
-	\
 	jpeg \
-	libmad libpng libungif \
+	libmad \
+	libpng \
+	libungif \
 	openssl \
 	\
 	${NHD2ARCHDEPENDS} \
