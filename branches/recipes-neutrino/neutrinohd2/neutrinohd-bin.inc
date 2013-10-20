@@ -42,33 +42,19 @@ BOXTYPE_dm800     = "dreambox"
 BOXTYPE_maram9    = "odin"
 BOXTYPE_odinm7    = "odin"
 BOXTYPE_odinm9    = "odin"
+
 BOXTYPE_ventonhde = "venton"
 BOXTYPE_ventonhdx = "venton"
 
-BOXTYPE_xp1000    = "maxdigital"
-BOXTYPE_ebox5000  = "mixos"
-BOXTYPE_ixussone  = "medialink"
+BOXTYPE_xp1000    = "xp1000"
+BOXTYPE_ebox5000  = "ebox5000"
+BOXTYPE_e3hd = "e3hd"
 
-BOXTYPE_ufs910    = "ufs910"
-BOXTYPE_ufs912    = "ufs912"
-BOXTYPE_ufs913    = "ufs913"
-BOXTYPE_ufs922    = "ufs922"
-BOXTYPE_ufc960    = "ufc960"
+BOXTYPE_ixusszero  = "ixuss"
+BOXTYPE_ixussone  = "ixuss"
 
-BOXTYPE_spark     = "fulan"
-BOXTYPE_spark7162 = "fulan"
-
-BOXTYPE_su980      = "hypercube"
-BOXTYPE_coolstream = "coolstream"
-
-BOXTYPE_qemuarm    = "generic"
-BOXTYPE_qemumips   = "generic"
-BOXTYPE_qemumips64 = "generic"
-BOXTYPE_qemumipsel = "generic"
-BOXTYPE_qemux86    = "generic"
-BOXTYPE_qemux86-64 = "generic"
-
-BOXTYPE_raspberrypi = "dreambox"
+BOXTYPE_iqonios100hd  = "iqonios"
+BOXTYPE_iqonios300hd  = "iqonios"
 
 BOXMODEL = "${MACHINE}"
 
@@ -188,21 +174,6 @@ SRC_URI = "\
 S = "${WORKDIR}/${MODULE}"
 
 inherit autotools pkgconfig
-
-PACKAGES =+ "${PN}-fonts-tuxtxt ${PN}-fonts-tuxtxt-otb"
-
-FILES_${PN}-fonts-tuxtxt = "\
-	/usr/share/fonts/tuxtxt.ttf \
-	"
-FILES_${PN}-fonts-tuxtxt-otb = "\
-	/usr/share/fonts/tuxtxt.otb \
-	"
-
-PACKAGES =+ "${PN}-keymap"
-
-FILES_${PN}-keymap = "\
-	/etc/tuxbox/config/keymap.conf \
-	"
 
 EXTRA_OECONF = "\
 	--prefix=/ \

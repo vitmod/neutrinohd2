@@ -1,13 +1,11 @@
 require neutrinohd-bin.inc
 
-#PACKAGE_ARCH = "mipsel"
 PR_append = ".12"
-
-NHD2_ARCH_URI = ""
 
 dirs755 = "\
 	/usr/bin \
 	/usr/sbin \
+	/usr/lib \
 	/share/fonts \
 	/share/iso-codes \
 	/share/tuxbox/lcdd/icons \
