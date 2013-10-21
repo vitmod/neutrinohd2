@@ -16,7 +16,6 @@ dirs755 = "\
 	/share/tuxbox/neutrino/icons \
 	/share/tuxbox/neutrino/locale \
 	/share/tuxbox/neutrino/themes \
-	/share/tuxbox/tuxwetter \
 	/etc/tuxbox/config \
 	/etc/tuxbox/config/tuxtxt \
 	/etc/tuxbox/config/zapit \
@@ -28,12 +27,6 @@ FILES_${PN} = "${dirs755}"
 inherit autotools
 
 do_install_append() {
-	#install -m 0644 ${WORKDIR}/etc/.version ${D}/etc/.version
-	# generate /.version
-	echo "version=1200${DATETIME:0:12}" > ${D}/etc/.version
-	echo "creator=${DISTRO_NAME}" >> ${D}/etc/.version
-	echo "imagename=neutrinoHD2" >> ${D}/etc/.version
-	echo "homepage=${URL}" >> ${D}/etc/.version
 }
 
 pkg_preinst_${PN} () {
