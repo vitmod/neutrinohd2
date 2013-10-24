@@ -193,7 +193,6 @@ EXTRA_OECONF = "\
 	--enable-freesatepg \
 	--enable-upnp \
 	--enable-ci \
-	--enable-standaloneplugins \
 	--enable-gstreamer \
 	--with-boxtype=${BOXTYPE} --with-boxmodel=${BOXMODEL} \
 	${@base_contains("MACHINE_FEATURES", "dreambox", "--enable-lcd" , "", d)} \
