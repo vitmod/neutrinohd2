@@ -1,4 +1,4 @@
-#summary building NHD2 for generic x86.
+#summary building neutrino for generic x86.
 at the first many thanks to seife for the Makefile.
 
 = HowTO =
