@@ -1,20 +1,24 @@
-
 based on opennhd2-r64.12 from scp
 
 = MAKE: =
 for oe-alliance:
-[code]cd /(oe-alliance-path)/build-enviroment/meta-oe-alliance[/code]
-[code]svn co http://neutrinohd2.googlecode.com/svn/branches/recipes-neutrino recipes-neutrino[/code]
-[code]cd (oe-alliance-path)/build-enviroment/builds/(DISTRO)/(MACHINE)[/code]
+cd /(oe-alliance-path)/build-enviroment/meta-oe-alliance
+==
+svn co http://neutrinohd2.googlecode.com/svn/branches/recipes-neutrino recipes-neutrino
+==
+cd (oe-alliance-path)/build-enviroment/builds/(DISTRO)/(MACHINE)
 
 for openpli3.0:
-[code]cd (openpli30-path)/openpli-oe-core/meta-openpli[/code]
-[code]svn co http://neutrinohd2.googlecode.com/svn/branches/recipes-neutrino recipes-neutrino[/code]
-[code]cd (openpli30-path)/openpli-oe-core/build-(MACHINE)$[/code]
-
-[code]. ./env.source[/code]
-[code]bitbake neutrino[/code]
-
+cd (openpli30-path)/openpli-oe-core/meta-openpli
+==
+svn co http://neutrinohd2.googlecode.com/svn/branches/recipes-neutrino recipes-neutrino
+==
+cd (openpli30-path)/openpli-oe-core/build-(MACHINE)
+==
+. ./env.source
+==
+bitbake neutrino
+==
 result can be found here:
 for oe-alliance:
 (oe-alliance-path)/build-enviroment/builds/(DISTRO/(MACHINE)/tmp/deploy/ipk/mips32el/neutrino_svn(svnrevision)-r64.12_mips32el.ipk
@@ -23,20 +27,20 @@ for openpli3.0:
 (openpli30-path)/openpli-oe-core/build-MACHINE/tmp/deploy/ipk/mips32el/neutrino_svn(svnrevision)-r64.12_mips32el.ipk
 
 = INSTALL: =
+for quic test
+==
 - copy neutrino_svn(actuall svn rev)-r64.12_mips32el.ipk to /tmp
-[code]opkg install /tmp/neutrino_svn(actuall svn rev)-r64.12_mips32el.ipk[/code]
+opkg install /tmp/neutrino_svn(actuall svn rev)-r64.12_mips32el.ipk
 
 -librtmp:
 copy librtmp0_2.4+git484+df6c518-r1_mips32el.ipk to /tmp
-[code]opkg update && opkg install --force-overwrite /tmp/librtmp0_2.4+git484+df6c518-r1_mips32el.ipk[/code]
+opkg update && opkg install --force-overwrite /tmp/librtmp0_2.4+git484+df6c518-r1_mips32el.ipk[/code]
 
 kill enigma2
-[code]init 2[/code]
+init 2
 
 start neutrino
-[code]neutrino & [/code]
+neutrino &
 
 = CAUTION: =
 be sure that is enought place in flash;-)
-
-Have fun with neutrino
