@@ -32,9 +32,8 @@ for openpli3.0:
 (openpli30-path)/openpli-oe-core/build-MACHINE/tmp/deploy/ipk/mips32el/neutrino_svn(svnrevision)-r64.12_mips32el.ipk
 
 = INSTALL: =
-for quic test
-==
 - copy neutrino_svn(actuall svn rev)-r64.12_mips32el.ipk to /tmp
+==
 opkg install /tmp/neutrino_svn(actuall svn rev)-r64.12_mips32el.ipk
 ==
 -librtmp:
@@ -42,7 +41,7 @@ copy librtmp0_2.4+git484+df6c518-r1_mips32el.ipk to /tmp
 ==
 opkg update && opkg install --force-overwrite /tmp/librtmp0_2.4+git484+df6c518-r1_mips32el.ipk[/code]
 ==
-kill enigma2:
+for quick test, kill enigma2:
 ==
 init 2
 ==
