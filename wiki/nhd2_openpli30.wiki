@@ -1,3 +1,5 @@
+#summary building NHD2 for mipsel platforms with openpli3.0 or oe-alliance.
+
 based on opennhd2-r64.12 from scp
 
 = MAKE: =
