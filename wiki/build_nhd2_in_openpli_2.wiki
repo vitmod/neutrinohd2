@@ -1,4 +1,4 @@
-#summary building NHD2 for mipsel based STB in openpli2.0.
+#summary building neutrino for mipsel based STB in openpli2.0.
 
 cd to you openpli2.0 dir than:
 
