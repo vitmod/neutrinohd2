@@ -26,11 +26,3 @@ FILES_${PN} += "\
 	/usr/lib/enigma2/python/Plugins/Extensions/NeutrinoHD2 \
 	"
 
-DEPENDS += " \
-	tuxtxt-enigma2 \
-	"
-
-RDEPENDS_${PN} += " \
-	tuxtxt-enigma2 \
-	"
-
