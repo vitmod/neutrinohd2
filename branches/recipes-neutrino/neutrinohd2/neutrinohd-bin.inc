@@ -208,6 +208,7 @@ EXTRA_OECONF = "\
 	--enable-ci \
 	--enable-gstreamer \
 	--enable-graphlcd \
+	--enable-netzkino \
 	--with-boxtype=${BOXTYPE} --with-boxmodel=${BOXMODEL} \
 	${@base_contains("MACHINE_FEATURES", "dreambox", "--enable-lcd" , "", d)} \
 	${@base_contains("MACHINE_FEATURES", "colorlcd220", "--enable-lcd" , "", d)} \
