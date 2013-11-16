@@ -7,24 +7,24 @@ sudo apt-get install autoconf libtool g++ gdb libavformat-dev libswscale-dev lib
 
 
 == check out makefiles ==
-svn checkout http://neutrinohd2.googlecode.com/svn/trunk neutrino-pc
+svn checkout http://neutrinohd2.googlecode.com/svn/branches/neutrino-pc neutrino-pc
 = =
 cd neutrino-pc
 == ==
 = to build neutrino =
-make -f Makefile.native neutrino
+make neutrino
 
 = to start neutrino =
-make -f Makefile.native run
+make run
 
 = to update neutrino Source Code =
-make -f Makefile.native neutrino-update
+make neutrino-update
 
 = to clean neutrino build =
-make -f Makefile.native neutrino-clean
+make neutrino-clean
 
 = to distclean neutrino build =
-make -f Makefile.native neutrino-distclean
+make neutrino-distclean
 
 = mapped keyboard keys =
 ESC = HOME KEY
