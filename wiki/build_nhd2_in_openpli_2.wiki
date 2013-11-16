@@ -3,7 +3,7 @@
 cd to you openpli2.0 dir than:
 
 = checkout makefile =
-svn checkout http://neutrinohd2.googlecode.com/svn/trunk neutrino-mipsel
+svn checkout http://neutrinohd2.googlecode.com/svn/brnaches/neutrino-mipsel neutrino-mipsel
 
 = =
 cd neutrino-mipsel
@@ -11,13 +11,13 @@ cd neutrino-mipsel
 = =
 
 = to build neutrino =
-make -f Makefile.example neutrino
+make neutrino
 
 = to update neutrino Source Code =
-make -f Makefile.example neutrino-update
+make neutrino-update
 
 = to clean neutrino build =
-make -f Makefile.example neutrino-clean
+make neutrino-clean
 
 = to distclean neutrino build =
-make -f Makefile.example neutrino-distclean
+make neutrino-distclean
