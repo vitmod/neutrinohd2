@@ -79,7 +79,8 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--enable-freesatepg \
 			--enable-upnp \
 			--enable-ci \
-			--enable-gstreamer
+			--enable-gstreamer \
+			--enable-netzkino
 
 $(DEST):
 	mkdir $@
