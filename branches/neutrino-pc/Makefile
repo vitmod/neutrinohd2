@@ -40,19 +40,19 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--build=i686-pc-linux-gnu \
 			--enable-maintainer-mode \
 			--with-debug \
-			--with-boxtype=generic \
+			--with-boxtype=$(BOXTYPE) \
 			--with-datadir=$(DEST)/share/tuxbox \
 			--with-fontdir=$(DEST)/share/fonts \
 			--with-gamesdir=$(DEST)/var/tuxbox/games \
 			--with-plugindir=$(DEST)/var/tuxbox/plugins \
 			--with-configdir=$(DEST)/var/tuxbox/config \
 			--with-isocodesdir=$(DEST)/share/iso-codes \
-			--enable-opengl \
 			--enable-gstreamer \
 			--enable-freesatepg \
 			--enable-upnp \
 			--enable-radiotext \
-			--enable-netzkino
+			--enable-netzkino \
+			--enable-opengl
 $(DEST):
 	mkdir $@
 
@@ -70,6 +70,33 @@ neutrino-clean:
 neutrino-distclean:
 	-$(MAKE) -C $(N_SRC) distclean
 	rm -f $(N_SRC)/config.status
+
+PLUGINS = $(PWD)/plugins
+plugins: $(PLUGINS)/config.status 
+	$(MAKE) -C $(PLUGINS) install
+
+$(PLUGINS)/config.status: $(DEST)
+	$(PLUGINS)/autogen.sh
+	set -e; cd $(PLUGINS); \
+		$(PLUGINS)/configure \
+			--prefix=$(DEST)  \
+			--build=i686-pc-linux-gnu \
+			--enable-maintainer-mode \
+			--with-debug \
+			--with-boxtype=$(BOXTYPE) \
+			--with-datadir=$(DEST)/share/tuxbox \
+			--with-fontdir=$(DEST)/share/fonts \
+			--with-gamesdir=$(DEST)/var/tuxbox/games \
+			--with-plugindir=$(DEST)/var/tuxbox/plugins \
+			--with-configdir=$(DEST)/var/tuxbox/config \
+			--with-isocodesdir=$(DEST)/share/iso-codes
+
+plugins-clean:
+	-$(MAKE) -C $(PLUGINS) clean
+
+plugins-distclean:
+	-$(MAKE) -C $(PLUGINS) distclean
+	rm -f $(PLUGINS)/config.status
 
 PHONY = neutrino-checkout
 .PHONY: $(PHONY)
