@@ -72,10 +72,13 @@ neutrino-distclean:
 	rm -f $(N_SRC)/config.status
 
 PLUGINS = $(PWD)/plugins
+$(PLUGINS):
+	svn co http://neutrinohd2.googlecode.com/svn/branches/plugins plugins
+
 plugins: $(PLUGINS)/config.status 
 	$(MAKE) -C $(PLUGINS) install
 
-$(PLUGINS)/config.status: $(DEST)
+$(PLUGINS)/config.status: | $(PLUGINS) $(DEST)
 	$(PLUGINS)/autogen.sh
 	set -e; cd $(PLUGINS); \
 		$(PLUGINS)/configure \
@@ -90,6 +93,9 @@ $(PLUGINS)/config.status: $(DEST)
 			--with-plugindir=$(DEST)/var/tuxbox/plugins \
 			--with-configdir=$(DEST)/var/tuxbox/config \
 			--with-isocodesdir=$(DEST)/share/iso-codes
+
+plugins-update:
+	svn update http://neutrinohd2.googlecode.com/svn/branches/plugins plugins
 
 plugins-clean:
 	-$(MAKE) -C $(PLUGINS) clean
