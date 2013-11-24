@@ -14,10 +14,6 @@ AM_CPPFLAGS =  \
 noinst_LTLIBRARIES = netzkino.la
 
 netzkino_la_SOURCES = netzkino.cpp
-
-netzkino_la_LIBADD = \
-	 @FREETYPE_LIBS@ \
-	-lz
 	 
 netzkino_la_LDFLAGS = -rpath $(PLUGINDIR) -module -avoid-version 
 

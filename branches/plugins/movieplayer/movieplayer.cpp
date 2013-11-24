@@ -10,20 +10,20 @@
 #include <gui/movieplayer.h>
 
 
-//#include <playback_cs.h>
-//extern cPlayback *playback;
-
-extern CMoviePlayerGui * moviePlayerGui;	// defined in neutrino.cpp
+extern CMoviePlayerGui * moviePlayerGui;
 
 #ifdef __cplusplus
-extern "C" {
+extern "C" 
+{
+#endif
+
 void plugin_exec(PluginParam *par)
 {
 	printf("Plugins: starting Movieplayer\n");
 	
 	CFrameBuffer::getInstance()->paintBackground();
 	
-	CMenuWidget *testMenu = new CMenuWidget(LOCALE_MISCSETTINGS_ZAPIT, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget *testMenu = new CMenuWidget(LOCALE_MAINMENU_MEDIAPLAYER, NEUTRINO_ICON_SETTINGS);
 	
 	// ts player
 	testMenu->addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_RECORDS, true, NULL, moviePlayerGui, "tsmoviebrowser", CRCInput::convertDigitToKey(1), NULL, NEUTRINO_ICON_MOVIEPLAYER, LOCALE_HELPTEXT_TSMOVIEBROWSER ));
@@ -43,12 +43,12 @@ void plugin_exec(PluginParam *par)
 	testMenu->addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_YTPLAYBACK, true, NULL, moviePlayerGui, "ytplayback", CRCInput::convertDigitToKey(5), NULL, NEUTRINO_ICON_YT, LOCALE_HELPTEXT_NETSTREAM ));
 	
 	// netzkino
-#if ENABLE_NETZKINO
-	testMenu->addItem(new CMenuForwarderItemMenuIcon(LOCALE_WEBTV_NETZKINO, true, NULL, moviePlayerGui, "netzkinoplayback", CRCInput::convertDigitToKey(6), NULL, NEUTRINO_ICON_NETZKINO, LOCALE_HELPTEXT_NETSTREAM ));
-#endif	
+	testMenu->addItem(new CMenuForwarderItemMenuIcon(LOCALE_WEBTV_NETZKINO, true, NULL, moviePlayerGui, "netzkinoplayback", CRCInput::convertDigitToKey(6), NULL, NEUTRINO_ICON_NETZKINO, LOCALE_HELPTEXT_NETSTREAM ));	
 	
 	testMenu->exec(NULL, "");
 	testMenu->hide();
 }
+
+#ifdef __cplusplus
 }
 #endif

@@ -14,10 +14,6 @@ AM_CPPFLAGS =  \
 noinst_LTLIBRARIES = test.la
 
 test_la_SOURCES = test.cpp
-
-test_la_LIBADD = \
-	 @FREETYPE_LIBS@ \
-	-lz
 	 
 test_la_LDFLAGS = -rpath $(PLUGINDIR) -module -avoid-version 
 

@@ -14,10 +14,6 @@ AM_CPPFLAGS =  \
 noinst_LTLIBRARIES = movieplayer.la
 
 movieplayer_la_SOURCES = movieplayer.cpp
-
-movieplayer_la_LIBADD = \
-	 @FREETYPE_LIBS@ \
-	-lz
 	 
 movieplayer_la_LDFLAGS = -rpath $(PLUGINDIR) -module -avoid-version 
 
