@@ -20,6 +20,7 @@ test_la_LDFLAGS = -rpath $(PLUGINDIR) -module -avoid-version
 install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)
 	$(LIBTOOL) --mode=install install test.la $(DESTDIR)$(PLUGINDIR) 
+	$(LIBTOOL) --finish $(DESTDIR)$(PLUGINDIR) 
 	install -m 0644 $(srcdir)/test.cfg $(DESTDIR)$(PLUGINDIR)
 
 

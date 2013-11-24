@@ -20,6 +20,7 @@ netzkino_la_LDFLAGS = -rpath $(PLUGINDIR) -module -avoid-version
 install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)
 	$(LIBTOOL) --mode=install install netzkino.la $(DESTDIR)$(PLUGINDIR) 
+	$(LIBTOOL) --finish $(DESTDIR)$(PLUGINDIR) 
 	install -m 0644 $(srcdir)/netzkino.cfg $(DESTDIR)$(PLUGINDIR)
 
 
