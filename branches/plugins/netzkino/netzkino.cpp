@@ -10,11 +10,11 @@
 #include <gui/movieplayer.h>
 
 
-extern CMoviePlayerGui * moviePlayerGui;	// defined in neutrino.cpp
+//extern CMoviePlayerGui * moviePlayerGui;	// defined in neutrino.cpp
 
 #ifdef __cplusplus
 extern "C" {
-void plugin_exec(PluginParam *par)
+void plugin_exec(void)
 {
 	printf("Plugins: starting netzkino.de player\n");
 	

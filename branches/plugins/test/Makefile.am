@@ -22,6 +22,7 @@ install-exec-local:
 	$(LIBTOOL) --mode=install install test.la $(DESTDIR)$(PLUGINDIR) 
 	$(LIBTOOL) --finish $(DESTDIR)$(PLUGINDIR) 
 	install -m 0644 $(srcdir)/test.cfg $(DESTDIR)$(PLUGINDIR)
+	install -m 0644 $(srcdir)/test.png $(DESTDIR)$(PLUGINDIR)
 
 
 

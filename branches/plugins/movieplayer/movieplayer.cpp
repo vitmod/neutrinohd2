@@ -10,14 +10,12 @@
 #include <gui/movieplayer.h>
 
 
-extern CMoviePlayerGui * moviePlayerGui;
-
 #ifdef __cplusplus
 extern "C" 
 {
 #endif
 
-void plugin_exec(PluginParam *par)
+void plugin_exec(void)
 {
 	printf("Plugins: starting Movieplayer\n");
 	

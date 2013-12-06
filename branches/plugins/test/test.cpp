@@ -14,7 +14,7 @@
 
 #ifdef __cplusplus
 extern "C" {
-void plugin_exec(PluginParam *par)
+void plugin_exec(void)
 {
 	printf("Plugins: starting test\n");
 	
