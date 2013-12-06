@@ -18,7 +18,7 @@ void plugin_exec(void)
 {
 	printf("Plugins: starting test\n");
 	
-	CFrameBuffer::getInstance()->paintBackground();
+	//CFrameBuffer::getInstance()->paintBackground();
 	
 	ShowHintUTF(LOCALE_MESSAGEBOX_INFO, (const char *) "this neutrino new plugins interface\n"); // UTF-8
 }

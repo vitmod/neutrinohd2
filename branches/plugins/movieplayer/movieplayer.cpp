@@ -19,7 +19,7 @@ void plugin_exec(void)
 {
 	printf("Plugins: starting Movieplayer\n");
 	
-	CFrameBuffer::getInstance()->paintBackground();
+	//CFrameBuffer::getInstance()->paintBackground();
 	
 	CMenuWidget *testMenu = new CMenuWidget(LOCALE_MAINMENU_MEDIAPLAYER, NEUTRINO_ICON_SETTINGS);
 	
