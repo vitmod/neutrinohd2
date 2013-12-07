@@ -1,13 +1,5 @@
 #include <plugin.h>
-
 #include <movieplayer.h>
-
-#include <config.h>
-#include <global.h>
-#include <driver/framebuffer.h>
-#include <gui/color.h>
-#include <gui/filebrowser.h>
-#include <gui/movieplayer.h>
 
 
 #ifdef __cplusplus
