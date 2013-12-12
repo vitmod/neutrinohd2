@@ -23,4 +23,5 @@ test/Makefile
 netzkino/Makefile
 movieplayer/Makefile
 webtv/Makefile
+fileplayer/Makefile
 ])
