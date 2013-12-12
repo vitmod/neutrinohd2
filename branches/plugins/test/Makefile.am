@@ -15,14 +15,22 @@ noinst_LTLIBRARIES = test.la
 
 test_la_SOURCES = test.cpp
 	 
-test_la_LDFLAGS = -rpath $(PLUGINDIR) -module -avoid-version 
+test_la_LDFLAGS = -rpath $(PLUGINDIR) -module
+
+test_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
 install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)
-	$(LIBTOOL) --mode=install install test.la $(DESTDIR)$(PLUGINDIR) 
-	$(LIBTOOL) --finish $(DESTDIR)$(PLUGINDIR) 
-	install -m 0644 $(srcdir)/test.cfg $(DESTDIR)$(PLUGINDIR)
+	install .libs/test.so $(DESTDIR)$(PLUGINDIR)
+	install -m 0644  test.cfg $(DESTDIR)$(PLUGINDIR)
 	install -m 0644 $(srcdir)/test.png $(DESTDIR)$(PLUGINDIR)
+
+uninstall-local:
+	-rm $(DESTDIR)$(PLUGINDIR)/test.so
+	-rm $(DESTDIR)$(PLUGINDIR)/test.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/test.png
+	
+
 
 
 

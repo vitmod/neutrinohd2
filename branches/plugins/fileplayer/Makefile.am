@@ -15,13 +15,19 @@ noinst_LTLIBRARIES = fileplayer.la
 
 fileplayer_la_SOURCES = fileplayer.cpp
 	 
-fileplayer_la_LDFLAGS = -rpath $(PLUGINDIR) -module -avoid-version 
+fileplayer_la_LDFLAGS = -rpath $(PLUGINDIR) -module
+
+fileplayer_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
 install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)
-	$(LIBTOOL) --mode=install install fileplayer.la $(DESTDIR)$(PLUGINDIR) 
-	$(LIBTOOL) --finish $(DESTDIR)$(PLUGINDIR) 
-	install -m 0644 $(srcdir)/fileplayer.cfg $(DESTDIR)$(PLUGINDIR)
+	install .libs/fileplayer.so $(DESTDIR)$(PLUGINDIR)
+	install -m 0644  fileplayer.cfg $(DESTDIR)$(PLUGINDIR)
+
+uninstall-local:
+	-rm $(DESTDIR)$(PLUGINDIR)/fileplayer.so
+	-rm $(DESTDIR)$(PLUGINDIR)/fileplayer.cfg
+
 
 
 

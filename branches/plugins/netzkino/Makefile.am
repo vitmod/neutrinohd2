@@ -15,13 +15,18 @@ noinst_LTLIBRARIES = netzkino.la
 
 netzkino_la_SOURCES = netzkino.cpp
 	 
-netzkino_la_LDFLAGS = -rpath $(PLUGINDIR) -module -avoid-version 
+netzkino_la_LDFLAGS = -rpath $(PLUGINDIR) -module
+
+netzkino_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
 install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)
-	$(LIBTOOL) --mode=install install netzkino.la $(DESTDIR)$(PLUGINDIR) 
-	$(LIBTOOL) --finish $(DESTDIR)$(PLUGINDIR) 
-	install -m 0644 $(srcdir)/netzkino.cfg $(DESTDIR)$(PLUGINDIR)
+	install .libs/netzkino.so $(DESTDIR)$(PLUGINDIR)
+	install -m 0644  netzkino.cfg $(DESTDIR)$(PLUGINDIR)
+
+uninstall-local:
+	-rm $(DESTDIR)$(PLUGINDIR)/netzkino.so
+	-rm $(DESTDIR)$(PLUGINDIR)/netzkino.cfg
 
 
 

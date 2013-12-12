@@ -15,13 +15,19 @@ noinst_LTLIBRARIES = movieplayer.la
 
 movieplayer_la_SOURCES = movieplayer.cpp
 	 
-movieplayer_la_LDFLAGS = -rpath $(PLUGINDIR) -module -avoid-version 
+movieplayer_la_LDFLAGS = -rpath $(PLUGINDIR) -module
+
+movieplayer_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
 install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)
-	$(LIBTOOL) --mode=install install movieplayer.la $(DESTDIR)$(PLUGINDIR) 
-	$(LIBTOOL) --finish $(DESTDIR)$(PLUGINDIR) 
-	install -m 0644 $(srcdir)/movieplayer.cfg $(DESTDIR)$(PLUGINDIR)
+	install .libs/movieplayer.so $(DESTDIR)$(PLUGINDIR)
+	install -m 0644  movieplayer.cfg $(DESTDIR)$(PLUGINDIR)
+
+uninstall-local:
+	-rm $(DESTDIR)$(PLUGINDIR)/movieplayer.so
+	-rm $(DESTDIR)$(PLUGINDIR)/movieplayer.cfg
+
 
 
 

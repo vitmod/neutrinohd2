@@ -15,13 +15,18 @@ noinst_LTLIBRARIES = webtv.la
 
 webtv_la_SOURCES = webtv.cpp
 	 
-webtv_la_LDFLAGS = -rpath $(PLUGINDIR) -module -avoid-version 
+webtv_la_LDFLAGS = -rpath $(PLUGINDIR) -module
+
+webtv_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
 install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)
-	$(LIBTOOL) --mode=install install webtv.la $(DESTDIR)$(PLUGINDIR) 
-	$(LIBTOOL) --finish $(DESTDIR)$(PLUGINDIR) 
-	install -m 0644 $(srcdir)/webtv.cfg $(DESTDIR)$(PLUGINDIR)
+	install .libs/webtv.so $(DESTDIR)$(PLUGINDIR)
+	install -m 0644  webtv.cfg $(DESTDIR)$(PLUGINDIR)
+
+uninstall-local:
+	-rm $(DESTDIR)$(PLUGINDIR)/webtv.so
+	-rm $(DESTDIR)$(PLUGINDIR)/webtv.cfg
 
 
 
