@@ -196,7 +196,7 @@ int plugin_exec(void)
 	TestMenu->addItem(new CMenuForwarderNonLocalized("Smartcard", true, NULL, testHandler, "card"));
 	TestMenu->addItem(new CMenuForwarderNonLocalized("HDD", true, NULL, testHandler, "hdd"));
 	TestMenu->addItem(new CMenuForwarderNonLocalized("Buttons", true, NULL, testHandler, "buttons"));
-	TestMenu->addItem(new CMenuForwarderNonLocalized("Scan 12538000", true, NULL, testHandler, "scan"));
+	//TestMenu->addItem(new CMenuForwarderNonLocalized("Scan 12538000", true, NULL, testHandler, "scan"));
 	//TestMenu->addItem(new CMenuForwarderNonLocalized("22 Khz ON", true, NULL, testHandler, "22kon"));
 	//TestMenu->addItem(new CMenuForwarderNonLocalized("22 Khz OFF", true, NULL, testHandler, "22koff"));
 	

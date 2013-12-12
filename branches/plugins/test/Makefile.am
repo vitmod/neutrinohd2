@@ -23,7 +23,7 @@ install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)
 	install .libs/test.so $(DESTDIR)$(PLUGINDIR)
 	install -m 0644  test.cfg $(DESTDIR)$(PLUGINDIR)
-	install -m 0644 $(srcdir)/test.png $(DESTDIR)$(PLUGINDIR)
+	install -m 0644 test.png $(DESTDIR)$(PLUGINDIR)
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/test.so

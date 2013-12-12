@@ -994,14 +994,6 @@ int plugin_exec(void)
 {
 	printf("Plugins: starting test\n");
 	
-	//CMenuWidget *webtvMenu = new CMenuWidget(LOCALE_MAINMENU_MEDIAPLAYER, NEUTRINO_ICON_SETTINGS);
-	
-	// webtv
-	//webtvMenu->addItem(new CMenuForwarderItemMenuIcon(LOCALE_WEBTV_HEAD, true, NULL, CNeutrinoApp::getInstance(), "webtv", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_WEBTV, LOCALE_HELPTEXT_SCART) );
-	
-	//webtvMenu->exec(NULL, "");
-	//webtvMenu->hide();
-	
 	CNeutrinoApp::getInstance()->exec(NULL, "webtv");
 	
 	return 0;

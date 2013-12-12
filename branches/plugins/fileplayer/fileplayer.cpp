@@ -40,7 +40,7 @@ int plugin_exec(void)
 	
 	filebrowser.Filter = &filefilter;
 	
-	if(filebrowser.exec(recDir))
+	if(filebrowser.exec(g_settings.network_nfs_moviedir))
 	{
 		g_settings.streaming_server_url = filebrowser.getSelectedFile()->Name.c_str();
 		moviePlayerGui->exec(NULL, "urlplayback");
