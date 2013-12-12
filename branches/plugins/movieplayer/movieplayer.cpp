@@ -2,12 +2,9 @@
 #include <movieplayer.h>
 
 
-#ifdef __cplusplus
-extern "C" 
-{
-#endif
+extern "C" int plugin_exec(void);
 
-void plugin_exec(void)
+int plugin_exec(void)
 {
 	printf("Plugins: starting Movieplayer\n");
 	
@@ -37,8 +34,8 @@ void plugin_exec(void)
 	
 	testMenu->exec(NULL, "");
 	testMenu->hide();
+	
+	return 0;
 }
 
-#ifdef __cplusplus
-}
-#endif
+
