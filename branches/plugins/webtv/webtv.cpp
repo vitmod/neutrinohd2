@@ -27,40 +27,7 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-/*
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif
-
-#include <stdio.h>
-
-#include <algorithm>    // std::sort
-
-#include <global.h>
-#include <neutrino.h>
-#include <driver/screen_max.h>
-#include "movieplayer.h"
-#include "webtv.h"
-#include <gui/widget/buttons.h>
-#include <gui/widget/messagebox.h>
-#include <gui/widget/helpbox.h>
-#include <gui/widget/msgbox.h>
-
-#include <gui/filebrowser.h>
-
-#include <xmlinterface.h>
-
-#include <system/debug.h>
-
-// libdvbapi
-#include <playback_cs.h>
-#include <video_cs.h>
-#include <audio_cs.h>
-
-
-extern cPlayback *playback;
-*/
-
 #include <plugin.h>
 #include <webtv.h>
 
