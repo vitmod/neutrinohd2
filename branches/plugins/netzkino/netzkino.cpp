@@ -1,5 +1,4 @@
 #include <plugin.h>
-#include <netzkino.h>
 
 
 extern "C" int plugin_exec(void);

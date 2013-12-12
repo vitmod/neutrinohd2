@@ -1,5 +1,4 @@
 #include <plugin.h>
-#include <fileplayer.h>
 
 
 extern "C" int plugin_exec(void);

@@ -1,5 +1,4 @@
 #include <plugin.h>
-#include <test.h>
 
 
 extern "C" int plugin_exec(void);
@@ -9,10 +8,6 @@ class CTestMenu : public CMenuTarget
         public:
                 int exec(CMenuTarget* parent,  const std::string &actionkey);
 };
-
-//#include <sys/ioctl.h>
-//#include <net/if.h>
-//#include <arpa/inet.h>
 
 int CTestMenu::exec(CMenuTarget* parent, const std::string &actionKey)
 {
