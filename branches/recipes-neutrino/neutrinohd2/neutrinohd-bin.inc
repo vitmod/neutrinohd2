@@ -92,7 +92,6 @@ DEPENDS = "\
 	libpng \
 	libungif \
 	openssl \
-	graphlcd-base \
 	\
 	${NHD2ARCHDEPENDS} \
 	"
@@ -207,7 +206,6 @@ EXTRA_OECONF = "\
 	--enable-upnp \
 	--enable-ci \
 	--enable-gstreamer \
-	--enable-graphlcd \
 	--enable-netzkino \
 	--with-boxtype=${BOXTYPE} --with-boxmodel=${BOXMODEL} \
 	${@base_contains("MACHINE_FEATURES", "gigablue", "--enable-4digits" , "", d)} \
