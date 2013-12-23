@@ -224,9 +224,11 @@ int CNetworkServiceSetup::showNetworkServiceSetup()
 
 		std::string execute1 = "/bin/" + services[i].cmd;
 		std::string execute2 = "/sbin/" + services[i].cmd;
+		std::string execute3 = "/usr/bin/" + services[i].cmd;
+		std::string execute4 = "/usr/sbin/" + services[i].cmd;
 
 		active = false;
-		if ( !(access(execute1.c_str(), F_OK)) || !(access(execute2.c_str(), F_OK)) )
+		if ( !(access(execute1.c_str(), F_OK)) || !(access(execute2.c_str(), F_OK)) || !(access(execute3.c_str(), F_OK)) || !(access(execute4.c_str(), F_OK)) )
 			active = true;
 			
 		if ( (services[i].name == "Telnet") && useinetd)
