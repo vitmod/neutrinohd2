@@ -601,7 +601,7 @@ showList:
 	paint();
 		
 #if !defined USE_OPENGL
-	frameBuffer->blit();
+	//frameBuffer->blit();
 #endif
 
 	oldselected = selected;
@@ -724,7 +724,7 @@ showList:
 		}
 			
 #if !defined USE_OPENGL
-		frameBuffer->blit();
+		//frameBuffer->blit();
 #endif		
 	}
 	
@@ -747,7 +747,7 @@ void CWebTV::hide()
         clearItem2DetailsLine();
 	
 #if !defined USE_OPENGL
-	frameBuffer->blit();
+	//frameBuffer->blit();
 #endif	
 }
 
@@ -912,7 +912,7 @@ void CWebTV::paintItem2DetailsLine(int pos, int /*ch_index*/)
 	frameBuffer->paintBackgroundBoxRel(xpos, y, ConnectLineBox_Width, height + info_height);
 
 #if !defined USE_OPENGL
-	frameBuffer->blit();
+	//frameBuffer->blit();
 #endif
 
 	// paint Line if detail info (and not valid list pos)

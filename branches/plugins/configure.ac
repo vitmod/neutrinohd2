@@ -174,4 +174,5 @@ netzkino/Makefile
 movieplayer/Makefile
 webtv/Makefile
 fileplayer/Makefile
+network_service/Makefile
 ])
