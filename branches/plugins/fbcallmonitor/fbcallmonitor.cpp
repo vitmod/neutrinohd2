@@ -6,8 +6,9 @@ class CFBCallMonitor : public CMenuTarget
         public:
 		void ReadSettings();
 		bool SaveSettings();
+		
+		int exec(CMenuTarget *parent,  const std::string &actionkey);
 };
-
 
 int FB_AUTOSTART;
 std::string FB_IP_STRG = "";
@@ -85,15 +86,38 @@ bool CFBCallMonitor::SaveSettings()
 	bpfbconfig->setInt32("muteRing", FB_MUTERING);
 	bpfbconfig->setInt32("popup", FB_POPUP);
 	bpfbconfig->setInt32("invers", FB_INVERS);
-	bpfbconfig->saveConfig("/var/plugins/fb.conf");
+	bpfbconfig->saveConfig(PLUGINDIR "/fb.conf");
 	
 	return true;
+}
+
+int CFBCallMonitor::exec(CMenuTarget* parent, const std::string &actionKey)
+{
+	if(parent)
+		parent->hide();
+	
+	if(actionKey == "save")
+	{
+		SaveSettings();
+	}
+	else if(actionKey == "load")
+	{
+		ReadSettings();
+	}
+	
+	return menu_return::RETURN_REPAINT;
 }
 
 extern "C" int plugin_exec(void);
 
 int plugin_exec(void)
 {
+	// read settings
+	// menuhandler
+	CFBCallMonitor * FBCallMonitorHandler = new CFBCallMonitor();
+	FBCallMonitorHandler->ReadSettings();
+	
+	// create menu
 	CMenuWidget * FritzBoxCallSettingsMenu = new CMenuWidget("FritzBoxCallMonitor", NEUTRINO_ICON_SETTINGS);
 
 	FritzBoxCallSettingsMenu->addItem(GenericMenuSeparator);
@@ -150,10 +174,13 @@ int plugin_exec(void)
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("Box Passwort", true, FB_BOXPASSWORD_STRG, FB_BOXPASSWORD, NULL));
 
 	FritzBoxCallSettingsMenu->addItem(GenericMenuSeparatorLine);
-	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("act settings", true, NULL, NULL, NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("act settings", true, NULL, FBCallMonitorHandler, "save", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 
 	FritzBoxCallSettingsMenu->exec(NULL, "");
 	FritzBoxCallSettingsMenu->hide();
+	
+	//delete FBCallMonitorHandler
+	//delete FBCallMonitorHandler;
 	
 	return 0;
 }
