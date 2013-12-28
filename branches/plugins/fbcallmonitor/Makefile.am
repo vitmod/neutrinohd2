@@ -23,10 +23,12 @@ install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)
 	install .libs/fbcallmonitor.so $(DESTDIR)$(PLUGINDIR)
 	install -m 0644 fbcallmonitor.cfg $(DESTDIR)$(PLUGINDIR)
+	install -m 0644 fritzbox.png $(DESTDIR)$(PLUGINDIR)
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/fbcallmonitor.so
 	-rm $(DESTDIR)$(PLUGINDIR)/fbcallmonitor.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/fritzbox.png
 
 	
 
