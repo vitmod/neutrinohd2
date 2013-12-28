@@ -178,4 +178,5 @@ network_service/Makefile
 tuxcom/Makefile
 adzap/Makefile
 fbcallmonitor/Makefile
+internetradio/Makefile
 ])
