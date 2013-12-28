@@ -45,7 +45,9 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string &actionKey)
 		text[12*len] = 0;
 
 		CVFD::getInstance()->ShowText(text);
-		ShowMsgUTF(LOCALE_MESSAGEBOX_INFO, "VFD test, Press OK to return", CMessageBox::mbrBack, CMessageBox::mbBack, "info.raw");
+		
+		ShowMsgUTF(LOCALE_MESSAGEBOX_INFO, "VFD test, Press OK to return", CMessageBox::mbrBack, CMessageBox::mbBack, "info");
+		
 		CVFD::getInstance()->Clear();
 	}
 	else if(actionKey == "network") 
@@ -81,7 +83,7 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string &actionKey)
 				(unsigned char)ifr.ifr_hwaddr.sa_data[5], ip == NULL ? "Unknown" : ip);
 
 		close(fd);
-		ShowMsgUTF(LOCALE_MESSAGEBOX_INFO, str, CMessageBox::mbrBack, CMessageBox::mbBack, "info.raw");
+		ShowMsgUTF(LOCALE_MESSAGEBOX_INFO, str, CMessageBox::mbrBack, CMessageBox::mbBack, "info");
 	}
 	else if(actionKey == "card") {
 	}
@@ -100,7 +102,7 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string &actionKey)
 		}
 		sprintf(buffer, "HDD: /dev/sda1 is %s", mounted ? "mounted" : "NOT mounted");
 		printf("%s\n", buffer);
-		ShowMsgUTF(LOCALE_MESSAGEBOX_INFO, buffer, CMessageBox::mbrBack, CMessageBox::mbBack, "info.raw");
+		ShowMsgUTF(LOCALE_MESSAGEBOX_INFO, buffer, CMessageBox::mbrBack, CMessageBox::mbBack, "info");
 	}
 	else if(actionKey == "buttons") {
 		neutrino_msg_t      msg;

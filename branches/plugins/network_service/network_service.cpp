@@ -20,26 +20,7 @@
 
 */
 
-/*
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
 
-#include <unistd.h>
-#include <global.h>
-#include <neutrino.h>
-
-#include <gui/widget/icons.h>
-#include "network_service.h"
-#include <mymenu.h>
-
-#include <driver/screen_max.h>
-
-#include <system/debug.h>
-#include <system/helpers.h>
-
-#include <unistd.h>
-*/
 #include <plugin.h>
 
 #define TOUCH_BASE "/var/etc/."
@@ -184,7 +165,7 @@ int CNetworkServiceSetup::showNetworkServiceSetup()
 {
 	int shortcut = 1;
 
-	CMenuWidget* setup = new CMenuWidget(LOCALE_MAINSETTINGS_NETWORK, NEUTRINO_ICON_SETTINGS);
+	CMenuWidget* setup = new CMenuWidget("Network services", NEUTRINO_ICON_SETTINGS);
 	//setup->setSelected(selected);
 	//setup->addIntroItems(LOCALE_NETWORKMENU_SERVICES);
 
