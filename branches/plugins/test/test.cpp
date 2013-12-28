@@ -1,8 +1,6 @@
 #include <plugin.h>
 
 
-extern "C" int plugin_exec(void);
-
 class CTestMenu : public CMenuTarget
 {
         public:
@@ -185,6 +183,8 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string &actionKey)
 
 	return menu_return::RETURN_REPAINT;
 }
+
+extern "C" int plugin_exec(void);
 
 int plugin_exec(void)
 {

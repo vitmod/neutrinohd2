@@ -1,5 +1,5 @@
 AUTOMAKE_OPTIONS = gnu
 
 SUBDIRS = \
-	test netzkino movieplayer webtv fileplayer network_service internetradio
+	test netzkino movieplayer webtv fileplayer network_service internetradio fbcallmonitor
 
