@@ -24,10 +24,12 @@ install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)
 	install .libs/webtv.so $(DESTDIR)$(PLUGINDIR)
 	install -m 0644  webtv.cfg $(DESTDIR)$(PLUGINDIR)
+	install -m 0644  webtv.png $(DESTDIR)$(PLUGINDIR)
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/webtv.so
 	-rm $(DESTDIR)$(PLUGINDIR)/webtv.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/webtv.png
 
 
 

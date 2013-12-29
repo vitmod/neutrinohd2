@@ -24,10 +24,12 @@ install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)
 	install .libs/audioplayer.so $(DESTDIR)$(PLUGINDIR)
 	install -m 0644 audioplayer.cfg $(DESTDIR)$(PLUGINDIR)
+	install -m 0644 audioplayer.png $(DESTDIR)$(PLUGINDIR)
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/audioplayer.so
 	-rm $(DESTDIR)$(PLUGINDIR)/audioplayer.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/audioplayer.png
 
 
 

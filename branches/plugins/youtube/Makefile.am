@@ -24,10 +24,12 @@ install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)
 	install .libs/youtube.so $(DESTDIR)$(PLUGINDIR)
 	install -m 0644 youtube.cfg $(DESTDIR)$(PLUGINDIR)
+	install -m 0644 youtube.png $(DESTDIR)$(PLUGINDIR)
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/youtube.so
 	-rm $(DESTDIR)$(PLUGINDIR)/youtube.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/youtube.png
 
 
 
