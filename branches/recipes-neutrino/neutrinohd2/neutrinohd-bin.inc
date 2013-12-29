@@ -201,12 +201,8 @@ EXTRA_OECONF = "\
 	--with-gamesdir=/etc/tuxbox/games \
 	--with-plugindir=/etc/tuxbox/plugins \
 	--with-configdir=/etc/tuxbox/config \
-	--enable-radiotext \
-	--enable-freesatepg \
-	--enable-upnp \
 	--enable-ci \
 	--enable-gstreamer \
-	--enable-netzkino \
 	--with-boxtype=${BOXTYPE} --with-boxmodel=${BOXMODEL} \
 	${@base_contains("MACHINE_FEATURES", "gigablue", "--enable-4digits" , "", d)} \
 	${@base_contains("MACHINE_FEATURES", "odin", "--enable-4digits" , "", d)} \
