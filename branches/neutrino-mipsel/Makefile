@@ -70,12 +70,8 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--with-gamesdir=/etc/tuxbox/games \
 			--with-plugindir=/etc/tuxbox/plugins \
 			--with-configdir=/etc/tuxbox/config \
-			--enable-radiotext \
-			--enable-freesatepg \
-			--enable-upnp \
 			--enable-ci \
 			--enable-gstreamer \
-			--enable-netzkino \
 			--enable-4digits
 
 $(DEST):
