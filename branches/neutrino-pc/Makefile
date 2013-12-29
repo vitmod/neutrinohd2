@@ -14,7 +14,7 @@ N_SRC  = $(PWD)/nhd2-exp
 
 CFLAGS =  -funsigned-char -g -W -Wall -Wshadow -O2
 CFLAGS += -rdynamic
-CFLAGS += -DPEDANTIC_VALGRIND_SETUP
+#CFLAGS += -DPEDANTIC_VALGRIND_SETUP
 ### enable --as-needed for catching more build problems...
 CFLAGS += -Wl,--as-needed
 
@@ -39,7 +39,6 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--prefix=$(DEST)  \
 			--build=i686-pc-linux-gnu \
 			--enable-maintainer-mode \
-			--with-debug \
 			--with-boxtype=$(BOXTYPE) \
 			--with-datadir=$(DEST)/share/tuxbox \
 			--with-fontdir=$(DEST)/share/fonts \
@@ -47,12 +46,12 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--with-plugindir=$(DEST)/var/tuxbox/plugins \
 			--with-configdir=$(DEST)/var/tuxbox/config \
 			--with-isocodesdir=$(DEST)/share/iso-codes \
+			--enable-opengl \
 			--enable-gstreamer \
 			--enable-freesatepg \
 			--enable-upnp \
 			--enable-radiotext \
-			--enable-netzkino \
-			--enable-opengl
+			--enable-netzkino
 $(DEST):
 	mkdir $@
 
@@ -85,14 +84,13 @@ $(PLUGINS)/config.status: | $(PLUGINS) $(DEST)
 			--prefix=$(DEST)  \
 			--build=i686-pc-linux-gnu \
 			--enable-maintainer-mode \
-			--with-debug \
+			--without-debug \
 			--with-boxtype=$(BOXTYPE) \
 			--with-datadir=$(DEST)/share/tuxbox \
 			--with-fontdir=$(DEST)/share/fonts \
 			--with-gamesdir=$(DEST)/var/tuxbox/games \
 			--with-plugindir=$(DEST)/var/tuxbox/plugins \
-			--with-configdir=$(DEST)/var/tuxbox/config \
-			--with-isocodesdir=$(DEST)/share/iso-codes
+			--with-configdir=$(DEST)/var/tuxbox/config
 
 plugins-update:
 	svn update http://neutrinohd2.googlecode.com/svn/branches/plugins plugins
@@ -103,6 +101,23 @@ plugins-clean:
 plugins-distclean:
 	-$(MAKE) -C $(PLUGINS) distclean
 	rm -f $(PLUGINS)/config.status
+
+dvbsnoop/config.status:
+	set -e; cd $(PWD)/dvbsnoop; \
+		$(PWD)/dvbsnoop/configure \
+			--prefix=$(DEST)  \
+			--build=i686-pc-linux-gnu \
+			--enable-maintainer-mode
+
+dvbsnoop: dvbsnoop/config.status
+	$(MAKE) -C $(PWD)/dvbsnoop all install
+
+dvbsnoop-clean:
+	-$(MAKE) -C $(PWD)/dvbsnoop clean
+
+dvbsnoop-distclean:
+	-$(MAKE) -C $(PWD)/dvbsnoop distclean
+	rm -f $(PWD)/dvbsnoop/config.status
 
 PHONY = neutrino-checkout
 .PHONY: $(PHONY)
