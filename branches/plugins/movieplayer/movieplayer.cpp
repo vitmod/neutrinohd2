@@ -10,22 +10,16 @@ int plugin_exec(void)
 	CMenuWidget *moviePlayerMenu = new CMenuWidget("Movie player", NEUTRINO_ICON_SETTINGS);
 	
 	// ts player
-	moviePlayerMenu->addItem(new CMenuForwarderItemMenuIconNonLocalized("ts player", true, NULL, moviePlayerGui, "tsmoviebrowser", CRCInput::convertDigitToKey(1), NULL, NEUTRINO_ICON_MOVIEPLAYER));
+	moviePlayerMenu->addItem(new CMenuForwarderNonLocalized("ts player", true, NULL, moviePlayerGui, "tsmoviebrowser", CRCInput::convertDigitToKey(1)));
 	
 	// movie player
-	moviePlayerMenu->addItem(new CMenuForwarderItemMenuIconNonLocalized("movies player", true, NULL, moviePlayerGui, "moviebrowser", CRCInput::convertDigitToKey(2), NULL, NEUTRINO_ICON_MOVIEPLAYER));
+	moviePlayerMenu->addItem(new CMenuForwarderNonLocalized("movies player", true, NULL, moviePlayerGui, "moviebrowser", CRCInput::convertDigitToKey(2)));
 
 	// file player
-	moviePlayerMenu->addItem(new CMenuForwarderItemMenuIconNonLocalized("file player", true, NULL, moviePlayerGui, "fileplayback", CRCInput::convertDigitToKey(3), NULL, NEUTRINO_ICON_MOVIEPLAYER));	
+	moviePlayerMenu->addItem(new CMenuForwarderNonLocalized("file player", true, NULL, moviePlayerGui, "fileplayback", CRCInput::convertDigitToKey(3)));	
 	
 	// vlc client player
-	moviePlayerMenu->addItem(new CMenuForwarderItemMenuIconNonLocalized("vlc player", true, NULL, moviePlayerGui, "vlcplayback", CRCInput::convertDigitToKey(4), NULL, NEUTRINO_ICON_VLC));
-	
-	// youtube player
-	moviePlayerMenu->addItem(new CMenuForwarderItemMenuIconNonLocalized("youtube player", true, NULL, moviePlayerGui, "ytplayback", CRCInput::convertDigitToKey(5), NULL, NEUTRINO_ICON_YT));
-	
-	// netzkino
-	moviePlayerMenu->addItem(new CMenuForwarderItemMenuIconNonLocalized("netzkino.de player", true, NULL, moviePlayerGui, "netzkinoplayback", CRCInput::convertDigitToKey(6), NULL, NEUTRINO_ICON_NETZKINO));	
+	moviePlayerMenu->addItem(new CMenuForwarderNonLocalized("vlc player", true, NULL, moviePlayerGui, "vlcplayback", CRCInput::convertDigitToKey(4)));
 	
 	moviePlayerMenu->exec(NULL, "");
 	moviePlayerMenu->hide();

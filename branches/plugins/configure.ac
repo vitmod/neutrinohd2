@@ -177,4 +177,8 @@ fileplayer/Makefile
 network_service/Makefile
 fbcallmonitor/Makefile
 internetradio/Makefile
+audioplayer/Makefile
+youtube/Makefile
+picviewer/Makefile
+upnp/Makefile
 ])
