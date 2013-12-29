@@ -260,7 +260,7 @@ void CWebTV::showUserBouquet(void)
 {
 	static int old_select = 0;
 	char cnt[5];
-	CMenuWidget InputSelector(LOCALE_WEBTV_HEAD, NEUTRINO_ICON_STREAMING);
+	CMenuWidget InputSelector("WebTV", NEUTRINO_ICON_STREAMING);
 	int count = 0;
 	int select = -1;
 					
@@ -268,11 +268,11 @@ void CWebTV::showUserBouquet(void)
 			
 	// webtv
 	sprintf(cnt, "%d", count);
-	InputSelector.addItem(new CMenuForwarder(LOCALE_WEBTV_HEAD, true, NULL, WebTVInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
+	InputSelector.addItem(new CMenuForwarderNonLocalized("webtv", true, NULL, WebTVInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
 	
 	// divers
 	sprintf(cnt, "%d", ++count);
-	InputSelector.addItem(new CMenuForwarder(LOCALE_WEBTV_USER, true, NULL, WebTVInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
+	InputSelector.addItem(new CMenuForwarderNonLocalized("User bouquet", true, NULL, WebTVInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
 
 	hide();
 	InputSelector.exec(NULL, "");
@@ -303,7 +303,7 @@ void CWebTV::showUserBouquet(void)
 
 void CWebTV::showAudioDialog(void)
 {
-	CMenuWidget APIDSelector(LOCALE_APIDSELECTOR_HEAD, NEUTRINO_ICON_AUDIO);
+	CMenuWidget APIDSelector("Audio select", NEUTRINO_ICON_AUDIO);
 
 	// g_apids will be rewritten for mb
 	playback->FindAllPids(w_apids, w_ac3flags, &w_numpida, w_language);
@@ -393,10 +393,10 @@ void CWebTV::showAudioDialog(void)
 		APIDSelector.addItem(GenericMenuSeparatorLine);
 				
 		// video aspect ratio 4:3/16:9
-		APIDSelector.addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEORATIO, &g_settings.video_Ratio, VIDEOMENU_VIDEORATIO_OPTIONS, VIDEOMENU_VIDEORATIO_OPTION_COUNT, true, videoSetupNotifier, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, true ));
+		APIDSelector.addItem(new CMenuOptionChooser("video ratio", &g_settings.video_Ratio, VIDEOMENU_VIDEORATIO_OPTIONS, VIDEOMENU_VIDEORATIO_OPTION_COUNT, true, videoSetupNotifier, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, true ));
 	
 		// video format bestfit/letterbox/panscan/non
-		APIDSelector.addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEOFORMAT, &g_settings.video_Format, VIDEOMENU_VIDEOFORMAT_OPTIONS, VIDEOMENU_VIDEOFORMAT_OPTION_COUNT, true, videoSetupNotifier, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, true ));
+		APIDSelector.addItem(new CMenuOptionChooser("video format", &g_settings.video_Format, VIDEOMENU_VIDEOFORMAT_OPTIONS, VIDEOMENU_VIDEOFORMAT_OPTION_COUNT, true, videoSetupNotifier, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, true ));
 
 		w_apidchanged = 0;
 		APIDSelector.exec(NULL, "");
@@ -427,7 +427,7 @@ void CWebTV::showAudioDialog(void)
 	} 
 	else 
 	{
-		DisplayErrorMessage(g_Locale->getText(LOCALE_AUDIOSELECTMENUE_NO_TRACKS)); // UTF-8
+		DisplayErrorMessage("no audio tracks found!"); // UTF-8
 	}
 }
 
@@ -475,7 +475,7 @@ void CWebTV::zapTo(int pos, bool rezap)
 	// show emty channellist error msg
 	if (channels.empty()) 
 	{
-		DisplayErrorMessage(g_Locale->getText(LOCALE_CHANNELLIST_NONEFOUND)); // UTF-8
+		DisplayErrorMessage("no webtv channellist found!"); // UTF-8
 		return;
 	}
 
