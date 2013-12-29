@@ -47,11 +47,7 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--with-configdir=$(DEST)/var/tuxbox/config \
 			--with-isocodesdir=$(DEST)/share/iso-codes \
 			--enable-opengl \
-			--enable-gstreamer \
-			--enable-freesatepg \
-			--enable-upnp \
-			--enable-radiotext \
-			--enable-netzkino
+			--enable-gstreamer
 $(DEST):
 	mkdir $@
 
