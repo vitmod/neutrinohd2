@@ -35,9 +35,7 @@ N_CFLAGS = "-Wall -g0 -O2 \
 		-D__KERNEL_STRICT_NAMES \
 		-I$(TARGETPREFIX)/usr/include -I$(TARGETPREFIX)/include -I$(DVBINCLUDES) -I$(TARGETPREFIX)/usr/include/gstreamer-0.10"
 
-N_CXXFLAGS = "-Wall -g0 -O2 \
-		-D__KERNEL_STRICT_NAMES \
-		 -I$(TARGETPREFIX)/usr/include -I$(TARGETPREFIX)/include -I$(DVBUNCLUDES) -I$(TARGETPREFIX)/usr/include/gstreamer-0.10"
+N_CXXFLAGS = N_CFLAGS
 
 N_LDFLAGS = "-L$(TARGETPREFIX)/lib -L$(TARGETPREFIX)/usr/lib -Wl,-rpath-link,-lcurl -ldl"
 
@@ -67,10 +65,7 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--host=$(HOST) \
 			--with-target=cdk \
 			--enable-maintainer-mode \
-			--without-debug \
 			--with-boxtype=$(BOXTYPE) \
-			--with-bindir=/usr/bin \
-			--with-sbindir=/usr/sbin \
 			--with-libdir=/usr/lib \
 			--with-gamesdir=/etc/tuxbox/games \
 			--with-plugindir=/etc/tuxbox/plugins \
@@ -80,7 +75,8 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--enable-upnp \
 			--enable-ci \
 			--enable-gstreamer \
-			--enable-netzkino
+			--enable-netzkino \
+			--enable-4digits
 
 $(DEST):
 	mkdir $@
@@ -100,13 +96,41 @@ neutrino-distclean:
 	-$(MAKE) -C $(N_SRC) distclean
 	rm -f $(N_SRC)/config.status
 
-usb-image: $(BOXTYPE).tar.gz
+PLUGINS = $(PWD)/plugins
 
-$(BOXTYPE).tar.gz: neutrino
-	cd $(DEST) && \
-	tar -cf $(BOXTYPE).tar *; \
-	gzip $(BOXTYPE).tar; \
-	mv -f $(BOXTYPE).tar.gz $(PWD)/$@
+plugins: $(PLUGINS)/config.status 
+	$(MAKE) -C $(PLUGINS) install DESTDIR=$(DEST)
+
+$(PLUGINS)/config.status: | $(PLUGINS) $(DEST)
+	$(PLUGINS)/autogen.sh
+	set -e; cd $(PLUGINS); \
+		CFLAGS=$(N_CFLAGS) \
+		CXXFLAGS=$(N_CFLAGS) \
+		$(PLUGINS)/configure \
+			--prefix=/ \
+			--exec_prefix=/usr \
+			--build=i686-pc-linux-gnu \
+			--host=$(HOST) \
+			--with-target=cdk \
+			--enable-maintainer-mode \
+			--with-boxtype=$(BOXTYPE) \
+			--with-libdir=/usr/lib \
+			--with-gamesdir=/etc/tuxbox/games \
+			--with-plugindir=/etc/tuxbox/plugins \
+			--with-configdir=/etc/tuxbox/config
+
+$(PLUGINS):
+	svn co http://neutrinohd2.googlecode.com/svn/branches/plugins plugins
+
+plugins-update:
+	svn update http://neutrinohd2.googlecode.com/svn/branches/plugins plugins
+
+plugins-clean:
+	-$(MAKE) -C $(PLUGINS) clean
+
+plugins-distclean:
+	-$(MAKE) -C $(PLUGINS) distclean
+	rm -f $(PLUGINS)/config.status
 
 PHONY = neutrino-checkout
 .PHONY: $(PHONY)
