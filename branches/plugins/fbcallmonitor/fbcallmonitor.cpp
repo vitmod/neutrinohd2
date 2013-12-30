@@ -120,41 +120,43 @@ int plugin_exec(void)
 	// create menu
 	CMenuWidget * FritzBoxCallSettingsMenu = new CMenuWidget("FritzBoxCallMonitor", NEUTRINO_ICON_SETTINGS);
 
-	FritzBoxCallSettingsMenu->addItem(GenericMenuSeparator);
+	//FritzBoxCallSettingsMenu->addItem(GenericMenuSeparator);
 	FritzBoxCallSettingsMenu->addItem(GenericMenuBack);
 	FritzBoxCallSettingsMenu->addItem(GenericMenuSeparatorLine);
-
+	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("Einstellungen speichern", true, NULL, FBCallMonitorHandler, "save", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	FritzBoxCallSettingsMenu->addItem(GenericMenuSeparatorLine);
+	
 	// autostart
 	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Autostart", &FB_AUTOSTART, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, /*SaveSettingsNowDestinationChanger*/NULL));
 	
 	// fb ip
-	CStringInputSMS * FB_IP = new CStringInputSMS((char *)"act settings", (char *)FB_IP_STRG.c_str());
+	CStringInputSMS * FB_IP = new CStringInputSMS((char *)"IP der Fritzbox", (char *)FB_IP_STRG.c_str());
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("IP der Fritzbox", true, FB_IP_STRG, FB_IP, NULL));
 	
 	// fb port
-	CStringInputSMS * FB_PORT = new CStringInputSMS((char *)"act settings", (char *)FB_PORT_STRG.c_str());
+	CStringInputSMS * FB_PORT = new CStringInputSMS((char *)"Port der Fritzbox", (char *)FB_PORT_STRG.c_str());
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("PORT der Fritzbox", true, FB_PORT_STRG, FB_PORT, NULL));
 	
 	// debug
 	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Debug (nur in Telnet!)", &FB_DEBUG, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, /*SaveSettingsNowDestinationChanger*/NULL));
 	
 	// ziel1
-	CStringInputSMS * FB_ZIEL1 = new CStringInputSMS((char *)"act settings", (char *)FB_ZIEL1_STRG.c_str());
+	CStringInputSMS * FB_ZIEL1 = new CStringInputSMS((char *)"Rufnummer 1", (char *)FB_ZIEL1_STRG.c_str());
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("Rufnummer 1", true, FB_ZIEL1_STRG, FB_ZIEL1, NULL));
 	
-	CStringInputSMS * FB_ZIEL1N = new CStringInputSMS((char *)"act settings", (char *)FB_ZIEL1N_STRG.c_str());
+	CStringInputSMS * FB_ZIEL1N = new CStringInputSMS((char *)"Rufnummer 1 Name", (char *)FB_ZIEL1N_STRG.c_str());
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("Rufnummer 1 Name", true, FB_ZIEL1N_STRG, FB_ZIEL1N, NULL));
 	
-	CStringInputSMS * FB_ZIEL2 = new CStringInputSMS((char *)"act settings", (char *)FB_ZIEL2_STRG.c_str());
+	CStringInputSMS * FB_ZIEL2 = new CStringInputSMS((char *)"Rufnummer 2", (char *)FB_ZIEL2_STRG.c_str());
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("Rufnummer 2", true, FB_ZIEL2_STRG, FB_ZIEL2, NULL));
 	
-	CStringInputSMS * FB_ZIEL2N = new CStringInputSMS((char *)"act settings", (char *)FB_ZIEL2N_STRG.c_str());
+	CStringInputSMS * FB_ZIEL2N = new CStringInputSMS((char *)"Rufnummer 2 Name", (char *)FB_ZIEL2N_STRG.c_str());
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("Rufnummer 2 Name", true, FB_ZIEL2N_STRG, FB_ZIEL2N, NULL));
 	
-	CStringInputSMS * FB_ZIEL3 = new CStringInputSMS((char *)"act settings", (char *)FB_ZIEL3_STRG.c_str());
+	CStringInputSMS * FB_ZIEL3 = new CStringInputSMS((char *)"Rufnummer 3", (char *)FB_ZIEL3_STRG.c_str());
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("Rufnummer 3", true, FB_ZIEL3_STRG, FB_ZIEL3, NULL));
 	
-	CStringInputSMS * FB_ZIEL3N = new CStringInputSMS((char *)"act settings", (char *)FB_ZIEL3N_STRG.c_str());
+	CStringInputSMS * FB_ZIEL3N = new CStringInputSMS((char *)"Rufnummer 3 Name", (char *)FB_ZIEL3N_STRG.c_str());
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("Rufnummer 3 Name", true, FB_ZIEL3N_STRG, FB_ZIEL3N, NULL));
 	
 	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("alle Rufnummern ueberwachen", &FB_ALLE, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, /*SaveSettingsNowDestinationChanger*/NULL));
@@ -164,23 +166,19 @@ int plugin_exec(void)
 	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Popup statt normale Meldung", &FB_POPUP, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, /*SaveSettingsNowDestinationChanger*/NULL));
 	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Inverssuche (GoYellow)", &FB_INVERS, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, /*SaveSettingsNowDestinationChanger*/NULL));
 	
-	CStringInputSMS * FB_BOXIP = new CStringInputSMS((char *)"act settings", (char *)FB_BOXIP_STRG.c_str());
+	CStringInputSMS * FB_BOXIP = new CStringInputSMS((char *)"Box IP", (char *)FB_BOXIP_STRG.c_str());
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("Box IP", true, FB_BOXIP_STRG, FB_BOXIP, NULL));
 	
-	CStringInputSMS * FB_BOXUSERNAME = new CStringInputSMS((char *)"act settings", (char *)FB_BOXUSERNAME_STRG.c_str());
+	CStringInputSMS * FB_BOXUSERNAME = new CStringInputSMS((char *)"Box Username", (char *)FB_BOXUSERNAME_STRG.c_str());
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("Box Username", true, FB_BOXUSERNAME_STRG, FB_BOXUSERNAME, NULL));
 	
-	CStringInputSMS * FB_BOXPASSWORD = new CStringInputSMS((char *)"act settings", (char *)FB_BOXPASSWORD_STRG.c_str());
+	CStringInputSMS * FB_BOXPASSWORD = new CStringInputSMS((char *)"Box Passwort", (char *)FB_BOXPASSWORD_STRG.c_str());
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("Box Passwort", true, FB_BOXPASSWORD_STRG, FB_BOXPASSWORD, NULL));
-
-	FritzBoxCallSettingsMenu->addItem(GenericMenuSeparatorLine);
-	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("act settings", true, NULL, FBCallMonitorHandler, "save", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 
 	FritzBoxCallSettingsMenu->exec(NULL, "");
 	FritzBoxCallSettingsMenu->hide();
 	
-	//delete FBCallMonitorHandler
-	//delete FBCallMonitorHandler;
+	delete FBCallMonitorHandler;
 	
 	return 0;
 }

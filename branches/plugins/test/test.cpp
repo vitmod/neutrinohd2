@@ -205,6 +205,9 @@ int plugin_exec(void)
 	TestMenu->exec(NULL, "");
 	TestMenu->hide();
 	
+	delete testHandler;
+	delete TestMenu;
+	
 	return 0;
 }
 

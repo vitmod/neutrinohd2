@@ -31,6 +31,7 @@
 #include <plugin.h>
 #include <webtv.h>
 
+#if 0
 #define DEFAULT_WEBTV_XMLFILE 		CONFIGDIR "/webtv.xml"
 
 extern cVideo * videoDecoder;
@@ -987,6 +988,7 @@ void CWebTV::showFileInfoWebTV(int pos)
 	if(pos > -1)
 		ShowMsg2UTF(channels[pos]->title, channels[pos]->description, CMsgBox::mbrBack, CMsgBox::mbBack);
 }
+#endif
 
 extern "C" int plugin_exec(void);
   

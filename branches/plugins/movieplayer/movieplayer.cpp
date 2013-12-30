@@ -7,7 +7,7 @@ int plugin_exec(void)
 {
 	printf("Plugins: starting Movieplayer\n");
 	
-	CMenuWidget *moviePlayerMenu = new CMenuWidget("Movie player", NEUTRINO_ICON_SETTINGS);
+	CMenuWidget * moviePlayerMenu = new CMenuWidget("Movie player", NEUTRINO_ICON_SETTINGS);
 	
 	// ts player
 	moviePlayerMenu->addItem(new CMenuForwarderNonLocalized("ts player", true, NULL, moviePlayerGui, "tsmoviebrowser", CRCInput::convertDigitToKey(1)));
@@ -23,6 +23,8 @@ int plugin_exec(void)
 	
 	moviePlayerMenu->exec(NULL, "");
 	moviePlayerMenu->hide();
+	
+	delete moviePlayerMenu;
 	
 	return 0;
 }
