@@ -177,19 +177,19 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 
 	if(mode == SYSINFO)
 	{
-		//sysinfo();
+		sysinfo();
 	}
 	else if(mode == DMESGINFO)
 	{
-		//dmesg();
+		dmesg();
 	}
 	else if(mode == CPUINFO)
 	{
-		//cpuinfo();
+		cpuinfo();
 	}
 	else if(mode == PSINFO)
 	{
-		//ps();
+		ps();
 	}
 	/*
 	else
@@ -227,7 +227,7 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 			if (mode == SYSINFO)
 			{
 				timercount = 0;
-				//sysinfo();
+				sysinfo();
 				selected = 0;
 				paintHead();
 				paint();
