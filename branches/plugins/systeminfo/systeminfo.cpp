@@ -7,7 +7,7 @@ sreadline sysbuffer[(2*MAXLINES)];
 int slinecount,syscount;
 bool refreshIt = true;
 
-//Konstruktor
+// construktor
 CBESysInfoWidget::CBESysInfoWidget(int m)
 {
 	frameBuffer = CFrameBuffer::getInstance();
@@ -29,32 +29,15 @@ CBESysInfoWidget::CBESysInfoWidget(int m)
 	mode = m;
 }
 
-//zeichnet einen Listeneintrag
+// paintItem without selected line
 void CBESysInfoWidget::paintItem(int pos)
 {
 	int ypos = y + theight + pos*fheight;
 	uint8_t    color;
 	fb_pixel_t bgcolor;
 	
-	/*
-	if (liststart + pos == selected)
-	{ 
-		color   = COL_MENUCONTENTSELECTED;
-		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-	}
-	else
-	*/
-	{
-		color   = COL_MENUCONTENT;
-		bgcolor = COL_MENUCONTENT_PLUS_0;
-	}
-	
-	/*
-	if ((liststart + pos == selected)&&(mode != SYSINFO))
-	{
-		color = COL_MENUCONTENTSELECTED;
-	}
-	*/
+	color   = COL_MENUCONTENT;
+	bgcolor = COL_MENUCONTENT_PLUS_0;
 
 	frameBuffer->paintBoxRel(x, ypos, width - 15, fheight, bgcolor);
 
@@ -69,11 +52,9 @@ void CBESysInfoWidget::paintItem(int pos)
 	}
 }
 
-//zeichent die Liste
+// paintlistbox
 void CBESysInfoWidget::paint()
 {
-	//printf("[neutrino] System-Info\n");
-
 	liststart = (selected/listmaxshow)*listmaxshow;
 
 	for(unsigned int count = 0; count < listmaxshow; count++)
@@ -95,7 +76,7 @@ void CBESysInfoWidget::paint()
 
 }
 
-//zeichnet Kopfzeile
+// paint head
 void CBESysInfoWidget::paintHead()
 {
 	char buf[100];
@@ -117,55 +98,31 @@ void CBESysInfoWidget::paintHead()
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 10, y + theight + 0, width, buf, COL_MENUHEAD);
 }
 
-//zeichnet Fusszeile
+// paint foot
 void CBESysInfoWidget::paintFoot()
 {
 	int ButtonWidth = (width - 28) / 4;
 	frameBuffer->paintBoxRel(x, y + height, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 	frameBuffer->paintHLine(x, x + width, y, COL_INFOBAR_SHADOW_PLUS_0);
 
-	//if(mode != SYSINFO)
-	{
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED,    x+width- 4* ButtonWidth - 20, y+height+4);
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x+width- 4* ButtonWidth, y+height+24 - 2, ButtonWidth- 26, "info", COL_INFOBAR);
-	}
+	// sysinfo
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED,    x+width- 4* ButtonWidth - 20, y+height+4);
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x+width- 4* ButtonWidth, y+height+24 - 2, ButtonWidth- 26, "info", COL_INFOBAR);
 	
-	//if(mode != DMESGINFO)
-	{
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_GREEN,  x+width- 3* ButtonWidth - 30, y+height+4);
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x+width- 3* ButtonWidth - 10, y+height+24 - 2, ButtonWidth- 26, "dmesg", COL_INFOBAR);
-	}
+	// dmesg
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_GREEN,  x+width- 3* ButtonWidth - 30, y+height+4);
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x+width- 3* ButtonWidth - 10, y+height+24 - 2, ButtonWidth- 26, "dmesg", COL_INFOBAR);
 	
-	//if(mode != CPUINFO)
-	{
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW,   x+width- 2* ButtonWidth - 30, y+height+4);
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x+width- 2* ButtonWidth - 10, y+height+24 - 2, ButtonWidth- 26, "cpu/file", COL_INFOBAR);
-	}
+	// cpuinfo
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW,   x+width- 2* ButtonWidth - 30, y+height+4);
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x+width- 2* ButtonWidth - 10, y+height+24 - 2, ButtonWidth- 26, "cpu/file", COL_INFOBAR);
 	
-	//if(mode != PSINFO)
-	{
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_BLUE,   x+width- 1* ButtonWidth - 30, y+height+4);
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x+width- 1* ButtonWidth - 10, y+height+24 - 2, ButtonWidth- 26, "ps", COL_INFOBAR);
-	}
-	
-	/*
-	//else
-	{
-		if(refreshIt == true)
-		{
-			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_BLUE,   x+width- 1* ButtonWidth - 30, y+height+4);
-			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x+width- 1* ButtonWidth - 10, y+height+24 - 2, ButtonWidth- 26, "stop refresh", COL_INFOBAR);
-		}
-		else
-		{
-			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_BLUE,   x+width- 1* ButtonWidth - 30, y+height+4);
-			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x+width- 1* ButtonWidth - 10, y+height+24 - 2, ButtonWidth- 26, "start refresh", COL_INFOBAR);
-		}
-	}
-	*/
+	// psinfo
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_BLUE,   x+width- 1* ButtonWidth - 30, y+height+4);
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x+width- 1* ButtonWidth - 10, y+height+24 - 2, ButtonWidth- 26, "ps", COL_INFOBAR);
 }
 
-//killt sysinfo
+// hide
 void CBESysInfoWidget::hide()
 {
 	frameBuffer->paintBackgroundBoxRel(x, y, width, height + ButtonHeight);
@@ -173,7 +130,7 @@ void CBESysInfoWidget::hide()
 	frameBuffer->blit();
 }
 
-//main
+// main
 int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 {
 	int res = menu_return::RETURN_REPAINT;
@@ -194,13 +151,6 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 	{
 		ps();
 	}
-	/*
-	else
-	{
-		hide();
-		return(-1);
-	}
-	*/
 
 	if (parent)
 		parent->hide();
@@ -330,13 +280,7 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 		}
 		else if (msg == CRCInput::RC_blue)
 		{
-			//if (mode == PSINFO)
-			//	refreshIt =! refreshIt;
-			//else
-			//      refreshIt = true;
 			mode = PSINFO;
-
-			//if (refreshIt)
 			ps();
 			paintHead();
 			paint();
@@ -582,6 +526,7 @@ int CBESysInfoWidget::readList(struct sfileline *sinbuffer)
 	return(0);
 }
 
+// plugins api
 extern "C" int plugin_exec(void);
 
 int plugin_exec(void)
