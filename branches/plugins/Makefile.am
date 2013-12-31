@@ -12,5 +12,6 @@ SUBDIRS = \
 	audioplayer \
 	youtube \
 	picviewer \
-	upnp
+	upnp \
+	systeminfo
 

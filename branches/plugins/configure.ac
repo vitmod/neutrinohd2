@@ -181,4 +181,5 @@ audioplayer/Makefile
 youtube/Makefile
 picviewer/Makefile
 upnp/Makefile
+systeminfo/Makefile
 ])
