@@ -3,20 +3,19 @@
 
 #include <plugin.h>
 
-#define MAXLINES 256
+#define MAXLINES 255
 
 
 typedef struct sfileline
 {
 	bool state;
-	char* addr;
+	char *addr;
 }sfileline;
 
 typedef struct sreadline
 {
 	char line[256];
 }sreadline;
-
 
 class CBESysInfoWidget : public CMenuWidget
 {

@@ -164,6 +164,10 @@ void CBESysInfoWidget::paintFoot()
 void CBESysInfoWidget::hide()
 {
 	frameBuffer->paintBackgroundBoxRel(x, y, width, height + ButtonHeight);
+	
+#if !defined USE_OPENGL
+	frameBuffer->blit();
+#endif	
 }
 
 //main
@@ -172,19 +176,28 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 	int res = menu_return::RETURN_REPAINT;
 
 	if(mode == SYSINFO)
-		sysinfo();
+	{
+		//sysinfo();
+	}
 	else if(mode == DMESGINFO)
-		dmesg();
+	{
+		//dmesg();
+	}
 	else if(mode == CPUINFO)
-		cpuinfo();
+	{
+		//cpuinfo();
+	}
 	else if(mode == PSINFO)
-		ps();
+	{
+		//ps();
+	}
+	/*
 	else
 	{
-		//ShowHint("Alert", "Error", "info.raw", 430);
 		hide();
 		return(-1);
 	}
+	*/
 
 	if (parent)
 		parent->hide();
@@ -192,6 +205,10 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 	paintHead();
 	paint();
 	paintFoot();
+	
+#if !defined USE_OPENGL
+	frameBuffer->blit();
+#endif	
 
 	neutrino_msg_t msg; 
 	neutrino_msg_data_t data;
@@ -210,7 +227,7 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 			if (mode == SYSINFO)
 			{
 				timercount = 0;
-				sysinfo();
+				//sysinfo();
 				selected = 0;
 				paintHead();
 				paint();
@@ -323,6 +340,9 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 			CNeutrinoApp::getInstance()->handleMsg( msg, data );
 			// kein canceling...
 		}
+#if !defined USE_OPENGL
+		frameBuffer->blit();
+#endif		
 	}
 	
 	hide();
@@ -528,31 +548,30 @@ int CBESysInfoWidget::ps()
 int CBESysInfoWidget::readList(struct sfileline *sinbuffer)
 {
 	FILE *fp;
-	char line[1024];
+	char line[256];
 
-	memset(sinbuffer  ,0,(3*MAXLINES) * sizeof(struct sfileline));
-	memset(sysbuffer ,0,(2*MAXLINES) * sizeof(struct sreadline));
+	memset(sinbuffer, 0, (3*MAXLINES) * sizeof(struct sfileline));
+	memset(sysbuffer, 0, (2*MAXLINES) * sizeof(struct sreadline));
 
 	fp = fopen("/tmp/sysinfo","rb");
 
-	if(fp==NULL)
+	if(fp == NULL)
 		return(-1);
 
-	slinecount=0;
-	syscount=0;
+	slinecount = 0;
+	syscount = 0;
 
 	while(fgets(line, sizeof(line), fp) != NULL)
 	{
-		line[1024]='\0';
+		line[256] = '\0';
 		memcpy(sysbuffer[syscount].line, line, sizeof(line));
 		sinbuffer[slinecount].state = true;
-		//printf("%s", sysbuffer[syscount].line);
-		sinbuffer[slinecount++].addr=sysbuffer[syscount++].line;
+		sinbuffer[slinecount++].addr = sysbuffer[syscount++].line;
 	}
 	fclose(fp);
 	
-	if (selected>=slinecount)
-		selected=slinecount-1;
+	if (selected >= slinecount)
+		selected = slinecount - 1;
 	
 	return(0);
 }
