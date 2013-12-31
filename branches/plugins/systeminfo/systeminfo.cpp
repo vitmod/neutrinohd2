@@ -2,7 +2,7 @@
 
 
 sfileline sinbuffer[3*MAXLINES];
-sreadline sysbuffer[(2*MAXLINES)];
+sreadline sysbuffer[(3*MAXLINES)];
 
 int slinecount,syscount;
 bool refreshIt = true;
@@ -11,7 +11,7 @@ bool refreshIt = true;
 CBESysInfoWidget::CBESysInfoWidget(int m)
 {
 	frameBuffer = CFrameBuffer::getInstance();
-	//selected = 0;
+	selected = 0;
 	
 	// windows size
 	width  = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
@@ -46,7 +46,7 @@ void CBESysInfoWidget::paintItem(int pos)
 		char tmpline75[75];
 
 		memcpy(tmpline75,  &sysbuffer[liststart+pos].line[0], 75);
-		tmpline75[75] = '\0';
+		//tmpline75[75] = '\0';
 
 		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 5, ypos + fheight, width - 30, tmpline75, color);
 	}
@@ -194,7 +194,7 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 				paintFoot();
 			}
 			
-			if ((mode == PSINFO)&&(refreshIt==true))
+			if ((mode == PSINFO)&&(refreshIt == true))
 			{
 				timercount = 0;
 				ps();
@@ -266,6 +266,7 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 			mode = DMESGINFO;
 			timercount = 0;
 			dmesg();
+			selected = 0;
 			paintHead();
 			paint();
 			paintFoot();
@@ -274,6 +275,7 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 		{
 			mode = CPUINFO;
 			cpuinfo();
+			selected = 0;
 			paintHead();
 			paint();
 			paintFoot();
@@ -282,6 +284,7 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 		{
 			mode = PSINFO;
 			ps();
+			selected = 0;
 			paintHead();
 			paint();
 			paintFoot();
@@ -494,14 +497,14 @@ int CBESysInfoWidget::ps()
 	return(readList(sinbuffer));
 }
 
-//Infos auslesen
+// read infos
 int CBESysInfoWidget::readList(struct sfileline *sinbuffer)
 {
 	FILE *fp;
 	char line[256];
 
 	memset(sinbuffer, 0, (3*MAXLINES) * sizeof(struct sfileline));
-	memset(sysbuffer, 0, (2*MAXLINES) * sizeof(struct sreadline));
+	memset(sysbuffer, 0, (3*MAXLINES) * sizeof(struct sreadline));
 
 	fp = fopen("/tmp/sysinfo","rb");
 
@@ -513,7 +516,7 @@ int CBESysInfoWidget::readList(struct sfileline *sinbuffer)
 
 	while(fgets(line, sizeof(line), fp) != NULL)
 	{
-		line[256] = '\0';
+		//line[256] = '\0';
 		memcpy(sysbuffer[syscount].line, line, sizeof(line));
 		sinbuffer[slinecount].state = true;
 		sinbuffer[slinecount++].addr = sysbuffer[syscount++].line;

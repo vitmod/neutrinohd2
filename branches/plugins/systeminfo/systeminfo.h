@@ -3,7 +3,7 @@
 
 #include <plugin.h>
 
-#define MAXLINES 255
+#define MAXLINES 256
 
 
 typedef struct sfileline
@@ -17,7 +17,7 @@ typedef struct sreadline
 	char line[256];
 }sreadline;
 
-class CBESysInfoWidget : public CMenuWidget
+class CBESysInfoWidget : public CMenuTarget
 {
 	private:
 		enum {
