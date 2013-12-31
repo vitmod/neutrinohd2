@@ -11,7 +11,7 @@ bool refreshIt = true;
 CBESysInfoWidget::CBESysInfoWidget(int m)
 {
 	frameBuffer = CFrameBuffer::getInstance();
-	selected = 0;
+	//selected = 0;
 	
 	// windows size
 	width  = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
@@ -32,25 +32,29 @@ CBESysInfoWidget::CBESysInfoWidget(int m)
 //zeichnet einen Listeneintrag
 void CBESysInfoWidget::paintItem(int pos)
 {
-	int ypos = y + theight + 0 + pos*fheight;
+	int ypos = y + theight + pos*fheight;
 	uint8_t    color;
 	fb_pixel_t bgcolor;
 	
+	/*
 	if (liststart + pos == selected)
 	{ 
 		color   = COL_MENUCONTENTSELECTED;
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 	}
 	else
+	*/
 	{
 		color   = COL_MENUCONTENT;
 		bgcolor = COL_MENUCONTENT_PLUS_0;
 	}
-				
+	
+	/*
 	if ((liststart + pos == selected)&&(mode != SYSINFO))
 	{
 		color = COL_MENUCONTENTSELECTED;
 	}
+	*/
 
 	frameBuffer->paintBoxRel(x, ypos, width - 15, fheight, bgcolor);
 
@@ -77,6 +81,7 @@ void CBESysInfoWidget::paint()
 		paintItem(count);
 	}
 
+	// scrollbar
 	int ypos = y + theight;
 	int sb   = fheight* listmaxshow;
 	
@@ -165,9 +170,7 @@ void CBESysInfoWidget::hide()
 {
 	frameBuffer->paintBackgroundBoxRel(x, y, width, height + ButtonHeight);
 	
-#if !defined USE_OPENGL
 	frameBuffer->blit();
-#endif	
 }
 
 //main
@@ -206,9 +209,7 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 	paint();
 	paintFoot();
 	
-#if !defined USE_OPENGL
 	frameBuffer->blit();
-#endif	
 
 	neutrino_msg_t msg; 
 	neutrino_msg_data_t data;
@@ -256,14 +257,17 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 			g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
 		}
 		
-		if ((msg == CRCInput::RC_up || msg == CRCInput::RC_left)&&(mode != SYSINFO))
+		if ( ((int) msg == g_settings.key_channelList_pageup) && (mode != SYSINFO))
 		{
 			int step = 0;
 			int prev_selected = selected;
 
-			step = (msg == CRCInput::RC_left) ? listmaxshow : 1;
+			//step = (msg == CRCInput::RC_left) ? listmaxshow : 1;
+			step =  ((int) msg == g_settings.key_channelList_pageup) ? listmaxshow : 1;  // browse or step 1
 			selected -= step;
-			if((prev_selected-step) < 0) selected = syscount-1;
+			if((prev_selected - step) < 0) 
+				selected = syscount - 1;
+			
 			if(state == beDefault)
 			{
 				paintItem(prev_selected - liststart);
@@ -275,26 +279,29 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 					paintItem(selected - liststart);
 			}
 		}
-		else if ((msg == CRCInput::RC_down || msg == CRCInput::RC_right)&&(mode != SYSINFO))
+		else if (((int) msg == g_settings.key_channelList_pagedown) && (mode != SYSINFO))
 		{
 			int step = 0;
 			int prev_selected = selected;
 
-			step = (msg == CRCInput::RC_right) ? listmaxshow : 1;
+			//step = (msg == CRCInput::RC_right) ? listmaxshow : 1;
+			step =  ((int) msg == g_settings.key_channelList_pagedown) ? listmaxshow : 1;  // browse or step 1
 			selected += step;
-			if(selected>=syscount) selected = 0;
+			if(selected >= syscount) 
+				selected = 0;
+			
 			if(state == beDefault)
 			{
 				paintItem(prev_selected - liststart);
 				unsigned int oldliststart = liststart;
 				liststart = (selected/listmaxshow)*listmaxshow;
-				if(oldliststart!=liststart) 
+				if(oldliststart != liststart) 
 					paint();
 				else 
 					paintItem(selected - liststart);
 			}
 		}
-		else if ((msg == CRCInput::RC_red)&&(mode != SYSINFO))
+		else if ((msg == CRCInput::RC_red) && (mode != SYSINFO))
 		{
 			mode = SYSINFO;
 			sysinfo();
@@ -304,7 +311,7 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 			paintFoot();
 
 		}
-		else if ((msg == CRCInput::RC_green)&&(mode != DMESGINFO))
+		else if ((msg == CRCInput::RC_green) && (mode != DMESGINFO))
 		{
 			mode = DMESGINFO;
 			timercount = 0;
@@ -313,7 +320,7 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 			paint();
 			paintFoot();
 		}
-		else if ((msg == CRCInput::RC_yellow)&&(mode != CPUINFO))
+		else if ((msg == CRCInput::RC_yellow) && (mode != CPUINFO))
 		{
 			mode = CPUINFO;
 			cpuinfo();
@@ -323,14 +330,14 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 		}
 		else if (msg == CRCInput::RC_blue)
 		{
-			if (mode == PSINFO)
-				refreshIt =! refreshIt;
-			else
-			    refreshIt = true;
+			//if (mode == PSINFO)
+			//	refreshIt =! refreshIt;
+			//else
+			//      refreshIt = true;
 			mode = PSINFO;
 
-			if (refreshIt)
-				ps();
+			//if (refreshIt)
+			ps();
 			paintHead();
 			paint();
 			paintFoot();
@@ -340,9 +347,8 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 			CNeutrinoApp::getInstance()->handleMsg( msg, data );
 			// kein canceling...
 		}
-#if !defined USE_OPENGL
-		frameBuffer->blit();
-#endif		
+
+		frameBuffer->blit();	
 	}
 	
 	hide();
@@ -475,7 +481,7 @@ int CBESysInfoWidget::sysinfo()
 
 		f=fopen("/tmp/sysinfo","a");
 		if(f)
-			fprintf(f, "UPTIME:\n System l�uft seit: %.0f %s %.0f %s %.0f %s\n", ret[1], strTage[int(ret[1])==1], ret[2], strStunden[int(ret[2])==1], ret[3], strMinuten[int(ret[3])==1]);
+			fprintf(f, "UPTIME:\n System laeuft seit: %.0f %s %.0f %s %.0f %s\n", ret[1], strTage[int(ret[1])==1], ret[2], strStunden[int(ret[2])==1], ret[3], strMinuten[int(ret[3])==1]);
 	}
 	fclose(f);
 	/* Get uptime-info from /proc/uptime end*/
