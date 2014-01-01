@@ -14,5 +14,6 @@ SUBDIRS = \
 	picviewer \
 	upnp \
 	systeminfo \
-	tuxdns
+	tuxdns \
+	restart_enigma
 

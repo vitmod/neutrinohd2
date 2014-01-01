@@ -183,4 +183,5 @@ picviewer/Makefile
 upnp/Makefile
 systeminfo/Makefile
 tuxdns/Makefile
+restart_enigma/Makefile
 ])
