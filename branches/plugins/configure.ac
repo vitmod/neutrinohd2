@@ -182,4 +182,5 @@ youtube/Makefile
 picviewer/Makefile
 upnp/Makefile
 systeminfo/Makefile
+tuxdns/Makefile
 ])

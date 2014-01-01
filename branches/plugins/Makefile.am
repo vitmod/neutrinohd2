@@ -13,5 +13,6 @@ SUBDIRS = \
 	youtube \
 	picviewer \
 	upnp \
-	systeminfo
+	systeminfo \
+	tuxdns
 

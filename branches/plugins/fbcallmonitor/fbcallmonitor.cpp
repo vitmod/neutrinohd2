@@ -10,7 +10,7 @@ class CFBCallMonitor : public CMenuTarget
 		int exec(CMenuTarget *parent,  const std::string &actionkey);
 };
 
-int FB_AUTOSTART;
+//int FB_AUTOSTART;
 std::string FB_IP_STRG = "";
 std::string FB_PORT_STRG = "";
 std::string FB_ZIEL1_STRG = "";
@@ -98,11 +98,11 @@ int CFBCallMonitor::exec(CMenuTarget* parent, const std::string &actionKey)
 	
 	if(actionKey == "save")
 	{
-		SaveSettings();
-	}
-	else if(actionKey == "load")
-	{
-		ReadSettings();
+		//SaveSettings();
+		if(this->SaveSettings())
+		 	ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "Einstellungen werden gespeichert !", 450, 2 );
+		else
+		 	ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "Einstellungen NICHT gespeichert !", 450, 2 );
 	}
 	
 	return menu_return::RETURN_REPAINT;
@@ -127,7 +127,7 @@ int plugin_exec(void)
 	FritzBoxCallSettingsMenu->addItem(GenericMenuSeparatorLine);
 	
 	// autostart
-	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Autostart", &FB_AUTOSTART, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, /*SaveSettingsNowDestinationChanger*/NULL));
+	//FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Autostart", &FB_AUTOSTART, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, /*SaveSettingsNowDestinationChanger*/NULL));
 	
 	// fb ip
 	CStringInputSMS * FB_IP = new CStringInputSMS((char *)"IP der Fritzbox", (char *)FB_IP_STRG.c_str());
