@@ -14,7 +14,7 @@ N_SRC  = $(PWD)/nhd2-exp
 
 CFLAGS =  -funsigned-char -g -W -Wall -Wshadow -O2
 CFLAGS += -rdynamic
-#CFLAGS += -DPEDANTIC_VALGRIND_SETUP
+CFLAGS += -DPEDANTIC_VALGRIND_SETUP
 ### enable --as-needed for catching more build problems...
 CFLAGS += -Wl,--as-needed
 
@@ -30,6 +30,7 @@ run:
 	gdb -ex run $(DEST)/bin/neutrino
 
 neutrino: $(N_SRC)/config.status
+	-rm -f $(N_SRC)/src/gui/svn_version.h
 	$(MAKE) -C $(N_SRC) install
 
 $(N_SRC)/config.status: | $(N_SRC) $(DEST)
@@ -47,7 +48,8 @@ $(N_SRC)/config.status: | $(N_SRC) $(DEST)
 			--with-configdir=$(DEST)/var/tuxbox/config \
 			--with-isocodesdir=$(DEST)/share/iso-codes \
 			--enable-opengl \
-			--enable-gstreamer
+			--enable-gstreamer \
+			--enable-fribidi
 $(DEST):
 	mkdir $@
 
