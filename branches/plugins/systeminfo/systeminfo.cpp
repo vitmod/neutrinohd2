@@ -30,7 +30,7 @@ extern "C" int plugin_exec(void);
 sfileline sinbuffer[3*MAXLINES];
 sreadline sysbuffer[(3*MAXLINES)];
 
-int slinecount,syscount;
+int slinecount, syscount;
 bool refreshIt = true;
 
 // construktor
@@ -43,14 +43,27 @@ CBESysInfoWidget::CBESysInfoWidget(int m)
 	// windows size
 	width  = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
 	height = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
+	
+	//head height
+	frameBuffer->getIconSize(NEUTRINO_ICON_SETTINGS, &icon_head_w, &icon_head_h);
+	theight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight(), icon_head_h) + 6;
        
-	ButtonHeight = 25;
-	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+	//foot height
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_foot_w, &icon_foot_h);
+	ButtonHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), icon_foot_h) + 6;
+	
+	// item height
 	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
-	listmaxshow = (height-theight-0)/fheight;
-	height = theight+listmaxshow*fheight; // recalc height
+	listmaxshow = (height - theight)/fheight;
+	
+	// recalculate height
+	height = theight + listmaxshow*fheight; // recalc height
+	
+	// coordinate
 	x = (((g_settings.screen_EndX- g_settings.screen_StartX)-width) / 2) + g_settings.screen_StartX;
 	y = (((g_settings.screen_EndY- g_settings.screen_StartY)-height) / 2) + g_settings.screen_StartY;
+	
+	//
 	liststart = 0;
 	state = beDefault;
 	mode = m;
@@ -66,16 +79,16 @@ void CBESysInfoWidget::paintItem(int pos)
 	color = COL_MENUCONTENT;
 	bgcolor = COL_MENUCONTENT_PLUS_0;
 
-	frameBuffer->paintBoxRel(x, ypos, width - 15, fheight, bgcolor);
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, bgcolor);
 
-	if (liststart + pos < syscount)
+	if ((int)liststart + pos < syscount)
 	{
 		char tmpline75[75];
 
 		memcpy(tmpline75,  &sysbuffer[liststart+pos].line[0], 75);
 		//tmpline75[75] = '\0';
 
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 5, ypos + fheight, width - 30, tmpline75, color);
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 5, ypos + fheight, width - 2*SCROLLBAR_WIDTH, tmpline75, color);
 	}
 }
 
@@ -91,9 +104,9 @@ void CBESysInfoWidget::paint()
 
 	// scrollbar
 	int ypos = y + theight;
-	int sb = fheight* listmaxshow;
+	int sb = fheight*listmaxshow;
 	
-	frameBuffer->paintBoxRel(x + width - 15, ypos, 15, sb, COL_MENUCONTENT_PLUS_1);
+	frameBuffer->paintBoxRel(x + width - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb, COL_MENUCONTENT_PLUS_1);
 
 	int sbc = (syscount/listmaxshow) + 1;
 	sbc = (syscount/listmaxshow) + 1;
@@ -110,6 +123,9 @@ void CBESysInfoWidget::paintHead()
 
 	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
 	
+	// icon
+	frameBuffer->paintIcon(NEUTRINO_ICON_SETTINGS, x + BORDER_LEFT, y + (theight - icon_head_h)/2);
+	
 	if(mode == SYSINFO)
 		sprintf((char *) buf, "%s", "System-Info:");
 	
@@ -121,8 +137,9 @@ void CBESysInfoWidget::paintHead()
 	
 	if(mode == PSINFO)
 		sprintf((char *) buf, "%s", "Prozess-Liste:");
-
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 10, y + theight + 0, width, buf, COL_MENUHEAD);
+	
+	// title
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 5, y + theight, width, buf, COL_MENUHEAD);
 }
 
 // paint foot
@@ -132,21 +149,21 @@ void CBESysInfoWidget::paintFoot()
 	frameBuffer->paintBoxRel(x, y + height, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 	frameBuffer->paintHLine(x, x + width, y, COL_INFOBAR_SHADOW_PLUS_0);
 
-	// sysinfo
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED,    x+width- 4* ButtonWidth - 20, y+height+4);
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x+width- 4* ButtonWidth, y+height+24 - 2, ButtonWidth- 26, "info", COL_INFOBAR);
+	// sysinfo (red)
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, x + width - 4*ButtonWidth - icon_foot_w - 5, y + height + (ButtonHeight - icon_foot_h)/2);
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - 4*ButtonWidth, y + height + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth - 26, "info", COL_INFOBAR, 0, true); //UTF-8
 	
-	// dmesg
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_GREEN,  x+width- 3* ButtonWidth - 30, y+height+4);
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x+width- 3* ButtonWidth - 10, y+height+24 - 2, ButtonWidth- 26, "dmesg", COL_INFOBAR);
+	// dmesg (green)
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, x + width - 3*ButtonWidth - icon_foot_w - 5, y + height + (ButtonHeight - icon_foot_h)/2);
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - 3*ButtonWidth, y + height + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth - 26, "dmesg", COL_INFOBAR, 0, true);
 	
-	// cpuinfo
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW,   x+width- 2* ButtonWidth - 30, y+height+4);
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x+width- 2* ButtonWidth - 10, y+height+24 - 2, ButtonWidth- 26, "cpu/file", COL_INFOBAR);
+	// cpuinfo (yellow)
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, x + width - 2*ButtonWidth - icon_foot_w - 5, y + height + (ButtonHeight - icon_foot_h)/2);
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - 2*ButtonWidth, y + height + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth - 26, "cpu/file", COL_INFOBAR, 0, true);
 	
-	// psinfo
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_BLUE,   x+width- 1* ButtonWidth - 30, y+height+4);
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x+width- 1* ButtonWidth - 10, y+height+24 - 2, ButtonWidth- 26, "ps", COL_INFOBAR);
+	// psinfo (blue)
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, x + width - 1*ButtonWidth - icon_foot_w - 5, y + height + (ButtonHeight - icon_foot_h)/2);
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - 1*ButtonWidth, y + height + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth - 26, "ps", COL_INFOBAR, 0, true);
 }
 
 // hide
@@ -158,7 +175,7 @@ void CBESysInfoWidget::hide()
 }
 
 // main
-int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
+int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
 {
 	int res = menu_return::RETURN_REPAINT;
 
@@ -239,7 +256,6 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 			int step = 0;
 			int prev_selected = selected;
 
-			//step = (msg == CRCInput::RC_left) ? listmaxshow : 1;
 			step =  ((int) msg == g_settings.key_channelList_pageup) ? listmaxshow : 1;  // browse or step 1
 			selected -= step;
 			if((prev_selected - step) < 0) 
@@ -261,10 +277,9 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string & actionKey)
 			int step = 0;
 			int prev_selected = selected;
 
-			//step = (msg == CRCInput::RC_right) ? listmaxshow : 1;
 			step =  ((int) msg == g_settings.key_channelList_pagedown) ? listmaxshow : 1;  // browse or step 1
 			selected += step;
-			if(selected >= syscount) 
+			if((int)selected >= syscount) 
 				selected = 0;
 			
 			if(state == beDefault)
@@ -340,7 +355,7 @@ int CBESysInfoWidget::sysinfo()
 	char strhelp[6];
 	FILE *f;
 	char line[MAXLINES];
-	char *fmt = " %a %d %b %Y %H:%M";
+	const char *fmt = " %a %d %b %Y %H:%M";
 	long t;
 
 	/* Get and Format the SystemTime */

@@ -68,6 +68,12 @@ class CBESysInfoWidget : public CMenuTarget
 		unsigned int numwidth;
 		int fheight; // Fonthoehe Bouquetlist-Inhalt
 		int theight; // Fonthoehe Bouquetlist-Titel
+		
+		int icon_head_w;
+		int icon_head_h;
+		
+		int icon_foot_w;
+		int icon_foot_h;
 
 		int  ButtonHeight;
 

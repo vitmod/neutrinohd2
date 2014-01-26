@@ -119,9 +119,6 @@ TUXBOX_APPS_DIRECTORY_ONE(fontdir,FONTDIR,datadir,/share,/fonts,
 TUXBOX_APPS_DIRECTORY_ONE(gamesdir,GAMESDIR,localstatedir,/var,/tuxbox/games,
 	[--with-gamesdir=PATH    ],[where games data is stored])
 
-TUXBOX_APPS_DIRECTORY_ONE(libdir,LIBDIR,libdir,/lib,/tuxbox,
-	[--with-libdir=PATH      ],[where to find the internal libs])
-
 TUXBOX_APPS_DIRECTORY_ONE(plugindir,PLUGINDIR,localstatedir,/var,/tuxbox/plugins,
 	[--with-plugindir=PATH   ],[where to find the plugins])
 
@@ -134,7 +131,6 @@ AC_SUBST(CONFIGDIR)
 AC_SUBST(DATADIR)
 AC_SUBST(FONTDIR)
 AC_SUBST(GAMESDIR)
-AC_SUBST(LIBDIR)
 AC_SUBST(PLUGINDIR)
 AC_SUBST(THEMESDIR)
 dnl end workaround
