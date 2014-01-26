@@ -1,5 +1,31 @@
+/*
+  neutrinoHD2 project
+  
+  https://code.google.com/p/neutrinohd2/
+  
+  $Id: systeminfo.cpp 2014/01/22 mohousch Exp $
+
+  License: GPL
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
 #include <systeminfo.h>
 
+
+extern "C" int plugin_exec(void);
 
 sfileline sinbuffer[3*MAXLINES];
 sreadline sysbuffer[(3*MAXLINES)];
@@ -11,6 +37,7 @@ bool refreshIt = true;
 CBESysInfoWidget::CBESysInfoWidget(int m)
 {
 	frameBuffer = CFrameBuffer::getInstance();
+	
 	selected = 0;
 	
 	// windows size
@@ -22,8 +49,8 @@ CBESysInfoWidget::CBESysInfoWidget(int m)
 	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
 	listmaxshow = (height-theight-0)/fheight;
 	height = theight+listmaxshow*fheight; // recalc height
-	x =(((g_settings.screen_EndX- g_settings.screen_StartX)-width) / 2) + g_settings.screen_StartX;
-	y =(((g_settings.screen_EndY- g_settings.screen_StartY)-height) / 2) + g_settings.screen_StartY;
+	x = (((g_settings.screen_EndX- g_settings.screen_StartX)-width) / 2) + g_settings.screen_StartX;
+	y = (((g_settings.screen_EndY- g_settings.screen_StartY)-height) / 2) + g_settings.screen_StartY;
 	liststart = 0;
 	state = beDefault;
 	mode = m;
@@ -33,10 +60,10 @@ CBESysInfoWidget::CBESysInfoWidget(int m)
 void CBESysInfoWidget::paintItem(int pos)
 {
 	int ypos = y + theight + pos*fheight;
-	uint8_t    color;
+	uint8_t color;
 	fb_pixel_t bgcolor;
 	
-	color   = COL_MENUCONTENT;
+	color = COL_MENUCONTENT;
 	bgcolor = COL_MENUCONTENT_PLUS_0;
 
 	frameBuffer->paintBoxRel(x, ypos, width - 15, fheight, bgcolor);
@@ -64,7 +91,7 @@ void CBESysInfoWidget::paint()
 
 	// scrollbar
 	int ypos = y + theight;
-	int sb   = fheight* listmaxshow;
+	int sb = fheight* listmaxshow;
 	
 	frameBuffer->paintBoxRel(x + width - 15, ypos, 15, sb, COL_MENUCONTENT_PLUS_1);
 
@@ -307,7 +334,7 @@ int CBESysInfoWidget::sysinfo()
 {
 	static long curCPU[5] = {0, 0, 0, 0, 0};
 	static long prevCPU[5] = {0, 0, 0, 0, 0};
-	double value[5]={0, 0, 0, 0, 0};
+	double value[5] = {0, 0, 0, 0, 0};
 	float faktor;
 	int i, j = 0;
 	char strhelp[6];
@@ -528,9 +555,6 @@ int CBESysInfoWidget::readList(struct sfileline *sinbuffer)
 	
 	return(0);
 }
-
-// plugins api
-extern "C" int plugin_exec(void);
 
 int plugin_exec(void)
 {
