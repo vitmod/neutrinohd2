@@ -1,34 +1,32 @@
-#include <plugin.h>
+/*
+  neutrinoHD2 project
+  
+  https://code.google.com/p/neutrinohd2/
+  
+  $Id: fbcallmonitor.cpp 2014/01/22 mohousch Exp $
+  thx to BPanther
+
+  License: GPL
+
+  This program is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+#include <fbcallmonitor.h>
 
 
-class CFBCallMonitor : public CMenuTarget
-{
-        public:
-		void ReadSettings();
-		bool SaveSettings();
-		
-		int exec(CMenuTarget *parent,  const std::string &actionkey);
-};
-
-//int FB_AUTOSTART;
-std::string FB_IP_STRG = "";
-std::string FB_PORT_STRG = "";
-std::string FB_ZIEL1_STRG = "";
-std::string FB_ZIEL1N_STRG = "";
-std::string FB_ZIEL2_STRG = "";
-std::string FB_ZIEL2N_STRG = "";
-std::string FB_ZIEL3_STRG = "";
-std::string FB_ZIEL3N_STRG = "";
-std::string FB_BOXIP_STRG = "";
-std::string FB_BOXUSERNAME_STRG = "";
-std::string FB_BOXPASSWORD_STRG = "";
-int FB_DEBUG;
-int FB_ALLE;
-int FB_MONRING;
-int FB_MONDISCONNECT;
-int FB_MUTERING;
-int FB_POPUP;
-int FB_INVERS;
+extern "C" int plugin_exec(void);
 
 // option off0_on1
 #define OPTIONS_OFF0_ON1_OPTION_COUNT 2
@@ -37,7 +35,6 @@ const CMenuOptionChooser::keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTIO
         { 0, LOCALE_OPTIONS_OFF, NULL },
         { 1, LOCALE_OPTIONS_ON, NULL }
 };
-
 
 void CFBCallMonitor::ReadSettings() 
 {
@@ -68,6 +65,7 @@ void CFBCallMonitor::ReadSettings()
 bool CFBCallMonitor::SaveSettings() 
 {
 	CConfigFile *bpfbconfig = new CConfigFile(',');
+	
 	bpfbconfig->setString("FRITZBOXIP", FB_IP_STRG);
 	bpfbconfig->setString("TELDPORT", FB_PORT_STRG);
 	bpfbconfig->setString("Ziel_1", FB_ZIEL1_STRG);
@@ -86,6 +84,7 @@ bool CFBCallMonitor::SaveSettings()
 	bpfbconfig->setInt32("muteRing", FB_MUTERING);
 	bpfbconfig->setInt32("popup", FB_POPUP);
 	bpfbconfig->setInt32("invers", FB_INVERS);
+	
 	bpfbconfig->saveConfig(PLUGINDIR "/fb.conf");
 	
 	return true;
@@ -108,26 +107,18 @@ int CFBCallMonitor::exec(CMenuTarget* parent, const std::string &actionKey)
 	return menu_return::RETURN_REPAINT;
 }
 
-extern "C" int plugin_exec(void);
-
-int plugin_exec(void)
+void CFBCallMonitor::doMenu()
 {
 	// read settings
-	// menuhandler
-	CFBCallMonitor * FBCallMonitorHandler = new CFBCallMonitor();
-	FBCallMonitorHandler->ReadSettings();
+	ReadSettings();
 	
 	// create menu
 	CMenuWidget * FritzBoxCallSettingsMenu = new CMenuWidget("FritzBoxCallMonitor", NEUTRINO_ICON_SETTINGS);
 
-	//FritzBoxCallSettingsMenu->addItem(GenericMenuSeparator);
 	FritzBoxCallSettingsMenu->addItem(GenericMenuBack);
 	FritzBoxCallSettingsMenu->addItem(GenericMenuSeparatorLine);
-	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("Einstellungen speichern", true, NULL, FBCallMonitorHandler, "save", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("Einstellungen speichern", true, NULL, this, "save", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	FritzBoxCallSettingsMenu->addItem(GenericMenuSeparatorLine);
-	
-	// autostart
-	//FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Autostart", &FB_AUTOSTART, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, /*SaveSettingsNowDestinationChanger*/NULL));
 	
 	// fb ip
 	CStringInputSMS * FB_IP = new CStringInputSMS((char *)"IP der Fritzbox", (char *)FB_IP_STRG.c_str());
@@ -138,7 +129,7 @@ int plugin_exec(void)
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("PORT der Fritzbox", true, FB_PORT_STRG, FB_PORT, NULL));
 	
 	// debug
-	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Debug (nur in Telnet!)", &FB_DEBUG, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, /*SaveSettingsNowDestinationChanger*/NULL));
+	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Debug (nur in Telnet!)", &FB_DEBUG, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL));
 	
 	// ziel1
 	CStringInputSMS * FB_ZIEL1 = new CStringInputSMS((char *)"Rufnummer 1", (char *)FB_ZIEL1_STRG.c_str());
@@ -159,12 +150,12 @@ int plugin_exec(void)
 	CStringInputSMS * FB_ZIEL3N = new CStringInputSMS((char *)"Rufnummer 3 Name", (char *)FB_ZIEL3N_STRG.c_str());
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("Rufnummer 3 Name", true, FB_ZIEL3N_STRG, FB_ZIEL3N, NULL));
 	
-	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("alle Rufnummern ueberwachen", &FB_ALLE, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, /*SaveSettingsNowDestinationChanger*/NULL));
-	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("eingehende Anrufe anzeigen", &FB_MONRING, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, /*SaveSettingsNowDestinationChanger*/NULL));
-	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Ende+Dauer des Anrufs anzeigen", &FB_MONDISCONNECT, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, /*SaveSettingsNowDestinationChanger*/NULL));
-	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Ton aus bei Anruf", &FB_MUTERING, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, /*SaveSettingsNowDestinationChanger*/NULL));
-	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Popup statt normale Meldung", &FB_POPUP, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, /*SaveSettingsNowDestinationChanger*/NULL));
-	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Inverssuche (GoYellow)", &FB_INVERS, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, /*SaveSettingsNowDestinationChanger*/NULL));
+	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("alle Rufnummern ueberwachen", &FB_ALLE, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL));
+	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("eingehende Anrufe anzeigen", &FB_MONRING, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL));
+	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Ende+Dauer des Anrufs anzeigen", &FB_MONDISCONNECT, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL));
+	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Ton aus bei Anruf", &FB_MUTERING, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL));
+	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Popup statt normale Meldung", &FB_POPUP, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL));
+	FritzBoxCallSettingsMenu->addItem(new CMenuOptionChooser("Inverssuche (GoYellow)", &FB_INVERS, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL));
 	
 	CStringInputSMS * FB_BOXIP = new CStringInputSMS((char *)"Box IP", (char *)FB_BOXIP_STRG.c_str());
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("Box IP", true, FB_BOXIP_STRG, FB_BOXIP, NULL));
@@ -177,6 +168,15 @@ int plugin_exec(void)
 
 	FritzBoxCallSettingsMenu->exec(NULL, "");
 	FritzBoxCallSettingsMenu->hide();
+	
+	delete FritzBoxCallSettingsMenu;
+}
+
+int plugin_exec(void)
+{
+	// class handler
+	CFBCallMonitor * FBCallMonitorHandler = new CFBCallMonitor();
+	FBCallMonitorHandler->doMenu();
 	
 	delete FBCallMonitorHandler;
 	
