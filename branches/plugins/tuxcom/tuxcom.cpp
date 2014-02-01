@@ -146,6 +146,7 @@ int RenderChar(FT_ULong currentchar, int _sx, int _sy, int _ex, int color)
 			p += CFrameBuffer::getInstance()->getStride();
 			r += CFrameBuffer::getInstance()->getStride();
 		}
+		
 		if (_sx + sbit->xadvance >= _ex)
 			return -1; /* limit to maxwidth */
 	}
@@ -241,12 +242,12 @@ void RenderBox(int _sx, int _sy, int _ex, int _ey, int mode, int color)
 
 	if(mode == FILL)
 	{
-		p1 = (unsigned char *)lfb + (StartX + _sx) * 4 + CFrameBuffer::getInstance()->getStride() * (StartY + _sy);
+		p1 = lfb + (StartX + _sx) * 4 + CFrameBuffer::getInstance()->getStride() * (StartY + _sy);
 
-		#if 0
 		for(; _sy < _ey; _sy++)
 		{
 			p2 = p1;
+			
 			for (tx = 0; tx < (_ex - _sx); tx++)
 			{
 				memcpy(p2, bgra[color], 4);
@@ -254,21 +255,11 @@ void RenderBox(int _sx, int _sy, int _ex, int _ey, int mode, int color)
 			}
 			p1 += CFrameBuffer::getInstance()->getStride();
 		}
-		#else
-		unsigned int col = bgra[color][3] << 24 | bgra[color][2] << 16 | bgra[color][1] << 8 | bgra[color][0];
-		for (int count = 0; count < (_ey - _sy) ; count++) 
-		{
-			unsigned int * dest0 = (unsigned int *)p1;
-			for (int i = 0; i < (_ex - _sx); i++)
-				*(dest0++) = col;
-			p1 += CFrameBuffer::getInstance()->getStride();
-		}
-		#endif
 	}
 	else
 	{
-		p1 = (unsigned char *)lfb + (StartX + _sx) * 4 + CFrameBuffer::getInstance()->getStride() * (StartY + _sy);
-		p2 = (unsigned char *)lfb + (StartX + _sx) * 4 + CFrameBuffer::getInstance()->getStride() * (StartY + _ey);
+		p1 = lfb + (StartX + _sx) * 4 + CFrameBuffer::getInstance()->getStride() * (StartY + _sy);
+		p2 = lfb + (StartX + _sx) * 4 + CFrameBuffer::getInstance()->getStride() * (StartY + _ey);
 		p3 = p1 + CFrameBuffer::getInstance()->getStride();
 		p4 = p2 - CFrameBuffer::getInstance()->getStride();
 		
@@ -283,8 +274,9 @@ void RenderBox(int _sx, int _sy, int _ex, int _ey, int mode, int color)
 			p3 += 4;
 			p4 += 4;
 		}
-		p1 = (unsigned char *)lfb + (StartX + _sx) * 4 + CFrameBuffer::getInstance()->getStride() * (StartY + _sy);
-		p2 = (unsigned char *)lfb + (StartX + _ex) * 4 + CFrameBuffer::getInstance()->getStride() * (StartY + _sy);
+		
+		p1 = lfb + (StartX + _sx) * 4 + CFrameBuffer::getInstance()->getStride() * (StartY + _sy);
+		p2 = lfb + (StartX + _ex) * 4 + CFrameBuffer::getInstance()->getStride() * (StartY + _sy);
 		p3 = p1 + 4;
 		p4 = p2 - 4;
 		
@@ -301,10 +293,12 @@ void RenderBox(int _sx, int _sy, int _ex, int _ey, int mode, int color)
 		}
 	}
 	#else
-	CFrameBuffer::getInstance()->paintBoxRel(_sx, _sy, (_ex - _sx), (_ey - _sy), CFrameBuffer::getInstance()->realcolor[color]);
+	CFrameBuffer::getInstance()->paintBoxRel(_sx, _sy, (_ex - _sx), (_ey - _sy), /*CFrameBuffer::getInstance()->realcolor[color]*/COL_BLUE);
 	#endif
 }
 
+//
+//
 //
 void SetLanguage()
 {
@@ -358,7 +352,7 @@ int plugin_exec()
 	ey = s_y + s_h;
 	
 	// framebuffer
-	lfb = /*(unsigned char *)*/CFrameBuffer::getInstance()->getFrameBufferPointer();
+	lfb = (unsigned char *)CFrameBuffer::getInstance()->getFrameBufferPointer();
 
 	//init fontlibrary
 	if((error = FT_Init_FreeType(&library)))
@@ -408,7 +402,7 @@ int plugin_exec()
 	
 	// clear fb
 	//RenderBox(0, 0, var_screeninfo.xres, var_screeninfo.yres, FILL, BLACK);
-	CFrameBuffer::getInstance()->ClearFrameBuffer();
+	//CFrameBuffer::getInstance()->ClearFrameBuffer();
 
 	//init data
 	curframe = 0;

@@ -138,6 +138,7 @@ enum {GZIP,BZIP2,COMPRESS,TAR,FTP};
 
 //framebuffer stuff
 enum {FILL, GRID};
+
 enum {
 	TRANSP, 
 	WHITE, 
@@ -156,7 +157,7 @@ enum {
 	BLUE3
 };
 
-/*unsigned char*/uint32_t *lfb = 0;
+unsigned char *lfb = 0;
 
 /* 32bit colortable */
 unsigned char bgra[][5] = { 
@@ -169,10 +170,10 @@ unsigned char bgra[][5] = {
 "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
 "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
 "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xC0", "\0\0\0\x00",
-"\0\0\0\x33" };
+"\0\0\0\x33" 
+};
 
-
-#define CONFIG_FILE CONFIGDIR "/tuxcom.conf"
+#define CONFIG_FILE PLUGINDIR "/tuxcom.conf"
 
 int trans_map     [] = {BLUE1,BLUE_TRANSP,TRANSP};
 int trans_map_mark[] = {GRAY2,GRAY_TRANSP,GRAY_TRANSP};
@@ -520,46 +521,46 @@ struct frameinfo
 struct frameinfo finfo[2];
 
 //functions
-void				SetPassword();
-void 				RenderBox(int sx, int sy, int ex, int ey, int mode, int color);
+void			SetPassword();
+void 			RenderBox(int sx, int sy, int ex, int ey, int mode, int color);
 void 	          	RenderFrame(int frame);
 void 	          	RenderMenuLine(int highlight, int refresh);
 void 	          	FillDir(int frame, int selmode);
 struct fileentry* 	GetSelected(int frame);
-void 				SetSelected(int frame, const char* szFile);
+void 			SetSelected(int frame, const char* szFile);
 void 	          	GetSizeString(char* sizeString, unsigned long long size, int forcebytes);
 int 	          	MessageBox(const char* msg1,const char* msg2, int mode);
 int 	          	GetInputString(int width, int maxchars, char* str, char * msg, int pass);
 void	          	ClearEntries(int frame);
-void 				ClearZipEntries(int frame);
+void 			ClearZipEntries(int frame);
 void	          	ClearMarker(int frame);
 void	          	RenameMarker(int frame, const char* szOld, const char* szNew);
 void	          	ToggleMarker(int frame);
 int               	IsMarked(int frame, int pos);
-int 			  	CheckOverwrite(struct fileentry* pfe, int mode, char* szNew);
+int 			CheckOverwrite(struct fileentry* pfe, int mode, char* szNew);
 void	          	ReadSettings();
 void	          	WriteSettings();
 void	          	DoExecute(char* szAction, int showoutput);
-int 				DoCopy(struct fileentry* pfe, int typ, int checkmode, char* szZipCommand);
-void 				DoZipCopyEnd(char* szZipCommand);
-int 				DoMove(struct fileentry* pfe, int typ, int checktype);
+int 			DoCopy(struct fileentry* pfe, int typ, int checkmode, char* szZipCommand);
+void 			DoZipCopyEnd(char* szZipCommand);
+int 			DoMove(struct fileentry* pfe, int typ, int checktype);
 void	          	DoViewFile();
 void	          	DoEditFile(char* szFile, char* szTitle, int writable);
 void	          	DoTaskManager();
 int			DoEditString(int x, int y, int width, unsigned int maxchars, char* str, int vsize, int back, int pass);
 int 	          	ShowProperties();
-void 		 	  	RenderButtons(int he, int mode);
-int 			  	flistcmp(struct fileentry * p1, struct fileentry * p2);
+void 		 	RenderButtons(int he, int mode);
+int 			flistcmp(struct fileentry * p1, struct fileentry * p2);
 struct fileentry* 	getfileentry(int frame, int pos);
 struct fileentry* 	FindFile(int frame, const char* szFile);
-void 			  	sortframe(int frame, char* szSel);
-void 			  	ShowFile(FILE* pipe, char* szAction);
-void 			  	ReadZip(int typ);
-int					CheckZip(char* szName);
-FILE*				OpenPipe(char* szAction);
-void 				OpenFTP();
-void 				ReadFTPDir(int frame, char* seldir);
-int					FTPcmd(int frame, const char *s1, const char *s2, char *buf);
-void 				DoEditFTP(char* szFile,char* szTitle);
-void 				DoMainMenu();
-void 				DoSearchFiles();
+void 			sortframe(int frame, char* szSel);
+void 			ShowFile(FILE* pipe, char* szAction);
+void 			ReadZip(int typ);
+int			CheckZip(char* szName);
+FILE*			OpenPipe(char* szAction);
+void 			OpenFTP();
+void 			ReadFTPDir(int frame, char* seldir);
+int			FTPcmd(int frame, const char *s1, const char *s2, char *buf);
+void 			DoEditFTP(char* szFile,char* szTitle);
+void 			DoMainMenu();
+void 			DoSearchFiles();

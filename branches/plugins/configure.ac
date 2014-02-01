@@ -178,4 +178,5 @@ tuxdns/Makefile
 restart_enigma/Makefile
 tuxcom/Makefile
 vlcplayer/Makefile
+dvdplayer/Makefile
 ])

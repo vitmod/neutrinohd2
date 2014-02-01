@@ -9,7 +9,8 @@ SUBDIRS = \
 	tuxdns \
 	restart_enigma \
 	tuxcom \
-	vlcplayer
+	vlcplayer \
+	dvdplayer
 
 #SUBDIRS = vlcplayer netzkino youtube
 
