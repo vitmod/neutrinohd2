@@ -39,6 +39,7 @@
 #include <sys/mman.h>
 #include <sys/dir.h>
 #include <sys/stat.h>
+
 #include <plugin.h>
 
 #include <netinet/in.h>
@@ -46,12 +47,7 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-#include <ft2build.h>
-#include FT_FREETYPE_H
-#include FT_CACHE_H
-#include FT_CACHE_SMALL_BITMAPS_H
-
-#include <linux/input.h>
+//#include <linux/input.h>
 
 #define MENUROWS      	10
 #define MENUITEMS     	10
@@ -114,16 +110,11 @@ static const char *charset = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVW
 enum {LANG_INT,LANG_DE, LANG_IT, LANG_SV, LANG_PT};
 enum {RC_NORMAL,RC_EDIT};
 enum {LEFT, CENTER, RIGHT};
-enum {VERY_SMALL, SMALL, BIG};
-
-FT_Library		library;
-FTC_Manager		manager;
-FTC_SBitCache		cache;
-FTC_SBit		sbit;
-FTC_ImageTypeRec	desc;
-FT_Face			face;
-FT_UInt			prev_glyphindex;
-FT_Bool			use_kerning;
+enum {
+	VERY_SMALL = SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL,
+	SMALL = SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL, 
+	BIG = SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL
+};
 
 enum {OK, OKCANCEL, OKHIDDENCANCEL,YESNOCANCEL,NOBUTTON,OVERWRITECANCEL,OVERWRITESKIPCANCEL,CANCELRUN};
 enum {YES, NO, HIDDEN,CANCEL, OVERWRITE, SKIP, OVERWRITEALL,SKIPALL,EDIT, RENAME, SEARCHRESULT, EDITOR};
@@ -141,23 +132,23 @@ enum {FILL, GRID};
 
 enum {
 	TRANSP, 
-	WHITE, 
-	BLACK, 
-	BLUE1, 
-	BLUE2, 
+	WHITE = 0x10, 
+	BLACK = 0x11, 
+	BLUE1 = 0x0D, 
+	BLUE2 = 0x05, 
 	ORANGE, 
-	GREEN , 
-	YELLOW, 
-	RED, 
-	GRAY,
-	GREEN2,
-	GRAY2, 
+	GREEN = 0x0B, 
+	YELLOW = 0x0C, 
+	RED = 0x0A, 
+	GRAY = 0x08,
+	GREEN2 = 0x03,
+	GRAY2 = 0x09, 
 	BLUE_TRANSP, 
 	GRAY_TRANSP, 
 	BLUE3
 };
 
-unsigned char *lfb = 0;
+static unsigned char *lfb = 0;
 
 /* 32bit colortable */
 unsigned char bgra[][5] = { 

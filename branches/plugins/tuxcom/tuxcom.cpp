@@ -50,136 +50,13 @@ int getRCcode()
 }
 
 //
-// MyFaceRequester
-//
-FT_Error MyFaceRequester(FTC_FaceID face_id, FT_Library _library, FT_Pointer /*request_data*/, FT_Face *aface)
-{
-	FT_Error result;
-
-	result = FT_New_Face(_library, (char *)face_id, 0, aface);
-
-	if(!result) 
-		printf("TuxCom <Font \"%s\" loaded>\n", (char*)face_id);
-	else        
-		printf("TuxCom <Font \"%s\" failed>\n", (char*)face_id);
-
-	return result;
-}
-
-//
-// RenderChar
-//
-int RenderChar(FT_ULong currentchar, int _sx, int _sy, int _ex, int color)
-{
-	int row, pitch, bit;
-	FT_UInt glyphindex;
-	FT_Vector kerning;
-	FT_Error error;
-
-	if (currentchar == '\r') // display \r in windows edited files
-	{
-		if(color != -1)
-		{
-			if (_sx + 10 < _ex)
-				RenderBox(_sx, _sy - 10, _sx + 10, _sy, GRID, color);
-			else
-				return -1;
-		}
-		return 10;
-	}
-
-	if (currentchar == '\t')
-	{
-		/* simulate horizontal TAB */
-		return 15;
-	};
-
-	//load char
-	if(!(glyphindex = FT_Get_Char_Index(face, currentchar)))
-	{
-		printf("TuxCom <FT_Get_Char_Index for Char \"%c\" failed\n", (int)currentchar);
-		return 0;
-	}
-
-	if((error = FTC_SBitCache_Lookup(cache, &desc, glyphindex, &sbit, NULL)))
-	{
-		printf("TuxCom <FTC_SBitCache_Lookup for Char \"%c\" failed with Errorcode 0x%.2X>\n", (int)currentchar, error);
-		return 0;
-	}
-
-	// no kerning used
-	/*
-	if(use_kerning)
-	{
-		FT_Get_Kerning(face, prev_glyphindex, glyphindex, ft_kerning_default, &kerning);
-
-		prev_glyphindex = glyphindex;
-		kerning.x >>= 6;
-	}
-	else
-	*/
-		kerning.x = 0;
-
-	//render char
-	if(color != -1) /* don't render char, return charwidth only */
-	{
-		unsigned char *p = (unsigned char *)lfb + (StartX + _sx + sbit->left + kerning.x) * 4 + (CFrameBuffer::getInstance()->getStride()) * (StartY + _sy - sbit->top);
-		unsigned char *r = p + (_ex - _sx) * 4;	/* end of usable box */
-		
-		for(row = 0; row < sbit->height; row++)
-		{
-			unsigned char *q = p;
-			for(pitch = 0; pitch < sbit->pitch; pitch++)
-			{
-				for(bit = 7; bit >= 0; bit--)
-				{
-					if(pitch*8 + 7-bit >= sbit->width) 
-						break; /* render needed bits only */
-						
-					if ((sbit->buffer[row * sbit->pitch + pitch]) & 1<<bit)
-						memcpy(q, bgra[color], 4);
-					q += 4;
-					if (q > r)	/* we are past _ex */
-						break;
-				}
-			}
-			p += CFrameBuffer::getInstance()->getStride();
-			r += CFrameBuffer::getInstance()->getStride();
-		}
-		
-		if (_sx + sbit->xadvance >= _ex)
-			return -1; /* limit to maxwidth */
-	}
-
-	//return charwidth
-	return sbit->xadvance + kerning.x;
-}
-
-//
 // GetStringLen
 //
 int GetStringLen(const char *string, int size)
 {
 	int stringlen = 0;
 
-	//set size
-	switch (size)
-	{
-		case VERY_SMALL: desc.width = FONTHEIGHT_VERY_SMALL; break;
-		case SMALL     : desc.width = FONTHEIGHT_SMALL     ; break;
-		case BIG       : desc.width = FONTHEIGHT_BIG       ; break;
-	}
-	desc.height = desc.width;//  FONTHEIGHT_SMALL;
-
-	//reset kerning
-	prev_glyphindex = 0;
-
-	//calc len
-	while(*string != '\0')
-	{
-		stringlen += RenderChar(*string, -1, -1, -1, -1);
-		string++;
-	}
+	stringlen = g_Font[size]->getRenderWidth(string);
 
 	return stringlen;
 }
@@ -189,45 +66,25 @@ int GetStringLen(const char *string, int size)
 //
 void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout, int size, int color)
 {
-	int stringlen, _ex, charwidth;
-
-	//set size
-	switch (size)
-	{
-		case VERY_SMALL: desc.width = FONTHEIGHT_VERY_SMALL; break;
-		case SMALL     : desc.width = FONTHEIGHT_SMALL     ; break;
-		case BIG       : desc.width = FONTHEIGHT_BIG       ; break;
-	}
-	desc.height = desc.width;//  FONTHEIGHT_SMALL;
-
 	//set alignment
 	if(layout != LEFT)
 	{
-		stringlen = GetStringLen(string, size);
+		int stringlen = GetStringLen(string, size);
 
 		switch(layout)
 		{
-			case CENTER:	if (stringlen < maxwidth) _sx += (maxwidth - stringlen)/2;
-					break;
+			case CENTER:	
+				if (stringlen < maxwidth) 
+					_sx += (maxwidth - stringlen)/2;
+				break;
 
-			case RIGHT:	if (stringlen < maxwidth) _sx += maxwidth - stringlen;
+			case RIGHT:	
+				if (stringlen < maxwidth) 
+					_sx += maxwidth - stringlen;
 		}
 	}
-
-	//reset kerning
-	prev_glyphindex = 0;
-
-	//render string
-	_ex = _sx + maxwidth;
-
-	while(*string != '\0' && *string != '\n')
-	{
-		if ((charwidth = RenderChar(*string, _sx, _sy, _ex, color)) == -1) 
-			return; /* string > maxwidth */
-
-		_sx += charwidth;
-		string++;
-	}
+	
+	g_Font[size]->RenderString(_sx, _sy, maxwidth, string, CFrameBuffer::getInstance()->realcolor[color], 0, true); // UTF-8
 }
 
 //
@@ -235,7 +92,7 @@ void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout
 //
 void RenderBox(int _sx, int _sy, int _ex, int _ey, int mode, int color)
 { 
-	#if 1
+	#if 0
 	int loop;
 	int tx;
 	unsigned char *p1, *p2, *p3, *p4;
@@ -293,7 +150,10 @@ void RenderBox(int _sx, int _sy, int _ex, int _ey, int mode, int color)
 		}
 	}
 	#else
-	CFrameBuffer::getInstance()->paintBoxRel(_sx, _sy, (_ex - _sx), (_ey - _sy), /*CFrameBuffer::getInstance()->realcolor[color]*/COL_BLUE);
+	if(mode == FILL)
+	{
+		CFrameBuffer::getInstance()->paintBoxRel(_sx, _sy, (_ex - _sx), (_ey - _sy), CFrameBuffer::getInstance()->realcolor[color]);
+	}
 	#endif
 }
 
@@ -305,8 +165,8 @@ void SetLanguage()
 	if (langselect == BTN_AUTO)
 	{
 		language=LANG_INT;
-		if (strncmp(setlocale( LC_ALL, NULL ),"de",2) == 0) language=LANG_DE;
-		if (strncmp(setlocale( LC_ALL, NULL ),"it",2) == 0) language=LANG_IT;
+		if (strncmp(setlocale( LC_ALL, NULL ),"de",2) == 0) language = LANG_DE;
+		if (strncmp(setlocale( LC_ALL, NULL ),"it",2) == 0) language = LANG_IT;
 		if (strncmp(setlocale( LC_ALL, NULL ),"sv",2) == 0) language=LANG_SV;
 		if (strncmp(setlocale( LC_ALL, NULL ),"pt",2) == 0) language=LANG_PT;
 	}
@@ -328,7 +188,7 @@ void SetLanguage()
 //
 int plugin_exec()
 {
-	FT_Error error;
+	//FT_Error error;
 
 	//show versioninfo
 	printf(MSG_VERSION"\n");
@@ -355,6 +215,7 @@ int plugin_exec()
 	lfb = (unsigned char *)CFrameBuffer::getInstance()->getFrameBufferPointer();
 
 	//init fontlibrary
+	/*
 	if((error = FT_Init_FreeType(&library)))
 	{
 		printf("TuxCom <FT_Init_FreeType failed with Errorcode 0x%.2X>", error);
@@ -398,11 +259,12 @@ int plugin_exec()
 	use_kerning = FT_HAS_KERNING(face);
 
 	desc.flags = FT_LOAD_MONOCHROME;
+	*/
 
 	
 	// clear fb
 	//RenderBox(0, 0, var_screeninfo.xres, var_screeninfo.yres, FILL, BLACK);
-	//CFrameBuffer::getInstance()->ClearFrameBuffer();
+	CFrameBuffer::getInstance()->ClearFrameBuffer();
 
 	//init data
 	curframe = 0;
@@ -450,7 +312,8 @@ int plugin_exec()
 	RenderFrame(LEFTFRAME);
 	RenderFrame(RIGHTFRAME);
 	
-	// copy lbb to lfb/blit
+	CFrameBuffer::getInstance()->blit();
+	
 	printf("TuxCom init successful\n");
 
 	int dosave = autosave;
@@ -491,6 +354,7 @@ int plugin_exec()
 				case RC_HELP:
 					singleview = 1-singleview;
 					break;
+					
 				case RC_OK:
 					pfe = GetSelected(curframe);
 					lastnoncur = -1; /* trigger repaint of both panels */
@@ -619,28 +483,35 @@ int plugin_exec()
 						break;
 					}
 					break;
+					
 				case RC_LEFT:
 					curframe = LEFTFRAME;
 					break;
+					
 				case RC_RIGHT:
 					curframe = RIGHTFRAME;
 					break;
+					
 				case RC_UP:
 					finfo[curframe].selected--;
 					if (finfo[curframe].selected  < 0)
 						finfo[curframe].selected  = finfo[curframe].count -1;
 					break;
+					
 				case RC_DOWN:
 					finfo[curframe].selected++;
 					if (finfo[curframe].selected >= finfo[curframe].count)
 						finfo[curframe].selected  = 0;
 					break;
+					
 				case RC_PLUS:
 					finfo[curframe].selected-= framerows;
 					break;
+					
 				case RC_MINUS:
 					finfo[curframe].selected+= framerows;
 					break;
+					
 				case RC_1:
 					if (tool[ACTION_PROPS-1] == ACTION_PROPS)
 					{
@@ -653,6 +524,7 @@ int plugin_exec()
 						}
 					}
 					break;
+					
 				case RC_2:
 					if (tool[ACTION_RENAME-1] == ACTION_RENAME)
 					{
@@ -707,6 +579,7 @@ int plugin_exec()
 						}
 					}
 					break;
+					
 				case RC_3:
 					if (tool[ACTION_VIEW-1] == ACTION_VIEW)
 					{
@@ -715,6 +588,7 @@ int plugin_exec()
 						DoViewFile();
 					}
 					break;
+					
 				case RC_4:
 					if (tool[ACTION_EDIT-1] == ACTION_EDIT)
 					{
@@ -743,6 +617,7 @@ int plugin_exec()
 						FillDir(  curframe,SELECT_NOCHANGE);
 					}
 					break;
+					
 				case RC_5:
 					if (tool[ACTION_COPY-1] == ACTION_COPY)
 					{
@@ -812,6 +687,7 @@ int plugin_exec()
 						free(szZipCommand);
 					}
 					break;
+					
 				case RC_6:
 					if (tool[ACTION_MOVE-1] == ACTION_MOVE)
 					{
@@ -870,6 +746,7 @@ int plugin_exec()
 						}
 					}
 					break;
+					
 				case RC_7:
 					if (tool[ACTION_MKDIR-1] == ACTION_MKDIR)
 					{
@@ -905,6 +782,7 @@ int plugin_exec()
 						}
 					}
 					break;
+					
 				case RC_8:
 					if (tool[ACTION_DELETE-1] == ACTION_DELETE)
 					{
@@ -948,6 +826,7 @@ int plugin_exec()
 						rccode = 0;
 					}
 					break;
+					
 				case RC_9:
 					if (tool[ACTION_MKFILE-1] == ACTION_MKFILE)
 					{
@@ -975,6 +854,7 @@ int plugin_exec()
 						}
 					}
 					break;
+					
 				case RC_0:
 					if (tool[ACTION_MKLINK-1] == ACTION_MKLINK)
 					{
@@ -1002,6 +882,7 @@ int plugin_exec()
 						}
 					}
 					break;
+					
 				case RC_RED:
 					{
 						lastnoncur = -1;
@@ -1022,28 +903,34 @@ int plugin_exec()
 						free (szCommand);
 					}
 					break;
+					
 				case RC_GREEN: // toggle marker
 				    ToggleMarker(curframe);
 					finfo[curframe].selected++;
 				    break;
+				    
 				case RC_YELLOW:
 					cursort = finfo[curframe].sort = finfo[curframe].sort * -1;
 					strcpy(szSel,GetSelected(curframe)->name);
 					sortframe(curframe, szSel);
 					break;
+					
 				case RC_BLUE: // Refresh
 					lastnoncur = -1;
 					FillDir(1-curframe,SELECT_NOCHANGE);
 					FillDir(  curframe,SELECT_NOCHANGE);
 					break;
+					
 				case RC_MUTE: // toggle visibility
 					curvisibility++;
 					if (curvisibility > 2) curvisibility = 0;
 					break;
+					
 				case RC_DBOX: // main menu
 					lastnoncur = -1;
 					DoMainMenu();
 					break;
+					
 				case RC_HOME:
 					if (autosave == BTN_ASK)
 					{
@@ -1074,10 +961,10 @@ int plugin_exec()
 			finfo[curframe].selected  = 0;
 		if (finfo[curframe].selected >= finfo[curframe].count)
 			finfo[curframe].selected  = finfo[curframe].count -1;
-		if (finfo[curframe].first     > finfo[curframe].selected)
-			finfo[curframe].first     = finfo[curframe].selected;
+		if (finfo[curframe].first > finfo[curframe].selected)
+			finfo[curframe].first = finfo[curframe].selected;
 		if (finfo[curframe].selected >= finfo[curframe].first + framerows)
-			finfo[curframe].first     = finfo[curframe].selected - framerows+1;
+			finfo[curframe].first = finfo[curframe].selected - framerows+1;
 		RenderFrame(LEFTFRAME);
 		RenderFrame(RIGHTFRAME);
 		//memcpy(lfb, lbb, fix_screeninfo.line_length * var_screeninfo.yres);
@@ -1090,17 +977,19 @@ int plugin_exec()
 
 	system("rm -f /tmp/tuxcom.out");
 	rccode = -1;
-	FTC_Manager_Done(manager);
-	FT_Done_FreeType(library);
+	
+	//FTC_Manager_Done(manager);
+	//FT_Done_FreeType(library);
 
-	ClearEntries   (LEFTFRAME );
-	ClearEntries   (RIGHTFRAME);
-	ClearMarker    (LEFTFRAME );
-	ClearMarker    (RIGHTFRAME);
+	ClearEntries(LEFTFRAME );
+	ClearEntries(RIGHTFRAME);
+	ClearMarker(LEFTFRAME );
+	ClearMarker(RIGHTFRAME);
 	ClearZipEntries(LEFTFRAME );
 	ClearZipEntries(RIGHTFRAME);
 	
 	CFrameBuffer::getInstance()->ClearFrameBuffer();
+	CFrameBuffer::getInstance()->blit();
 	
 	return 0;
 }
