@@ -64,7 +64,7 @@ int GetStringLen(const char *string, int size)
 //
 // RenderString
 //
-void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout, int size, int color)
+void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout, int size, uint8_t color)
 {
 	//set alignment
 	if(layout != LEFT)
@@ -84,77 +84,26 @@ void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout
 		}
 	}
 	
-	g_Font[size]->RenderString(_sx, _sy, maxwidth, string, CFrameBuffer::getInstance()->realcolor[color], 0, true); // UTF-8
+	g_Font[size]->RenderString(StartX + _sx, StartY + _sy, maxwidth, string, CFrameBuffer::getInstance()->realcolor[color], 0, true); // UTF-8
 }
 
 //
 // RenderBox
 //
-void RenderBox(int _sx, int _sy, int _ex, int _ey, int mode, int color)
+void RenderBox(int _sx, int _sy, int _ex, int _ey, int mode, uint8_t color)
 { 
-	#if 0
-	int loop;
-	int tx;
-	unsigned char *p1, *p2, *p3, *p4;
-
 	if(mode == FILL)
 	{
-		p1 = lfb + (StartX + _sx) * 4 + CFrameBuffer::getInstance()->getStride() * (StartY + _sy);
-
-		for(; _sy < _ey; _sy++)
-		{
-			p2 = p1;
-			
-			for (tx = 0; tx < (_ex - _sx); tx++)
-			{
-				memcpy(p2, bgra[color], 4);
-				p2 += 4;
-			}
-			p1 += CFrameBuffer::getInstance()->getStride();
-		}
+		CFrameBuffer::getInstance()->paintBoxRel(StartX + _sx, StartY + _sy, (_ex - _sx), (_ey - _sy), CFrameBuffer::getInstance()->realcolor[color]);
 	}
 	else
 	{
-		p1 = lfb + (StartX + _sx) * 4 + CFrameBuffer::getInstance()->getStride() * (StartY + _sy);
-		p2 = lfb + (StartX + _sx) * 4 + CFrameBuffer::getInstance()->getStride() * (StartY + _ey);
-		p3 = p1 + CFrameBuffer::getInstance()->getStride();
-		p4 = p2 - CFrameBuffer::getInstance()->getStride();
+		// paint horizontal line
+		CFrameBuffer::getInstance()->paintHLineRel(StartX + _sx, (_ex - _sx), StartY + _sy, CFrameBuffer::getInstance()->realcolor[color]);
 		
-		for (loop = _sx; loop <= _ex; loop++)
-		{
-			memcpy(p1, bgra[color], 4);
-			memcpy(p2, bgra[color], 4);
-			memcpy(p3, bgra[color], 4);
-			memcpy(p4, bgra[color], 4);
-			p1 += 4;
-			p2 += 4;
-			p3 += 4;
-			p4 += 4;
-		}
-		
-		p1 = lfb + (StartX + _sx) * 4 + CFrameBuffer::getInstance()->getStride() * (StartY + _sy);
-		p2 = lfb + (StartX + _ex) * 4 + CFrameBuffer::getInstance()->getStride() * (StartY + _sy);
-		p3 = p1 + 4;
-		p4 = p2 - 4;
-		
-		for (loop = _sy; loop <= _ey; loop++)
-		{
-			memcpy(p1, bgra[color], 4);
-			memcpy(p2, bgra[color], 4);
-			memcpy(p3, bgra[color], 4);
-			memcpy(p4, bgra[color], 4);
-			p1 += CFrameBuffer::getInstance()->getStride();
-			p2 += CFrameBuffer::getInstance()->getStride();
-			p3 = p1 + 4;
-			p4 = p2 - 4;
-		}
+		// paint vertical line
+		CFrameBuffer::getInstance()->paintVLineRel(StartX + _sx, StartY + _sy, (_ey - _sy), CFrameBuffer::getInstance()->realcolor[color]);
 	}
-	#else
-	if(mode == FILL)
-	{
-		CFrameBuffer::getInstance()->paintBoxRel(_sx, _sy, (_ex - _sx), (_ey - _sy), CFrameBuffer::getInstance()->realcolor[color]);
-	}
-	#endif
 }
 
 //
@@ -188,8 +137,6 @@ void SetLanguage()
 //
 int plugin_exec()
 {
-	//FT_Error error;
-
 	//show versioninfo
 	printf(MSG_VERSION"\n");
 	char szMessage[400];
@@ -214,54 +161,6 @@ int plugin_exec()
 	// framebuffer
 	lfb = (unsigned char *)CFrameBuffer::getInstance()->getFrameBufferPointer();
 
-	//init fontlibrary
-	/*
-	if((error = FT_Init_FreeType(&library)))
-	{
-		printf("TuxCom <FT_Init_FreeType failed with Errorcode 0x%.2X>", error);
-		//munmap(lfb, fix_screeninfo.smem_len);
-		//return;
-	}
-
-	if((error = FTC_Manager_New(library, 1, 2, 0, &MyFaceRequester, NULL, &manager)))
-	{
-		printf("TuxCom <FTC_Manager_New failed with Errorcode 0x%.2X>\n", error);
-		FT_Done_FreeType(library);
-		//munmap(lfb, fix_screeninfo.smem_len);
-		//return;
-	}
-
-	if((error = FTC_SBitCache_New(manager, &cache)))
-	{
-		printf("TuxCom <FTC_SBitCache_New failed with Errorcode 0x%.2X>\n", error);
-		FTC_Manager_Done(manager);
-		FT_Done_FreeType(library);
-		//munmap(lfb, fix_screeninfo.smem_len);
-		//return;
-	}
-
-	if ((error = FTC_Manager_LookupFace(manager, (void *)FONT, &face)))
-	{
-		if ((error = FTC_Manager_LookupFace(manager, (void *)FONT2, &face)))
-		{
-			printf("TuxCom <FTC_Manager_LookupFace failed with Errorcode 0x%.2X>\n", error);
-			FTC_Manager_Done(manager);
-			FT_Done_FreeType(library);
-			//munmap(lfb, fix_screeninfo.smem_len);
-			//return;
-		}
-		else
-			desc.face_id = (void *)FONT2;
-	}
-	else
-		desc.face_id = (void *)FONT;
-	
-	use_kerning = FT_HAS_KERNING(face);
-
-	desc.flags = FT_LOAD_MONOCHROME;
-	*/
-
-	
 	// clear fb
 	//RenderBox(0, 0, var_screeninfo.xres, var_screeninfo.yres, FILL, BLACK);
 	CFrameBuffer::getInstance()->ClearFrameBuffer();
@@ -994,9 +893,9 @@ int plugin_exec()
 	return 0;
 }
 
-/******************************************************************************
- * RenderMenuLine                                                              *
- ******************************************************************************/
+//
+// RenderMenuLine
+//
 void RenderMenuLine(int highlight, int refresh)
 {
 	char szEntry[20];
@@ -1048,17 +947,16 @@ void RenderMenuLine(int highlight, int refresh)
 }
 
 
-/******************************************************************************
- * RenderFrame                                                                *
- ******************************************************************************/
-
+//
+// RenderFrame
+//
 void RenderFrame(int frame)
 {
 	if ((singleview || (lastnoncur == frame)) && curframe != frame)
 		return;
 
 	int row = 0;
-	int bcolor, fcolor;
+	uint8_t bcolor, fcolor;
 	char sizeString[100];
 	short bselected;
 	struct fileentry* pfe;
@@ -1068,7 +966,7 @@ void RenderFrame(int frame)
 	else if (curframe != frame)
 		lastnoncur = frame;
 
-	int nBackColor;
+	uint8_t nBackColor;
 
 	colortool[0] = ACTION_EXEC   ;
 	colortool[1] = ACTION_MARKER ;
@@ -1206,10 +1104,9 @@ void RenderFrame(int frame)
 	RenderString(sizeString, (singleview ? 2 : 1+frame)*FrameWidth -BORDERSIZE - 2*SizeWidth, viewy-BORDERSIZE-FONT_OFFSET-MENUSIZE , 2*SizeWidth, RIGHT, SMALL,(curframe == frame ? WHITE : BLUE2));
 }
 
-/******************************************************************************
- * MessageBox                                                                 *
- ******************************************************************************/
-
+//
+// MessageBox
+//
 int MessageBox(const char* msg1, const char* msg2, int mode)
 {
 
@@ -1392,9 +1289,9 @@ int MessageBox(const char* msg1, const char* msg2, int mode)
 
 }
 
-/******************************************************************************
- * RenderButtons                                                              *
- ******************************************************************************/
+//
+// RenderButtons
+//
 void RenderButtons(int he, int mode)
 {
 	switch(mode)

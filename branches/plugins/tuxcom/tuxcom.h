@@ -47,8 +47,6 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
-//#include <linux/input.h>
-
 #define MENUROWS      	10
 #define MENUITEMS     	10
 #define MENUSIZE       	59
@@ -513,7 +511,7 @@ struct frameinfo finfo[2];
 
 //functions
 void			SetPassword();
-void 			RenderBox(int sx, int sy, int ex, int ey, int mode, int color);
+void 			RenderBox(int sx, int sy, int ex, int ey, int mode, uint8_t color);
 void 	          	RenderFrame(int frame);
 void 	          	RenderMenuLine(int highlight, int refresh);
 void 	          	FillDir(int frame, int selmode);
