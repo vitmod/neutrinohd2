@@ -161,7 +161,7 @@ int plugin_exec()
 	ey = s_y + s_h;
 	
 	// framebuffer
-	lfb = (unsigned char *)CFrameBuffer::getInstance()->getFrameBufferPointer();
+	//lfb = (unsigned char *)CFrameBuffer::getInstance()->getFrameBufferPointer();
 
 	// clear fb
 	//RenderBox(0, 0, var_screeninfo.xres, var_screeninfo.yres, FILL, BLACK);
@@ -253,7 +253,7 @@ int plugin_exec()
 		switch(rccode)
 		{
 				case RC_HELP:
-					singleview = 1-singleview;
+					singleview = 1 - singleview;
 					break;
 					
 				case RC_OK:
@@ -290,6 +290,7 @@ int plugin_exec()
 						}
 						break;
 					}
+					
 					if (pfe && S_ISLNK(pfe->fentry.st_mode))
 					{
 						struct stat fs;
@@ -329,6 +330,7 @@ int plugin_exec()
 						}
 						break;
 					}
+					
 					if (pfe && ((pfe->fentry.st_mode & S_IRUSR) == S_IRUSR))
 					{
 						if (((check = CheckZip(pfe->name))>= GZIP) && (finfo[curframe].zipfile[0] == 0x00))
@@ -357,12 +359,14 @@ int plugin_exec()
 						}
 						
 					}
+					
 					if (pfe && ((pfe->fentry.st_mode & S_IXUSR) == 0) && finfo[curframe].zipfile[0] == 0x00)
 					{
 						RenderMenuLine(ACTION_VIEW-1, YES);
 						DoViewFile();
 						break;
 					}
+					
 					if (pfe && ((pfe->fentry.st_mode & S_IXUSR) == S_IXUSR) && finfo[curframe].zipfile[0] == 0x00)
 					{
 						sprintf(szMessage,msg[MSG_EXEC*NUM_LANG+language], pfe->name);
@@ -878,9 +882,6 @@ int plugin_exec()
 
 	system("rm -f /tmp/tuxcom.out");
 	rccode = -1;
-	
-	//FTC_Manager_Done(manager);
-	//FT_Done_FreeType(library);
 
 	ClearEntries(LEFTFRAME );
 	ClearEntries(RIGHTFRAME);
@@ -903,14 +904,14 @@ void RenderMenuLine(int highlight, int refresh)
 	char szEntry[20];
 	int i;
 	unsigned int j;
-	RenderBox(menuitemwidth * MENUITEMS                 ,viewy-MENUSIZE, viewx, viewy-MENUSIZE / 2 , FILL, (highlight == MENUITEMS-1 ? GREEN : BLUE2) );
+	RenderBox(menuitemwidth * MENUITEMS,viewy-MENUSIZE, viewx, viewy-MENUSIZE / 2 , FILL, (highlight == MENUITEMS-1 ? GREEN : BLUE2) );
 	for (i = 0; i < MENUITEMS; i++)
 	{
-		RenderBox(menuitemwidth * i                 ,viewy-MENUSIZE, menuitemwidth *(i+1)                 , viewy-MENUSIZE / 2 , FILL, (i == highlight ? GREEN : BLUE2) );
-		RenderBox(menuitemwidth * i                 ,viewy-MENUSIZE, menuitemwidth * i   + menuitemnumber , viewy-MENUSIZE / 2 , FILL, BLUE1);
+		RenderBox(menuitemwidth * i,viewy-MENUSIZE, menuitemwidth *(i+1), viewy-MENUSIZE / 2 , FILL, (i == highlight ? GREEN : BLUE2) );
+		RenderBox(menuitemwidth * i,viewy-MENUSIZE, menuitemwidth * i   + menuitemnumber, viewy-MENUSIZE / 2 , FILL, BLUE1);
 
 		sprintf(szEntry,"%d",(i+1)%MENUITEMS);
-		RenderString(szEntry          , menuitemwidth * i +1              , viewy-(MENUSIZE/2 + FONT_OFFSET_BIG) , menuitemnumber              , CENTER, SMALL, WHITE);
+		RenderString(szEntry, menuitemwidth * i + 1, viewy-(MENUSIZE/2 + FONT_OFFSET_BIG) , menuitemnumber, CENTER, SMALL, WHITE);
 		if (refresh == EDIT)
 		{
 			if (textuppercase == 0)
@@ -930,18 +931,19 @@ void RenderMenuLine(int highlight, int refresh)
 
 
 	}
-	RenderBox( viewx-COLORBUTTONS ,viewy-MENUSIZE/2, viewx , viewy , FILL,  BLUE1);
+	RenderBox( viewx-COLORBUTTONS ,viewy-MENUSIZE/2, viewx , viewy, FILL, BLUE1);
 	RenderBox( 0,viewy- MENUSIZE , viewx , viewy-MENUSIZE / 2 , GRID, WHITE);
 
 	for (i = 0; i < COLORBUTTONS; i++)
 	{
 
-		RenderBox( (viewx/COLORBUTTONS) *i ,viewy-MENUSIZE/2, (viewx/COLORBUTTONS) *(i+1) , viewy , FILL,  (i == 0 ? RED    :
+		RenderBox( (viewx/COLORBUTTONS) *i, viewy-MENUSIZE/2, (viewx/COLORBUTTONS) *(i+1), viewy, FILL, (i == 0 ? RED    :
 		                                                            					                   (i == 1 ? GREEN  :
 		                                                            					                   (i == 2 ? YELLOW : BLUE1))));
 		RenderBox( (viewx/COLORBUTTONS) *i ,viewy-MENUSIZE/2, (i < COLORBUTTONS-1 ? (viewx/COLORBUTTONS) *(i+1) : viewx) , viewy , GRID,  WHITE );
 		RenderString(colorline[colortool[i]*NUM_LANG+language], (viewx/COLORBUTTONS) *i , viewy- FONT_OFFSET_BIG , viewx/COLORBUTTONS, CENTER, SMALL  , (i == 2 ? BLACK : WHITE));
 	}
+	
 	if (refresh == YES)
 		//memcpy(lfb, lbb, fix_screeninfo.line_length * var_screeninfo.yres);
 		CFrameBuffer::getInstance()->blit();
@@ -958,7 +960,7 @@ void RenderFrame(int frame)
 		return;
 
 	int row = 0;
-	int bcolor, fcolor;
+	uint8_t bcolor, fcolor;
 	char sizeString[100];
 	short bselected;
 	struct fileentry* pfe;
@@ -968,7 +970,7 @@ void RenderFrame(int frame)
 	else if (curframe != frame)
 		lastnoncur = frame;
 
-	int nBackColor;
+	uint8_t nBackColor;
 
 	colortool[0] = ACTION_EXEC   ;
 	colortool[1] = ACTION_MARKER ;
@@ -1111,7 +1113,6 @@ void RenderFrame(int frame)
 //
 int MessageBox(const char* msg1, const char* msg2, int mode)
 {
-
 	int sel = 0, le1=0, le2=0 , wi, he, maxsel=0;
 	int ps[5];
 
@@ -1366,10 +1367,9 @@ void RenderButtons(int he, int mode)
 	CFrameBuffer::getInstance()->blit();
 }
 
-/******************************************************************************
- * ShowProperties                                                             *
- ******************************************************************************/
-
+//
+// ShowProperties
+//
 int ShowProperties()
 {
 	struct fileentry *pfe = GetSelected(curframe);
@@ -1395,7 +1395,8 @@ int ShowProperties()
 	strftime(tm[2], 100, info[INFO_DATETIME * NUM_LANG + language], localtime(&pfe->fentry.st_ctime));
 
 	wi = 0;
-	for (i = 0; i < 3; i++) {
+	for (i = 0; i < 3; i++) 
+	{
 		tm_len[0][i] = GetStringLen(tm_info[i], BIG);
 		tm_len[1][i] = GetStringLen(tm[i], BIG);
 		int tmp = tm_len[0][i] + tm_len[1][i] + 8 * BORDERSIZE; /* 3 left and right, 2 in the middle */
@@ -1444,6 +1445,7 @@ int ShowProperties()
 		RenderBox(sstartx - BORDERSIZE + 2,          ytmp - FONTHEIGHT_BIG + 5, sstartx + swidth + BORDERSIZE-2, ytmp + 1, GRID, (pos == i ? WHITE :trans_map[curvisibility]));
 		ytmp += FONTHEIGHT_BIG;
 	}
+	
 	RenderButtons(he,mode);
 	int drawsel = 0;
 	do{
@@ -1558,10 +1560,9 @@ int ShowProperties()
 
 }
 
-/******************************************************************************
- * DoEditFTP                                                                  *
- ******************************************************************************/
-
+//
+// DoEditFTP
+//
 void DoEditFTP(char* szFile,char* szTitle)
 {
 	FILE *fp;
@@ -1721,10 +1722,9 @@ void DoEditFTP(char* szFile,char* szTitle)
 	return;
 
 }
-/******************************************************************************
- * DoMainMenu                                                                 *
- ******************************************************************************/
-
+//
+// DoMainMenu
+//
 void DoMainMenu()
 {
 	int pos = 0, i, wi , he = (MAINMENU+1) * BORDERSIZE + MAINMENU * FONTHEIGHT_BIG;
@@ -1775,10 +1775,6 @@ void DoMainMenu()
 								return;
 							case 2:
 								screenmode = 1-screenmode;
-#if 0
-								ioctl(avs, AVSIOSSCARTPIN8, &fncmodes[screenmode]);
-								ioctl(saa, SAAIOSWSS, &saamodes[screenmode]);
-#endif
 								return;
 							case 3:
 								SetPassword();
@@ -1903,10 +1899,9 @@ void DoMainMenu()
 	return;
 
 }
-/******************************************************************************
- * DoSearchFiles                                                              *
- ******************************************************************************/
-
+//
+// DoSearchFiles
+//
 void DoSearchFiles()
 {
 	char szMsg[FILENAME_MAX+256];
@@ -1926,17 +1921,12 @@ void DoSearchFiles()
 
 	}
 }
-/******************************************************************************
- * GetInputString                                                             *
- ******************************************************************************/
-
+//
+// GetInputString
+//
 int GetInputString(int width, int maxchars, char *str, char *message, int pass)
 {
-
-
 	int le1, wi, he, x , y;
-
-
 
 	le1 = GetStringLen(message, BIG);
 	wi = MINBOX;
@@ -1946,7 +1936,6 @@ int GetInputString(int width, int maxchars, char *str, char *message, int pass)
 	if (wi > viewx - 6* BORDERSIZE) wi = viewx - 6* BORDERSIZE;
 
 	he = 6* BORDERSIZE+ 2*FONTHEIGHT_BIG;
-
 
 	RenderBox((viewx-wi)/2 , (viewy-he) /2, viewx-(viewx-wi)/2, viewy-(viewy-he)/2, FILL, trans_map[curvisibility]);
 	RenderBox((viewx-wi)/2 , (viewy-he) /2, viewx-(viewx-wi)/2, viewy-(viewy-he)/2, GRID, WHITE);
@@ -1960,13 +1949,13 @@ int GetInputString(int width, int maxchars, char *str, char *message, int pass)
 
 	return DoEditString(x+BORDERSIZE,y+BORDERSIZE,width-2*BORDERSIZE,maxchars,str, BIG,BLUE1, pass);
 }
-/******************************************************************************
- * DoEditString                                                               *
- ******************************************************************************/
 
+//
+// DoEditString
+//
 int DoEditString(int x, int y, int width, unsigned int maxchars, char* str, int vsize, int back, int pass)
 {
-  #if 0
+#if 0
 	unsigned int pos = 0, markpos = 0, start = 0;
 	int slen, he = (vsize==BIG ? FONTHEIGHT_BIG : FONTHEIGHT_SMALL);
 	int prev_key = -1;
@@ -2318,10 +2307,9 @@ int DoEditString(int x, int y, int width, unsigned int maxchars, char* str, int 
 	return rccode;
 }
 
-/******************************************************************************
- * flistcmp                                                                   *
- ******************************************************************************/
-
+//
+// flistcmp
+//
 int flistcmp(struct fileentry * p1, struct fileentry * p2)
 {
 
@@ -2348,10 +2336,9 @@ int flistcmp(struct fileentry * p1, struct fileentry * p2)
 		return strcmp(p1->name,p2->name) * cursort;
 }
 
-/******************************************************************************
- * sortframe                                                                  *
- ******************************************************************************/
-
+//
+// sortframe
+//
 void sortframe(int frame, char* szSel)
 {
 	int i;
@@ -2366,27 +2353,26 @@ void sortframe(int frame, char* szSel)
 		}
 	}
 }
-/******************************************************************************
- * getfileentry                                                               *
- ******************************************************************************/
 
+//
+// getfileentry
+//
 struct fileentry* getfileentry(int frame, int pos)
 {
 	return &finfo[frame].flist[pos];
 }
 
-/******************************************************************************
- * GetSelected                                                                *
- ******************************************************************************/
-
+//
+// GetSelected
+//
 struct fileentry* GetSelected(int frame)
 {
 	return &finfo[frame].flist[finfo[frame].selected];
 }
-/******************************************************************************
- * SetSelected                                                                *
- ******************************************************************************/
 
+//
+// SetSelected
+//
 void SetSelected(int frame, const char* szFile)
 {
 	int i;
@@ -2407,10 +2393,10 @@ void SetSelected(int frame, const char* szFile)
 		}
 	}
 }
-/******************************************************************************
- * FindFile                                                                   *
- ******************************************************************************/
 
+//
+// FindFile
+//
 struct fileentry* FindFile(int frame, const char* szFile)
 {
 	int i;
@@ -2421,10 +2407,9 @@ struct fileentry* FindFile(int frame, const char* szFile)
 	return NULL;
 }
 
-/******************************************************************************
- * ClearEntries                                                               *
- ******************************************************************************/
-
+//
+// ClearEntries
+//
 void ClearEntries(int frame)
 {
 
@@ -2434,10 +2419,10 @@ void ClearEntries(int frame)
 		finfo[frame].flist = NULL;
 	}
 }
-/******************************************************************************
- * ClearZipEntries                                                            *
- ******************************************************************************/
 
+//
+// ClearZipEntries
+//
 void ClearZipEntries(int frame)
 {
 	struct zipfileentry * pzfe, *pzfe1 = finfo[frame].allziplist;
@@ -2459,10 +2444,10 @@ void ClearZipEntries(int frame)
 	}
 
 }
-/******************************************************************************
- * ClearMarker                                                                *
- ******************************************************************************/
 
+//
+// ClearMarker
+//
 void ClearMarker(int frame)
 {
 	struct marker * pmk, *pmk1 = finfo[frame].mlist;
@@ -2476,10 +2461,10 @@ void ClearMarker(int frame)
 	finfo[frame].markcount = 0;
 	finfo[frame].marksize  = 0;
 }
-/******************************************************************************
- * ToggleMarker                                                               *
- ******************************************************************************/
 
+//
+// ToggleMarker
+//
 void ToggleMarker(int frame)
 {
 	struct fileentry *pfe = GetSelected(frame);
@@ -2511,10 +2496,10 @@ void ToggleMarker(int frame)
 	if (!S_ISDIR(pfe->fentry.st_mode))
 		finfo[frame].marksize += pfe->fentry.st_size;
 }
-/******************************************************************************
- * RenameMarker                                                               *
- ******************************************************************************/
 
+//
+// RenameMarker
+//
 void RenameMarker(int frame, const char* szOld, const char* szNew )
 {
 	struct marker * pmk = finfo[frame].mlist;
@@ -2529,10 +2514,10 @@ void RenameMarker(int frame, const char* szOld, const char* szNew )
 		pmk = pmk->next;
 	}
 }
-/******************************************************************************
- * IsMarked                                                                   *
- ******************************************************************************/
 
+//
+// IsMarked
+//
 int IsMarked(int frame, int pos)
 {
 	struct fileentry *pfe = getfileentry(frame, pos);
@@ -2548,9 +2533,9 @@ int IsMarked(int frame, int pos)
 	return 0;
 }
 
-/******************************************************************************
- * CheckOverwrite                                                             *
- ******************************************************************************/
+//
+// CheckOverwrite
+//
 int CheckOverwrite(struct fileentry* pfe, int mode, char* szNew)
 {
 	char szMessage[356];
@@ -2596,10 +2581,10 @@ int CheckOverwrite(struct fileentry* pfe, int mode, char* szNew)
 	}
 	return OVERWRITE;
 }
-/******************************************************************************
- * FillDir                                                                    *
- ******************************************************************************/
 
+//
+// FillDir
+//
 void FillDir(int frame, int selmode)
 {
 	char* pch;
@@ -2813,10 +2798,9 @@ void FillDir(int frame, int selmode)
 
 }
 
-/******************************************************************************
- * DoCopy                                                                     *
- ******************************************************************************/
-
+//
+// DoCopy
+//
 int DoCopy(struct fileentry* pfe, int typ, int checktype, char* szZipCommand)
 {
 	int i = 1;
@@ -3083,10 +3067,9 @@ int DoCopy(struct fileentry* pfe, int typ, int checktype, char* szZipCommand)
 	return check;
 }
 
-/******************************************************************************
- * DoZipCopyEnd                                                               *
- ******************************************************************************/
-
+//
+// DoZipCopyEnd
+//
 void DoZipCopyEnd(char* szZipCommand)
 {
 	if (finfo[curframe].zipfile[0] != 0x00 && finfo[curframe].ftpconn == NULL)
@@ -3099,10 +3082,10 @@ void DoZipCopyEnd(char* szZipCommand)
 		DoExecute(szZipCommand, SHOW_NO_OUTPUT);
 	}
 }
-/******************************************************************************
- * DoMove                                                                     *
- ******************************************************************************/
 
+//
+// DoMove
+//
 int DoMove(struct fileentry* pfe, int typ, int checktype)
 {
 	char action[1000];
@@ -3122,10 +3105,10 @@ int DoMove(struct fileentry* pfe, int typ, int checktype)
 	DoExecute(action, SHOW_NO_OUTPUT);
 	return check;
 }
-/******************************************************************************
- * DoViewFile                                                                 *
- ******************************************************************************/
 
+//
+// DoViewFile
+//
 void DoViewFile()
 {
 	char action[4000];
@@ -3168,9 +3151,9 @@ void DoViewFile()
 
 }
 
-/******************************************************************************
- * DoEditFile                                                                 *
- ******************************************************************************/
+//
+// DoEditFile
+//
 void InsertText(char* pStart, char* pEnd,char* szText, int sel, int* pcount)
 {
 	int oldlen = (pEnd ? pEnd-pStart: (int)strlen(pStart));
@@ -3184,6 +3167,7 @@ void InsertText(char* pStart, char* pEnd,char* szText, int sel, int* pcount)
 	strncpy(pStart,szText,newlen);
 	*(pStart+newlen+step+movlen) = 0x00;
 }
+
 void DoEditFile(char* szFile, char* szTitle,  int writable)
 {
 	FILE* pFile = fopen(szFile,"r");
@@ -3693,7 +3677,9 @@ void DoEditFile(char* szFile, char* szTitle,  int writable)
 	free(szFileBuffer);
 }
 
-/* the number of fields is doubled, as this counts space -> no space transitions */
+//
+// the number of fields is doubled, as this counts space -> no space transitions
+//
 int getFieldOffset(char *p, int field)
 {
 	int i = 0;
@@ -3731,13 +3717,12 @@ void getUidPidProcname(char *p, char *procname, char *uid, char *prid)
 		*q = 0x00;
 }
 
-/******************************************************************************
- * DoTaskManager                                                              *
- ******************************************************************************/
-
+//
+// DoTaskManager
+//
 void DoTaskManager()
 {
-	FILE* pFile = OpenPipe((char *)"ps aux");
+	FILE* pFile = OpenPipe((char *)"ps -A");
 	char* szFileBuffer = (char*)malloc(FILEBUFFER_SIZE);
 	szFileBuffer [0]= 0x00;
 	char *p = szFileBuffer, *p1, *pcur = szFileBuffer;
@@ -3917,10 +3902,10 @@ void DoTaskManager()
 	free(szFileBuffer);
 	rccode = -1;
 }
-/******************************************************************************
- * DoExecute                                                                  *
- ******************************************************************************/
 
+//
+// DoExecute
+//
 void DoExecute(char* szAction, int showoutput)
 {
 	printf("executing: %s\n", szAction);
@@ -3951,10 +3936,10 @@ void DoExecute(char* szAction, int showoutput)
 	}
 	rccode = -1;
 }
-/******************************************************************************
- * CheckZip                                                                   *
- ******************************************************************************/
 
+//
+// CheckZip
+//
 int CheckZip(char* szName)
 {
 	int len = strlen(szName);
@@ -3969,10 +3954,10 @@ int CheckZip(char* szName)
 	if (strcmp((char*)(szName+len-8),".tar.bz2") == 0) return BZIP2;
 	return -1;
 }
-/******************************************************************************
- * ReadZip                                                                    *
- ******************************************************************************/
 
+//
+// ReadZip
+//
 void ReadZip(int typ)
 {
 	if (typ == FTP) { OpenFTP(); return;}
@@ -4046,10 +4031,9 @@ void ReadZip(int typ)
 
 }
 
-/******************************************************************************
- * OpenFTP                                                                   *
- ******************************************************************************/
-
+//
+// OpenFTP
+//
 void OpenFTP()
 {
 	// read connection info from selected file
@@ -4164,10 +4148,9 @@ void OpenFTP()
 	strcpy(finfo[curframe].zipfile,GetSelected(curframe)->name);
 }
 
-/******************************************************************************
- * ReadFTPDir                                                                 *
- ******************************************************************************/
-
+//
+// ReadFTPDir
+//
 void ReadFTPDir(int frame, char* seldir)
 {
 	if (finfo[frame].ftpconn == NULL) return;
@@ -4220,7 +4203,7 @@ void ReadFTPDir(int frame, char* seldir)
 		MessageBox(szMessage,buf,OK);
 		return;
 	}
-    char* s = strrchr(buf, ',');
+	char* s = strrchr(buf, ',');
 	*s = 0;
 	int port = atoi(s+1);
 	s = strrchr(buf, ',');
@@ -4291,10 +4274,9 @@ void ReadFTPDir(int frame, char* seldir)
 
 }
 
-/******************************************************************************
- * FTPcmd                                                                     *
- ******************************************************************************/
-
+//
+// FTPcmd
+//
 int FTPcmd(int frame, const char *s1, const char *s2, char *buf)
 {
 	if (s1) {
@@ -4314,17 +4296,14 @@ int FTPcmd(int frame, const char *s1, const char *s2, char *buf)
 	return atoi(buf);
 }
 
-/******************************************************************************
- * ShowFile                                                                   *
- ******************************************************************************/
-
+//
+// ShowFile
+//
 void ShowFile(FILE* _pipe, char* szAction)
 {
 	// Code from splugin (with little modifications...)
 	char *p;
 	char line[256];
-
-
 
 	// Render output window
 	RenderBox(               0, 0                          , viewx     , viewy-MENUSIZE             , FILL, trans_map[curvisibility]);
@@ -4380,10 +4359,9 @@ void ShowFile(FILE* _pipe, char* szAction)
 	rccode = -1;
 }
 
-/******************************************************************************
- * SetPassword                                                                *
- ******************************************************************************/
-
+//
+// SetPassword
+//
 void SetPassword()
 {
 	char szP1[20];
@@ -4400,10 +4378,9 @@ void SetPassword()
 
 }
 
-/******************************************************************************
- * OpenPipe                                                                   *
- ******************************************************************************/
-
+//
+// OpenPipe
+//
 FILE* OpenPipe(char* szAction)
 {
 	FILE *p;
@@ -4415,10 +4392,9 @@ FILE* OpenPipe(char* szAction)
 	return p;
 }
 
-/******************************************************************************
- * GetSizeString                                                              *
- ******************************************************************************/
-
+//
+// GetSizeString
+//
 void GetSizeString(char* sizeString, unsigned long long size, int forcebytes)
 {
 	unsigned long long tmp = size;
@@ -4448,10 +4424,9 @@ void GetSizeString(char* sizeString, unsigned long long size, int forcebytes)
 
 }
 
-/******************************************************************************
- * ReadSettings                                                               *
- ******************************************************************************/
-
+//
+// ReadSettings
+//
 void ReadSettings()
 {
 	FILE *fp;
@@ -4584,15 +4559,13 @@ void ReadSettings()
 	SetSelected(RIGHTFRAME ,rfile);
 
 }
-/******************************************************************************
- * WriteSettings                                                              *
- ******************************************************************************/
 
+//
+// WriteSettings
+//
 void WriteSettings()
 {
-
 	FILE *fp;
-
 
 	fp = fopen( CONFIGDIR "/tuxcom.conf", "w" );
 	if ( !fp )

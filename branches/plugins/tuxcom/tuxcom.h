@@ -2,6 +2,7 @@
 	TuxCom - TuxBox-Commander Plugin
 
 	Copyright (C) 2004 'dbluelle' (dbluelle@blau-weissoedingen.de)
+	adaptation to use exported neutrino API mohousch 2014.01.18
 
 	Homepage: http://www.blau-weissoedingen.de/dreambox/
 
@@ -154,22 +155,6 @@ enum {
 	BLUE3
 };
 
-static unsigned char *lfb = 0;
-
-/* 32bit colortable */
-unsigned char bgra[][5] = { 
-"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
-"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
-"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
-"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
-"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
-"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
-"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
-"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xFF",
-"\0\0\0\xFF", "\0\0\0\xFF", "\0\0\0\xC0", "\0\0\0\x00",
-"\0\0\0\x33" 
-};
-
 #define CONFIG_FILE PLUGINDIR "/tuxcom.conf"
 
 int trans_map     [] = {BLUE1,BLUE_TRANSP,TRANSP};
@@ -179,7 +164,6 @@ unsigned short rccode;
 
 //some data
 int screenmode;
-int fb;
 int sx, ex, sy, ey;
 int PosX, PosY, StartX, StartY, FrameWidth, NameWidth, SizeWidth;
 int curframe, cursort, curvisibility, singleview, lastnoncur;
