@@ -100,9 +100,11 @@ void RenderBox(int _sx, int _sy, int _ex, int _ey, int mode, uint8_t color)
 	{
 		// paint horizontal line
 		CFrameBuffer::getInstance()->paintHLineRel(StartX + _sx, (_ex - _sx), StartY + _sy, CFrameBuffer::getInstance()->realcolor[color]);
+		CFrameBuffer::getInstance()->paintHLineRel(StartX + _sx, (_ex - _sx), StartY + _ey, CFrameBuffer::getInstance()->realcolor[color]);
 		
 		// paint vertical line
 		CFrameBuffer::getInstance()->paintVLineRel(StartX + _sx, StartY + _sy, (_ey - _sy), CFrameBuffer::getInstance()->realcolor[color]);
+		CFrameBuffer::getInstance()->paintVLineRel(StartX + _ex, StartY + _sy, (_ey - _sy), CFrameBuffer::getInstance()->realcolor[color]);
 	}
 }
 
@@ -956,7 +958,7 @@ void RenderFrame(int frame)
 		return;
 
 	int row = 0;
-	uint8_t bcolor, fcolor;
+	int bcolor, fcolor;
 	char sizeString[100];
 	short bselected;
 	struct fileentry* pfe;
@@ -966,7 +968,7 @@ void RenderFrame(int frame)
 	else if (curframe != frame)
 		lastnoncur = frame;
 
-	uint8_t nBackColor;
+	int nBackColor;
 
 	colortool[0] = ACTION_EXEC   ;
 	colortool[1] = ACTION_MARKER ;
@@ -1066,7 +1068,7 @@ void RenderFrame(int frame)
 		PosX = (singleview ? 0 : frame * FrameWidth) + BORDERSIZE;
 
 		RenderBox(PosX, PosY-FONTHEIGHT_SMALL,((1+frame+singleview)*FrameWidth), PosY, FILL, bcolor);
-		RenderString(pfe->name, PosX+2, PosY-FONT_OFFSET, NameWidth*(1+(singleview*1.4))-2, LEFT, SMALL,fcolor);
+		RenderString(pfe->name, PosX+2, PosY-FONT_OFFSET, NameWidth*(1+(singleview*1.4))-2, LEFT, SMALL, fcolor);
 		RenderString(sizeString, (singleview ? 2 :1+frame)*FrameWidth -2*BORDERSIZE - 2*SizeWidth*(1+singleview), PosY-FONT_OFFSET, 2*SizeWidth*(1+singleview), RIGHT, SMALL,fcolor);
 		row++;
 	}
