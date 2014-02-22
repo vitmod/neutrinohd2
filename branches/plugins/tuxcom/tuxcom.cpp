@@ -84,7 +84,7 @@ void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout
 		}
 	}
 	
-	g_Font[size]->RenderString(StartX + _sx, StartY + _sy, maxwidth, string, CFrameBuffer::getInstance()->realcolor[color], 0, true); // UTF-8
+	g_Font[size]->RenderString(StartX + _sx, StartY + _sy, maxwidth, string, /*CFrameBuffer::getInstance()->realcolor[color]*/color, 0, true); // UTF-8
 }
 
 //
@@ -960,7 +960,8 @@ void RenderFrame(int frame)
 		return;
 
 	int row = 0;
-	uint8_t bcolor, fcolor;
+	uint8_t bcolor;
+	uint8_t fcolor;
 	char sizeString[100];
 	short bselected;
 	struct fileentry* pfe;
@@ -1021,7 +1022,7 @@ void RenderFrame(int frame)
 		}
 		if ((pfe->fentry.st_mode & S_IWUSR) == S_IWUSR )
 		{
-			fcolor = GRAY   ;
+			fcolor = GRAY;
 			if (bselected)
 			{
 				tool[ACTION_MOVE-1] = (finfo[1-frame].writable && finfo[frame].writable ? ACTION_MOVE   : ACTION_NOACTION); // move   allowed, if both frames writable;

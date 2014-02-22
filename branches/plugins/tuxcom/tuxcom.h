@@ -109,13 +109,6 @@ static const char *charset = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVW
 enum {LANG_INT,LANG_DE, LANG_IT, LANG_SV, LANG_PT};
 enum {RC_NORMAL,RC_EDIT};
 enum {LEFT, CENTER, RIGHT};
-/*
-enum {
-	VERY_SMALL = SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL,
-	SMALL = SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL, 
-	BIG = SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL
-};
-*/
 
 enum {OK, OKCANCEL, OKHIDDENCANCEL,YESNOCANCEL,NOBUTTON,OVERWRITECANCEL,OVERWRITESKIPCANCEL,CANCELRUN};
 enum {YES, NO, HIDDEN,CANCEL, OVERWRITE, SKIP, OVERWRITEALL,SKIPALL,EDIT, RENAME, SEARCHRESULT, EDITOR};
@@ -138,27 +131,27 @@ enum {
 enum {FILL, GRID};
 
 enum {
-	TRANSP, 
+	TRANSP = 0xFF, 
 	WHITE = 0x10, 
 	BLACK = 0x11, 
 	BLUE1 = 0x0D, 
 	BLUE2 = 0x05, 
-	ORANGE, 
+	ORANGE = WHITE, 
 	GREEN = 0x0B, 
 	YELLOW = 0x0C, 
 	RED = 0x0A, 
 	GRAY = 0x08,
 	GREEN2 = 0x03,
 	GRAY2 = 0x09, 
-	BLUE_TRANSP, 
-	GRAY_TRANSP, 
-	BLUE3
+	BLUE_TRANSP = 0x0F, 
+	GRAY_TRANSP = 0x08, 
+	BLUE3 = BLUE1
 };
 
 #define CONFIG_FILE PLUGINDIR "/tuxcom.conf"
 
-int trans_map     [] = {BLUE1,BLUE_TRANSP,TRANSP};
-int trans_map_mark[] = {GRAY2,GRAY_TRANSP,GRAY_TRANSP};
+uint8_t trans_map[] = {BLUE1, BLUE_TRANSP, TRANSP};
+uint8_t trans_map_mark[] = {GRAY2, GRAY_TRANSP, GRAY_TRANSP};
 
 unsigned short rccode;
 
