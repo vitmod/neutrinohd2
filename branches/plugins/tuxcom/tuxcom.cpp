@@ -84,7 +84,7 @@ void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout
 		}
 	}
 	
-	g_Font[size]->RenderString(StartX + _sx, StartY + _sy, maxwidth, string, /*CFrameBuffer::getInstance()->realcolor[color]*/color, 0, true); // UTF-8
+	g_Font[size]->RenderString(StartX + _sx, StartY + _sy, maxwidth, string, color, 0, true); // UTF-8
 }
 
 //
@@ -159,9 +159,6 @@ int plugin_exec()
 	ex = s_x + s_w;
 	sy = s_y;
 	ey = s_y + s_h;
-	
-	// framebuffer
-	//lfb = (unsigned char *)CFrameBuffer::getInstance()->getFrameBufferPointer();
 
 	// clear fb
 	//RenderBox(0, 0, var_screeninfo.xres, var_screeninfo.yres, FILL, BLACK);
@@ -810,7 +807,7 @@ int plugin_exec()
 					break;
 					
 				case RC_GREEN: // toggle marker
-				    ToggleMarker(curframe);
+					ToggleMarker(curframe);
 					finfo[curframe].selected++;
 				    break;
 				    

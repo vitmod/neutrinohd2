@@ -10,7 +10,8 @@ SUBDIRS = \
 	restart_enigma \
 	tuxcom \
 	vlcplayer \
-	dvdplayer
+	dvdplayer \
+	mediaplayer
 
 #SUBDIRS = vlcplayer netzkino youtube
 
