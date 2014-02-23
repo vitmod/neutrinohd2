@@ -11,7 +11,7 @@ SUBDIRS = \
 	tuxcom \
 	vlcplayer \
 	dvdplayer \
-	mediaplayer
+	mediaplayer \
+	tuxcal
 
-#SUBDIRS = vlcplayer netzkino youtube
 

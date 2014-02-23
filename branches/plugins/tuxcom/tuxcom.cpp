@@ -163,6 +163,7 @@ int plugin_exec()
 	// clear fb
 	//RenderBox(0, 0, var_screeninfo.xres, var_screeninfo.yres, FILL, BLACK);
 	CFrameBuffer::getInstance()->ClearFrameBuffer();
+	CFrameBuffer::getInstance()->blit();
 
 	//init data
 	curframe = 0;

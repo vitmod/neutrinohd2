@@ -180,4 +180,6 @@ tuxcom/Makefile
 vlcplayer/Makefile
 dvdplayer/Makefile
 mediaplayer/Makefile
+tuxcal/Makefile
+tuxcal/daemon/Makefile
 ])
