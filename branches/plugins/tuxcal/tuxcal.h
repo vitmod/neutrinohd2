@@ -4,11 +4,9 @@
  ******************************************************************************/
 // lots of code is from the tuxmail-project
 
-#include "config.h"
+#include <config.h>
 
-#if !defined(HAVE_DVB_API_VERSION) && defined(HAVE_OST_DMX_H)
-#define HAVE_DVB_API_VERSION 1
-#endif
+#define _FILE_OFFSET_BITS 64
 
 #include <errno.h>
 #include <fcntl.h>
@@ -17,7 +15,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <linux/fb.h>
+
 
 #include <sys/ioctl.h>
 #include <sys/mman.h>
@@ -33,11 +31,8 @@
 #define CFGPATH 	CONFIGDIR "tuxcal/"						//! config-path
 #define CFGFILE 	"tuxcal.conf"							//! config-file
 #define EVTFILE 	"tuxcal.list"							//! database-file
-#define KBLCKFILE 	"/tmp/keyboard.lck"						//! file to lock keyboard-conversion
 
-//----------------------------------------------------
 // OSD   different languages
-
 int osdidx = 0;																				// actual used language
 
 #define MAXOSD	2
@@ -251,11 +246,15 @@ int IsEvent(int day, int month, int year);
 int WeekNumber( int y, int m, int d );
 int LeapYear(int year);
 
-#define FONT FONTDIR "/pakenham.ttf"
+#define FONT FONTDIR "/neutrino.ttf"
 
 // definitions for string-rendering and size
 enum {LEFT, CENTER, RIGHT, FIXEDLEFT, FIXEDCENTER, FIXEDRIGHT};
-enum {SMALL, NORMAL, BIG};
+enum {
+	SMALL = 20, 
+	NORMAL = 20, 
+	BIG = 20
+};
 
 
 // config
@@ -292,8 +291,8 @@ const char *szFmtStr[] = {
 #define FONTSIZE_NORMAL 	32
 #define FONTSIZE_BIG 		40
 
-#define MAXSCREEN_X		1210
-#define MAXSCREEN_Y		650
+#define MAXSCREEN_X		1200
+#define MAXSCREEN_Y		640
 //int MAXSCREEN_X, MAXSCREEN_Y;
 #define MSGBOX_SX		145
 #define MSGBOX_SY		175
@@ -303,8 +302,8 @@ const char *szFmtStr[] = {
 #define GRIDLINE		32
 #define GRIDLINE_SMALL		24
 #define GRIDBOX_X		(MAXSCREEN_X/7)
-#define GRIDBOX_CY1		420
-#define GRIDBOX_CY2		300
+#define GRIDBOX_CY1		564 //420
+#define GRIDBOX_CY2		464 //300
 
 #define LNWIDTH			2
 

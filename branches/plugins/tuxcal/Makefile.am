@@ -19,7 +19,8 @@ noinst_LTLIBRARIES = tuxcal.la
 tuxcal_la_SOURCES = tuxcal.cpp
 
 tuxcal_la_LIBADD = \
-	@FREETYPE_LIBS@
+	@FREETYPE_LIBS@ \
+	-lz
 
 tuxcal_la_LDFLAGS = -rpath $(PLUGINDIR) -module -avoid-version
 

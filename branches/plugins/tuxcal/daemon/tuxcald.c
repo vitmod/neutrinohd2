@@ -231,6 +231,7 @@ int WriteConf()
 	return 1;
 }
 
+#if 1
 /******************************************************************************
  * MyFaceRequester
  ******************************************************************************/
@@ -254,6 +255,7 @@ FT_Error MyFaceRequester(FTC_FaceID face_id, FT_Library library, FT_Pointer requ
 	
 	return result;
 }
+#endif
 
 /******************************************************************************
  * FindColors
@@ -299,14 +301,14 @@ void FindColors()
 	printf("TuxCalD <found black at %d, white at %d>\r\n",iBlack, iWhite);
 
   // free colormap
-  if (colormap)
-  {
-    free(colormap->red);
-    free(colormap->green);
-    free(colormap->blue);
-    free(colormap->transp);
-    free(colormap);
-    colormap=NULL;
+	if (colormap)
+	{
+		free(colormap->red);
+		free(colormap->green);
+		free(colormap->blue);
+		free(colormap->transp);
+		free(colormap);
+		colormap=NULL;
 	}
 }
 
@@ -1032,9 +1034,9 @@ void AddDays(int* pday, int* pmonth, int* pyear, int adddays)
  - Fronleichnam (+60), 
 
 Der Muttertag ist der zweite Sonntag im Mai, 
-das Erntedankfest der erste Sonntag im Oktober (jedoch nicht überall!). 
+das Erntedankfest der erste Sonntag im Oktober (jedoch nicht ï¿½berall!). 
 Der 1. Advent ist der Sonntag nach dem 26. November; 
-der Buß- und Bettag liegt 11 Tage vor dem 1. Advent. 
+der Buï¿½- und Bettag liegt 11 Tage vor dem 1. Advent. 
 
  
 */
@@ -1082,9 +1084,9 @@ void CalcEastern(int year, int* month, int* day)
  - Fronleichnam (+60), 
 
 Der Muttertag ist der zweite Sonntag im Mai, 
-das Erntedankfest der erste Sonntag im Oktober (jedoch nicht überall!). 
+das Erntedankfest der erste Sonntag im Oktober (jedoch nicht ï¿½berall!). 
 Der 1. Advent ist der Sonntag nach dem 26. November; 
-der Buß- und Bettag liegt 11 Tage vor dem 1. Advent. 
+der Buï¿½- und Bettag liegt 11 Tage vor dem 1. Advent. 
 
  
 */
@@ -2013,13 +2015,13 @@ void NotifyUser()
 				switch (c)
 				{
 					case ' ': strcat(http_cmd,"%20"); 		dest+=3; break;
-					case 'ä': strcat(http_cmd,"%C3%A4");  dest+=6; break;
-					case 'ö': strcat(http_cmd,"%C3%B6");  dest+=6; break;
-					case 'ü': strcat(http_cmd,"%C3%BC");  dest+=6; break;
-					case 'Ä': strcat(http_cmd,"%C3%84");  dest+=6; break;
-					case 'Ö': strcat(http_cmd,"%C3%96");  dest+=6; break;
-					case 'Ü': strcat(http_cmd,"%C3%9C");  dest+=6; break;
-					case 'ß': strcat(http_cmd,"%C3%9F");  dest+=6; break;
+					case 'ï¿½': strcat(http_cmd,"%C3%A4");  dest+=6; break;
+					case 'ï¿½': strcat(http_cmd,"%C3%B6");  dest+=6; break;
+					case 'ï¿½': strcat(http_cmd,"%C3%BC");  dest+=6; break;
+					case 'ï¿½': strcat(http_cmd,"%C3%84");  dest+=6; break;
+					case 'ï¿½': strcat(http_cmd,"%C3%96");  dest+=6; break;
+					case 'ï¿½': strcat(http_cmd,"%C3%9C");  dest+=6; break;
+					case 'ï¿½': strcat(http_cmd,"%C3%9F");  dest+=6; break;
 					default:
 						*dest++=c;
 						*dest=0;
@@ -2082,9 +2084,9 @@ void NotifyUser()
 }		
 
 
-/******************************************************************************
- * SigHandler
- ******************************************************************************/
+//
+// SigHandler
+//
 void SigHandler(int signal)
 {
 	switch(signal)
@@ -2131,9 +2133,9 @@ void SigHandler(int signal)
 	}
 }
 
-/******************************************************************************
- * MainProgram
- ******************************************************************************/
+//
+// MainProgram
+//
 int main(int argc, char **argv)
 {
 	char cvs_revision[] = "$Revision: 1.14 $";
@@ -2172,7 +2174,6 @@ int main(int argc, char **argv)
 	}
 
 	// create daemon
-
 	time(&tt);
 	strftime(timeinfo, 22, "%d.%m.%Y - %T", localtime(&tt));
 
@@ -2261,16 +2262,19 @@ int main(int argc, char **argv)
 	WriteConf();																						// write actual config back to file
 
 	// startdelay
-	if (!nodelay)	sleep(startdelay);
+	if (!nodelay)	
+		sleep(startdelay);
 
 	// read the dates and times
 	LoadDatabase();																					// load database
 	ReadSTimer();																						// read the timers for fixed signaling
 	
 	// we are online now
-	online=1;
+	online = 1;
 	show_clock=show_clockatstart;
+	
 	unlink(CLKFILE);
+	
 	if (show_clock == 'Y')
 	{
 		// open connection to framebuffer

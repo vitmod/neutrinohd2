@@ -291,6 +291,7 @@ int ControlDaemon(int command)
 
 	// close connection
 	close(fd_sock);
+	
 	return 1;
 }
 
@@ -306,14 +307,15 @@ int ControlDaemon(int command)
 */
 int GetRCCode()
 {
-	neutrino_msg_t Msg;
+	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
-	g_RCInput->getMsg_ms(&Msg, &data, 40);
+	
+	g_RCInput->getMsg_ms(&msg, &data, 40);
 	rccode = -1;
 
-	if (Msg <= CRCInput::RC_MaxRC) 
+	if (msg <= CRCInput::RC_MaxRC) 
 	{
-		rccode = Msg;
+		rccode = msg;
 		return 1;
 	}
 	
@@ -327,11 +329,11 @@ int GetRCCode()
  * calculate used pixels on screen for output
  
 */
-int GetStringLen(const char *string)
+int GetStringLen(const char *string, int size)
 {
 	int stringlen = 0;
 	
-	stringlen = g_Font[SMALL]->getRenderWidth(string);
+	stringlen = g_Font[size]->getRenderWidth(string);
 
 	return stringlen;
 }
@@ -343,27 +345,27 @@ int GetStringLen(const char *string)
  * render a string to the screen
  
 */
-void RenderString(const char *string, int sx, int sy, int maxwidth, int layout, int size, int color)
+void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout, int size, int color)
 {
 	//set alignment
 	if(layout != LEFT)
 	{
-		int stringlen = GetStringLen(string);
+		int stringlen = GetStringLen(string, size);
 
 		switch(layout)
 		{
 			case CENTER:	
 				if (stringlen < maxwidth) 
-					sx += (maxwidth - stringlen)/2;
+					_sx += (maxwidth - stringlen)/2;
 				break;
 
 			case RIGHT:	
 				if (stringlen < maxwidth) 
-					sx += maxwidth - stringlen;
+					_sx += maxwidth - stringlen;
 		}
 	}
 	
-	g_Font[size]->RenderString(startx + sx, starty + sy, maxwidth, string, color, 0, true); // UTF-8
+	g_Font[size]->RenderString(startx + _sx, starty + _sy, maxwidth, string, color, 0, true); // UTF-8
 }
 
 //
@@ -380,21 +382,21 @@ void RenderString(const char *string, int sx, int sy, int maxwidth, int layout, 
  \param color	: color to paint with
  \return      : none
 */
-void RenderBox(int sx, int sy, int ex, int ey, int mode, int color)
+void RenderBox(int _sx, int _sy, int _ex, int _ey, int mode, int color)
 {
 	if(mode == FILL)
 	{
-		CFrameBuffer::getInstance()->paintBoxRel(startx + sx, starty + sy, (ex - sx), (ey - sy), CFrameBuffer::getInstance()->realcolor[color]);
+		CFrameBuffer::getInstance()->paintBoxRel(startx + _sx, starty + _sy, (_ex - _sx), (_ey - _sy), CFrameBuffer::getInstance()->realcolor[color]);
 	}
 	else
 	{
 		// paint horizontal line
-		CFrameBuffer::getInstance()->paintHLineRel(startx + sx, (ex - sx), starty + sy, CFrameBuffer::getInstance()->realcolor[color]);
-		CFrameBuffer::getInstance()->paintHLineRel(startx + sx, (ex - sx), starty + ey, CFrameBuffer::getInstance()->realcolor[color]);
+		CFrameBuffer::getInstance()->paintHLineRel(startx + _sx, (_ex - _sx), starty + _sy, CFrameBuffer::getInstance()->realcolor[color]);
+		CFrameBuffer::getInstance()->paintHLineRel(startx + _sx, (_ex - _sx), starty + _ey, CFrameBuffer::getInstance()->realcolor[color]);
 		
 		// paint vertical line
-		CFrameBuffer::getInstance()->paintVLineRel(startx + sx, starty + sy, (ey - sy), CFrameBuffer::getInstance()->realcolor[color]);
-		CFrameBuffer::getInstance()->paintVLineRel(starty + ex, starty + sy, (ey - sy), CFrameBuffer::getInstance()->realcolor[color]);
+		CFrameBuffer::getInstance()->paintVLineRel(startx + _sx, starty + _sy, (_ey - _sy), CFrameBuffer::getInstance()->realcolor[color]);
+		CFrameBuffer::getInstance()->paintVLineRel(starty + _ex, starty + _sy, (_ey - _sy), CFrameBuffer::getInstance()->realcolor[color]);
 	}	
 }
 
@@ -405,7 +407,7 @@ void RenderBox(int sx, int sy, int ex, int ey, int mode, int color)
  * render a integer to the screen
  
 */
-void RenderInt(const char *string, int sx, int sy, int maxwidth, int layout, int size, int color, int colorgrid, int colorfill)
+void RenderInt(const char *string, int _sx, int _sy, int maxwidth, int layout, int size, int color, int colorgrid, int colorfill)
 {
 	int x,y,cx,cy;
 	int sizey = FONTSIZE_NORMAL;
@@ -415,8 +417,8 @@ void RenderInt(const char *string, int sx, int sy, int maxwidth, int layout, int
 	else if (size == BIG) 
 		sizey=FONTSIZE_BIG;
 	
-	x = sx - 5;
-	y = sy - sizey + 8;
+	x = _sx - 5;
+	y = _sy - sizey + 8;
 	cx = x + maxwidth + 3;
 	cy = y + sizey;	
 	
@@ -426,7 +428,7 @@ void RenderInt(const char *string, int sx, int sy, int maxwidth, int layout, int
 	if (colorgrid != -1) 
 		RenderBox(x, y, cx, cy, GRID, colorgrid);
 
-	RenderString(string, sx, sy, maxwidth, layout, size, color);
+	RenderString(string, _sx, _sy, maxwidth, layout, size, color);
 }
 
 //
@@ -441,7 +443,7 @@ void RenderInt(const char *string, int sx, int sy, int maxwidth, int layout, int
  \param iType	: index for the object to paint
  \return      : none
 */
-void RenderSObject(int sx, int sy, int color, int iType)
+void RenderSObject(int _sx, int _sy, uint8_t color, int iType)
 {
 	int x, y;
 	char *pObj = circle;
@@ -455,21 +457,20 @@ void RenderSObject(int sx, int sy, int color, int iType)
 	if (iType == OBJ_CLOCK) pObj=symbolclock;
 
 	// render
-	#if 0
 	for (y = 0; y < OBJ_SY; y++)					// for all columns
 	{	
 		for (x = 0; x < OBJ_SX; x++)				// for all lines
 		{
-			if (*pObj++)											// only paint if mask-value set
-				memset(lbb + startx + sx + x + var_screeninfo.xres*(starty + sy + y), color, 1);
+			if (*pObj++)					// only paint if mask-value set
+				//memset(lbb + startx + sx + x + var_screeninfo.xres*(starty + sy + y), color, 1);
+				CFrameBuffer::getInstance()->paintPixel(startx + x, starty + y, CFrameBuffer::getInstance()->realcolor[color]);
 		}
 	}
-	#endif
 }
 
-/******************************************************************************
- * MessageBox
- ******************************************************************************/
+//
+// MessageBox
+//
 /*!
  * message-box which asks a question
  * use can choose OK or NO/Exit
@@ -501,7 +502,7 @@ int MessageBox(const char* header, const char* question)
 	CFrameBuffer::getInstance()->blit();
 
 	// now wait for key
-	while ( GetRCCode() )
+	while ( GetRCCode() == 1)
 	{
 		// OK or RETURN
 		if ( rccode == RC_OK )
@@ -516,6 +517,7 @@ int MessageBox(const char* header, const char* question)
 			return 0;													// return NO
 		}
 	}
+	
 	return 0;
 }
 
@@ -556,7 +558,7 @@ void ShowMessage(int message)
 	CFrameBuffer::getInstance()->blit();
 
 	// wait for OK keystroke
-	while ( GetRCCode() )
+	while ( GetRCCode() == 1)
 	{
 		if (( rccode == RC_OK ) || ( rccode == RC_HOME ))
 		{
@@ -568,6 +570,7 @@ void ShowMessage(int message)
 			break;
 		}
 	}
+	
 	rccode = -1;
 }
 
@@ -857,7 +860,7 @@ int Edit(EVT_DB* pEvt)
 {
 	int iEditLine=1;
 	int iEditCol=0;
-	int tmprc=0xFFFF;
+	unsigned short tmprc=0xFFFF;
 	int iTypeInt=2;
 	int iMultipl=1;
 	int iFmtIdx=0;
@@ -874,7 +877,7 @@ int Edit(EVT_DB* pEvt)
 	// act on key-input
 	while (GetRCCode())
 	{
-		tmprc=rccode;	
+		tmprc = rccode;	
 		rccode = 0xFFFF;	
 		if (iShortTimer>1) iShortTimer--;											// timer for going one pos to the right
 		if ((tmprc == 0xFFFF) && (iShortTimer!=1)) continue;	// only do something if a key was pressed
@@ -1195,10 +1198,11 @@ int Edit(EVT_DB* pEvt)
 			}
 		}
 
-	// render the output for the current event, return the pointer to the selected
-	// integer-value, NULL if none selected
+	      // render the output for the current event, return the pointer to the selected
+		// integer-value, NULL if none selected
 		pEditInt=PaintEdit(pEvt, iEditLine, iEditCol);
 	}
+	
 	return 0;
 }
 
@@ -1248,7 +1252,7 @@ void PaintGrid(int last, int start, int end, int akt, int sel, int infolines, in
 	RenderString(info, 0 + 4, GRIDLINE - 4, MAXSCREEN_X/2, CENTER, NORMAL, BLACK);
 	
 	// only paint if a key has been pressed
-	//if (rccode!=0xFFFF) return;
+	//if (rccode != 0xFFFF) return;
 	
 	// paint monday to sunday
 	for (x = 0; x < 7; x++)
@@ -1652,26 +1656,26 @@ void AddDays(int* pday, int* pmonth, int* pyear, int adddays)
 */
 int WeekNumber( int y, int m, int d )
 {
-	int days;
+	int _days;
 	int dow0401;
 	int offset;
 	int week;
 	
 	dow0401 = DayOfWeek( 4, 1, y );										// weekday for 4th january, this day is in the first week
   
-	days = __mon_yday[LeapYear(y)?1:0][m-1] + d;			// days in this year
+	_days = __mon_yday[LeapYear(y)?1:0][m-1] + d;			// days in this year
 
 	offset = dow0401 - 4;															// offset for 1.1 for monday of week 1
-	days = days + offset -1;
-	if (days<0)
+	_days = _days + offset -1;
+	if (_days<0)
 	{
 		int iWD=DayOfWeek( 1, 1, y-1);
 		if ((iWD==4) || ((LeapYear(y-1)) && (iWD==3))) week = 53;
 		else week = 52; 
 	}
-	else week = (days / 7) +1;
+	else week = (_days / 7) +1;
 
-	if ((days > 360) && (week > 52)) 
+	if ((_days > 360) && (week > 52)) 
 	{
 		int iWD=DayOfWeek( 1, 1, y);
 		if ((iWD==4) || ((LeapYear(y)) && (iWD==3))) week = 53;
@@ -1899,7 +1903,7 @@ int IsEvent(int day, int month, int year)
 	int iEntry=0;
 	int iCnt=0;
 	int iFound;
-	int days = __mon_yday[LeapYear(year) ? 1 : 0][month-1]+day;
+	int _days = __mon_yday[LeapYear(year) ? 1 : 0][month-1]+day;
 	
 	// first check for any of the holidays: eastern, etc.
 	int i;
@@ -1939,19 +1943,19 @@ int IsEvent(int day, int month, int year)
 					
 					if (iTmpDays1 >= __mon_yday[0][2]) iTmpDays1++;
 					if (iTmpDays2 >= __mon_yday[0][2]) iTmpDays2++;
-					if ((iTmpDays1 <= days) && (iTmpDays2 >= days))
+					if ((iTmpDays1 <= _days) && (iTmpDays2 >= _days))
 						iFound=1;
 				}
 				else
 				{
-					if ((eventdb[iEntry].days <= days) && (eventdb[iEntry].edays >= days))
+					if ((eventdb[iEntry].days <= _days) && (eventdb[iEntry].edays >= _days))
 						iFound=1;
 				}
 			}
 			else
 			{
-					if (((eventdb[iEntry].year < year) || ((eventdb[iEntry].year == year) && (eventdb[iEntry].days <= days))) && 
-						  ((eventdb[iEntry].eyear > year) || ((eventdb[iEntry].eyear == year) && (eventdb[iEntry].edays >= days))))
+					if (((eventdb[iEntry].year < year) || ((eventdb[iEntry].year == year) && (eventdb[iEntry].days <= _days))) && 
+						  ((eventdb[iEntry].eyear > year) || ((eventdb[iEntry].eyear == year) && (eventdb[iEntry].edays >= _days))))
 						iFound=1;					 
 			}
 		}
@@ -2192,11 +2196,10 @@ void SaveDatabase(void)
  * start the plugin
 
 */
-int plugin_exec(void)
+int plugin_exec()
 {
 	char cvs_revision[] = "$Revision: 1.10 $";
 	FILE *fd_run;
-	FT_Error error;
 
 	// show versioninfo
 	sscanf(cvs_revision, "%*s %s", versioninfo_p);
@@ -2207,16 +2210,14 @@ int plugin_exec(void)
 	int y = CFrameBuffer::getInstance()->getScreenY();
 	int w = CFrameBuffer::getInstance()->getScreenWidth();
 	int h = CFrameBuffer::getInstance()->getScreenHeight();
-	//
 
+	//
 	int s_x = x;
 	int s_y = y;
 	int s_w = w;
 	int s_h = h;
 	
-	//MAXSCREEN_X = s_w;
-	//MAXSCREEN_Y = s_h;
-
+	//
 	sx = s_x;
 	ex = s_x + s_w;
 	sy = s_y;
@@ -2253,22 +2254,22 @@ int plugin_exec(void)
 	tShow_mon = at->tm_mon+1;
 	tShow_day = at->tm_mday;
 
-	int iSel=0;
-	int iSelInfo=0;
+	int iSel = 0;
+	int iSelInfo = 0;
 	int iDayOfWeek;
 	int iLastPreMonth;
 	int iMonthDays;
-	int iActDayPos=0;
+	int iActDayPos = 0;
 	int year,mon;	
-	int oldyear=0;
-	int iChanged=0;	
-	rccode = 0;
-	
-	CFrameBuffer::getInstance()->blit();
+	int oldyear = 0;
+	int iChanged = 0;	
+	rccode = -1;
 	
 	// main loop
 	do
 	{
+		GetRCCode();
+		
 		// calculate the christian holidays
 		if (oldyear != tShow_year)
 		{
@@ -2296,14 +2297,15 @@ int plugin_exec(void)
 			iActDayPos = 0;
 		
 		PaintGrid(iLastPreMonth, iDayOfWeek, iDayOfWeek+iMonthDays - 1, iActDayPos, iDayOfWeek + tShow_day - 1, iSel, &iSelInfo);
-
-		switch ((rccode = GetRCCode()))
+		
+		switch (rccode)
 		{
 			case RC_DBOX:
 			{
 				if (!ControlDaemon(TOGGLE_CLOCK))														// send hide/show clock to daemon
 					ShowMessage(CLOCKFAIL);																		// we didn't reach the daemon, show error
-				else ShowMessage(CLOCKOK);
+				else 
+					ShowMessage(CLOCKOK);
 			} break;
 			
 			case RC_0:	
@@ -2512,10 +2514,9 @@ int plugin_exec(void)
 			} break;
 			
 			default:
-			;
+				continue;
 		}
-	}
-	while (rccode != RC_HOME);
+	}while (rccode != RC_HOME);
 
 	// signal daemon to reread the database
 	ControlDaemon(RELOAD_DB);														

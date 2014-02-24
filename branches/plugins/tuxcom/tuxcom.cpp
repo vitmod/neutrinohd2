@@ -35,14 +35,14 @@ extern "C" int plugin_exec(void);
 //
 int getRCcode()
 {
-	neutrino_msg_t Msg;
+	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
-	g_RCInput->getMsg_ms(&Msg, &data, 40);
+	g_RCInput->getMsg_ms(&msg, &data, 40);
 	rccode = -1;
 
-	if (Msg <= CRCInput::RC_MaxRC) 
+	if (msg <= CRCInput::RC_MaxRC) 
 	{
-		rccode = Msg;
+		rccode = msg;
 		return 1;
 	}
 	
@@ -868,6 +868,7 @@ int plugin_exec()
 			finfo[curframe].first = finfo[curframe].selected;
 		if (finfo[curframe].selected >= finfo[curframe].first + framerows)
 			finfo[curframe].first = finfo[curframe].selected - framerows+1;
+		
 		RenderFrame(LEFTFRAME);
 		RenderFrame(RIGHTFRAME);
 		//memcpy(lfb, lbb, fix_screeninfo.line_length * var_screeninfo.yres);
@@ -959,7 +960,7 @@ void RenderFrame(int frame)
 
 	int row = 0;
 	uint8_t bcolor;
-	uint8_t fcolor;
+	uint32_t fcolor;
 	char sizeString[100];
 	short bselected;
 	struct fileentry* pfe;
@@ -969,7 +970,7 @@ void RenderFrame(int frame)
 	else if (curframe != frame)
 		lastnoncur = frame;
 
-	uint8_t nBackColor;
+	uint32_t nBackColor;
 
 	colortool[0] = ACTION_EXEC   ;
 	colortool[1] = ACTION_MARKER ;
@@ -3111,9 +3112,10 @@ int DoMove(struct fileentry* pfe, int typ, int checktype)
 void DoViewFile()
 {
 	char action[4000];
-//	FILE* pFile;
+	//FILE* pFile;
 	struct fileentry* pfe = GetSelected(curframe);
-/*	if (pfe->fentry.st_size >= FILEBUFFER_SIZE)
+	/*	
+	if (pfe->fentry.st_size >= FILEBUFFER_SIZE)
 	{
 		if (finfo[curframe].zipfile[0] != 0x00)
 		{
@@ -3132,7 +3134,7 @@ void DoViewFile()
 		}
 	}
 	else
-*/
+	*/
 	{
 		if (finfo[curframe].zipfile[0] != 0x00)
 		{
