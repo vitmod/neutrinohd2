@@ -12,6 +12,7 @@ SUBDIRS = \
 	vlcplayer \
 	dvdplayer \
 	mediaplayer \
-	tuxcal
+	tuxcal \
+	mediaportal
 
 

@@ -182,4 +182,5 @@ dvdplayer/Makefile
 mediaplayer/Makefile
 tuxcal/Makefile
 tuxcal/daemon/Makefile
+mediaportal/Makefile
 ])
