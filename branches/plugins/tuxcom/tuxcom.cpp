@@ -959,8 +959,8 @@ void RenderFrame(int frame)
 		return;
 
 	int row = 0;
-	uint8_t bcolor;
-	uint32_t fcolor;
+	uint32_t bcolor;
+	uint8_t fcolor;
 	char sizeString[100];
 	short bselected;
 	struct fileentry* pfe;

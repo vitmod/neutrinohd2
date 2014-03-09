@@ -506,7 +506,7 @@ int plugin_exec(void)
 		//if(!filebrowser.getSelectedFiles()->Name.empty())
 		if(!MediaPlayer->filelist.empty())
 		{
-			#if 0
+			#if 1
 			MediaPlayer->filename = MediaPlayer->filelist[MediaPlayer->selected].Name.c_str();
 			MediaPlayer->title = std::string(rindex(MediaPlayer->filelist[MediaPlayer->selected].getFileName().c_str(), '/') + 1);
 						
