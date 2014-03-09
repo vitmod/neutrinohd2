@@ -84,7 +84,7 @@ void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout
 		}
 	}
 	
-	g_Font[size]->RenderString(StartX + _sx, StartY + _sy, maxwidth, string, color, 0, true); // UTF-8
+	g_Font[size]->RenderString(StartX + _sx, StartY + _sy, maxwidth, string, (uint8_t)CFrameBuffer::getInstance()->realcolor[color], 0, true); // UTF-8
 }
 
 //
@@ -959,7 +959,7 @@ void RenderFrame(int frame)
 		return;
 
 	int row = 0;
-	uint32_t bcolor;
+	uint8_t bcolor;
 	uint8_t fcolor;
 	char sizeString[100];
 	short bselected;
@@ -970,7 +970,7 @@ void RenderFrame(int frame)
 	else if (curframe != frame)
 		lastnoncur = frame;
 
-	uint32_t nBackColor;
+	uint8_t nBackColor;
 
 	colortool[0] = ACTION_EXEC   ;
 	colortool[1] = ACTION_MARKER ;
