@@ -7,9 +7,9 @@ sudo apt-get install autoconf libtool g++ gdb libavformat-dev libswscale-dev lib
 
 
 == check out makefiles ==
-svn checkout http://neutrinohd2.googlecode.com/svn/branches/neutrino-pc neutrino-pc
+svn checkout http://neutrinohd2.googlecode.com/svn/branches/neutrino-pc neutrinohd2-pc
 = =
-cd neutrino-pc
+cd neutrinohd2-pc
 == ==
 = to build neutrino =
 make neutrino
