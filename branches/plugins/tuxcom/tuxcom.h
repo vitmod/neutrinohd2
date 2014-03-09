@@ -136,7 +136,7 @@ enum {
 	BLACK = 0x11, 
 	BLUE1 = 0x0D, 
 	BLUE2 = 0x05, 
-	ORANGE = WHITE, 
+	ORANGE = 0x06, 
 	GREEN = 0x0B, 
 	YELLOW = 0x0C, 
 	RED = 0x0A, 
@@ -145,7 +145,7 @@ enum {
 	GRAY2 = 0x09, 
 	BLUE_TRANSP = 0x0F, 
 	GRAY_TRANSP = 0x08, 
-	BLUE3 = BLUE1
+	BLUE3 = 0xFE
 };
 
 #define CONFIG_FILE PLUGINDIR "/tuxcom.conf"

@@ -84,7 +84,7 @@ void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout
 		}
 	}
 	
-	g_Font[size]->RenderString(StartX + _sx, StartY + _sy, maxwidth, string, (uint8_t)CFrameBuffer::getInstance()->realcolor[color], 0, true); // UTF-8
+	g_Font[size]->RenderString(StartX + _sx, StartY + _sy, maxwidth, string, CFrameBuffer::getInstance()->realcolor[color], 0, true); // UTF-8
 }
 
 //
@@ -930,6 +930,7 @@ void RenderMenuLine(int highlight, int refresh)
 
 
 	}
+	
 	RenderBox( viewx-COLORBUTTONS ,viewy-MENUSIZE/2, viewx , viewy, FILL, BLUE1);
 	RenderBox( 0,viewy- MENUSIZE , viewx , viewy-MENUSIZE / 2 , GRID, WHITE);
 
@@ -940,7 +941,7 @@ void RenderMenuLine(int highlight, int refresh)
 		                                                            					                   (i == 1 ? GREEN  :
 		                                                            					                   (i == 2 ? YELLOW : BLUE1))));
 		RenderBox( (viewx/COLORBUTTONS) *i ,viewy-MENUSIZE/2, (i < COLORBUTTONS-1 ? (viewx/COLORBUTTONS) *(i+1) : viewx) , viewy , GRID,  WHITE );
-		RenderString(colorline[colortool[i]*NUM_LANG+language], (viewx/COLORBUTTONS) *i , viewy- FONT_OFFSET_BIG , viewx/COLORBUTTONS, CENTER, SMALL  , (i == 2 ? BLACK : WHITE));
+		RenderString(colorline[colortool[i]*NUM_LANG+language], (viewx/COLORBUTTONS) *i , viewy- FONT_OFFSET_BIG , viewx/COLORBUTTONS, CENTER, SMALL  , /*(i == 2 ? BLACK : WHITE)*/WHITE);
 	}
 	
 	if (refresh == YES)
@@ -1012,16 +1013,17 @@ void RenderFrame(int frame)
 		fcolor = WHITE;
 		if ((pfe->fentry.st_mode & S_IRUSR) == S_IRUSR )
 		{
-			fcolor = GREEN2 ;
+			fcolor = /*GREEN2*/WHITE ;
 			if (bselected)
 			{
 				tool[ACTION_COPY-1] = (finfo[1-frame].writable  ? ACTION_COPY : ACTION_NOACTION); // copy allowed, if other frame writable;
 				tool[ACTION_VIEW-1] = (finfo[frame].ftpconn != NULL ? ACTION_NOACTION : ACTION_VIEW); // view allowed, if not in FTP-Connection
 			}
 		}
+		
 		if ((pfe->fentry.st_mode & S_IWUSR) == S_IWUSR )
 		{
-			fcolor = GRAY;
+			fcolor = /*GRAY*/WHITE;
 			if (bselected)
 			{
 				tool[ACTION_MOVE-1] = (finfo[1-frame].writable && finfo[frame].writable ? ACTION_MOVE   : ACTION_NOACTION); // move   allowed, if both frames writable;
@@ -1030,13 +1032,15 @@ void RenderFrame(int frame)
 				tool[ACTION_EDIT-1] = ((pfe->fentry.st_size < FILEBUFFER_SIZE) && finfo[frame].writable ?  ACTION_EDIT : ACTION_NOACTION); // edit allowed, if size of current file < FILEBUFFER_SIZE;
 			}
 		}
+		
 		if      ((pfe->fentry.st_mode & S_IXUSR) == S_IXUSR )
 		{
-			fcolor = YELLOW ;
+			fcolor = /*YELLOW*/WHITE ;
 		}
+		
 		if     (S_ISDIR(pfe->fentry.st_mode))
 		{
-			fcolor = WHITE  ;
+			fcolor = WHITE;
 			sprintf(sizeString,"<DIR>");
 			if (bselected)
 			{
@@ -1046,7 +1050,7 @@ void RenderFrame(int frame)
 		}
 		else if (S_ISLNK(pfe->fentry.st_mode))
 		{
-			fcolor = ORANGE ;
+			fcolor = /*ORANGE*/WHITE ;
 			sprintf(sizeString,"<LINK>");
 			if (bselected)
 				tool[ACTION_VIEW-1] = ACTION_NOACTION; // view not allowed
@@ -1055,6 +1059,7 @@ void RenderFrame(int frame)
 		{
 			GetSizeString(sizeString,pfe->fentry.st_size,0);
 		}
+		
 		if (bselected)
 		{
 			if (finfo[frame].markcount > 0) // files marked in current frame
@@ -1076,21 +1081,21 @@ void RenderFrame(int frame)
 	}
 	
 	// fill empty rows
-	RenderBox(PosX, PosY,((1+frame+singleview)*FrameWidth), PosY+ FONTHEIGHT_SMALL*(framerows-row+1) , FILL, nBackColor);
+	RenderBox(PosX, PosY,((1+frame+singleview)*FrameWidth), PosY+ FONTHEIGHT_SMALL*(framerows-row+1), FILL, nBackColor);
 
 	// draw Rectangle
 	// left border
-	RenderBox((singleview ? 0 :  frame) *FrameWidth              , 0                            ,(singleview ? 0 :   frame)*FrameWidth          +BORDERSIZE, viewy-MENUSIZE                              , FILL, (curframe == frame ? WHITE : BLUE2));
+	RenderBox((singleview ? 0 :  frame) *FrameWidth, 0,(singleview ? 0 : frame)*FrameWidth + BORDERSIZE, viewy-MENUSIZE, FILL, (curframe == frame ? WHITE : BLUE2));
 	// right border
-	RenderBox((singleview ? 2 :1+frame) *FrameWidth -BORDERSIZE  , 0                            ,(singleview ? 2 : 1+frame)*FrameWidth                     , viewy-MENUSIZE                              , FILL, (curframe == frame ? WHITE : BLUE2));
+	RenderBox((singleview ? 2 :1+frame) *FrameWidth -BORDERSIZE, 0,(singleview ? 2 : 1+frame)*FrameWidth, viewy-MENUSIZE, FILL, (curframe == frame ? WHITE : BLUE2));
 	// top border
-	RenderBox((singleview ? 0 :  frame) *FrameWidth              , 0                            ,(singleview ? 2 : 1+frame)*FrameWidth                     , BORDERSIZE                                  , FILL, (curframe == frame ? WHITE : BLUE2));
+	RenderBox((singleview ? 0 :  frame) *FrameWidth, 0,(singleview ? 2 : 1+frame)*FrameWidth, BORDERSIZE, FILL, (curframe == frame ? WHITE : BLUE2));
 	// line between list and Info Line
-	RenderBox((singleview ? 0 :  frame) *FrameWidth                          , viewy-2*BORDERSIZE-FONTHEIGHT_SMALL - MENUSIZE, (singleview ? 2 : 1+frame)*FrameWidth    , viewy-BORDERSIZE-FONTHEIGHT_SMALL - MENUSIZE, FILL, (curframe == frame ? WHITE : BLUE2));
+	RenderBox((singleview ? 0 :  frame) *FrameWidth, viewy-2*BORDERSIZE-FONTHEIGHT_SMALL - MENUSIZE, (singleview ? 2 : 1+frame)*FrameWidth, viewy-BORDERSIZE-FONTHEIGHT_SMALL - MENUSIZE, FILL, (curframe == frame ? WHITE : BLUE2));
 	// line between name and size
-	RenderBox((singleview ? 0 :  frame) *FrameWidth +NameWidth*(1+(singleview*1.4)), 0                            ,(singleview ? 0 : frame)*FrameWidth+NameWidth*(1+(singleview*1.4))+BORDERSIZE, viewy-BORDERSIZE-FONTHEIGHT_SMALL - MENUSIZE, FILL, (curframe == frame ? WHITE : BLUE2));
+	RenderBox((singleview ? 0 :  frame) *FrameWidth +NameWidth*(1+(singleview*1.4)), 0,(singleview ? 0 : frame)*FrameWidth+NameWidth*(1+(singleview*1.4))+BORDERSIZE, viewy-BORDERSIZE-FONTHEIGHT_SMALL - MENUSIZE, FILL, (curframe == frame ? WHITE : BLUE2));
 	// bottom border
-	RenderBox((singleview ? 0 :  frame) *FrameWidth              , viewy-BORDERSIZE - MENUSIZE  ,(singleview ? 2 : 1+frame)*FrameWidth                     , viewy-MENUSIZE                              , FILL, (curframe == frame ? WHITE : BLUE2));
+	RenderBox((singleview ? 0 :  frame) *FrameWidth, viewy-BORDERSIZE - MENUSIZE  ,(singleview ? 2 : 1+frame)*FrameWidth, viewy-MENUSIZE, FILL, (curframe == frame ? WHITE : BLUE2));
 
 	// Info line
 	RenderBox(PosX   , viewy-BORDERSIZE-FONTHEIGHT_SMALL-MENUSIZE, PosX+FrameWidth*(1+singleview)-2*BORDERSIZE, viewy-BORDERSIZE-MENUSIZE, FILL, BLACK);
@@ -1601,9 +1606,7 @@ void DoEditFTP(char* szFile,char* szTitle)
 		fclose(fp);
 	}
 
-
 	int end = NO,sel = NO, pos = -1, i, le1, wi , he = 8 * BORDERSIZE + BUTTONHEIGHT + 6 * FONTHEIGHT_BIG;
-
 
 	le1 = GetStringLen(szTitle, BIG);
 	wi = 500;
@@ -1899,6 +1902,7 @@ void DoMainMenu()
 	return;
 
 }
+
 //
 // DoSearchFiles
 //
@@ -1907,6 +1911,7 @@ void DoSearchFiles()
 	char szMsg[FILENAME_MAX+256];
 	char action[1000];
 	sprintf(szMsg,msg[MSG_SEARCHFILES*NUM_LANG+language],finfo[curframe].path);
+	
 	if (GetInputString(400,FILENAME_MAX,szSearchstring,szMsg,NO) == RC_OK && (*szSearchstring != 0x00))
 	{
 		colortool[0] = ACTION_NOACTION;
@@ -1921,6 +1926,7 @@ void DoSearchFiles()
 
 	}
 }
+
 //
 // GetInputString
 //
@@ -2470,20 +2476,22 @@ void ToggleMarker(int frame)
 	struct fileentry *pfe = GetSelected(frame);
 	struct marker * pmk = NULL, *pmk1 = finfo[frame].mlist;
 
-	if (strcmp(pfe->name,"..") == 0) return;
+	if (strcmp(pfe->name,"..") == 0) 
+		return;
+	
 	while (pmk1 != NULL)
 	{
 		if (strcmp(pmk1->name,pfe->name) == 0)
 		{
-		  if (pmk == NULL)
-			  finfo[frame].mlist = pmk1->next;
-		  else
-			  pmk->next = pmk1->next;
-		  free(pmk1);
-		  finfo[frame].markcount--;
-		  if (!S_ISDIR(pfe->fentry.st_mode))
-		  	finfo[frame].marksize -= pfe->fentry.st_size;
-		  return;
+			if (pmk == NULL)
+				finfo[frame].mlist = pmk1->next;
+			else
+				pmk->next = pmk1->next;
+			free(pmk1);
+			finfo[frame].markcount--;
+			if (!S_ISDIR(pfe->fentry.st_mode))
+			      finfo[frame].marksize -= pfe->fentry.st_size;
+			return;
 		}
 		pmk = pmk1;
 		pmk1 = pmk1->next;
@@ -3784,9 +3792,9 @@ void DoTaskManager()
 		if (sel > row+(framerows-4)) row = sel-(framerows-4);
 		for (i =0; i < row; i++)
 		{
-          p1=strchr(p,'\n');
-          if (p1 == NULL) break;
-          p= p1+1;
+			p1=strchr(p,'\n');
+			if (p1 == NULL) break;
+			p= p1+1;
 		}
 		strsize = GetStringLen(MSG_COPYRIGHT, BIG);
 		RenderString(MSG_VERSION  ,2*BORDERSIZE              , BORDERSIZE+FONTHEIGHT_BIG-FONT_OFFSET_BIG  , viewx-5*BORDERSIZE-strsize, LEFT, BIG, WHITE);
