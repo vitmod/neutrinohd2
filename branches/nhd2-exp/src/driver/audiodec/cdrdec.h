@@ -1,9 +1,9 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 
-	Copyright (C) 2004 Zwen
+	Copyright (C) 2004 thegoodguy
 	
-	Decoder base class
+	cdr audio decoder
 	Homepage: http://www.dbox2.info/
 
 	Kommentar:
@@ -25,48 +25,20 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#ifndef __CDR_DEC__
+#define __CDR_DEC__
 
-#ifndef __BASE_DEC__
-#define __BASE_DEC__
-
-#include <stdio.h>
-#include <driver/audiofile.h>
-#include <driver/audiometadata.h>
+#include <driver/audiodec/wavdec.h>
 
 
-class CBaseDec
+class CCdrDec : public CWavDec
 {
 	public:
-		virtual ~CBaseDec(){}
+		static CCdrDec* getInstance();
 		
-		enum State {
-			STOP = 0, 
-			STOP_REQ, 
-			PLAY, 
-			PAUSE, 
-			FF, 
-			REV
-		};
-		
-		enum RetCode { 
-			OK = 0, 
-			READ_ERR, 
-			WRITE_ERR, 
-			DSPSET_ERR, 
-			DATA_ERR, 
-			INTERNAL_ERR 
-		};
-
-		virtual bool GetMetaData(FILE *in, const bool nice, CAudioMetaData* m) = 0;	
-		static bool GetMetaDataBase(CAudiofile* const in, const bool nice);
-		static void Init();
-
-		CBaseDec(){};
-		
-	private:
-		unsigned static int mSamplerate;
+	protected:
+		virtual bool SetMetaData(FILE* in, CAudioMetaData* m);
 };
-
 
 #endif
 

@@ -1,9 +1,11 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
+	
+	$Id: wavdec.h 2013/10/12 mohousch Exp $
 
 	Copyright (C) 2004 Zwen
 	
-	Decoder base class
+	wav audio decoder
 	Homepage: http://www.dbox2.info/
 
 	Kommentar:
@@ -26,47 +28,27 @@
 */
 
 
-#ifndef __BASE_DEC__
-#define __BASE_DEC__
+#ifndef __WAV_DEC__
+#define __WAV_DEC__
 
 #include <stdio.h>
-#include <driver/audiofile.h>
-#include <driver/audiometadata.h>
+#include <driver/audiodec/basedec.h>
 
 
-class CBaseDec
+class CWavDec : public CBaseDec
 {
 	public:
-		virtual ~CBaseDec(){}
-		
-		enum State {
-			STOP = 0, 
-			STOP_REQ, 
-			PLAY, 
-			PAUSE, 
-			FF, 
-			REV
-		};
-		
-		enum RetCode { 
-			OK = 0, 
-			READ_ERR, 
-			WRITE_ERR, 
-			DSPSET_ERR, 
-			DATA_ERR, 
-			INTERNAL_ERR 
-		};
+		static CWavDec *getInstance();
+		bool GetMetaData(FILE *in, const bool nice, CAudioMetaData* m);
+		CWavDec(){};
 
-		virtual bool GetMetaData(FILE *in, const bool nice, CAudioMetaData* m) = 0;	
-		static bool GetMetaDataBase(CAudiofile* const in, const bool nice);
-		static void Init();
+	protected:
+		virtual bool SetMetaData(FILE* in, CAudioMetaData* m);
 
-		CBaseDec(){};
-		
-	private:
-		unsigned static int mSamplerate;
+		int mBitsPerSample;
+		int mChannels;
+		int header_size;
 };
-
 
 #endif
 

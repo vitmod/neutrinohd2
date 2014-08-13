@@ -1,13 +1,14 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 
-	Copyright (C) 2004 Zwen
+	Copyright (C) 2004 thegoodguy
 	
-	Decoder base class
 	Homepage: http://www.dbox2.info/
 
 	Kommentar:
 
+	cdr audio decoder
+	
 	License: GPL
 
 	This program is free software; you can redistribute it and/or modify
@@ -25,49 +26,44 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
-#ifndef __BASE_DEC__
-#define __BASE_DEC__
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #include <stdio.h>
-#include <driver/audiofile.h>
-#include <driver/audiometadata.h>
+#include <unistd.h>
+#include <cdrdec.h>
 
 
-class CBaseDec
+CCdrDec* CCdrDec::getInstance()
 {
-	public:
-		virtual ~CBaseDec(){}
-		
-		enum State {
-			STOP = 0, 
-			STOP_REQ, 
-			PLAY, 
-			PAUSE, 
-			FF, 
-			REV
-		};
-		
-		enum RetCode { 
-			OK = 0, 
-			READ_ERR, 
-			WRITE_ERR, 
-			DSPSET_ERR, 
-			DATA_ERR, 
-			INTERNAL_ERR 
-		};
+	static CCdrDec* CdrDec = NULL;
+	if (CdrDec == NULL)
+	{
+		CdrDec = new CCdrDec();
+	}
+	
+	return CdrDec;
+}
 
-		virtual bool GetMetaData(FILE *in, const bool nice, CAudioMetaData* m) = 0;	
-		static bool GetMetaDataBase(CAudiofile* const in, const bool nice);
-		static void Init();
+bool CCdrDec::SetMetaData(FILE* in, CAudioMetaData* m)
+{
+	header_size = 0;
 
-		CBaseDec(){};
-		
-	private:
-		unsigned static int mSamplerate;
-};
+	fseek(in, 0, SEEK_END);
+	int filesize = ftell(in);
 
+	m->type = CAudioMetaData::CDR;
+	m->bitrate = 44100 * 2 * 2 * 8;
+	m->samplerate = 44100;
+	mBitsPerSample = 16;
+	mChannels = 2;
+	m->total_time = filesize / (44100 * 2 * 2);
+	m->type_info = "CDR / 2 channels / 16 bit";
+	m->changed = true;
+	
+	return true;
+}
 
-#endif
 
  
