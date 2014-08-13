@@ -35,10 +35,6 @@
 #include <unistd.h>
 
 #include <basedec.h>
-#include <cdrdec.h>
-#include <mp3dec.h>
-#include <flacdec.h>
-#include <wavdec.h>
 #include <ffmpegdec.h>
 
 #include <driver/netfile.h>
