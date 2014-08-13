@@ -60,7 +60,11 @@ class CFfmpegDec : public CBaseDec
 		void *in;
 		bool Init(void *_in, const CFile::FileType ft);
 		void DeInit(void);
-		void GetMeta(AVDictionary * metadata);
+#if LIBAVCODEC_VERSION_MAJOR < 54
+		void GetMeta(AVMetadata* metadata);
+#else
+		void GetMeta(AVDictionary* metadata);
+#endif		
 
 		std::string title;
 		std::string artist;

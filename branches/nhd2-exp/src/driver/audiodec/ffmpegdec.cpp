@@ -295,10 +295,23 @@ bool CFfmpegDec::SetMetaData(FILE *_in, CAudioMetaData* m, bool save_cover)
 	return true;
 }
 
+#if LIBAVCODEC_VERSION_MAJOR < 54
+void CFfmpegDec::GetMeta(AVMetadata* metadata)
+#else
 void CFfmpegDec::GetMeta(AVDictionary * metadata)
+#endif
 {
+#if LIBAVCODEC_VERSION_MAJOR < 54
+	AVMetadataTag *tag = NULL;
+#else  
 	AVDictionaryEntry *tag = NULL;
+#endif	
+	
+#if LIBAVCODEC_VERSION_MAJOR < 54
+	while ((tag = av_metadata_get(metadata, "", tag, AV_METADATA_IGNORE_SUFFIX)))
+#else	
 	while ((tag = av_dict_get(metadata, "", tag, AV_DICT_IGNORE_SUFFIX))) 
+#endif	  
 	{
 		if(!strcasecmp(tag->key,"Title")) 
 		{
