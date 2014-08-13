@@ -323,6 +323,7 @@ void FindColors()
 */
 int OpenFB(void)
 {
+  #if 0
 	FT_Error error;
 
 	colormap=NULL;
@@ -453,6 +454,7 @@ int OpenFB(void)
     }
 		FindColors();	
 	}
+#endif
 
 	return 1;
 }
