@@ -25,7 +25,7 @@
 #include <plugin.h>
 
 
-extern "C" int plugin_exec(void);
+extern "C" void plugin_exec(void);
 
 class CTestMenu : public CMenuTarget
 {
@@ -210,7 +210,7 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string &actionKey)
 	return menu_return::RETURN_REPAINT;
 }
 
-int plugin_exec(void)
+void plugin_exec(void)
 {
 	printf("Plugins: starting testMenu\n");
 	
@@ -231,8 +231,6 @@ int plugin_exec(void)
 	
 	delete testHandler;
 	delete TestMenu;
-	
-	return 0;
 }
 
 

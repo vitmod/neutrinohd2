@@ -25,9 +25,9 @@
 #include <plugin.h>
 
 
-extern "C" int plugin_exec(void);
+extern "C" void plugin_exec(void);
 
-int plugin_exec(void)
+void plugin_exec(void)
 {
 	dprintf(DEBUG_INFO, "Plugins: starting DVDPlayer\n");
 	
@@ -43,6 +43,4 @@ int plugin_exec(void)
 	dvdPlayerMenu->hide();
 	
 	delete dvdPlayerMenu;
-	
-	return 0;
 }

@@ -25,7 +25,7 @@
 #include <plugin.h>
 
 
-extern "C" int plugin_exec(void);
+extern "C" void plugin_exec(void);
 
 class CMediaPortal : public CMenuTarget
 {
@@ -77,7 +77,7 @@ int CMediaPortal::exec(CMenuTarget *parent, const std::string &actionKey)
 	return menu_return::RETURN_REPAINT;
 }
 
-int plugin_exec(void)
+void plugin_exec(void)
 {
 	printf("Plugins: starting Media Portal\n");
 	
@@ -97,8 +97,6 @@ int plugin_exec(void)
 	
 	delete mpHandler;
 	delete mediaPortal;
-	
-	return 0;
 }
 
 

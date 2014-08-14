@@ -25,7 +25,7 @@
 #include <systeminfo.h>
 
 
-extern "C" int plugin_exec(void);
+extern "C" void plugin_exec(void);
 
 sfileline sinbuffer[3*MAXLINES];
 sreadline sysbuffer[(3*MAXLINES)];
@@ -571,7 +571,7 @@ int CBESysInfoWidget::readList(struct sfileline *sinbuffer)
 	return(0);
 }
 
-int plugin_exec(void)
+void plugin_exec(void)
 {
 	printf("Plugins: starting systeminfo\n");
 	
@@ -581,6 +581,4 @@ int plugin_exec(void)
 	SysInfoWidget->hide();
 	
 	delete SysInfoWidget;
-	
-	return 0;
 }

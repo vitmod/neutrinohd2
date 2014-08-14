@@ -25,7 +25,7 @@
 #include <tuxdns.h>
 
 
-extern "C" int plugin_exec(void);
+extern "C" void plugin_exec(void);
 
 #define TuxdnsCFG CONFIGDIR "/tuxdns.conf"
 
@@ -160,7 +160,7 @@ void CTuxdnsConf::TuxdnsSettings()
 	delete settingsselector;
 }
 
-int plugin_exec(void)
+void plugin_exec(void)
 {
 	printf("Plugins: starting tuxdns\n");
 	
@@ -170,8 +170,6 @@ int plugin_exec(void)
 	TuxdnsConf->hide();
 	
 	delete TuxdnsConf;
-	
-	return 0;
 }
 
 

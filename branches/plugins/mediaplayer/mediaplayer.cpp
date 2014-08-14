@@ -25,13 +25,11 @@
 #include <plugin.h>
 
 
-extern "C" int plugin_exec(void);
+extern "C" void plugin_exec(void);
 
-int plugin_exec(void)
+void plugin_exec(void)
 {
 	printf("Plugins: starting mediaplayer\n");
 	
 	moviePlayerGui->exec(NULL, "fileplayback");
-	
-	return 0;
 }

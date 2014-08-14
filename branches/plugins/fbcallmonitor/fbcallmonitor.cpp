@@ -26,7 +26,7 @@
 #include <fbcallmonitor.h>
 
 
-extern "C" int plugin_exec(void);
+extern "C" void plugin_exec(void);
 
 // option off0_on1
 #define OPTIONS_OFF0_ON1_OPTION_COUNT 2
@@ -172,14 +172,12 @@ void CFBCallMonitor::doMenu()
 	delete FritzBoxCallSettingsMenu;
 }
 
-int plugin_exec(void)
+void plugin_exec(void)
 {
 	// class handler
 	CFBCallMonitor * FBCallMonitorHandler = new CFBCallMonitor();
 	FBCallMonitorHandler->doMenu();
 	
 	delete FBCallMonitorHandler;
-	
-	return 0;
 }
 

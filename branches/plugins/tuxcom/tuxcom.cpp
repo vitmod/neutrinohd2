@@ -27,7 +27,7 @@
 
 #include "tuxcom.h"
 
-extern "C" int plugin_exec(void);
+extern "C" void plugin_exec(void);
 
 //
 //
@@ -137,7 +137,7 @@ void SetLanguage()
 //
 // plugin_exec                                                                
 //
-int plugin_exec()
+void plugin_exec(void)
 {
 	//show versioninfo
 	printf(MSG_VERSION"\n");
@@ -891,8 +891,6 @@ int plugin_exec()
 	
 	CFrameBuffer::getInstance()->ClearFrameBuffer();
 	CFrameBuffer::getInstance()->blit();
-	
-	return 0;
 }
 
 //

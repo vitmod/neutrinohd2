@@ -21,7 +21,7 @@
 
 #include <tuxcal.h>
 
-extern "C" int plugin_exec(void);
+extern "C" void plugin_exec(void);
 
 //
 // ReadConf
@@ -2196,7 +2196,7 @@ void SaveDatabase(void)
  * start the plugin
 
 */
-int plugin_exec()
+void plugin_exec()
 {
 	char cvs_revision[] = "$Revision: 1.10 $";
 	FILE *fd_run;
@@ -2523,6 +2523,4 @@ int plugin_exec()
 	
 	CFrameBuffer::getInstance()->ClearFrameBuffer();
 	CFrameBuffer::getInstance()->blit();
-
-	return 0;
 }
