@@ -106,7 +106,7 @@ void GLThreadObj::run()
 {
 	setupCtx();
 	setupOSDBuffer();
-	//setupDisplayBuffer();
+	setupDisplayBuffer();
 
 	initDone(); /* signal that setup is finished */
 
@@ -286,8 +286,8 @@ void GLThreadObj::render()
 	}
 	
 	//
-	//bltDisplayBuffer();
-	//glutPostOverlayRedisplay();
+	bltDisplayBuffer();
+	glutPostOverlayRedisplay();
 	
 	if(mX != glutGet(GLUT_WINDOW_WIDTH) && mY != glutGet(GLUT_WINDOW_HEIGHT))
 		glutReshapeWindow(mX, mY);
@@ -305,8 +305,8 @@ void GLThreadObj::render()
 	
 	
 	// Display
-	//glBindTexture(GL_TEXTURE_2D, mState.displaytex);
-	//drawSquare(1.0);
+	glBindTexture(GL_TEXTURE_2D, mState.displaytex);
+	drawSquare(1.0);
 	
 	// OSD
 	glBindTexture(GL_TEXTURE_2D, mState.osdtex);
