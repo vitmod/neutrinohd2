@@ -142,7 +142,7 @@ const char *infomsg[][MAXOSD] = {
 
 
 // remote-control and keyboard
-unsigned short rccode;				//! remote-control code
+//unsigned short rccode;				//! remote-control code
 
 // rc codes
 #define RC_0        	CRCInput::RC_0
@@ -249,7 +249,14 @@ int LeapYear(int year);
 #define FONT FONTDIR "/neutrino.ttf"
 
 // definitions for string-rendering and size
-enum {LEFT, CENTER, RIGHT, FIXEDLEFT, FIXEDCENTER, FIXEDRIGHT};
+enum {LEFT, 
+	CENTER, 
+	RIGHT, 
+	FIXEDLEFT, 
+	FIXEDCENTER, 
+	FIXEDRIGHT
+};
+
 enum {
 	SMALL = 20, 
 	NORMAL = 20, 
@@ -291,9 +298,9 @@ const char *szFmtStr[] = {
 #define FONTSIZE_NORMAL 	32
 #define FONTSIZE_BIG 		40
 
-#define MAXSCREEN_X		1200
-#define MAXSCREEN_Y		640
-//int MAXSCREEN_X, MAXSCREEN_Y;
+#define _MAXSCREEN_X		CFrameBuffer::getInstance()->getScreenWidth() //1200
+#define _MAXSCREEN_Y		CFrameBuffer::getInstance()->getScreenHeight() //640
+
 #define MSGBOX_SX		145
 #define MSGBOX_SY		175
 #define MSGBOX_EX		455
@@ -301,7 +308,7 @@ const char *szFmtStr[] = {
 
 #define GRIDLINE		32
 #define GRIDLINE_SMALL		24
-#define GRIDBOX_X		(MAXSCREEN_X/7)
+#define GRIDBOX_X		(_MAXSCREEN_X/7)
 #define GRIDBOX_CY1		564 //420
 #define GRIDBOX_CY2		464 //300
 
@@ -321,7 +328,7 @@ const char *szFmtStr[] = {
 #define KEYBOX_HEIGHT 		25
 #define KEYBOX_WIDTH  		90
 
-#define EDITFOOTER_Y		(MAXSCREEN_Y-4*(KEYBOX_HEIGHT+KEYBOX_SPACE)-2*KEYBOX_SPACE)
+#define EDITFOOTER_Y		(_MAXSCREEN_Y-4*(KEYBOX_HEIGHT+KEYBOX_SPACE)-2*KEYBOX_SPACE)
 #define EDITX			20
 
 // defines for database
@@ -350,7 +357,16 @@ char versioninfo_p[12];							//! plugin version
 char versioninfo_d[12] = "?.??";					//! daemon version
 
 // database for all events
-enum {FREE, BIRTHDAY, EVENT, PERIOD, HOLIDAY, COMMENT, UNUSED, SPACE};
+enum {
+	FREE, 
+	BIRTHDAY, 
+	EVENT, 
+	PERIOD, 
+	HOLIDAY, 
+	COMMENT, 
+	UNUSED, 
+	SPACE
+};
 
 typedef struct tagEVT_DB
 {
@@ -410,10 +426,20 @@ typedef struct tagVariableDays
 VARIABLEDAY varaibledays[NOF_VDAYS];
 
 // daemon commands
-enum {GET_STATUS, SET_STATUS, GET_VERSION, RELOAD_DB, TOGGLE_CLOCK};
+enum {
+	GET_STATUS, 
+	SET_STATUS, 
+	GET_VERSION, 
+	RELOAD_DB, 
+	TOGGLE_CLOCK
+};
 
 // framebuffer stuff
-enum {FILL, GRID};
+enum {
+	FILL, 
+	GRID
+};
+
 enum {
 	TRANSP = 0xFF, 
 	WHITE = 0x10, 
@@ -437,10 +463,20 @@ enum {
 	MAGENTA
 };
 
+unsigned short rccode;
 int startx, starty, sx, ex, sy, ey;
+int MAXSCREEN_X, MAXSCREEN_Y;
 
 // object to render
-enum {OBJ_CIRCLE, OBJ_HEART, OBJ_MARKER, OBJ_SCROLLUP, OBJ_SCROLLDN, OBJ_CLOCK};
+enum {
+	OBJ_CIRCLE, 
+	OBJ_HEART, 
+	OBJ_MARKER, 
+	OBJ_SCROLLUP, 
+	OBJ_SCROLLDN, 
+	OBJ_CLOCK
+};
+
 #define OBJ_SX	15					// lines for object
 #define OBJ_SY	15					// columns for object
 

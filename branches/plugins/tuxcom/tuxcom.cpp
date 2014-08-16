@@ -25,7 +25,7 @@
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA
 */
 
-#include "tuxcom.h"
+#include <tuxcom.h>
 
 extern "C" void plugin_exec(void);
 
@@ -37,6 +37,7 @@ int getRCcode()
 {
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
+	
 	g_RCInput->getMsg_ms(&msg, &data, 40);
 	rccode = -1;
 
@@ -84,7 +85,7 @@ void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout
 		}
 	}
 	
-	g_Font[size]->RenderString(StartX + _sx, StartY + _sy, maxwidth, string, CFrameBuffer::getInstance()->realcolor[color], 0, true); // UTF-8
+	g_Font[size]->RenderString(StartX + _sx, StartY + _sy, maxwidth, string, color, 0, true); // UTF-8
 }
 
 //
@@ -135,765 +136,6 @@ void SetLanguage()
 }
 
 //
-// plugin_exec                                                                
-//
-void plugin_exec(void)
-{
-	//show versioninfo
-	printf(MSG_VERSION"\n");
-	char szMessage[400];
-
-	// coordinate
-	int x = CFrameBuffer::getInstance()->getScreenX();
-	int y = CFrameBuffer::getInstance()->getScreenY();
-	int w = CFrameBuffer::getInstance()->getScreenWidth();
-	int h = CFrameBuffer::getInstance()->getScreenHeight();
-	//
-
-	int s_x = x;
-	int s_y = y;
-	int s_w = w;
-	int s_h = h;
-
-	sx = s_x;
-	ex = s_x + s_w;
-	sy = s_y;
-	ey = s_y + s_h;
-
-	// clear fb
-	//RenderBox(0, 0, var_screeninfo.xres, var_screeninfo.yres, FILL, BLACK);
-	CFrameBuffer::getInstance()->ClearFrameBuffer();
-	CFrameBuffer::getInstance()->blit();
-
-	//init data
-	curframe = 0;
-	lastnoncur = -1;
-	cursort = SORT_UP;
-	curvisibility = 0;
-	singleview = 0;
-	textuppercase = 0;
-	screenmode=0;
-	filesize_in_byte = BTN_NO; // show human readable filesize
-	langselect = BTN_AUTO; // automatic
-	autosave = BTN_ASK; // ask on exit
-
-	commandsize =sysconf(_SC_ARG_MAX )-100;
-	szClipboard[0] = 0x00;
-	szSearchstring[0] = 0x00;
-	szTextSearchstring[0] = 0x00;
-	memset(tool, ACTION_NOACTION, sizeof(tool));
-	colortool[0] = ACTION_EXEC   ;
-	colortool[1] = ACTION_MARKER ;
-	colortool[2] = ACTION_SORT   ;
-	colortool[3] = ACTION_REFRESH;
-
-	memset(&finfo[0], 0, sizeof(finfo[0]));
-	memset(&finfo[1], 0, sizeof(finfo[0]));
-
-	// center output on screen
-	StartX = sx;
-	StartY = sy;
-	viewx = ex - sx;
-	viewy = ey - sy;
-	menuitemwidth  = viewx / MENUITEMS;
-	menuitemnumber = viewx / (MENUITEMS*6);
-
-	framerows = (viewy-MENUSIZE - 3*BORDERSIZE - FONTHEIGHT_SMALL) / FONTHEIGHT_SMALL;
-
-	FrameWidth = viewx/2;
-	NameWidth = (FrameWidth / 3 ) * 2;
-	SizeWidth = (FrameWidth / 3 ) - 3* BORDERSIZE;
-
-	ReadSettings();
-	SetLanguage();
-
-	// setup screen
-	RenderFrame(LEFTFRAME);
-	RenderFrame(RIGHTFRAME);
-	
-	CFrameBuffer::getInstance()->blit();
-	
-	printf("TuxCom init successful\n");
-
-	int dosave = autosave;
-	int firstentry = 1;
-	struct fileentry *pfe;
-	char action[256];
-	char szSel [256];
-	int pos, check;
-	
-	do{
-		overwriteall = 0;
-		skipall = 0;
-		
-		getRCcode();
-
-		// hack to ignore the first OK press (from starting the plugin)
-		if (firstentry == 1)
-		{
-			if (rccode == RC_OK) continue;
-
-			// check password
-			if (szPass[0] != 0x00)
-			{
-				char szP[20];
-				*szP = 0x00;
-				if (GetInputString(250, 19, szP, (char *)info[INFO_PASS1*NUM_LANG+language], YES) != RC_OK) break;
-				if (strcmp(szP,szPass) != 0) break;
-				RenderFrame(LEFTFRAME);
-				RenderFrame(RIGHTFRAME);
-				//memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
-				CFrameBuffer::getInstance()->blit();
-			}
-		}
-		firstentry = 0;
-
-		switch(rccode)
-		{
-				case RC_HELP:
-					singleview = 1 - singleview;
-					break;
-					
-				case RC_OK:
-					pfe = GetSelected(curframe);
-					lastnoncur = -1; /* trigger repaint of both panels */
-					if (pfe && (S_ISDIR(pfe->fentry.st_mode) ||  (finfo[curframe].zipfile[0] != 0x00 && S_ISLNK(pfe->fentry.st_mode))))
-					{
-						if (strcmp(pfe->name,"..") == 0)
-						{
-							ClearMarker(curframe);
-							FillDir(curframe,SELECT_UPDIR);
-						}
-						else if (strcmp(pfe->name,"/") == 0)
-						{
-							ClearMarker(curframe);
-							FillDir(curframe,SELECT_ROOTDIR);
-						}
-						else
-						{
-							if (finfo[curframe].zipfile[0] != 0x00)
-							{
-								strncat(finfo[curframe].zippath,pfe->name,256);
-								strncat(finfo[curframe].zippath,"/",1);
-							}
-							else
-							{
-								strncat(finfo[curframe].path,pfe->name,256);
-								strncat(finfo[curframe].path,"/",1);
-							}
-							finfo[curframe].selected =1;
-							finfo[curframe].first    =0;
-							ClearMarker(curframe);
-							FillDir(curframe,SELECT_NOCHANGE);
-						}
-						break;
-					}
-					
-					if (pfe && S_ISLNK(pfe->fentry.st_mode))
-					{
-						struct stat fs;
-						char fullfile[FILENAME_MAX];
-						sprintf(fullfile,"%s%s",finfo[curframe].path,pfe->name);
-						stat(fullfile,&fs);
-						if (S_ISDIR(fs.st_mode))
-						{
-							strncat(finfo[curframe].path,pfe->name,256);
-							strncat(finfo[curframe].path,"/",1);
-							finfo[curframe].selected =0;
-							finfo[curframe].first    =0;
-							ClearMarker(curframe);
-							FillDir(curframe,SELECT_NOCHANGE);
-						}
-						else
-						{
-							if (pfe && ((pfe->fentry.st_mode & S_IXUSR) == S_IXUSR))
-							{
-								sprintf(szMessage,msg[MSG_EXEC*NUM_LANG+language], pfe->name);
-								switch (MessageBox(szMessage,info[INFO_EXEC*NUM_LANG+language],OKHIDDENCANCEL))
-								{
-									case YES:
-										sprintf(action,"\"%s%s\"",finfo[curframe].path, pfe->name);
-										DoExecute(action, SHOW_OUTPUT);
-										FillDir(1-curframe,SELECT_NOCHANGE);
-										FillDir(  curframe,SELECT_NOCHANGE);
-										break;
-									case HIDDEN:
-										sprintf(action,"\"%s%s\" &",finfo[curframe].path, pfe->name);
-										DoExecute(action, SHOW_NO_OUTPUT);
-										break;
-									default:
-										rccode = 0;
-								}
-							}
-						}
-						break;
-					}
-					
-					if (pfe && ((pfe->fentry.st_mode & S_IRUSR) == S_IRUSR))
-					{
-						if (((check = CheckZip(pfe->name))>= GZIP) && (finfo[curframe].zipfile[0] == 0x00))
-						{
-							ReadZip(check);
-							FillDir(curframe,SELECT_NOCHANGE);
-							SetSelected(curframe,"..");
-							break;
-						}
-						else
-						{							
-							char scriptfile[FILENAME_MAX];
-							char* expos = strrchr(pfe->name,'.');
-							if (expos && strlen(expos) > 0)
-							{
-								struct stat st;
-								sprintf(scriptfile,"%s%s%s",CONFIGDIR, "/tuxcom/",expos+1);
-								if (lstat(scriptfile,&st) != -1)
-								{
-									char szCmd[4000];
-									sprintf(szCmd,"%s \"%s\" \"%s\" &", scriptfile,finfo[curframe].path, pfe->name);
-									DoExecute(szCmd,SHOW_NO_OUTPUT);
-									break;
-								}
-							}
-						}
-						
-					}
-					
-					if (pfe && ((pfe->fentry.st_mode & S_IXUSR) == 0) && finfo[curframe].zipfile[0] == 0x00)
-					{
-						RenderMenuLine(ACTION_VIEW-1, YES);
-						DoViewFile();
-						break;
-					}
-					
-					if (pfe && ((pfe->fentry.st_mode & S_IXUSR) == S_IXUSR) && finfo[curframe].zipfile[0] == 0x00)
-					{
-						sprintf(szMessage,msg[MSG_EXEC*NUM_LANG+language], pfe->name);
-						switch (MessageBox(szMessage,info[INFO_EXEC*NUM_LANG+language],OKHIDDENCANCEL))
-						{
-							case YES:
-								sprintf(action,"\"%s%s\"",finfo[curframe].path, pfe->name);
-								DoExecute(action, SHOW_OUTPUT);
-								FillDir(1-curframe,SELECT_NOCHANGE);
-								FillDir(  curframe,SELECT_NOCHANGE);
-								break;
-							case HIDDEN:
-								sprintf(action,"\"%s%s\" &",finfo[curframe].path, pfe->name);
-								DoExecute(action, SHOW_NO_OUTPUT);
-								break;
-							default:
-								rccode = 0;
-						}
-						break;
-					}
-					break;
-					
-				case RC_LEFT:
-					curframe = LEFTFRAME;
-					break;
-					
-				case RC_RIGHT:
-					curframe = RIGHTFRAME;
-					break;
-					
-				case RC_UP:
-					finfo[curframe].selected--;
-					if (finfo[curframe].selected  < 0)
-						finfo[curframe].selected  = finfo[curframe].count -1;
-					break;
-					
-				case RC_DOWN:
-					finfo[curframe].selected++;
-					if (finfo[curframe].selected >= finfo[curframe].count)
-						finfo[curframe].selected  = 0;
-					break;
-					
-				case RC_PLUS:
-					finfo[curframe].selected-= framerows;
-					break;
-					
-				case RC_MINUS:
-					finfo[curframe].selected+= framerows;
-					break;
-					
-				case RC_1:
-					if (tool[ACTION_PROPS-1] == ACTION_PROPS)
-					{
-						lastnoncur = -1;
-						RenderMenuLine(ACTION_PROPS-1, YES);
-						if (ShowProperties() == YES)
-						{
-							FillDir(1-curframe,SELECT_NOCHANGE);
-							FillDir(  curframe,SELECT_NOCHANGE);
-						}
-					}
-					break;
-					
-				case RC_2:
-					if (tool[ACTION_RENAME-1] == ACTION_RENAME)
-					{
-						lastnoncur = -1;
-						RenderMenuLine(ACTION_RENAME-1, YES);
-						pfe = GetSelected(curframe);
-						char szBuf[256];
-						char szMsg[356];
-						strcpy(szBuf,pfe->name);
-						sprintf(szMsg,msg[MSG_RENAME*NUM_LANG+language], pfe->name);
-						int nok = 0;
-						while (nok == 0)
-						{
-							switch (GetInputString(400,255,szBuf,szMsg, NO))
-							{
-								case RC_OK:
-								{
-									if (*szBuf == 0x00)
-									{
-										nok = 1;
-										break;
-									}
-									if (FindFile(curframe,szBuf) != NULL)
-									{
-										char szMsg2[356];
-										sprintf(szMsg2,msg[MSG_FILE_EXISTS*NUM_LANG+language], szBuf);
-										MessageBox(szMsg2,"",OK);
-										break;
-									}
-									else
-									{
-										char szOld[FILENAME_MAX],szNew[FILENAME_MAX];
-										sprintf(szOld,"%s%s",finfo[curframe].path, pfe->name);
-										sprintf(szNew,"%s%s",finfo[curframe].path, szBuf    );
-										rename(szOld,szNew);
-										RenameMarker(curframe,pfe->name,szBuf);
-										if (strcmp(finfo[curframe].path,finfo[1-curframe].path) == 0)
-											RenameMarker(1-curframe,pfe->name,szBuf);
-										FillDir(1-curframe,SELECT_NOCHANGE);
-										FillDir(  curframe,SELECT_NOCHANGE);
-										SetSelected(curframe,szBuf);
-										if (strcmp(finfo[curframe].path,finfo[1-curframe].path) == 0)
-											SetSelected(1-curframe,szBuf);
-
-										nok = 1;
-									}
-								}
-								default:
-									rccode = 0;
-									nok = 1;
-							}
-						}
-					}
-					break;
-					
-				case RC_3:
-					if (tool[ACTION_VIEW-1] == ACTION_VIEW)
-					{
-						lastnoncur = -1;
-						RenderMenuLine(ACTION_VIEW-1, YES);
-						DoViewFile();
-					}
-					break;
-					
-				case RC_4:
-					if (tool[ACTION_EDIT-1] == ACTION_EDIT)
-					{
-						lastnoncur = -1;
-						pfe = GetSelected(curframe);
-						sprintf(action,"%s%s",finfo[curframe].path, pfe->name);
-						if (CheckZip(pfe->name) == FTP)
-						{
-							colortool[0] = ACTION_NOACTION;
-							colortool[1] = ACTION_NOACTION;
-							colortool[2] = ACTION_NOACTION;
-							colortool[3] = ACTION_NOACTION;
-							RenderMenuLine(ACTION_EDIT-1, YES);
-							DoEditFTP(action, pfe->name);
-						}
-						else
-						{
-							colortool[0] = ACTION_DELLINE ;
-							colortool[1] = ACTION_INSLINE ;
-							colortool[2] = ACTION_NOACTION;
-							colortool[3] = ACTION_TOLINUX ;
-							RenderMenuLine(-1, EDITOR);
-							DoEditFile(action, action, YES);
-						}
-						FillDir(1-curframe,SELECT_NOCHANGE);
-						FillDir(  curframe,SELECT_NOCHANGE);
-					}
-					break;
-					
-				case RC_5:
-					if (tool[ACTION_COPY-1] == ACTION_COPY)
-					{
-						lastnoncur = -1;
-						tmpzipdir[0] = 0x00;
-						char* szZipCommand = (char*)malloc(commandsize);
-						szZipCommand[0] = 0x00;
-						RenderMenuLine(ACTION_COPY-1, YES);
-						pfe = GetSelected(curframe);
-						if ((finfo[curframe].zipfile[0] == 0x00) && (strcmp(finfo[curframe].path, finfo[1-curframe].path) == 0))
-						{
-							MessageBox(msg[MSG_COPY_NOT_POSSIBLE*NUM_LANG+language],"",OK);
-						}
-						else
-						{
-							if (finfo[curframe].markcount > 0)
-							{
-								sprintf(szMessage,msg[MSG_COPY_MULTI*NUM_LANG+language], finfo[curframe].markcount, finfo[1-curframe].path);
-								switch (MessageBox(szMessage,(finfo[curframe].zipfile[0] == 0x00 ? info[INFO_COPY*NUM_LANG+language] :""),(finfo[curframe].zipfile[0] == 0x00 ? OKHIDDENCANCEL: OKCANCEL )))
-								{
-									case YES:
-									    for (pos = 0; pos < finfo[curframe].count; pos++)
-									    {
-											if (IsMarked(curframe,pos))
-											{
-												pfe = getfileentry(curframe, pos);
-												if (DoCopy(pfe,YES, OVERWRITESKIPCANCEL,szZipCommand) < 0) break;
-											}
-										}
-										DoZipCopyEnd(szZipCommand);
-										FillDir(1-curframe,SELECT_NOCHANGE);
-										FillDir(  curframe,SELECT_NOCHANGE);
-										break;
-									case HIDDEN:
-									    for (pos = 0; pos < finfo[curframe].count; pos++)
-									    {
-											if (IsMarked(curframe,pos))
-											{
-												pfe = getfileentry(curframe, pos);
-												if (DoCopy(pfe,HIDDEN, OVERWRITESKIPCANCEL,szZipCommand) < 0) break;
-											}
-										}
-										break;
-									default:
-										rccode = 0;
-								}
-							}
-							else
-							{
-								sprintf(szMessage,msg[MSG_COPY*NUM_LANG+language], pfe->name, finfo[1-curframe].path);
-								switch (MessageBox(szMessage,(finfo[curframe].zipfile[0] == 0x00 ? info[INFO_COPY*NUM_LANG+language]:""),(finfo[curframe].zipfile[0] == 0x00 ? OKHIDDENCANCEL : OKCANCEL )))
-								{
-									case YES:
-										if (DoCopy(pfe,YES, OVERWRITECANCEL,szZipCommand) < 0) break;
-										DoZipCopyEnd(szZipCommand);
-										FillDir(1-curframe,SELECT_NOCHANGE);
-										FillDir(  curframe,SELECT_NOCHANGE);
-										break;
-									case HIDDEN:
-										DoCopy(pfe,HIDDEN, OVERWRITECANCEL,szZipCommand);
-										break;
-									default:
-										rccode = 0;
-								}
-							}
-						}
-						free(szZipCommand);
-					}
-					break;
-					
-				case RC_6:
-					if (tool[ACTION_MOVE-1] == ACTION_MOVE)
-					{
-						lastnoncur = -1;
-						RenderMenuLine(ACTION_MOVE-1, YES);
-						pfe = GetSelected(curframe);
-						if (finfo[curframe].markcount > 0)
-						{
-							sprintf(szMessage,msg[MSG_MOVE_MULTI*NUM_LANG+language], finfo[curframe].markcount, finfo[1-curframe].path);
-							switch (MessageBox(szMessage,info[INFO_MOVE*NUM_LANG+language],OKHIDDENCANCEL))
-							{
-								case YES:
-									for (pos = 0; pos < finfo[curframe].count; pos++)
-									{
-										if (IsMarked(curframe,pos))
-										{
-											pfe = getfileentry(curframe, pos);
-											if (DoMove(pfe, YES, OVERWRITESKIPCANCEL) < 0) break;
-										}
-									}
-									ClearMarker(curframe);
-									FillDir(1-curframe,SELECT_NOCHANGE);
-									FillDir(  curframe,SELECT_NOCHANGE);
-									break;
-								case HIDDEN:
-									for (pos = 0; pos < finfo[curframe].count; pos++)
-									{
-										if (IsMarked(curframe,pos))
-										{
-											pfe = getfileentry(curframe, pos);
-											if (DoMove(pfe, HIDDEN, OVERWRITESKIPCANCEL) < 0) break;
-										}
-									}
-									ClearMarker(curframe);
-									break;
-								default:
-									rccode = 0;
-							}
-						}
-						else
-						{
-							sprintf(szMessage,msg[MSG_MOVE*NUM_LANG+language], pfe->name, finfo[1-curframe].path);
-							switch (MessageBox(szMessage,info[INFO_MOVE*NUM_LANG+language],OKHIDDENCANCEL))
-							{
-								case YES:
-									if (DoMove(pfe,YES,OVERWRITECANCEL) < 0) break;
-									FillDir(1-curframe,SELECT_NOCHANGE);
-									FillDir(  curframe,SELECT_NOCHANGE);
-									break;
-								case HIDDEN:
-									DoMove(pfe,HIDDEN,OVERWRITECANCEL);
-									break;
-								default:
-									rccode = 0;
-							}
-						}
-					}
-					break;
-					
-				case RC_7:
-					if (tool[ACTION_MKDIR-1] == ACTION_MKDIR)
-					{
-						lastnoncur = -1;
-						RenderMenuLine(ACTION_MKDIR-1, YES);
-						char szDir[FILENAME_MAX];
-						szDir[0] = 0x00;
-						char szMsg[1000];
-						sprintf(szMsg,msg[MSG_MKDIR*NUM_LANG+language],finfo[curframe].path);
-						switch (GetInputString(400,255,szDir,szMsg, NO))
-						{
-							case RC_OK:
-							{
-								if (*szDir != 0x00)
-								{
-									if (FindFile(curframe,szDir) != NULL)
-									{
-										sprintf(szMsg,msg[MSG_FILE_EXISTS*NUM_LANG+language],szDir);
-										MessageBox(szMsg,"",OK);
-									}
-									else
-									{
-										sprintf(action,"mkdir -p \"%s%s\"",finfo[curframe].path, szDir);
-										DoExecute(action, SHOW_NO_OUTPUT);
-										FillDir(1-curframe,SELECT_NOCHANGE);
-										FillDir(  curframe,SELECT_NOCHANGE);
-										SetSelected(curframe,szDir);
-									}
-								}
-							}
-							default:
-								rccode = 0;
-						}
-					}
-					break;
-					
-				case RC_8:
-					if (tool[ACTION_DELETE-1] == ACTION_DELETE)
-					{
-						lastnoncur = -1;
-						RenderMenuLine(ACTION_DELETE-1, YES);
-						pfe = GetSelected(curframe);
-						if (finfo[curframe].markcount > 0)
-						{
-							sprintf(szMessage,msg[MSG_DELETE_MULTI*NUM_LANG+language], finfo[curframe].markcount);
-							if (MessageBox(szMessage,"",OKCANCEL) == YES)
-							{
-								for (pos = 0; pos < finfo[curframe].count; pos++)
-								{
-									if (IsMarked(curframe,pos))
-									{
-										pfe = getfileentry(curframe, pos);
-										sprintf(szMessage,msg[MSG_DELETE_PROGRESS*NUM_LANG+language], pfe->name);
-										MessageBox(szMessage,"",NOBUTTON);
-										sprintf(action,"rm -f -r \"%s%s\"",finfo[curframe].path,pfe->name);
-										DoExecute(action, SHOW_NO_OUTPUT);
-									}
-								}
-								ClearMarker(curframe);
-								FillDir(1-curframe,SELECT_NOCHANGE);
-								FillDir(  curframe,SELECT_NOCHANGE);
-							}
-						}
-						else
-						{
-							sprintf(szMessage,msg[MSG_DELETE*NUM_LANG+language], pfe->name);
-							if (MessageBox(szMessage,"",OKCANCEL) == YES)
-							{
-								sprintf(szMessage,msg[MSG_DELETE_PROGRESS*NUM_LANG+language], pfe->name);
-								MessageBox(szMessage,"",NOBUTTON);
-								sprintf(action,"rm -f -r \"%s%s\"",finfo[curframe].path,pfe->name);
-								DoExecute(action, SHOW_NO_OUTPUT);
-								FillDir(1-curframe,SELECT_NOCHANGE);
-								FillDir(  curframe,SELECT_NOCHANGE);
-							}
-						}
-						rccode = 0;
-					}
-					break;
-					
-				case RC_9:
-					if (tool[ACTION_MKFILE-1] == ACTION_MKFILE)
-					{
-						lastnoncur = -1;
-						RenderMenuLine(ACTION_MKFILE-1, YES);
-						char szDir[FILENAME_MAX];
-						szDir[0] = 0x00;
-						char szMsg[356];
-						sprintf(szMsg,msg[MSG_MKFILE*NUM_LANG+language], finfo[curframe].path);
-						switch (GetInputString(400,255,szDir,szMsg, NO))
-						{
-							case RC_OK:
-							{
-								if (*szDir != 0x00)
-								{
-									sprintf(action,"touch \"%s%s\"",finfo[curframe].path, szDir);
-									DoExecute(action, SHOW_NO_OUTPUT);
-									FillDir(1-curframe,SELECT_NOCHANGE);
-									FillDir(  curframe,SELECT_NOCHANGE);
-									SetSelected(curframe,szDir);
-								}
-							}
-							default:
-								rccode = 0;
-						}
-					}
-					break;
-					
-				case RC_0:
-					if (tool[ACTION_MKLINK-1] == ACTION_MKLINK)
-					{
-						lastnoncur = -1;
-						RenderMenuLine(ACTION_MKLINK-1, YES);
-						char szDir[FILENAME_MAX];
-						pfe = GetSelected(curframe);
-						strcpy(szDir,pfe->name);
-						char szMsg[356];
-						sprintf(szMsg,msg[MSG_MKLINK*NUM_LANG+language], finfo[curframe].path, pfe->name, finfo[1-curframe].path);
-						switch (GetInputString(400,255,szDir,szMsg, NO))
-						{
-							case RC_OK:
-							{
-								if (*szDir != 0x00)
-								{
-									sprintf(action,"ln -s \"%s%s\" \"%s%s\"",finfo[curframe].path, pfe->name,finfo[1-curframe].path, szDir);
-									DoExecute(action, SHOW_NO_OUTPUT);
-									FillDir(1-curframe,SELECT_NOCHANGE);
-									FillDir(  curframe,SELECT_NOCHANGE);
-								}
-							}
-							default:
-								rccode = 0;
-						}
-					}
-					break;
-					
-				case RC_RED:
-					{
-						lastnoncur = -1;
-						char szMsg[356];
-						sprintf(szMsg,msg[MSG_COMMAND*NUM_LANG+language]);
-						char* szCommand = (char*)malloc(commandsize);
-					    	szCommand [0]= 0x00;
-						switch (GetInputString(400,commandsize,szCommand,szMsg, NO))
-						{
-							case RC_OK:
-								DoExecute(szCommand, SHOW_OUTPUT);
-								FillDir(1-curframe,SELECT_NOCHANGE);
-								FillDir(  curframe,SELECT_NOCHANGE);
-								break;
-							default:
-								rccode = 0;
-						}
-						free (szCommand);
-					}
-					break;
-					
-				case RC_GREEN: // toggle marker
-					ToggleMarker(curframe);
-					finfo[curframe].selected++;
-				    break;
-				    
-				case RC_YELLOW:
-					cursort = finfo[curframe].sort = finfo[curframe].sort * -1;
-					strcpy(szSel,GetSelected(curframe)->name);
-					sortframe(curframe, szSel);
-					break;
-					
-				case RC_BLUE: // Refresh
-					lastnoncur = -1;
-					FillDir(1-curframe,SELECT_NOCHANGE);
-					FillDir(  curframe,SELECT_NOCHANGE);
-					break;
-					
-				case RC_MUTE: // toggle visibility
-					curvisibility++;
-					if (curvisibility > 2) curvisibility = 0;
-					break;
-					
-				case RC_DBOX: // main menu
-					lastnoncur = -1;
-					DoMainMenu();
-					break;
-					
-				case RC_HOME:
-					if (autosave == BTN_ASK)
-					{
-						lastnoncur = -1;
-						switch (MessageBox(msg[MSG_SAVESETTINGS*NUM_LANG+language],"",YESNOCANCEL))
-						{
-							case YES:
-								dosave = BTN_YES;
-								rccode = RC_HOME;
-								break;
-							case NO:
-								dosave = BTN_NO;
-								rccode = RC_HOME;
-								break;
-							case CANCEL:
-								dosave = BTN_NO;
-								rccode = -1;
-								break;
-						}
-					}
-					break;
-
-				default:
-					continue;
-		}
-
-		if (finfo[curframe].selected  < 0)
-			finfo[curframe].selected  = 0;
-		if (finfo[curframe].selected >= finfo[curframe].count)
-			finfo[curframe].selected  = finfo[curframe].count -1;
-		if (finfo[curframe].first > finfo[curframe].selected)
-			finfo[curframe].first = finfo[curframe].selected;
-		if (finfo[curframe].selected >= finfo[curframe].first + framerows)
-			finfo[curframe].first = finfo[curframe].selected - framerows+1;
-		
-		RenderFrame(LEFTFRAME);
-		RenderFrame(RIGHTFRAME);
-		//memcpy(lfb, lbb, fix_screeninfo.line_length * var_screeninfo.yres);
-		CFrameBuffer::getInstance()->blit();
-
-	}while(rccode != RC_HOME);
-
-	if (dosave == BTN_YES)
-		WriteSettings();
-
-	system("rm -f /tmp/tuxcom.out");
-	rccode = -1;
-
-	ClearEntries(LEFTFRAME );
-	ClearEntries(RIGHTFRAME);
-	ClearMarker(LEFTFRAME );
-	ClearMarker(RIGHTFRAME);
-	ClearZipEntries(LEFTFRAME );
-	ClearZipEntries(RIGHTFRAME);
-	
-	CFrameBuffer::getInstance()->ClearFrameBuffer();
-	CFrameBuffer::getInstance()->blit();
-}
-
-//
 // RenderMenuLine
 //
 void RenderMenuLine(int highlight, int refresh)
@@ -936,8 +178,7 @@ void RenderMenuLine(int highlight, int refresh)
 	{
 
 		RenderBox( (viewx/COLORBUTTONS) *i, viewy-MENUSIZE/2, (viewx/COLORBUTTONS) *(i+1), viewy, FILL, (i == 0 ? RED    :
-		                                                            					                   (i == 1 ? GREEN  :
-		                                                            					                   (i == 2 ? YELLOW : BLUE1))));
+		                                                            					                   (i == 1 ? GREEN  :                                                        					                   (i == 2 ? YELLOW : BLUE1))));
 		RenderBox( (viewx/COLORBUTTONS) *i ,viewy-MENUSIZE/2, (i < COLORBUTTONS-1 ? (viewx/COLORBUTTONS) *(i+1) : viewx) , viewy , GRID,  WHITE );
 		RenderString(colorline[colortool[i]*NUM_LANG+language], (viewx/COLORBUTTONS) *i , viewy- FONT_OFFSET_BIG , viewx/COLORBUTTONS, CENTER, SMALL  , /*(i == 2 ? BLACK : WHITE)*/WHITE);
 	}
@@ -1011,7 +252,7 @@ void RenderFrame(int frame)
 		fcolor = WHITE;
 		if ((pfe->fentry.st_mode & S_IRUSR) == S_IRUSR )
 		{
-			fcolor = /*GREEN2*/WHITE ;
+			fcolor = GREEN2/*WHITE*/ ;
 			if (bselected)
 			{
 				tool[ACTION_COPY-1] = (finfo[1-frame].writable  ? ACTION_COPY : ACTION_NOACTION); // copy allowed, if other frame writable;
@@ -1021,7 +262,7 @@ void RenderFrame(int frame)
 		
 		if ((pfe->fentry.st_mode & S_IWUSR) == S_IWUSR )
 		{
-			fcolor = /*GRAY*/WHITE;
+			fcolor = GRAY /*WHITE*/;
 			if (bselected)
 			{
 				tool[ACTION_MOVE-1] = (finfo[1-frame].writable && finfo[frame].writable ? ACTION_MOVE   : ACTION_NOACTION); // move   allowed, if both frames writable;
@@ -1033,7 +274,7 @@ void RenderFrame(int frame)
 		
 		if      ((pfe->fentry.st_mode & S_IXUSR) == S_IXUSR )
 		{
-			fcolor = /*YELLOW*/WHITE ;
+			fcolor = YELLOW /*WHITE*/ ;
 		}
 		
 		if     (S_ISDIR(pfe->fentry.st_mode))
@@ -1048,7 +289,7 @@ void RenderFrame(int frame)
 		}
 		else if (S_ISLNK(pfe->fentry.st_mode))
 		{
-			fcolor = /*ORANGE*/WHITE ;
+			fcolor = ORANGE /*WHITE*/ ;
 			sprintf(sizeString,"<LINK>");
 			if (bselected)
 				tool[ACTION_VIEW-1] = ACTION_NOACTION; // view not allowed
@@ -4604,3 +3845,754 @@ void WriteSettings()
 		fclose(fp);
 	}
 }
+
+//
+// plugin_exec                                                                
+//
+void plugin_exec(void)
+{
+	//show versioninfo
+	printf(MSG_VERSION"\n");
+	
+	char szMessage[400];
+
+	// coordinate
+	sx = CFrameBuffer::getInstance()->getScreenX();
+	ex = sx + CFrameBuffer::getInstance()->getScreenWidth();
+	sy = CFrameBuffer::getInstance()->getScreenY();
+	ey = sy + CFrameBuffer::getInstance()->getScreenHeight();
+
+	// clear fb
+	//RenderBox(0, 0, var_screeninfo.xres, var_screeninfo.yres, FILL, BLACK);
+	CFrameBuffer::getInstance()->ClearFrameBuffer();
+	CFrameBuffer::getInstance()->blit();
+
+	//init data
+	curframe = 0;
+	lastnoncur = -1;
+	cursort = SORT_UP;
+	curvisibility = 0;
+	singleview = 0;
+	textuppercase = 0;
+	screenmode=0;
+	filesize_in_byte = BTN_NO; // show human readable filesize
+	langselect = BTN_AUTO; // automatic
+	autosave = BTN_ASK; // ask on exit
+
+	commandsize =sysconf(_SC_ARG_MAX )-100;
+	szClipboard[0] = 0x00;
+	szSearchstring[0] = 0x00;
+	szTextSearchstring[0] = 0x00;
+	memset(tool, ACTION_NOACTION, sizeof(tool));
+	colortool[0] = ACTION_EXEC   ;
+	colortool[1] = ACTION_MARKER ;
+	colortool[2] = ACTION_SORT   ;
+	colortool[3] = ACTION_REFRESH;
+
+	memset(&finfo[0], 0, sizeof(finfo[0]));
+	memset(&finfo[1], 0, sizeof(finfo[0]));
+
+	// center output on screen
+	StartX = sx;
+	StartY = sy;
+	viewx = ex - sx;
+	viewy = ey - sy;
+	menuitemwidth  = viewx / MENUITEMS;
+	menuitemnumber = viewx / (MENUITEMS*6);
+
+	framerows = (viewy-MENUSIZE - 3*BORDERSIZE - FONTHEIGHT_SMALL) / FONTHEIGHT_SMALL;
+
+	FrameWidth = viewx/2;
+	NameWidth = (FrameWidth / 3 ) * 2;
+	SizeWidth = (FrameWidth / 3 ) - 3* BORDERSIZE;
+
+	ReadSettings();
+	SetLanguage();
+
+	// setup screen
+	RenderFrame(LEFTFRAME);
+	RenderFrame(RIGHTFRAME);
+	
+	CFrameBuffer::getInstance()->blit();
+	
+	printf("TuxCom init successful\n");
+
+	int dosave = autosave;
+	int firstentry = 1;
+	struct fileentry *pfe;
+	char action[256];
+	char szSel [256];
+	int pos, check;
+	
+	do{
+		overwriteall = 0;
+		skipall = 0;
+		
+		getRCcode();
+
+		// hack to ignore the first OK press (from starting the plugin)
+		if (firstentry == 1)
+		{
+			if (rccode == RC_OK) continue;
+
+			// check password
+			if (szPass[0] != 0x00)
+			{
+				char szP[20];
+				*szP = 0x00;
+				if (GetInputString(250, 19, szP, (char *)info[INFO_PASS1*NUM_LANG+language], YES) != RC_OK) break;
+				if (strcmp(szP,szPass) != 0) break;
+				RenderFrame(LEFTFRAME);
+				RenderFrame(RIGHTFRAME);
+				//memcpy(lfb, lbb, fix_screeninfo.line_length*var_screeninfo.yres);
+				CFrameBuffer::getInstance()->blit();
+			}
+		}
+		firstentry = 0;
+
+		switch(rccode)
+		{
+			case RC_HELP:
+				singleview = 1 - singleview;
+				break;
+					
+			case RC_OK:
+					pfe = GetSelected(curframe);
+					lastnoncur = -1; /* trigger repaint of both panels */
+					if (pfe && (S_ISDIR(pfe->fentry.st_mode) ||  (finfo[curframe].zipfile[0] != 0x00 && S_ISLNK(pfe->fentry.st_mode))))
+					{
+						if (strcmp(pfe->name,"..") == 0)
+						{
+							ClearMarker(curframe);
+							FillDir(curframe,SELECT_UPDIR);
+						}
+						else if (strcmp(pfe->name,"/") == 0)
+						{
+							ClearMarker(curframe);
+							FillDir(curframe,SELECT_ROOTDIR);
+						}
+						else
+						{
+							if (finfo[curframe].zipfile[0] != 0x00)
+							{
+								strncat(finfo[curframe].zippath,pfe->name,256);
+								strncat(finfo[curframe].zippath,"/",1);
+							}
+							else
+							{
+								strncat(finfo[curframe].path,pfe->name,256);
+								strncat(finfo[curframe].path,"/",1);
+							}
+							finfo[curframe].selected =1;
+							finfo[curframe].first    =0;
+							ClearMarker(curframe);
+							FillDir(curframe,SELECT_NOCHANGE);
+						}
+						break;
+					}
+					
+					if (pfe && S_ISLNK(pfe->fentry.st_mode))
+					{
+						struct stat fs;
+						char fullfile[FILENAME_MAX];
+						sprintf(fullfile,"%s%s",finfo[curframe].path,pfe->name);
+						stat(fullfile,&fs);
+						if (S_ISDIR(fs.st_mode))
+						{
+							strncat(finfo[curframe].path,pfe->name,256);
+							strncat(finfo[curframe].path,"/",1);
+							finfo[curframe].selected =0;
+							finfo[curframe].first    =0;
+							ClearMarker(curframe);
+							FillDir(curframe,SELECT_NOCHANGE);
+						}
+						else
+						{
+							if (pfe && ((pfe->fentry.st_mode & S_IXUSR) == S_IXUSR))
+							{
+								sprintf(szMessage,msg[MSG_EXEC*NUM_LANG+language], pfe->name);
+								switch (MessageBox(szMessage,info[INFO_EXEC*NUM_LANG+language],OKHIDDENCANCEL))
+								{
+									case YES:
+										sprintf(action,"\"%s%s\"",finfo[curframe].path, pfe->name);
+										DoExecute(action, SHOW_OUTPUT);
+										FillDir(1-curframe,SELECT_NOCHANGE);
+										FillDir(  curframe,SELECT_NOCHANGE);
+										break;
+									case HIDDEN:
+										sprintf(action,"\"%s%s\" &",finfo[curframe].path, pfe->name);
+										DoExecute(action, SHOW_NO_OUTPUT);
+										break;
+									default:
+										rccode = 0;
+								}
+							}
+						}
+						break;
+					}
+					
+					if (pfe && ((pfe->fentry.st_mode & S_IRUSR) == S_IRUSR))
+					{
+						if (((check = CheckZip(pfe->name))>= GZIP) && (finfo[curframe].zipfile[0] == 0x00))
+						{
+							ReadZip(check);
+							FillDir(curframe,SELECT_NOCHANGE);
+							SetSelected(curframe,"..");
+							break;
+						}
+						else
+						{							
+							char scriptfile[FILENAME_MAX];
+							char* expos = strrchr(pfe->name,'.');
+							if (expos && strlen(expos) > 0)
+							{
+								struct stat st;
+								sprintf(scriptfile,"%s%s%s",CONFIGDIR, "/tuxcom/",expos+1);
+								if (lstat(scriptfile,&st) != -1)
+								{
+									char szCmd[4000];
+									sprintf(szCmd,"%s \"%s\" \"%s\" &", scriptfile,finfo[curframe].path, pfe->name);
+									DoExecute(szCmd,SHOW_NO_OUTPUT);
+									break;
+								}
+							}
+						}
+						
+					}
+					
+					if (pfe && ((pfe->fentry.st_mode & S_IXUSR) == 0) && finfo[curframe].zipfile[0] == 0x00)
+					{
+						RenderMenuLine(ACTION_VIEW-1, YES);
+						DoViewFile();
+						break;
+					}
+					
+					if (pfe && ((pfe->fentry.st_mode & S_IXUSR) == S_IXUSR) && finfo[curframe].zipfile[0] == 0x00)
+					{
+						sprintf(szMessage,msg[MSG_EXEC*NUM_LANG+language], pfe->name);
+						switch (MessageBox(szMessage,info[INFO_EXEC*NUM_LANG+language],OKHIDDENCANCEL))
+						{
+							case YES:
+								sprintf(action,"\"%s%s\"",finfo[curframe].path, pfe->name);
+								DoExecute(action, SHOW_OUTPUT);
+								FillDir(1-curframe,SELECT_NOCHANGE);
+								FillDir(  curframe,SELECT_NOCHANGE);
+								break;
+							case HIDDEN:
+								sprintf(action,"\"%s%s\" &",finfo[curframe].path, pfe->name);
+								DoExecute(action, SHOW_NO_OUTPUT);
+								break;
+							default:
+								rccode = 0;
+						}
+						break;
+					}
+					break;
+					
+			case RC_LEFT:
+				curframe = LEFTFRAME;
+				break;
+					
+			case RC_RIGHT:
+				curframe = RIGHTFRAME;
+				break;
+					
+			case RC_UP:
+				finfo[curframe].selected--;
+				if (finfo[curframe].selected  < 0)
+					finfo[curframe].selected  = finfo[curframe].count -1;
+				break;
+					
+			case RC_DOWN:
+				finfo[curframe].selected++;
+				if (finfo[curframe].selected >= finfo[curframe].count)
+					finfo[curframe].selected  = 0;
+				break;
+					
+			case RC_PLUS:
+				finfo[curframe].selected-= framerows;
+				break;
+					
+			case RC_MINUS:
+				finfo[curframe].selected+= framerows;
+				break;
+					
+			case RC_1:
+					if (tool[ACTION_PROPS-1] == ACTION_PROPS)
+					{
+						lastnoncur = -1;
+						RenderMenuLine(ACTION_PROPS-1, YES);
+						if (ShowProperties() == YES)
+						{
+							FillDir(1-curframe,SELECT_NOCHANGE);
+							FillDir(  curframe,SELECT_NOCHANGE);
+						}
+					}
+					break;
+					
+			case RC_2:
+					if (tool[ACTION_RENAME-1] == ACTION_RENAME)
+					{
+						lastnoncur = -1;
+						RenderMenuLine(ACTION_RENAME-1, YES);
+						pfe = GetSelected(curframe);
+						char szBuf[256];
+						char szMsg[356];
+						strcpy(szBuf,pfe->name);
+						sprintf(szMsg,msg[MSG_RENAME*NUM_LANG+language], pfe->name);
+						int nok = 0;
+						while (nok == 0)
+						{
+							switch (GetInputString(400,255,szBuf,szMsg, NO))
+							{
+								case RC_OK:
+								{
+									if (*szBuf == 0x00)
+									{
+										nok = 1;
+										break;
+									}
+									if (FindFile(curframe,szBuf) != NULL)
+									{
+										char szMsg2[356];
+										sprintf(szMsg2,msg[MSG_FILE_EXISTS*NUM_LANG+language], szBuf);
+										MessageBox(szMsg2,"",OK);
+										break;
+									}
+									else
+									{
+										char szOld[FILENAME_MAX],szNew[FILENAME_MAX];
+										sprintf(szOld,"%s%s",finfo[curframe].path, pfe->name);
+										sprintf(szNew,"%s%s",finfo[curframe].path, szBuf    );
+										rename(szOld,szNew);
+										RenameMarker(curframe,pfe->name,szBuf);
+										if (strcmp(finfo[curframe].path,finfo[1-curframe].path) == 0)
+											RenameMarker(1-curframe,pfe->name,szBuf);
+										FillDir(1-curframe,SELECT_NOCHANGE);
+										FillDir(  curframe,SELECT_NOCHANGE);
+										SetSelected(curframe,szBuf);
+										if (strcmp(finfo[curframe].path,finfo[1-curframe].path) == 0)
+											SetSelected(1-curframe,szBuf);
+
+										nok = 1;
+									}
+								}
+								default:
+									rccode = 0;
+									nok = 1;
+							}
+						}
+					}
+					break;
+					
+			case RC_3:
+					if (tool[ACTION_VIEW-1] == ACTION_VIEW)
+					{
+						lastnoncur = -1;
+						RenderMenuLine(ACTION_VIEW-1, YES);
+						DoViewFile();
+					}
+					break;
+					
+			case RC_4:
+					if (tool[ACTION_EDIT-1] == ACTION_EDIT)
+					{
+						lastnoncur = -1;
+						pfe = GetSelected(curframe);
+						sprintf(action,"%s%s",finfo[curframe].path, pfe->name);
+						if (CheckZip(pfe->name) == FTP)
+						{
+							colortool[0] = ACTION_NOACTION;
+							colortool[1] = ACTION_NOACTION;
+							colortool[2] = ACTION_NOACTION;
+							colortool[3] = ACTION_NOACTION;
+							RenderMenuLine(ACTION_EDIT-1, YES);
+							DoEditFTP(action, pfe->name);
+						}
+						else
+						{
+							colortool[0] = ACTION_DELLINE ;
+							colortool[1] = ACTION_INSLINE ;
+							colortool[2] = ACTION_NOACTION;
+							colortool[3] = ACTION_TOLINUX ;
+							RenderMenuLine(-1, EDITOR);
+							DoEditFile(action, action, YES);
+						}
+						FillDir(1-curframe,SELECT_NOCHANGE);
+						FillDir(  curframe,SELECT_NOCHANGE);
+					}
+					break;
+					
+			case RC_5:
+					if (tool[ACTION_COPY-1] == ACTION_COPY)
+					{
+						lastnoncur = -1;
+						tmpzipdir[0] = 0x00;
+						char* szZipCommand = (char*)malloc(commandsize);
+						szZipCommand[0] = 0x00;
+						RenderMenuLine(ACTION_COPY-1, YES);
+						pfe = GetSelected(curframe);
+						if ((finfo[curframe].zipfile[0] == 0x00) && (strcmp(finfo[curframe].path, finfo[1-curframe].path) == 0))
+						{
+							MessageBox(msg[MSG_COPY_NOT_POSSIBLE*NUM_LANG+language],"",OK);
+						}
+						else
+						{
+							if (finfo[curframe].markcount > 0)
+							{
+								sprintf(szMessage,msg[MSG_COPY_MULTI*NUM_LANG+language], finfo[curframe].markcount, finfo[1-curframe].path);
+								switch (MessageBox(szMessage,(finfo[curframe].zipfile[0] == 0x00 ? info[INFO_COPY*NUM_LANG+language] :""),(finfo[curframe].zipfile[0] == 0x00 ? OKHIDDENCANCEL: OKCANCEL )))
+								{
+									case YES:
+									    for (pos = 0; pos < finfo[curframe].count; pos++)
+									    {
+											if (IsMarked(curframe,pos))
+											{
+												pfe = getfileentry(curframe, pos);
+												if (DoCopy(pfe,YES, OVERWRITESKIPCANCEL,szZipCommand) < 0) break;
+											}
+										}
+										DoZipCopyEnd(szZipCommand);
+										FillDir(1-curframe,SELECT_NOCHANGE);
+										FillDir(  curframe,SELECT_NOCHANGE);
+										break;
+									case HIDDEN:
+									    for (pos = 0; pos < finfo[curframe].count; pos++)
+									    {
+											if (IsMarked(curframe,pos))
+											{
+												pfe = getfileentry(curframe, pos);
+												if (DoCopy(pfe,HIDDEN, OVERWRITESKIPCANCEL,szZipCommand) < 0) break;
+											}
+										}
+										break;
+									default:
+										rccode = 0;
+								}
+							}
+							else
+							{
+								sprintf(szMessage,msg[MSG_COPY*NUM_LANG+language], pfe->name, finfo[1-curframe].path);
+								switch (MessageBox(szMessage,(finfo[curframe].zipfile[0] == 0x00 ? info[INFO_COPY*NUM_LANG+language]:""),(finfo[curframe].zipfile[0] == 0x00 ? OKHIDDENCANCEL : OKCANCEL )))
+								{
+									case YES:
+										if (DoCopy(pfe,YES, OVERWRITECANCEL,szZipCommand) < 0) break;
+										DoZipCopyEnd(szZipCommand);
+										FillDir(1-curframe,SELECT_NOCHANGE);
+										FillDir(  curframe,SELECT_NOCHANGE);
+										break;
+									case HIDDEN:
+										DoCopy(pfe,HIDDEN, OVERWRITECANCEL,szZipCommand);
+										break;
+									default:
+										rccode = 0;
+								}
+							}
+						}
+						free(szZipCommand);
+					}
+					break;
+					
+			case RC_6:
+					if (tool[ACTION_MOVE-1] == ACTION_MOVE)
+					{
+						lastnoncur = -1;
+						RenderMenuLine(ACTION_MOVE-1, YES);
+						pfe = GetSelected(curframe);
+						if (finfo[curframe].markcount > 0)
+						{
+							sprintf(szMessage,msg[MSG_MOVE_MULTI*NUM_LANG+language], finfo[curframe].markcount, finfo[1-curframe].path);
+							switch (MessageBox(szMessage,info[INFO_MOVE*NUM_LANG+language],OKHIDDENCANCEL))
+							{
+								case YES:
+									for (pos = 0; pos < finfo[curframe].count; pos++)
+									{
+										if (IsMarked(curframe,pos))
+										{
+											pfe = getfileentry(curframe, pos);
+											if (DoMove(pfe, YES, OVERWRITESKIPCANCEL) < 0) break;
+										}
+									}
+									ClearMarker(curframe);
+									FillDir(1-curframe,SELECT_NOCHANGE);
+									FillDir(  curframe,SELECT_NOCHANGE);
+									break;
+								case HIDDEN:
+									for (pos = 0; pos < finfo[curframe].count; pos++)
+									{
+										if (IsMarked(curframe,pos))
+										{
+											pfe = getfileentry(curframe, pos);
+											if (DoMove(pfe, HIDDEN, OVERWRITESKIPCANCEL) < 0) break;
+										}
+									}
+									ClearMarker(curframe);
+									break;
+								default:
+									rccode = 0;
+							}
+						}
+						else
+						{
+							sprintf(szMessage,msg[MSG_MOVE*NUM_LANG+language], pfe->name, finfo[1-curframe].path);
+							switch (MessageBox(szMessage,info[INFO_MOVE*NUM_LANG+language],OKHIDDENCANCEL))
+							{
+								case YES:
+									if (DoMove(pfe,YES,OVERWRITECANCEL) < 0) break;
+									FillDir(1-curframe,SELECT_NOCHANGE);
+									FillDir(  curframe,SELECT_NOCHANGE);
+									break;
+								case HIDDEN:
+									DoMove(pfe,HIDDEN,OVERWRITECANCEL);
+									break;
+								default:
+									rccode = 0;
+							}
+						}
+					}
+					break;
+					
+			case RC_7:
+					if (tool[ACTION_MKDIR-1] == ACTION_MKDIR)
+					{
+						lastnoncur = -1;
+						RenderMenuLine(ACTION_MKDIR-1, YES);
+						char szDir[FILENAME_MAX];
+						szDir[0] = 0x00;
+						char szMsg[1000];
+						sprintf(szMsg,msg[MSG_MKDIR*NUM_LANG+language],finfo[curframe].path);
+						switch (GetInputString(400,255,szDir,szMsg, NO))
+						{
+							case RC_OK:
+							{
+								if (*szDir != 0x00)
+								{
+									if (FindFile(curframe,szDir) != NULL)
+									{
+										sprintf(szMsg,msg[MSG_FILE_EXISTS*NUM_LANG+language],szDir);
+										MessageBox(szMsg,"",OK);
+									}
+									else
+									{
+										sprintf(action,"mkdir -p \"%s%s\"",finfo[curframe].path, szDir);
+										DoExecute(action, SHOW_NO_OUTPUT);
+										FillDir(1-curframe,SELECT_NOCHANGE);
+										FillDir(  curframe,SELECT_NOCHANGE);
+										SetSelected(curframe,szDir);
+									}
+								}
+							}
+							default:
+								rccode = 0;
+						}
+					}
+					break;
+					
+			case RC_8:
+					if (tool[ACTION_DELETE-1] == ACTION_DELETE)
+					{
+						lastnoncur = -1;
+						RenderMenuLine(ACTION_DELETE-1, YES);
+						pfe = GetSelected(curframe);
+						if (finfo[curframe].markcount > 0)
+						{
+							sprintf(szMessage,msg[MSG_DELETE_MULTI*NUM_LANG+language], finfo[curframe].markcount);
+							if (MessageBox(szMessage,"",OKCANCEL) == YES)
+							{
+								for (pos = 0; pos < finfo[curframe].count; pos++)
+								{
+									if (IsMarked(curframe,pos))
+									{
+										pfe = getfileentry(curframe, pos);
+										sprintf(szMessage,msg[MSG_DELETE_PROGRESS*NUM_LANG+language], pfe->name);
+										MessageBox(szMessage,"",NOBUTTON);
+										sprintf(action,"rm -f -r \"%s%s\"",finfo[curframe].path,pfe->name);
+										DoExecute(action, SHOW_NO_OUTPUT);
+									}
+								}
+								ClearMarker(curframe);
+								FillDir(1-curframe,SELECT_NOCHANGE);
+								FillDir(  curframe,SELECT_NOCHANGE);
+							}
+						}
+						else
+						{
+							sprintf(szMessage,msg[MSG_DELETE*NUM_LANG+language], pfe->name);
+							if (MessageBox(szMessage,"",OKCANCEL) == YES)
+							{
+								sprintf(szMessage,msg[MSG_DELETE_PROGRESS*NUM_LANG+language], pfe->name);
+								MessageBox(szMessage,"",NOBUTTON);
+								sprintf(action,"rm -f -r \"%s%s\"",finfo[curframe].path,pfe->name);
+								DoExecute(action, SHOW_NO_OUTPUT);
+								FillDir(1-curframe,SELECT_NOCHANGE);
+								FillDir(  curframe,SELECT_NOCHANGE);
+							}
+						}
+						rccode = 0;
+					}
+					break;
+					
+			case RC_9:
+					if (tool[ACTION_MKFILE-1] == ACTION_MKFILE)
+					{
+						lastnoncur = -1;
+						RenderMenuLine(ACTION_MKFILE-1, YES);
+						char szDir[FILENAME_MAX];
+						szDir[0] = 0x00;
+						char szMsg[356];
+						sprintf(szMsg,msg[MSG_MKFILE*NUM_LANG+language], finfo[curframe].path);
+						switch (GetInputString(400,255,szDir,szMsg, NO))
+						{
+							case RC_OK:
+							{
+								if (*szDir != 0x00)
+								{
+									sprintf(action,"touch \"%s%s\"",finfo[curframe].path, szDir);
+									DoExecute(action, SHOW_NO_OUTPUT);
+									FillDir(1-curframe,SELECT_NOCHANGE);
+									FillDir(  curframe,SELECT_NOCHANGE);
+									SetSelected(curframe,szDir);
+								}
+							}
+							default:
+								rccode = 0;
+						}
+					}
+					break;
+					
+			case RC_0:
+					if (tool[ACTION_MKLINK-1] == ACTION_MKLINK)
+					{
+						lastnoncur = -1;
+						RenderMenuLine(ACTION_MKLINK-1, YES);
+						char szDir[FILENAME_MAX];
+						pfe = GetSelected(curframe);
+						strcpy(szDir,pfe->name);
+						char szMsg[356];
+						sprintf(szMsg,msg[MSG_MKLINK*NUM_LANG+language], finfo[curframe].path, pfe->name, finfo[1-curframe].path);
+						switch (GetInputString(400,255,szDir,szMsg, NO))
+						{
+							case RC_OK:
+							{
+								if (*szDir != 0x00)
+								{
+									sprintf(action,"ln -s \"%s%s\" \"%s%s\"",finfo[curframe].path, pfe->name,finfo[1-curframe].path, szDir);
+									DoExecute(action, SHOW_NO_OUTPUT);
+									FillDir(1-curframe,SELECT_NOCHANGE);
+									FillDir(  curframe,SELECT_NOCHANGE);
+								}
+							}
+							default:
+								rccode = 0;
+						}
+					}
+					break;
+					
+			case RC_RED:
+					{
+						lastnoncur = -1;
+						char szMsg[356];
+						sprintf(szMsg,msg[MSG_COMMAND*NUM_LANG+language]);
+						char* szCommand = (char*)malloc(commandsize);
+					    	szCommand [0]= 0x00;
+						switch (GetInputString(400,commandsize,szCommand,szMsg, NO))
+						{
+							case RC_OK:
+								DoExecute(szCommand, SHOW_OUTPUT);
+								FillDir(1-curframe,SELECT_NOCHANGE);
+								FillDir(  curframe,SELECT_NOCHANGE);
+								break;
+							default:
+								rccode = 0;
+						}
+						free (szCommand);
+					}
+					break;
+					
+			case RC_GREEN: // toggle marker
+				ToggleMarker(curframe);
+				finfo[curframe].selected++;
+				   break;
+				    
+			case RC_YELLOW:
+				cursort = finfo[curframe].sort = finfo[curframe].sort * -1;
+				strcpy(szSel,GetSelected(curframe)->name);
+				sortframe(curframe, szSel);
+				break;
+					
+			case RC_BLUE: // Refresh
+				lastnoncur = -1;
+				FillDir(1-curframe,SELECT_NOCHANGE);
+				FillDir(  curframe,SELECT_NOCHANGE);
+				break;
+					
+			case RC_MUTE: // toggle visibility
+				curvisibility++;
+				if (curvisibility > 2) curvisibility = 0;
+				break;
+					
+			case RC_DBOX: // main menu
+				lastnoncur = -1;
+				DoMainMenu();
+				break;
+					
+			case RC_HOME:
+					if (autosave == BTN_ASK)
+					{
+						lastnoncur = -1;
+						switch (MessageBox(msg[MSG_SAVESETTINGS*NUM_LANG+language],"",YESNOCANCEL))
+						{
+							case YES:
+								dosave = BTN_YES;
+								rccode = RC_HOME;
+								break;
+							case NO:
+								dosave = BTN_NO;
+								rccode = RC_HOME;
+								break;
+							case CANCEL:
+								dosave = BTN_NO;
+								rccode = -1;
+								break;
+						}
+					}
+					break;
+
+			default:
+				continue;
+		}
+
+		if (finfo[curframe].selected  < 0)
+			finfo[curframe].selected  = 0;
+		if (finfo[curframe].selected >= finfo[curframe].count)
+			finfo[curframe].selected  = finfo[curframe].count -1;
+		if (finfo[curframe].first > finfo[curframe].selected)
+			finfo[curframe].first = finfo[curframe].selected;
+		if (finfo[curframe].selected >= finfo[curframe].first + framerows)
+			finfo[curframe].first = finfo[curframe].selected - framerows+1;
+		
+		RenderFrame(LEFTFRAME);
+		RenderFrame(RIGHTFRAME);
+		//memcpy(lfb, lbb, fix_screeninfo.line_length * var_screeninfo.yres);
+		CFrameBuffer::getInstance()->blit();
+
+	}while(rccode != RC_HOME);
+
+	if (dosave == BTN_YES)
+		WriteSettings();
+
+	system("rm -f /tmp/tuxcom.out");
+	rccode = -1;
+
+	ClearEntries(LEFTFRAME );
+	ClearEntries(RIGHTFRAME);
+	ClearMarker(LEFTFRAME );
+	ClearMarker(RIGHTFRAME);
+	ClearZipEntries(LEFTFRAME );
+	ClearZipEntries(RIGHTFRAME);
+	
+	CFrameBuffer::getInstance()->ClearFrameBuffer();
+	CFrameBuffer::getInstance()->blit();
+}
+
+

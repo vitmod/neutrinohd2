@@ -128,7 +128,10 @@ enum {
 };
 
 //framebuffer stuff
-enum {FILL, GRID};
+enum {
+	FILL, 
+	GRID
+};
 
 enum {
 	TRANSP = 0xFF, 
@@ -150,8 +153,16 @@ enum {
 
 #define CONFIG_FILE PLUGINDIR "/tuxcom.conf"
 
-uint8_t trans_map[] = {BLUE1, BLUE_TRANSP, TRANSP};
-uint8_t trans_map_mark[] = {GRAY2, GRAY_TRANSP, GRAY_TRANSP};
+uint8_t trans_map[] = {
+	BLUE1, 
+	BLUE_TRANSP, 
+	TRANSP
+};
+uint8_t trans_map_mark[] = {
+	GRAY2, 
+	GRAY_TRANSP, 
+	GRAY_TRANSP
+};
 
 unsigned short rccode;
 

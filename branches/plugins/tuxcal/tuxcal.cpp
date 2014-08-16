@@ -305,17 +305,21 @@ int ControlDaemon(int command)
  \param			: none
  \return 		: remote-control or keyboard-code
 */
-int GetRCCode()
+int getRCcode()
 {
+	printf("getRCcode()\n");
+	
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
-	
+
 	g_RCInput->getMsg_ms(&msg, &data, 40);
 	rccode = -1;
-
+	
 	if (msg <= CRCInput::RC_MaxRC) 
 	{
 		rccode = msg;
+		
+		printf("rccode = %d\n", rccode);
 		return 1;
 	}
 	
@@ -345,7 +349,7 @@ int GetStringLen(const char *string, int size)
  * render a string to the screen
  
 */
-void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout, int size, int color)
+void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout, int size, uint8_t color)
 {
 	//set alignment
 	if(layout != LEFT)
@@ -382,7 +386,7 @@ void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout
  \param color	: color to paint with
  \return      : none
 */
-void RenderBox(int _sx, int _sy, int _ex, int _ey, int mode, int color)
+void RenderBox(int _sx, int _sy, int _ex, int _ey, int mode, uint8_t color)
 {
 	if(mode == FILL)
 	{
@@ -407,7 +411,7 @@ void RenderBox(int _sx, int _sy, int _ex, int _ey, int mode, int color)
  * render a integer to the screen
  
 */
-void RenderInt(const char *string, int _sx, int _sy, int maxwidth, int layout, int size, int color, int colorgrid, int colorfill)
+void RenderInt(const char *string, int _sx, int _sy, int maxwidth, int layout, int size, uint8_t color, uint8_t colorgrid, uint8_t colorfill)
 {
 	int x,y,cx,cy;
 	int sizey = FONTSIZE_NORMAL;
@@ -502,7 +506,7 @@ int MessageBox(const char* header, const char* question)
 	CFrameBuffer::getInstance()->blit();
 
 	// now wait for key
-	while ( GetRCCode() == 1)
+	while ( getRCcode() == 0)
 	{
 		// OK or RETURN
 		if ( rccode == RC_OK )
@@ -558,7 +562,7 @@ void ShowMessage(int message)
 	CFrameBuffer::getInstance()->blit();
 
 	// wait for OK keystroke
-	while ( GetRCCode() == 1)
+	while ( getRCcode() == 0)
 	{
 		if (( rccode == RC_OK ) || ( rccode == RC_HOME ))
 		{
@@ -586,11 +590,11 @@ void ShowMessage(int message)
  \param iEditCol	: column in line just being edited
  \return					: none
 */
-int *PaintEdit(EVT_DB* pEvt, int iEditLine, int iEditCol)
+int *PaintEdit(EVT_DB* pEvt, int iEditLine, uint8_t iEditCol)
 {
 	char info[80];	
 	int x, y, l, t, r, b;
-	int iColor=RED;
+	uint8_t iColor=RED;
 	int* pIEdit=NULL;
 	
 	// background (just for testing)
@@ -615,7 +619,7 @@ int *PaintEdit(EVT_DB* pEvt, int iEditLine, int iEditCol)
 	
 	int i;
 	int *pint=NULL;
-	int colorfill=WHITE;
+	uint8_t colorfill=WHITE;
 	int iStrLen=0;
 	
 	for (i=1;i<11;i++)
@@ -859,7 +863,7 @@ int CheckEvent(EVT_DB* pEvt)
 int Edit(EVT_DB* pEvt)
 {
 	int iEditLine=1;
-	int iEditCol=0;
+	uint8_t iEditCol=0;
 	unsigned short tmprc=0xFFFF;
 	int iTypeInt=2;
 	int iMultipl=1;
@@ -875,7 +879,7 @@ int Edit(EVT_DB* pEvt)
 	pEditInt=PaintEdit(pEvt, iEditLine, iEditCol);	
 	
 	// act on key-input
-	while (GetRCCode())
+	while (getRCcode())
 	{
 		tmprc = rccode;	
 		rccode = 0xFFFF;	
@@ -1214,6 +1218,8 @@ int Edit(EVT_DB* pEvt)
 */
 void PaintGrid(int last, int start, int end, int akt, int sel, int infolines, int *iSelInfo)
 {
+	printf("PaintGrid start\n");
+	
 	int x, y;
 	int iCnt = 0;
 	int cy;
@@ -1494,6 +1500,8 @@ void PaintGrid(int last, int start, int end, int akt, int sel, int infolines, in
 	// output to framebuffer
 	//memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
 	CFrameBuffer::getInstance()->blit();
+	
+	printf("PaintGrid finished\n");
 }
 
 //
@@ -1983,7 +1991,7 @@ int IsEvent(int day, int month, int year)
 void LoadDatabase(void)
 {
 	// clear database
-	memset(eventdb,0,sizeof(eventdb));
+	memset(eventdb, 0, sizeof(eventdb));
 	
 	char linebuffer[1024];
 	FILE *fd_evt;
@@ -2206,22 +2214,10 @@ void plugin_exec()
 	printf("TuxCal %s\n", versioninfo_p);
 	
 	// coordinate
-	int x = CFrameBuffer::getInstance()->getScreenX();
-	int y = CFrameBuffer::getInstance()->getScreenY();
-	int w = CFrameBuffer::getInstance()->getScreenWidth();
-	int h = CFrameBuffer::getInstance()->getScreenHeight();
-
-	//
-	int s_x = x;
-	int s_y = y;
-	int s_w = w;
-	int s_h = h;
-	
-	//
-	sx = s_x;
-	ex = s_x + s_w;
-	sy = s_y;
-	ey = s_y + s_h;
+	sx = CFrameBuffer::getInstance()->getScreenX();
+	ex = sx + CFrameBuffer::getInstance()->getScreenWidth();
+	sy = CFrameBuffer::getInstance()->getScreenY();
+	ey = sy + CFrameBuffer::getInstance()->getScreenHeight();
 
 	// read config
 	ReadConf();
@@ -2231,8 +2227,11 @@ void plugin_exec()
 	CFrameBuffer::getInstance()->ClearFrameBuffer();
 	CFrameBuffer::getInstance()->blit();
 
-	startx = sx + (((ex - sx) - MAXSCREEN_X)/2);
-	starty = sy + (((ey - sy) - MAXSCREEN_Y)/2);
+	startx = sx;
+	starty = sy;
+	
+	MAXSCREEN_X = CFrameBuffer::getInstance()->getScreenWidth();
+	MAXSCREEN_Y = CFrameBuffer::getInstance()->getScreenHeight();
 		
 	// get daemon status
 	if (!ControlDaemon(GET_STATUS))
@@ -2263,12 +2262,12 @@ void plugin_exec()
 	int year,mon;	
 	int oldyear = 0;
 	int iChanged = 0;	
-	rccode = -1;
 	
 	// main loop
 	do
 	{
-		GetRCCode();
+		// rcinput events
+		getRCcode();
 		
 		// calculate the christian holidays
 		if (oldyear != tShow_year)
@@ -2288,7 +2287,7 @@ void plugin_exec()
 		AddDays(&iLastPreMonth, &mon, &year, -1);
 		
 		// calculate days in this month
-		iMonthDays=monthdays[LeapYear(tShow_year)][tShow_mon-1];
+		iMonthDays = monthdays[LeapYear(tShow_year)][tShow_mon-1];
 		
 		// calculate position of actual day
 		if ((tShow_mon == at->tm_mon+1) && (tShow_year == at->tm_year+1900))
@@ -2298,7 +2297,7 @@ void plugin_exec()
 		
 		PaintGrid(iLastPreMonth, iDayOfWeek, iDayOfWeek+iMonthDays - 1, iActDayPos, iDayOfWeek + tShow_day - 1, iSel, &iSelInfo);
 		
-		switch (rccode)
+		switch ( rccode )
 		{
 			case RC_DBOX:
 			{
@@ -2519,7 +2518,7 @@ void plugin_exec()
 	}while (rccode != RC_HOME);
 
 	// signal daemon to reread the database
-	ControlDaemon(RELOAD_DB);														
+	ControlDaemon(RELOAD_DB);
 	
 	CFrameBuffer::getInstance()->ClearFrameBuffer();
 	CFrameBuffer::getInstance()->blit();
