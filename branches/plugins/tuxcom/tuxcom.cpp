@@ -67,6 +67,8 @@ int GetStringLen(const char *string, int size)
 //
 void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout, int size, uint8_t color)
 {
+	color = COL_MENUCONTENT;
+	
 	//set alignment
 	if(layout != LEFT)
 	{
@@ -85,7 +87,7 @@ void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout
 		}
 	}
 	
-	g_Font[size]->RenderString(StartX + _sx, StartY + _sy, maxwidth, string, (uint8_t)CFrameBuffer::getInstance()->realcolor[color], 0, true); // UTF-8
+	g_Font[size]->RenderString(StartX + _sx, StartY + _sy, maxwidth, string, color, 0, true); // UTF-8
 }
 
 //

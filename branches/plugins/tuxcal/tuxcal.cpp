@@ -307,7 +307,7 @@ int ControlDaemon(int command)
 */
 int getRCcode()
 {
-	printf("getRCcode()\n");
+	//printf("getRCcode()\n");
 	
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
@@ -319,7 +319,7 @@ int getRCcode()
 	{
 		rccode = msg;
 		
-		printf("rccode = %d\n", rccode);
+		//printf("rccode = %d\n", rccode);
 		return 1;
 	}
 	
@@ -351,6 +351,8 @@ int GetStringLen(const char *string, int size)
 */
 void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout, int size, uint8_t color)
 {
+	color = COL_MENUCONTENT;
+	
 	//set alignment
 	if(layout != LEFT)
 	{
@@ -369,7 +371,7 @@ void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout
 		}
 	}
 	
-	g_Font[size]->RenderString(startx + _sx, starty + _sy, maxwidth, string, (uint8_t)CFrameBuffer::getInstance()->realcolor[color], 0, true); // UTF-8
+	g_Font[size]->RenderString(startx + _sx, starty + _sy, maxwidth, string, color, 0, true); // UTF-8
 }
 
 //
@@ -467,7 +469,7 @@ void RenderSObject(int _sx, int _sy, uint8_t color, int iType)
 		{
 			if (*pObj++)					// only paint if mask-value set
 				//memset(lbb + startx + sx + x + var_screeninfo.xres*(starty + sy + y), color, 1);
-				CFrameBuffer::getInstance()->paintPixel(startx + x, starty + y, CFrameBuffer::getInstance()->realcolor[color]);
+				CFrameBuffer::getInstance()->paintPixel(startx + _sx, starty + _sy, CFrameBuffer::getInstance()->realcolor[color]);
 		}
 	}
 }
@@ -1218,7 +1220,7 @@ int Edit(EVT_DB* pEvt)
 */
 void PaintGrid(int last, int start, int end, int akt, int sel, int infolines, int *iSelInfo)
 {
-	printf("PaintGrid start\n");
+	//printf("PaintGrid start\n");
 	
 	int x, y;
 	int iCnt = 0;
@@ -1501,7 +1503,7 @@ void PaintGrid(int last, int start, int end, int akt, int sel, int infolines, in
 	//memcpy(lfb, lbb, var_screeninfo.xres*var_screeninfo.yres);
 	CFrameBuffer::getInstance()->blit();
 	
-	printf("PaintGrid finished\n");
+	//printf("PaintGrid finished\n");
 }
 
 //

@@ -41,7 +41,7 @@ typedef struct sreadline
 	char line[256];
 }sreadline;
 
-class CBESysInfoWidget : public CMenuTarget
+class CSysInfoWidget : public CMenuTarget
 {
 	private:
 		enum {
@@ -97,7 +97,7 @@ class CBESysInfoWidget : public CMenuTarget
 		int readList(struct sfileline *inbuffer);
 
 	public:
-		CBESysInfoWidget(int m = SYSINFO);
+		CSysInfoWidget(int m = SYSINFO);
 		int exec(CMenuTarget *parent, const std::string &actionKey);
 		void hide();
 };

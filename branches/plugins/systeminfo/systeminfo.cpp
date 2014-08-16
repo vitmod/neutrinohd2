@@ -34,7 +34,7 @@ int slinecount, syscount;
 bool refreshIt = true;
 
 // construktor
-CBESysInfoWidget::CBESysInfoWidget(int m)
+CSysInfoWidget::CSysInfoWidget(int m)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 	
@@ -70,7 +70,7 @@ CBESysInfoWidget::CBESysInfoWidget(int m)
 }
 
 // paintItem without selected line
-void CBESysInfoWidget::paintItem(int pos)
+void CSysInfoWidget::paintItem(int pos)
 {
 	int ypos = y + theight + pos*fheight;
 	uint8_t color;
@@ -93,7 +93,7 @@ void CBESysInfoWidget::paintItem(int pos)
 }
 
 // paintlistbox
-void CBESysInfoWidget::paint()
+void CSysInfoWidget::paint()
 {
 	liststart = (selected/listmaxshow)*listmaxshow;
 
@@ -112,12 +112,12 @@ void CBESysInfoWidget::paint()
 	sbc = (syscount/listmaxshow) + 1;
 	float sbh= (sb - 4)/ sbc;
 	int sbs  = (selected/listmaxshow);
+	
 	frameBuffer->paintBoxRel(x + width - 13, ypos + 2 + int(sbs* sbh), 11, int(sbh),  COL_MENUCONTENT_PLUS_3);
-
 }
 
 // paint head
-void CBESysInfoWidget::paintHead()
+void CSysInfoWidget::paintHead()
 {
 	char buf[100];
 
@@ -143,7 +143,7 @@ void CBESysInfoWidget::paintHead()
 }
 
 // paint foot
-void CBESysInfoWidget::paintFoot()
+void CSysInfoWidget::paintFoot()
 {
 	int ButtonWidth = (width - 28) / 4;
 	frameBuffer->paintBoxRel(x, y + height, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
@@ -167,7 +167,7 @@ void CBESysInfoWidget::paintFoot()
 }
 
 // hide
-void CBESysInfoWidget::hide()
+void CSysInfoWidget::hide()
 {
 	frameBuffer->paintBackgroundBoxRel(x, y, width, height + ButtonHeight);
 	
@@ -175,7 +175,7 @@ void CBESysInfoWidget::hide()
 }
 
 // main
-int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
+int CSysInfoWidget::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
 {
 	int res = menu_return::RETURN_REPAINT;
 
@@ -345,7 +345,7 @@ int CBESysInfoWidget::exec(CMenuTarget *parent, const std::string &/*actionKey*/
 	return res;
 }
 
-int CBESysInfoWidget::sysinfo()
+int CSysInfoWidget::sysinfo()
 {
 	static long curCPU[5] = {0, 0, 0, 0, 0};
 	static long prevCPU[5] = {0, 0, 0, 0, 0};
@@ -478,7 +478,7 @@ int CBESysInfoWidget::sysinfo()
 	return(readList(sinbuffer));
 }
 
-int CBESysInfoWidget::cpuinfo()
+int CSysInfoWidget::cpuinfo()
 {
 	char Wert1[30];
 	char Wert2[10];
@@ -521,7 +521,7 @@ int CBESysInfoWidget::cpuinfo()
 
 }
 
-int CBESysInfoWidget::dmesg()
+int CSysInfoWidget::dmesg()
 {
 	/* Get System-Messages from dmesg*/
 	system("dmesg > /tmp/sysinfo");
@@ -530,7 +530,7 @@ int CBESysInfoWidget::dmesg()
 	return(readList(sinbuffer));
 }
 
-int CBESysInfoWidget::ps()
+int CSysInfoWidget::ps()
 {
 	/* Get Processlist from ps*/
 	system("ps -A > /tmp/sysinfo");
@@ -540,7 +540,7 @@ int CBESysInfoWidget::ps()
 }
 
 // read infos
-int CBESysInfoWidget::readList(struct sfileline *sinbuffer)
+int CSysInfoWidget::readList(struct sfileline *sinbuffer)
 {
 	FILE *fp;
 	char line[256];
@@ -575,7 +575,7 @@ void plugin_exec(void)
 {
 	printf("Plugins: starting systeminfo\n");
 	
-	CBESysInfoWidget * SysInfoWidget = new CBESysInfoWidget();
+	CSysInfoWidget * SysInfoWidget = new CSysInfoWidget();
 	
 	SysInfoWidget->exec(NULL, "");
 	SysInfoWidget->hide();
