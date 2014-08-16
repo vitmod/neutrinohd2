@@ -106,13 +106,58 @@ static const char *charset = " abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVW
 // if font is not in usual place, we look here:
 #define FONT2 FONTDIR "/pakenham.ttf"
 
-enum {LANG_INT,LANG_DE, LANG_IT, LANG_SV, LANG_PT};
-enum {RC_NORMAL,RC_EDIT};
-enum {LEFT, CENTER, RIGHT};
+enum {
+	LANG_INT,
+	LANG_DE, 
+	LANG_IT, 
+	LANG_SV, 
+	LANG_PT
+};
 
-enum {OK, OKCANCEL, OKHIDDENCANCEL,YESNOCANCEL,NOBUTTON,OVERWRITECANCEL,OVERWRITESKIPCANCEL,CANCELRUN};
-enum {YES, NO, HIDDEN,CANCEL, OVERWRITE, SKIP, OVERWRITEALL,SKIPALL,EDIT, RENAME, SEARCHRESULT, EDITOR};
-enum {GZIP,BZIP2,COMPRESS,TAR,FTP};
+enum {
+	RC_NORMAL,
+	RC_EDIT
+};
+
+enum {
+	LEFT, 
+	CENTER, 
+	RIGHT
+};
+
+enum {
+	OK, 
+	OKCANCEL, 
+	OKHIDDENCANCEL,
+	YESNOCANCEL,
+	NOBUTTON,
+	OVERWRITECANCEL,
+	OVERWRITESKIPCANCEL,
+	CANCELRUN
+};
+
+enum {
+	YES, 
+	NO, 
+	HIDDEN,
+	CANCEL, 
+	OVERWRITE, 
+	SKIP, 
+	OVERWRITEALL,
+	SKIPALL,
+	EDIT, 
+	RENAME, 
+	SEARCHRESULT, 
+	EDITOR
+};
+
+enum {
+	GZIP,
+	BZIP2,
+	COMPRESS,
+	TAR,
+	FTP
+};
 
 #define FONTHEIGHT_VERY_SMALL 	20
 #define FONTHEIGHT_SMALL      	24
@@ -158,6 +203,7 @@ uint8_t trans_map[] = {
 	BLUE_TRANSP, 
 	TRANSP
 };
+
 uint8_t trans_map_mark[] = {
 	GRAY2, 
 	GRAY_TRANSP, 

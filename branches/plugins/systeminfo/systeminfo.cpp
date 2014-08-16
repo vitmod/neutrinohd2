@@ -88,7 +88,7 @@ void CBESysInfoWidget::paintItem(int pos)
 		memcpy(tmpline75,  &sysbuffer[liststart+pos].line[0], 75);
 		tmpline75[75] = '\0';
 
-		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 5, ypos + fheight, width - 2*SCROLLBAR_WIDTH, tmpline75, color);
+		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 5, ypos + fheight, width - 2*SCROLLBAR_WIDTH, tmpline75, color, 0, true);
 	}
 }
 
