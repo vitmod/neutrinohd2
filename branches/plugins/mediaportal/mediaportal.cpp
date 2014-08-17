@@ -30,8 +30,70 @@ extern "C" void plugin_exec(void);
 class CMediaPortal : public CMenuTarget
 {
         public:
+		void ORF(void);
                 int exec(CMenuTarget *parent,  const std::string &actionkey);
 };
+
+void CMediaPortal::ORF(void)
+{
+	static int old_select = 0;
+	char cnt[5];
+	
+	CMenuWidget InputSelector(LOCALE_WEBTV_HEAD, NEUTRINO_ICON_WEBTV_SMALL);
+	int count = 0;
+	int select = -1;
+					
+	CMenuSelectorTarget *ORFInputChanger = new CMenuSelectorTarget(&select);
+			
+	// orf1
+	sprintf(cnt, "%d", count);
+	InputSelector.addItem(new CMenuForwarderNonLocalized("ORF 1", true, NULL, ORFInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
+	
+	// orf 2
+	sprintf(cnt, "%d", ++count);
+	InputSelector.addItem(new CMenuForwarderNonLocalized("ORF 2", true, NULL, ORFInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
+
+	// orf 3
+	sprintf(cnt, "%d", ++count);
+	InputSelector.addItem(new CMenuForwarderNonLocalized("ORF 3", true, NULL, ORFInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
+	
+	// orf sport
+	sprintf(cnt, "%d", ++count);
+	InputSelector.addItem(new CMenuForwarderNonLocalized("ORF Sport", true, NULL, ORFInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
+	
+	hide();
+	InputSelector.exec(NULL, "");
+	delete ORFInputChanger;
+					
+	if(select >= 0)
+	{
+		old_select = select;
+					
+		switch (select) 
+		{
+			case 0:
+				moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf1_q6a/orf.sdp";	
+				moviePlayerGui->exec(NULL, "urlplayback");
+				break;
+						
+			case 1:
+				moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf2_q6a/orf.sdp";	
+				moviePlayerGui->exec(NULL, "urlplayback");
+				break;
+				
+			case 2:
+				moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf3_q6a/orf.sdp";	
+				moviePlayerGui->exec(NULL, "urlplayback");
+				break;
+			case 3:
+				moviePlayerGui->filename = "rtsp://apasfwl.apa.at/orfs_q6a/orf.sdp";	
+				moviePlayerGui->exec(NULL, "urlplayback");
+				break;
+						
+			default: break;
+		}
+	}
+}
 
 int CMediaPortal::exec(CMenuTarget *parent, const std::string &actionKey)
 {
@@ -73,6 +135,26 @@ int CMediaPortal::exec(CMenuTarget *parent, const std::string &actionKey)
 		moviePlayerGui->filename = "rtsp://apasfwl.apa.at/orfs_q6a/orf.sdp";	
 		moviePlayerGui->exec(NULL, "urlplayback");
 	}
+	else if(actionKey == "ardmt")
+	{
+		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "ARD Mediathek not yet", 450, 2 );
+	}
+	else if(actionKey == "zdfmt")
+	{
+		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "ZDF Mediathek not yet", 450, 2 );
+	}
+	else if(actionKey == "orfmt")
+	{
+		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "ORF Mediathek not yet", 450, 2 );
+	}
+	else if(actionKey == "artemt")
+	{
+		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "ARTE Mediathek not yet", 450, 2 );
+	}
+	else if(actionKey == "orf")
+	{
+		ORF();
+	}
 
 	return menu_return::RETURN_REPAINT;
 }
@@ -90,10 +172,21 @@ void plugin_exec(void)
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Netzkino", true, NULL, mpHandler, "netzkino", NULL, NULL, NEUTRINO_ICON_MENUITEM_NETZKINO));
 	
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Music Deluxe", true, NULL, mpHandler, "musicdeluxe", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	
+	// orf stream
+	/*
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 1", true, NULL, mpHandler, "orf1", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 2", true, NULL, mpHandler, "orf2", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 3", true, NULL, mpHandler, "orf3", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF Sport HQ", true, NULL, mpHandler, "orfsport", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	*/
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF Streams", true, NULL, mpHandler, "orf", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	
+	// dummies
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ARD Mediathek", true, NULL, mpHandler, "ardmt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ZDF Mediathek", true, NULL, mpHandler, "zdfmt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF Mediathek", true, NULL, mpHandler, "orfmt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ARTE Mediathek", true, NULL, mpHandler, "artemt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
 	
 	mediaPortal->exec(NULL, "");
 	mediaPortal->hide();
