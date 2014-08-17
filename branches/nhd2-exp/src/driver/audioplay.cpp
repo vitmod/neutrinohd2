@@ -31,6 +31,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+
 #include "global.h"
 #include <stdio.h>
 #include <fcntl.h>
@@ -44,7 +45,7 @@
 
 #include <playback_cs.h>
 
-void ShoutcastCallback(void *arg);
+
 extern cPlayback *playback;
 
 void CAudioPlayer::stop()
@@ -126,9 +127,15 @@ CAudioPlayer * CAudioPlayer::getInstance()
 	return AudioPlayer;
 }
 
+void ShoutcastCallback(void *arg)
+{
+	CAudioPlayer::getInstance()->sc_callback(arg);
+}
+
 void * CAudioPlayer::PlayThread( void * /*dummy*/ )
 {	
 	FILE * fp = fopen( getInstance()->m_Audiofile.Filename.c_str(), "r" );
+	
 	if ( fp == NULL )
 	{
 		fprintf( stderr, "Error opening file %s for decoding.\n", getInstance()->m_Audiofile.Filename.c_str() );
