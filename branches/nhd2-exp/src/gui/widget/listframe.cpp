@@ -80,10 +80,14 @@
 #define FONT_HEADER_LIST g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]
 #define FONT_TITLE g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE];
 
-//////////////////////////////////////////////////////////////////////
-// Construction/Destruction
-//////////////////////////////////////////////////////////////////////
 
+CFont* CListFrame::m_pcFontTitle = NULL;
+CFont* CListFrame::m_pcFontList = NULL;
+CFont* CListFrame::m_pcFontHeaderList = NULL;
+
+//
+// Construction/Destruction
+//
 CListFrame::CListFrame(	LF_LINES* lines, CFont * font_text, const int _mode, const CBox* position, const char* textTitle, CFont *font_title)
 {
 	dprintf(DEBUG_DEBUG, "[CListFrame] new\r\n");
