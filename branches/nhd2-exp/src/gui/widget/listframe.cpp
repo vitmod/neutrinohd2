@@ -66,10 +66,10 @@
 #define MIN_WINDOW_WIDTH  (frameBuffer->getScreenWidth() >> 1)
 #define MIN_WINDOW_HEIGHT 40	
 
-#define TITLE_BACKGROUND_COLOR ((CFBWindow::color_t)COL_MENUHEAD_PLUS_0)
-#define HEADER_LIST_BACKGROUND_COLOR ((CFBWindow::color_t)COL_MENUCONTENT_PLUS_0)
-#define LIST_BACKGROUND_COLOR ((CFBWindow::color_t)COL_MENUCONTENT_PLUS_0)
-#define LIST_BACKGROUND_COLOR_SELECTED ((CFBWindow::color_t)COL_MENUCONTENTSELECTED_PLUS_0)
+#define TITLE_BACKGROUND_COLOR 		COL_MENUHEAD_PLUS_0
+#define HEADER_LIST_BACKGROUND_COLOR 	COL_MENUCONTENT_PLUS_0
+#define LIST_BACKGROUND_COLOR 		COL_MENUCONTENT_PLUS_0
+#define LIST_BACKGROUND_COLOR_SELECTED 	COL_MENUCONTENTSELECTED_PLUS_0
 
 #define TITLE_FONT_COLOR COL_MENUHEAD
 #define HEADER_LIST_FONT_COLOR COL_MENUCONTENT
@@ -403,7 +403,7 @@ void CListFrame::refreshList(void)
 	int y = m_cFrameListRel.iY + TEXT_BORDER_WIDTH ;
 	for(int line = m_nCurrentLine; line < m_nNrOfLines && line < m_nCurrentLine + m_nLinesPerPage; line++)
 	{
-		uint8_t color = LIST_FONT_COLOR;
+		uint32_t color = LIST_FONT_COLOR;
 		// draw line
 		if(line == m_nSelectedLine && m_showSelection == true)
 		{
@@ -441,7 +441,7 @@ void CListFrame::refreshLine(int line)
 	if((line < m_nCurrentLine) && (line > m_nCurrentLine + m_nLinesPerPage))
 		return;
 
-	uint8_t color;
+	uint32_t color;
 	int rel_line = line - m_nCurrentLine;
 	int y = m_cFrameListRel.iY + TEXT_BORDER_WIDTH + (rel_line*m_nFontListHeight);
 
