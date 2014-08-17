@@ -52,7 +52,8 @@ void CAudioPlayer::stop()
 {
 	state = CBaseDec::STOP_REQ;
 	
-	playback->Close();
+	if(playback->playing)
+		playback->Close();
 
 	//
 	if(thrPlay)
@@ -188,7 +189,9 @@ void * CAudioPlayer::PlayThread( void * /*dummy*/ )
 #endif		
 		{
 			getInstance()->state = CBaseDec::STOP;
-			playback->Close();
+			
+			if(playback->playing)
+				playback->Close();
 				
 			break;	
 		}
@@ -197,7 +200,9 @@ void * CAudioPlayer::PlayThread( void * /*dummy*/ )
 	}while(getInstance()->state != CBaseDec::STOP_REQ);
 	
 	getInstance()->state = CBaseDec::STOP;
-	playback->Close();
+	
+	if(playback->playing)
+		playback->Close();
 	
 	pthread_exit(0);
 
