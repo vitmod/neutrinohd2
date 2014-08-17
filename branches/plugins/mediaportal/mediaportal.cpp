@@ -81,16 +81,19 @@ void plugin_exec(void)
 {
 	printf("Plugins: starting Media Portal\n");
 	
-	CMenuWidget * mediaPortal = new CMenuWidget("Media Portal",NEUTRINO_ICON_BUTTON_SETUP);
+	CMenuWidget * mediaPortal = new CMenuWidget("Media Portal", NEUTRINO_ICON_STREAMING);
 	CMediaPortal * mpHandler = new CMediaPortal();
 	
-	mediaPortal->addItem(new CMenuForwarderNonLocalized("Youtube", true, NULL, mpHandler, "youtube"));
-	mediaPortal->addItem(new CMenuForwarderNonLocalized("Netzkino.de", true, NULL, mpHandler, "netzkino"));
-	mediaPortal->addItem(new CMenuForwarderNonLocalized("Music Deluxe", true, NULL, mpHandler, "musicdeluxe"));
-	mediaPortal->addItem(new CMenuForwarderNonLocalized("ORF 1", true, NULL, mpHandler, "orf1"));
-	mediaPortal->addItem(new CMenuForwarderNonLocalized("ORF 2", true, NULL, mpHandler, "orf2"));
-	mediaPortal->addItem(new CMenuForwarderNonLocalized("ORF 3", true, NULL, mpHandler, "orf3"));
-	mediaPortal->addItem(new CMenuForwarderNonLocalized("ORF Sport HQ", true, NULL, mpHandler, "orfsport"));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Youtube", true, NULL, mpHandler, "youtube", NULL, NULL, NEUTRINO_ICON_MENUITEM_YT));
+	
+	// netzkino
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Netzkino", true, NULL, mpHandler, "netzkino", NULL, NULL, NEUTRINO_ICON_MENUITEM_NETZKINO));
+	
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Music Deluxe", true, NULL, mpHandler, "musicdeluxe", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 1", true, NULL, mpHandler, "orf1", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 2", true, NULL, mpHandler, "orf2", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 3", true, NULL, mpHandler, "orf3", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF Sport HQ", true, NULL, mpHandler, "orfsport", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
 	
 	mediaPortal->exec(NULL, "");
 	mediaPortal->hide();

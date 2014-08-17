@@ -41,6 +41,8 @@
 
 #include <ft2build.h>
 
+#include <plugin.h>
+
 #include FT_FREETYPE_H
 #include FT_CACHE_H
 #include FT_CACHE_SMALL_BITMAPS_H
@@ -81,7 +83,7 @@ int osdidx = 0;																				// actual used language
 char *monthmsg[12][MAXOSD] = {
 	{ "Januar"    , "January" },
 	{ "Februar"   , "February" },
-	{ "März"      , "March" },
+	{ "Mï¿½rz"      , "March" },
 	{ "April"     , "April" },
 	{ "Mai"       , "May" },
 	{ "Juni"      , "Juni" },
@@ -107,7 +109,7 @@ char *vdaysnames[][MAXOSD] = {
 	{ "heiliger Abend"				, "christmas" },
 	{ "1. Weihnachtsfeiertag"	, "christmas" },
 	{ "2. Weihnachtsfeiertag"	, "christmas" },
-	{ "heil. 3 Könige"				, "three kings" },
+	{ "heil. 3 Kï¿½nige"				, "three kings" },
 	{ "Neujahr"								, "new year" },
 	{ "Sylvester"							, "sylvester" },
 	{ "Valentinstag"					, "valentine" },
@@ -115,10 +117,10 @@ char *vdaysnames[][MAXOSD] = {
 	{ "Maria Himmelfahrt"			, "Maria Himmelfahrt" },
 	{ "Nikolaus"							, "st. claus" },
 	{ "Rosenmontag"						, "Rosenmontag" },
-	{ "Gründonnerstag"				, "Gründonnerstag" },
+	{ "Grï¿½ndonnerstag"				, "Grï¿½ndonnerstag" },
 	{ "Karfreitag"						, "Karfreitag" },
 	{ "D: Tag der Einheit"		, "D: Tag der Einheit" },
-	{ "Ö: Nationalfeiertag"		, "Ö: Nationalfeiertag" }
+	{ "ï¿½: Nationalfeiertag"		, "ï¿½: Nationalfeiertag" }
 };
 
 char *infotype[][MAXOSD] = {

@@ -1,4 +1,4 @@
-SUBDIRS = daemon
+#SUBDIRS = daemon
 
 AM_CPPFLAGS =  \
 	-I$(top_srcdir)/../nhd2-exp/src \
