@@ -72,21 +72,30 @@ void CMediaPortal::ORF(void)
 		switch (select) 
 		{
 			case 0:
-				moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf1_q6a/orf.sdp";	
+				moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf1_q6a/orf.sdp";
+				moviePlayerGui->g_file_epg = "ORF 1";
+				moviePlayerGui->g_file_epg1 = "Stream";
+				
 				moviePlayerGui->exec(NULL, "urlplayback");
 				break;
 						
 			case 1:
-				moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf2_q6a/orf.sdp";	
+				moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf2_q6a/orf.sdp";
+				moviePlayerGui->g_file_epg = "ORF 2";
+				moviePlayerGui->g_file_epg1 = "Stream";
 				moviePlayerGui->exec(NULL, "urlplayback");
 				break;
 				
 			case 2:
 				moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf3_q6a/orf.sdp";	
+				moviePlayerGui->g_file_epg = "ORF 3";
+				moviePlayerGui->g_file_epg1 = "Stream";
 				moviePlayerGui->exec(NULL, "urlplayback");
 				break;
 			case 3:
-				moviePlayerGui->filename = "rtsp://apasfwl.apa.at/orfs_q6a/orf.sdp";	
+				moviePlayerGui->filename = "rtsp://apasfwl.apa.at/orfs_q6a/orf.sdp";
+				moviePlayerGui->g_file_epg = "ORF Sport";
+				moviePlayerGui->g_file_epg1 = "Stream";
 				moviePlayerGui->exec(NULL, "urlplayback");
 				break;
 						
