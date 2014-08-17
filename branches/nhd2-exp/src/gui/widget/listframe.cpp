@@ -390,17 +390,20 @@ void CListFrame::refreshScroll(void)
 
 void CListFrame::refreshList(void)
 {
-	dprintf(DEBUG_DEBUG, "[CListFrame]->refreshList: %d\r\n",m_nCurrentLine);
-	if( frameBuffer == NULL) return;
-	frameBuffer->paintBoxRel(m_cFrameListRel.iX+m_cFrame.iX, m_cFrameListRel.iY+m_cFrame.iY, m_cFrameListRel.iWidth, m_cFrameListRel.iHeight,  LIST_BACKGROUND_COLOR);
+	dprintf(DEBUG_DEBUG, "[CListFrame]->refreshList: %d\r\n", m_nCurrentLine);
+	
+	if( frameBuffer == NULL) 
+		return;
+	
+	frameBuffer->paintBoxRel(m_cFrameListRel.iX + m_cFrame.iX, m_cFrameListRel.iY + m_cFrame.iY, m_cFrameListRel.iWidth, m_cFrameListRel.iHeight, LIST_BACKGROUND_COLOR);
 
-	if(  m_nNrOfLines <= 0) 
+	if(m_nNrOfLines <= 0) 
 		return;
 
 	int y = m_cFrameListRel.iY + TEXT_BORDER_WIDTH ;
 	for(int line = m_nCurrentLine; line < m_nNrOfLines && line < m_nCurrentLine + m_nLinesPerPage; line++)
 	{
-		int color = LIST_FONT_COLOR;
+		uint8_t color = LIST_FONT_COLOR;
 		// draw line
 		if(line == m_nSelectedLine && m_showSelection == true)
 		{
@@ -408,9 +411,11 @@ void CListFrame::refreshList(void)
 
 			frameBuffer->paintBoxRel(m_cFrameListRel.iX+m_cFrame.iX, y+m_cFrame.iY, m_cFrameListRel.iWidth, m_nFontListHeight, LIST_BACKGROUND_COLOR_SELECTED);
 		}
+		
 		int width;
 		int x = m_cFrameListRel.iX + TEXT_BORDER_WIDTH;
 		y += m_nFontListHeight;
+		
 		for(int row = 0; row < m_pLines->rows; row++)
 		{
 			width = m_pLines->rowWidth[row] ;
@@ -419,7 +424,7 @@ void CListFrame::refreshList(void)
 				width = m_cFrameListRel.iWidth - x + m_cFrameListRel.iX - TEXT_BORDER_WIDTH;
 				dprintf(DEBUG_DEBUG, "   normalize width to %d , x:%d \r\n",width,x);
 			}
-			m_pcFontList->RenderString(x+m_cFrame.iX, y+m_cFrame.iY, width, m_pLines->lineArray[row][line].c_str(), color, 0, true); // UTF-8
+			m_pcFontList->RenderString(x + m_cFrame.iX, y + m_cFrame.iY, width, m_pLines->lineArray[row][line].c_str(), color, 0, true); // UTF-8
 			x += m_pLines->rowWidth[row] + ROW_BORDER_WIDTH;								
 		}
 	}	
@@ -429,6 +434,7 @@ void CListFrame::refreshLine(int line)
 {
 	if( frameBuffer == NULL) 
 		return;
+	
 	if( m_nNrOfLines <= 0) 
 		return;
 
