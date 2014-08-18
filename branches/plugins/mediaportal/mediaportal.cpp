@@ -122,6 +122,8 @@ int CMediaPortal::exec(CMenuTarget *parent, const std::string &actionKey)
 	else if(actionKey == "musicdeluxe")
 	{
 		moviePlayerGui->filename = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
+		moviePlayerGui->g_file_epg = "Music Deluxe";
+		moviePlayerGui->g_file_epg1 = "Stream";
 		moviePlayerGui->exec(NULL, "urlplayback");
 	}
 	else if(actionKey == "orf1")
@@ -146,19 +148,19 @@ int CMediaPortal::exec(CMenuTarget *parent, const std::string &actionKey)
 	}
 	else if(actionKey == "ardmt")
 	{
-		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "ARD Mediathek not yet", 450, 2 );
+		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "not yet", 450, 2 );
 	}
 	else if(actionKey == "zdfmt")
 	{
-		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "ZDF Mediathek not yet", 450, 2 );
+		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "not yet", 450, 2 );
 	}
 	else if(actionKey == "orfmt")
 	{
-		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "ORF Mediathek not yet", 450, 2 );
+		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "not yet", 450, 2 );
 	}
 	else if(actionKey == "artemt")
 	{
-		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "ARTE Mediathek not yet", 450, 2 );
+		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "not yet", 450, 2 );
 	}
 	else if(actionKey == "orf")
 	{
@@ -192,10 +194,10 @@ void plugin_exec(void)
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF Streams", true, NULL, mpHandler, "orf", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
 	
 	// dummies
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ARD Mediathek", true, NULL, mpHandler, "ardmt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ZDF Mediathek", true, NULL, mpHandler, "zdfmt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF Mediathek", true, NULL, mpHandler, "orfmt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ARTE Mediathek", true, NULL, mpHandler, "artemt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("dummy 1", true, NULL, mpHandler, "ardmt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("dummy 2", true, NULL, mpHandler, "zdfmt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("dummy 3", true, NULL, mpHandler, "orfmt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("dummy 4", true, NULL, mpHandler, "artemt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
 	
 	mediaPortal->exec(NULL, "");
 	mediaPortal->hide();
