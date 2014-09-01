@@ -1112,12 +1112,13 @@ void CWebTV::openFilebrowser(void)
 {
 	CFileBrowser filebrowser;
 	CFileFilter fileFilter;
+	
 	fileFilter.addFilter("xml");
 	fileFilter.addFilter("tv");
 
-	filebrowser.Multi_Select    = true;
-	filebrowser.Dirs_Selectable = true;
-	filebrowser.Filter          = &fileFilter;
+	//filebrowser.Multi_Select    = true;
+	//filebrowser.Dirs_Selectable = true;
+	filebrowser.Filter = &fileFilter;
 
 	if (filebrowser.exec(CONFIGDIR))
 	{
