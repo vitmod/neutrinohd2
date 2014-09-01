@@ -76,7 +76,7 @@
 #define LIST_FONT_COLOR 		COL_MENUCONTENT
 #define LIST_FONT_COLOR_SELECTED 	COL_MENUCONTENTSELECTED
 
-#define FONT_LIST 			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]
+#define FONT_LIST 			g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO2]
 #define FONT_HEADER_LIST 		g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]
 #define FONT_TITLE 			g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE];
 
