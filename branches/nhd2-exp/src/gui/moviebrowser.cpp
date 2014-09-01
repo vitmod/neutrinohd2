@@ -1922,12 +1922,12 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 	}
 	else if (msg == CRCInput::RC_minus) 
 	{
-		if (show_mode != MB_SHOW_YT)
+		if ( (show_mode != MB_SHOW_YT) && (show_mode != MB_SHOW_NETZKINO) )
 			onSetGUIWindowPrev();
 	}
 	else if (msg == CRCInput::RC_plus) 
 	{
-		if (show_mode != MB_SHOW_YT)
+		if ( (show_mode != MB_SHOW_YT) && (show_mode != MB_SHOW_NETZKINO) )
 			onSetGUIWindowNext();
 	}
 	else if (msg == CRCInput::RC_green) 
@@ -2260,7 +2260,7 @@ bool CMovieBrowser::onButtonPressLastRecordList(neutrino_msg_t msg)
 	
 	bool result = true;
 	
-	if(msg==CRCInput::RC_up)
+	if(msg == CRCInput::RC_up)
 	{
 		m_pcLastRecord->scrollLineUp(1);
 	}
@@ -2372,7 +2372,7 @@ bool CMovieBrowser::onButtonPressFilterList(neutrino_msg_t msg)
 
 bool CMovieBrowser::onButtonPressMovieInfoList(neutrino_msg_t msg) 
 {
-	//dprintf(DEBUG_NORMAL, "[mb]->onButtonPressEPGInfoList %d\r\n",msg);
+	dprintf(DEBUG_INFO, "[mb]->onButtonPressEPGInfoList %d\r\n",msg);
 	
 	bool result = true;
 	
@@ -2475,7 +2475,7 @@ void CMovieBrowser::onDeleteFile(MI_MOVIE_INFO& movieSelectionHandler)
 
 void CMovieBrowser::onSetGUIWindow(MB_GUI gui)
 {
-	if (show_mode == MB_SHOW_YT || MB_SHOW_NETZKINO )
+	if (show_mode == MB_SHOW_YT || show_mode == MB_SHOW_NETZKINO )
 	{
 		switch(gui) 
 		{
@@ -2492,6 +2492,7 @@ void CMovieBrowser::onSetGUIWindow(MB_GUI gui)
 	if(gui == MB_GUI_MOVIE_INFO)
 	{
 		dprintf(DEBUG_NORMAL, "[mb] browser info\r\n");
+		
 		// Paint these frames ...
 		m_showMovieInfo = true;
 		m_showBrowserFiles = true;
@@ -2913,7 +2914,7 @@ bool CMovieBrowser::loadTsFileNamesFromDir(const std::string & dirname)
 					}
 					
 					//TEST: remove me
-					if(show_mode != MB_SHOW_YT)
+					if( (show_mode != MB_SHOW_YT) && (show_mode != MB_SHOW_NETZKINO) )
 					{
 						if(movieInfo.serieName.empty())
 							movieInfo.serieName = movieInfo.epgTitle;
@@ -4035,8 +4036,8 @@ int CMenuSelector::paint( bool selected )
 {
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 
-	unsigned char color   = COL_MENUCONTENT;
-	fb_pixel_t    bgcolor = COL_MENUCONTENT_PLUS_0;
+	uint8_t color   = COL_MENUCONTENT;
+	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
 
 	if (selected)
 	{
@@ -4231,8 +4232,8 @@ void CDirMenu::updateDirState(void)
 			{
 				if(CFSMounter::isMounted (g_settings.network_nfs_local_dir[dirNfsMountNr[i]]) == 0)
 				{
-					dirOptionText[i]="Not mounted";
-					dirState[i]=DIR_STATE_NOT_MOUNTED;
+					dirOptionText[i] = "Not mounted";
+					dirState[i] = DIR_STATE_NOT_MOUNTED;
 				}
 				else
 				{
@@ -5080,9 +5081,9 @@ void CMovieBrowser::loadYTitles(int mode, std::string search, std::string id)
 	else
 		ytparser.SetRegion(m_settings.ytregion);
 	
-	printf("line per page:%d\n", m_pcBrowser->getLines());
+	//printf("line per page:%d\n", m_pcBrowser->getLines());
 
-	ytparser.SetMaxResults(/*m_settings.ytresults*/m_pcBrowser->getLines());
+	ytparser.SetMaxResults(m_settings.ytresults /*m_pcBrowser->getLines()*/);
 
 	if (!ytparser.Parsed() || (ytparser.GetFeedMode() != mode)) 
 	{
@@ -5299,7 +5300,9 @@ bool CMovieBrowser::showYTMenu()
 //netzkino
 void CMovieBrowser::loadNKTitles(int mode, std::string search, int id, bool rtmp)
 {
-	nkparser.SetMaxResults(/*m_settings.nkresults ? m_settings.nkresults : 100000*/m_pcBrowser->getLines());
+	//printf("line per page:%d\n", m_pcBrowser->getLines());
+	
+	nkparser.SetMaxResults(m_settings.nkresults ? m_settings.nkresults : 100000 /*m_pcBrowser->getLines()*/);
 	nkparser.SetConcurrentDownloads(/*m_settings.ytconcconn*/1);
 	//nkparser.setThumbnailDir(m_settings.nkthumbnaildir);
 
@@ -5368,6 +5371,7 @@ CNKCategoriesMenu::CNKCategoriesMenu(int &_nkmode, int &_nkcategory, std::string
 int CNKCategoriesMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 {
 	nk_category_list_t cats = nkparser->GetCategoryList();
+	
 	if (!cats.size())
 		return menu_return::RETURN_NONE;
 	
@@ -5454,7 +5458,9 @@ bool CMovieBrowser::showNKMenu()
 	if (select == cNKFeedParser::SEARCH) 
 	{
 		printf("search for: %s\n", search.c_str());
-		if (!search.empty()) {
+		
+		if (!search.empty()) 
+		{
 			reload = true;
 			m_settings.nksearch = search;
 			m_settings.nkmode = cNKFeedParser::SEARCH;
