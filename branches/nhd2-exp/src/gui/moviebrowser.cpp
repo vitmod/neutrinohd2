@@ -145,20 +145,20 @@ const CMenuOptionChooser::keyval MESSAGEBOX_PARENTAL_LOCKAGE_OPTIONS[MESSAGEBOX_
 	{ 99, LOCALE_MOVIEBROWSER_INFO_PARENTAL_LOCKAGE_ALWAYS, NULL }
 };
 
-#define MAX_WINDOW_WIDTH  (g_settings.screen_EndX - g_settings.screen_StartX - 40)
-#define MAX_WINDOW_HEIGHT (g_settings.screen_EndY - g_settings.screen_StartY - 40)	
+#define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
+#define MAX_WINDOW_HEIGHT 		(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
 
-#define MIN_WINDOW_WIDTH  ((g_settings.screen_EndX - g_settings.screen_StartX)>>1)
-#define MIN_WINDOW_HEIGHT 200	
+#define MIN_WINDOW_WIDTH  		((g_settings.screen_EndX - g_settings.screen_StartX)>>1)
+#define MIN_WINDOW_HEIGHT 		200	
 
 #define TITLE_BACKGROUND_COLOR 		COL_MENUHEAD_PLUS_0
 #define TITLE_FONT_COLOR 		COL_MENUHEAD
 
-#define TITLE_FONT g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]
-#define FOOT_FONT g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]
+#define TITLE_FONT 			g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]
+#define FOOT_FONT 			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]
 
-#define INTER_FRAME_SPACE 4  // space between e.g. upper and lower window
-#define TEXT_BORDER_WIDTH 8
+#define INTER_FRAME_SPACE 		4  // space between e.g. upper and lower window
+#define TEXT_BORDER_WIDTH 		8
 
 CFont* CMovieBrowser::m_pcFontFoot = NULL;
 CFont* CMovieBrowser::m_pcFontTitle = NULL;
@@ -1071,6 +1071,7 @@ int CMovieBrowser::exec(const char * path)
 
 	m_selectedDir = path; 
 
+	// paint mb
 	if(paint() == false)
 		return res;// paint failed due to less memory , exit 
 

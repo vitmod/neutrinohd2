@@ -118,8 +118,8 @@ class CListFrame
 	public:
 		/* Constructor */
 		CListFrame();
-		CListFrame(	LF_LINES* lines);
-		CListFrame(	LF_LINES* lines, 
+		CListFrame(LF_LINES* lines);
+		CListFrame(LF_LINES* lines, 
 					CFont* font_text,
 					const int mode, 
 					const CBox* position,
