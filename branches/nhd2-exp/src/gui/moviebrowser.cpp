@@ -2397,7 +2397,7 @@ void CMovieBrowser::onDeleteFile(MI_MOVIE_INFO& movieSelectionHandler)
 {
 	dprintf(DEBUG_INFO, "[onDeleteFile] ");
 	
-	int test= movieSelectionHandler.file.Name.find(".ts");
+	int test = movieSelectionHandler.file.Name.find(".ts");
 	if(test == -1) 
 	{ 
 		// not a TS file, return!!!!! 

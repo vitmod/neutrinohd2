@@ -237,14 +237,26 @@ void CWebTV::loadChannels(void)
 // readxml file
 bool CWebTV::readChannellist(std::string filename)
 {
-	dprintf(DEBUG_INFO, "CWebTV::readChannellist parsing %s\n", filename.c_str());
+	dprintf(DEBUG_NORMAL, "CWebTV::readChannellist parsing %s\n", filename.c_str());
 	
 	// clear channellist
 	ClearChannels();
 	
-	webtv_channels * tmp = new webtv_channels();
+	// check for extension
+	int ext_pos = 0;
+	ext_pos = filename.rfind('.');
+	bool iptv = false;
+					
+	if( ext_pos > 0)
+	{
+		std::string extension;
+		extension = filename.substr(ext_pos + 1, filename.length() - ext_pos);
+						
+		if( strcasecmp("tv", extension.c_str()) == 0)
+			iptv = true;
+	}
 	
-	if(mode == IPTV)
+	if(iptv)
 	{
 		FILE * f = fopen(filename.c_str(), "r");
 		std::string title;
@@ -264,20 +276,16 @@ bool CWebTV::readChannellist(std::string filename)
 				if (len < 2)
 					// Lines with less than one char aren't meaningful
 					continue;
-				// Remove trailing \r\n
-				--len;
-				line[len] = 0;
-				if (line[len-1] == '\r')
-					line[len-1] = 0;
+				
+				/* strip newline */
+				line[--len] = 0;
+				
+				// strip carriage return (when found)
+				if (line[len - 1] == '\r')
+					line[len - 1 ] = 0;
 				
 				if (strncmp(line, "#SERVICE 4097:0:1:0:0:0:0:0:0:0:", 32) == 0)
-				{
 					url = line + 32;
-					//std::string convertLatin1UTF8(url);
-					//std::string UTF8_to_Latin1(url.c_str());
-					//url = ZapitTools::UTF8_to_Latin1(url.c_str());
-					//std::string encode(url);
-				}
 				else if (strncmp(line, "#DESCRIPTION: ", 14) == 0)
 					title = line + 14;
 				
@@ -285,7 +293,7 @@ bool CWebTV::readChannellist(std::string filename)
 				
 				printf("title:%s url:%s desc:%s\n", title.c_str(), urlDecode(url).c_str(), description.c_str());
 				
-				tmp = new webtv_channels();
+				webtv_channels * tmp = new webtv_channels();
 					
 				tmp->title = title.c_str();
 				tmp->url = urlDecode(url).c_str();
@@ -297,6 +305,8 @@ bool CWebTV::readChannellist(std::string filename)
 			}
 			
 			fclose(f);
+			
+			return true;
 		}
 	}
 	else
@@ -320,7 +330,7 @@ bool CWebTV::readChannellist(std::string filename)
 					bool locked = xmlGetAttribute(l1, (char *)"locked");
 					
 					// fill webtv list
-					tmp = new webtv_channels();
+					webtv_channels * tmp = new webtv_channels();
 					
 					tmp->title = title;
 					tmp->url = url;
@@ -361,10 +371,6 @@ void CWebTV::showUserBouquet(void)
 	sprintf(cnt, "%d", ++count);
 	InputSelector.addItem(new CMenuForwarder(LOCALE_WEBTV_USER, true, NULL, WebTVInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
 	
-	// iptv (enigma2)
-	sprintf(cnt, "%d", ++count);
-	InputSelector.addItem(new CMenuForwarder(LOCALE_WEBTV_USER, true, NULL, WebTVInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
-
 	hide();
 	InputSelector.exec(NULL, "");
 	delete WebTVInputChanger;
@@ -385,23 +391,6 @@ void CWebTV::showUserBouquet(void)
 				mode = USER;
 				readChannellist(g_settings.webtv_settings);
 				selected = 0;
-				break;
-				
-			case IPTV:
-			{
-				mode = IPTV;
-
-				CFileBrowser fileBrowser;
-				CFileFilter fileFilter;
-				fileFilter.addFilter("tv");
-				fileBrowser.Filter = &fileFilter;
-				
-				if (fileBrowser.exec(CONFIGDIR) == true)
-				{
-					readChannellist(fileBrowser.getSelectedFile()->Name.c_str());
-				}
-				selected = 0;
-				}
 				break;
 						
 			default: break;
@@ -1124,6 +1113,7 @@ void CWebTV::openFilebrowser(void)
 	CFileBrowser filebrowser;
 	CFileFilter fileFilter;
 	fileFilter.addFilter("xml");
+	fileFilter.addFilter("tv");
 
 	filebrowser.Multi_Select    = true;
 	filebrowser.Dirs_Selectable = true;
@@ -1133,10 +1123,12 @@ void CWebTV::openFilebrowser(void)
 	{
 		// select file
 		strcpy(g_settings.webtv_settings, filebrowser.getSelectedFile()->Name.c_str());
+		
 		printf("[webtv] webtv settings file %s\n", filebrowser.getSelectedFile()->Name.c_str());
 		
 		// load channels
 		mode = USER;
+		
 		readChannellist(g_settings.webtv_settings);
 		selected = 0;
 	}
