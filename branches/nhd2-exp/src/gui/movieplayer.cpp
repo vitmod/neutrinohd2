@@ -2086,6 +2086,13 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			if (playstate >= CMoviePlayerGui::PLAY) 
 			{
+				if(playstate == CMoviePlayerGui::PAUSE)
+				{
+					// unpause VLC
+					if(isVlc)
+						_httpres = sendGetRequest(unpauseurl, _response);
+				}
+				
 				playstate = CMoviePlayerGui::PLAY;
 				update_lcd = true;
 				CVFD::getInstance()->ShowIcon(VFD_ICON_PLAY, true);
