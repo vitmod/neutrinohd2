@@ -83,7 +83,7 @@ class CMoviePlayerGui : public CMenuTarget
 		
 		bool isMovieBrowser;
 		bool isURL;
-		bool isVlc;
+		//bool isVlc;
 		bool cdDvd;
 		bool isDVD;
 		bool isBlueRay;
@@ -137,12 +137,14 @@ class CMoviePlayerGui : public CMenuTarget
 		bool time_forced;
 		
 		// vlc
+		/*
 		std::string base_url;
 		CURLcode _httpres;
 		std::string pauseurl;
 		std::string unpauseurl;
 		std::string stopurl;
 		std::string _response;
+		*/
 		
 		// multi select
 		CFileList filelist;
@@ -160,8 +162,8 @@ class CMoviePlayerGui : public CMenuTarget
 		bool		stopped;
 
 		std::string Path_local;
-		std::string Path_vlc;
-		std::string Path_vlc_settings;
+		//std::string Path_vlc;
+		//std::string Path_vlc_settings;
 		std::string Path_dvd;
 		std::string Path_blueray;
 
@@ -177,7 +179,7 @@ class CMoviePlayerGui : public CMenuTarget
 		bool get_movie_info_apid_name(int apid, MI_MOVIE_INFO * movie_info, std::string * apidtitle);
 
 		CFileFilter tsfilefilter;
-		CFileFilter vlcfilefilter;
+		//CFileFilter vlcfilefilter;
 
 		void showHelpTS(void);
 		
@@ -187,16 +189,18 @@ class CMoviePlayerGui : public CMenuTarget
 		int exec(CMenuTarget* parent, const std::string & actionKey);
 		
 		// vlc
+		/*
 		static size_t CurlDummyWrite (void *ptr, size_t size, size_t nmemb, void *data);
 		CURLcode sendGetRequest (const std::string & url, std::string & response) ;
 		bool VlcRequestStream(char *_mrl, int  transcodeVideo, int transcodeAudio);
 		bool VlcReceiveStreamStart(void * mrl);
+		*/
 		
 		// lcd
 		void updateLcd(const std::string & sel_filename);
 		
 		// show infos
-		void showFileInfoVLC(void);
+		//void showFileInfoVLC(void);
 		void showFileInfo();
 };
 

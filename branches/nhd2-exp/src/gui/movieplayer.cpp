@@ -103,9 +103,11 @@
 static const char FILENAME[] = "movieplayer.cpp";
  
 // vlc
+/*
 #define STREAMTYPE_DVD	1
 #define STREAMTYPE_SVCD	2
 #define STREAMTYPE_FILE	3
+*/
 
 // scripts
 #define MOVIEPLAYER_START_SCRIPT 	CONFIGDIR "/movieplayer.start" 
@@ -230,10 +232,12 @@ CMoviePlayerGui::CMoviePlayerGui()
 		Path_local = "/";
 	
 	// vlc path
+	/*
 	Path_vlc  = "vlc://";
 	if ((g_settings.streaming_vlc10 < 2) || (strcmp(g_settings.streaming_server_startdir, "/") != 0))
 		Path_vlc += g_settings.streaming_server_startdir;
 	Path_vlc_settings = g_settings.streaming_server_startdir;
+	*/
 	
 	// dvd path
 	Path_dvd = "/mnt/dvd";
@@ -284,6 +288,7 @@ CMoviePlayerGui::CMoviePlayerGui()
 #endif	
 	
 	// vlcfilefilter
+	/*
 	vlcfilefilter.addFilter ("ts");
 	vlcfilefilter.addFilter ("mpg");
 	vlcfilefilter.addFilter ("mpeg");
@@ -300,6 +305,7 @@ CMoviePlayerGui::CMoviePlayerGui()
 	vlcfilefilter.addFilter ("flv");
 	vlcfilefilter.addFilter ("m2v");
 	vlcfilefilter.addFilter ("wmv");
+	*/
 }
 
 CMoviePlayerGui::~CMoviePlayerGui()
@@ -406,6 +412,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	dprintf(DEBUG_NORMAL, "[movieplayer] actionKey = %s\n", actionKey.c_str());
 	
 	// chek vlc path again
+	/*
 	if(Path_vlc_settings != g_settings.streaming_server_startdir)
 	{
 		Path_vlc  = "vlc://";
@@ -413,6 +420,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 			Path_vlc += g_settings.streaming_server_startdir;
 		Path_vlc_settings = g_settings.streaming_server_startdir;
 	}
+	*/
 
 	if (parent) 
 		parent->hide();
@@ -470,14 +478,16 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	//
 
 	isMovieBrowser = false;
-	isVlc = false;
+	//isVlc = false;
 	isDVD = false;
 	isBlueRay = false;
 	isURL = false;
 	
 	// vlc
+	/*
 	cdDvd = false;
 	skt = -1; //dirty hack to close socket when stop playing
+	*/
 	
 	//
 	g_numpida = 0;
@@ -496,7 +506,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 		moviebrowser->setMode(MB_SHOW_RECORDS);
 		
 		timeshift = NO_TIMESHIFT;
-		isVlc = false;
+		//isVlc = false;
 		isDVD = false;
 		isBlueRay = false;
 		isURL = false;
@@ -507,7 +517,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 		moviebrowser->setMode(MB_SHOW_FILES);
 		
 		timeshift = NO_TIMESHIFT;
-		isVlc = false;
+		//isVlc = false;
 		isDVD = false;
 		isBlueRay = false;
 		isURL = false;
@@ -528,7 +538,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	{
 		isMovieBrowser = false;
 		timeshift = NO_TIMESHIFT;
-		isVlc = false;
+		//isVlc = false;
 		isDVD = false;
 		isBlueRay = false;
 		isURL = true;
@@ -539,7 +549,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 		moviebrowser->setMode(MB_SHOW_YT);
 		
 		timeshift = NO_TIMESHIFT;
-		isVlc = false;
+		//isVlc = false;
 		isDVD = false;
 		isBlueRay = false;
 		isURL = false;
@@ -550,7 +560,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 		moviebrowser->setMode(MB_SHOW_NETZKINO);
 		
 		timeshift = NO_TIMESHIFT;
-		isVlc = false;
+		//isVlc = false;
 		isDVD = false;
 		isBlueRay = false;
 		isURL = false;
@@ -559,11 +569,12 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	{
 		isMovieBrowser = false;
 		timeshift = NO_TIMESHIFT;
-		isVlc = false;
+		//isVlc = false;
 		isDVD = false;
 		isBlueRay = false;
 		isURL = false;
 	}
+	/*
 	else if ( actionKey == "vlcplayback" ) 
 	{
 		isVlc = true;
@@ -594,11 +605,12 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 		isBlueRay = false;
 		isURL = false;
 	}
+	*/
 	else if(actionKey == "dvdplayback")
 	{
 		isMovieBrowser = false;
 		timeshift = NO_TIMESHIFT;
-		isVlc = false;
+		//isVlc = false;
 		isBlueRay = false;
 		isDVD = true;
 		isURL = false;
@@ -607,7 +619,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	{
 		isMovieBrowser = false;
 		timeshift = NO_TIMESHIFT;
-		isVlc = false;
+		//isVlc = false;
 		isDVD = false;
 		isBlueRay = true;
 		isURL = false;
@@ -651,6 +663,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 }
 
 // vlc
+#if 0
 size_t CMoviePlayerGui::CurlDummyWrite(void *ptr, size_t size, size_t nmemb, void *data)
 {
 	if (size * nmemb > 0) 
@@ -961,6 +974,7 @@ vlc_is_sending:
 	
 	return true;
 }
+#endif
 
 void CMoviePlayerGui::updateLcd(const std::string & lcd_filename)
 {
@@ -1040,6 +1054,7 @@ void CMoviePlayerGui::PlayFile(void)
 	bool timesh = timeshift;
 	
 	// vlc
+	/*
 	std::string title = "";
 	std::string stream_url;
 	char mrl[200];
@@ -1105,6 +1120,7 @@ void CMoviePlayerGui::PlayFile(void)
 		
 		CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);		
 	}
+	*/
 	
 	// dvd
 	if (isDVD || isBlueRay)
@@ -1190,6 +1206,7 @@ void CMoviePlayerGui::PlayFile(void)
 				filename = filelist[selected].Name.c_str();
 				sel_filename = filelist[selected].getFileName();
 				
+				/*
 				if(isVlc)
 				{
 					int namepos = filelist[selected].Name.rfind("vlc://");
@@ -1201,6 +1218,7 @@ void CMoviePlayerGui::PlayFile(void)
 					dprintf(DEBUG_NORMAL, "[movieplayer.cpp] Generated FILE MRL: %s\n", mrl);
 				}
 				else
+				*/
 				{
 					g_file_epg = sel_filename;
 					g_file_epg1 = sel_filename;
@@ -1230,14 +1248,18 @@ void CMoviePlayerGui::PlayFile(void)
 		if (exit) 
 		{	  
 			exit = false;
-			cdDvd = false;
+			
+			//vlc
+			//cdDvd = false;
 			
 			// close vlc socket
+			/*
 			if(skt > 0)
 			{
 				close(skt);
 				skt = -1;
 			}
+			*/
 			
 			dprintf(DEBUG_NORMAL, "[movieplayer] stop (1)\n");
 			playstate = CMoviePlayerGui::STOPPED;
@@ -1511,15 +1533,15 @@ void CMoviePlayerGui::PlayFile(void)
 						g_vtype = p_movie_info->VideoType;
 						
 						// needed for movies (not ts)
-						if(!p_movie_info->epgTitle.empty())
+						//if(!p_movie_info->epgTitle.empty())
 							g_file_epg = p_movie_info->epgTitle;
-						else
-							g_file_epg = sel_filename;
+						//else
+						//	g_file_epg = /*sel_filename*/file->Name.c_str();
 						
-						if(!p_movie_info->epgInfo1.empty())
+						//if(!p_movie_info->epgInfo1.empty())
 							g_file_epg1 = p_movie_info->epgInfo1;
-						else
-							g_file_epg1 = sel_filename;
+						//else
+						//	g_file_epg1 = /*sel_filename*/file->Name.c_str();
 						
 						dprintf(DEBUG_INFO, "CMoviePlayerGui::PlayFile: file %s apid 0x%X atype %d vpid 0x%X vtype %d\n", filename, g_currentapid, g_currentac3, g_vpid, g_vtype);
 						
@@ -1539,6 +1561,7 @@ void CMoviePlayerGui::PlayFile(void)
 				
 				CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);	
 			} 
+			/*
 			else if(isVlc && !cdDvd) // vlc (file not dvd)
 			{
 				filename = NULL;
@@ -1585,6 +1608,7 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 
 			}
+			*/
 			else if(isDVD) // dvd
 			{
 				filename = NULL;
@@ -1896,6 +1920,7 @@ void CMoviePlayerGui::PlayFile(void)
 
 			start_play = false;
 			
+			/*
 			if (isVlc)
 			{
 				playstate = CMoviePlayerGui::SOFTRESET;
@@ -1911,6 +1936,7 @@ void CMoviePlayerGui::PlayFile(void)
 					filename = stream_url.c_str();
 				}
 			}
+			*/
 			
 			// stop playing if already playing (multiselect)
 			if(playback->playing)
@@ -2035,6 +2061,7 @@ void CMoviePlayerGui::PlayFile(void)
 			//exit play
 			playstate = CMoviePlayerGui::STOPPED;
 			
+			/*
 			if(isVlc)
 			{
 				// stop VLC
@@ -2049,8 +2076,9 @@ void CMoviePlayerGui::PlayFile(void)
 				cdDvd = false;
 				exit = true;
 			}
+			*/
 
-			if (isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_YT && moviebrowser->getMode() != MB_SHOW_NETZKINO) 
+			if (isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_YT && moviebrowser->getMode() != MB_SHOW_NETZKINO && moviebrowser->getMode() != MB_SHOW_FILES) 
 			{
 				// if we have a movie information, try to save the stop position
 				ftime(&current_time);
@@ -2086,12 +2114,14 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			if (playstate >= CMoviePlayerGui::PLAY) 
 			{
+				/*
 				if(playstate == CMoviePlayerGui::PAUSE)
 				{
 					// unpause VLC
 					if(isVlc)
 						_httpres = sendGetRequest(unpauseurl, _response);
 				}
+				*/
 				
 				playstate = CMoviePlayerGui::PLAY;
 				update_lcd = true;
@@ -2158,8 +2188,10 @@ void CMoviePlayerGui::PlayFile(void)
 				playback->SetSpeed(speed);
 				
 				// pause vlc
+				/*
 				if(isVlc)
 					_httpres = sendGetRequest(pauseurl, _response);
+				*/
 			} 
 			else 
 			{
@@ -2170,8 +2202,10 @@ void CMoviePlayerGui::PlayFile(void)
 				playback->SetSpeed(speed);
 				
 				// unpause VLC
+				/*
 				if(isVlc)
 					_httpres = sendGetRequest(unpauseurl, _response);
+				*/
 			}
 			
 			if (FileTime.IsVisible()) 
@@ -2711,7 +2745,7 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			dprintf(DEBUG_NORMAL, "[movieplayer] stop (3)\n");	
 
-			if (isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_YT && moviebrowser->getMode() != MB_SHOW_NETZKINO) 
+			if (isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_YT && moviebrowser->getMode() != MB_SHOW_NETZKINO && moviebrowser->getMode() != MB_SHOW_FILES) 
 			{
 				// if we have a movie information, try to save the stop position
 				ftime(&current_time);
@@ -2780,6 +2814,7 @@ void CMoviePlayerGui::showHelpTS()
 	helpbox.show(LOCALE_MESSAGEBOX_INFO);
 }
 
+/*
 void CMoviePlayerGui::showFileInfoVLC()
 {
 	Helpbox helpbox;
@@ -2839,14 +2874,17 @@ void CMoviePlayerGui::showFileInfoVLC()
 		}
 	}
 }
+*/
 
 void CMoviePlayerGui::showFileInfo()
 {
 	if (p_movie_info != NULL)
 		cMovieInfo.showMovieInfo(*p_movie_info);
+	/*
 	else if(isVlc)
 		// show infos
 		showFileInfoVLC();
+	*/
 	else
 		ShowMsg2UTF(g_file_epg.c_str(), g_file_epg1.c_str(), CMsgBox::mbrBack, CMsgBox::mbBack);	// UTF-8*/ 
 }

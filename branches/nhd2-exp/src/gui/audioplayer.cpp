@@ -805,8 +805,8 @@ int CAudioPlayerGui::show()
 					InputSelector.addItem(new CMenuForwarder(LOCALE_AUDIOPLAYER_ADD_LOC, true, NULL, InetRadioInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
 	
 					// shoutcast
-					sprintf(cnt, "%d", ++count);
-					InputSelector.addItem(new CMenuForwarder(LOCALE_AUDIOPLAYER_ADD_SC, true, NULL, InetRadioInputChanger,cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
+					//sprintf(cnt, "%d", ++count);
+					//InputSelector.addItem(new CMenuForwarder(LOCALE_AUDIOPLAYER_ADD_SC, true, NULL, InetRadioInputChanger,cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
 
 					// icecast
 					sprintf(cnt, "%d", ++count);
@@ -830,10 +830,12 @@ int CAudioPlayerGui::show()
 							paintLCD();
 							
 							break;
-							
+						
+						/*
 						case SHOUTCAST:	
 							openSCbrowser();
 							break;
+						*/
 							
 						case ICECAST:	
 							readDir_ic();
@@ -1141,7 +1143,7 @@ void CAudioPlayerGui::processPlaylistUrl(const char *url, const char *name, cons
 
 	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::processPlaylistUrl (%s, %s)\n", url, name);
 	
-	chunk.memory=NULL; /* we expect realloc(NULL, size) to work */
+	chunk.memory = NULL; /* we expect realloc(NULL, size) to work */
 	chunk.size = 0;    /* no data at this point */
 
 	curl_global_init(CURL_GLOBAL_ALL);
@@ -1194,6 +1196,7 @@ void CAudioPlayerGui::processPlaylistUrl(const char *url, const char *name, cons
 			iss.str (std::string(chunk.memory, chunk.size));
 			char line[512];
 			char *ptr;
+			
 			while (iss.rdstate() == std::ifstream::goodbit) 
 			{
 				iss.getline(line, 512);
@@ -1228,10 +1231,11 @@ void CAudioPlayerGui::processPlaylistUrl(const char *url, const char *name, cons
 
 void CAudioPlayerGui::readDir_ic(void)
 {
-	std::string answer="";
+	std::string answer = "";
 	std::cout << "[readDir_ic] IC URL: " << icecasturl << std::endl;
 	CURL *curl_handle;
 	CURLcode httpres;
+	
 	/* init the curl session */
 	curl_handle = curl_easy_init();
 	/* specify URL to get */
@@ -1248,6 +1252,7 @@ void CAudioPlayerGui::readDir_ic(void)
 	/* error handling */
 	char error[CURL_ERROR_SIZE];
 	curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, error);
+	
 	/* get it! */
 	CHintBox *scanBox = new CHintBox(LOCALE_AUDIOPLAYER_ADD_IC, g_Locale->getText(LOCALE_AUDIOPLAYER_RECEIVING_LIST)); // UTF-8
 	scanBox->paint();
@@ -1289,7 +1294,7 @@ void CAudioPlayerGui::scanXmlData(xmlDocPtr answer_parser, const char *nametag, 
 		
 		if (element == NULL) 
 		{
-			dprintf(DEBUG_NORMAL, "[openFilebrowser] No valid XML File.\n");
+			dprintf(DEBUG_NORMAL, "CAudioPlayerGui::scanXmlData: No valid XML File.\n");
 		} 
 		else 
 		{
@@ -1322,6 +1327,7 @@ void CAudioPlayerGui::scanXmlData(xmlDocPtr answer_parser, const char *nametag, 
 				time_t bitrate = 0;
 				bool skip = true;
 				listPos++;
+				
 				// show status
 				int global = 100*listPos / maxProgress;
 				progress.showGlobalStatus(global);
@@ -1371,6 +1377,7 @@ void CAudioPlayerGui::scanXmlData(xmlDocPtr answer_parser, const char *nametag, 
 				if ((url != NULL) && !skip) 
 				{
 					progress.showStatusMessageUTF(url);
+					
 					//printf("Processing %s, %s\n", url, name);
 					if (strstr(url, ".m3u") || strstr(url, ".pls"))
 						processPlaylistUrl(url, name);
@@ -1574,6 +1581,7 @@ bool CAudioPlayerGui::openFilebrowser(void)
 	return ( result);
 }
 
+/*
 bool CAudioPlayerGui::openSCbrowser(void)
 {
 	bool result = false;
@@ -1644,6 +1652,7 @@ bool CAudioPlayerGui::openSCbrowser(void)
 
 	return ( result);
 }
+*/
 
 void CAudioPlayerGui::hide()
 {

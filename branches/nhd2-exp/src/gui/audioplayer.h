@@ -108,7 +108,7 @@ class CAudioPlayerGui : public CMenuTarget
 		enum
 		{
 			LOCALRADIO,
-			SHOUTCAST,
+			//SHOUTCAST,
 			ICECAST
 		};
 
@@ -256,7 +256,7 @@ class CAudioPlayerGui : public CMenuTarget
 		*/
 		bool askToOverwriteFile(const std::string& filename);
 		bool openFilebrowser(void);
-		bool openSCbrowser(void);
+		//bool openSCbrowser(void);
 		bool clearPlaylist(void);
 		bool shufflePlaylist(void);
 		bool playNext(bool allow_rotate = false);
