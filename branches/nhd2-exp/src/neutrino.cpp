@@ -5457,6 +5457,10 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 
 		return menu_return::RETURN_REPAINT;
 	}
+	else // start plugins with name forwarded into menue
+	{
+		g_PluginList->startPlugin((const char *)actionKey.c_str());
+	}
 
 	return returnval;
 }

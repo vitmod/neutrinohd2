@@ -768,7 +768,7 @@ int CMenuOptionNumberChooser::paint(bool selected)
 {
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 
-	unsigned char color   = COL_MENUCONTENT;
+	uint8_t color   = COL_MENUCONTENT;
 	fb_pixel_t    bgcolor = COL_MENUCONTENT_PLUS_0;
 
 	if (selected)
@@ -980,8 +980,8 @@ int CMenuOptionChooser::paint( bool selected )
 {
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 
-	unsigned char color   = COL_MENUCONTENT;
-	fb_pixel_t    bgcolor = COL_MENUCONTENT_PLUS_0;
+	uint8_t color   = COL_MENUCONTENT;
+	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
 
 	if (selected)
 	{
@@ -1205,8 +1205,8 @@ int CMenuOptionStringChooser::exec(CMenuTarget *parent)
 int CMenuOptionStringChooser::paint( bool selected )
 {
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
-	unsigned char color   = COL_MENUCONTENT;
-	fb_pixel_t    bgcolor = COL_MENUCONTENT_PLUS_0;
+	uint8_t color   = COL_MENUCONTENT;
+	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
 	
 	if (selected) 
 	{
@@ -1356,8 +1356,8 @@ int CMenuOptionLanguageChooser::paint( bool selected )
 {
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 	
-	unsigned char color   = COL_MENUCONTENT;
-	fb_pixel_t    bgcolor = COL_MENUCONTENT_PLUS_0;
+	uint8_t color   = COL_MENUCONTENT;
+	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
 	
 	if (selected)
 	{
@@ -1541,7 +1541,7 @@ int CMenuForwarder::paint(bool selected)
 		}
 	}
 
-	unsigned char color   = COL_MENUCONTENT;
+	uint8_t color   = COL_MENUCONTENT;
 	fb_pixel_t    bgcolor = COL_MENUCONTENT_PLUS_0;
 
 	if (selected)
@@ -1859,8 +1859,8 @@ int CMenuForwarderItemMenuIcon::paint(bool selected)
 	const char * l_text = getName();
 	int stringstartposX = x + (offx == 0? BORDER_LEFT : offx) + BORDER_LEFT;
 	const char * option_text = getOption();	
-	unsigned char color   = COL_MENUCONTENT;
-	fb_pixel_t    bgcolor = COL_MENUCONTENT_PLUS_0;
+	uint8_t color   = COL_MENUCONTENT;
+	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
 
 	if (selected)
 	{

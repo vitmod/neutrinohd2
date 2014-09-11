@@ -84,9 +84,9 @@ class CMoviePlayerGui : public CMenuTarget
 		bool isMovieBrowser;
 		bool isURL;
 		//bool isVlc;
-		bool cdDvd;
-		bool isDVD;
-		bool isBlueRay;
+		//bool cdDvd;
+		//bool isDVD;
+		//bool isBlueRay;
 
 		int speed;
 		int slow;
@@ -118,8 +118,8 @@ class CMoviePlayerGui : public CMenuTarget
 
 		bool showaudioselectdialog;
 		
-		int streamtype;
-		int skt;
+		//int streamtype;
+		//int skt;
 		
 		const char *filename;
 		
@@ -164,8 +164,8 @@ class CMoviePlayerGui : public CMenuTarget
 		std::string Path_local;
 		//std::string Path_vlc;
 		//std::string Path_vlc_settings;
-		std::string Path_dvd;
-		std::string Path_blueray;
+		//std::string Path_dvd;
+		//std::string Path_blueray;
 
 		CFileBrowser * filebrowser;
 		CMovieBrowser * moviebrowser;
