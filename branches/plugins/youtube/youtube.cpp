@@ -32,7 +32,38 @@ void plugin_exec(void)
 	printf("Plugins: starting youtube player\n");
 	
 	// start netzkino
-	moviePlayerGui->exec(NULL, "ytplayback");
+	//moviePlayerGui->exec(NULL, "ytplayback");
+	
+	CMovieBrowser * moviebrowser;
+	
+	moviebrowser = new CMovieBrowser();
+	std::string Path_local = "/";
+	MI_MOVIE_INFO * p_movie_info;
+	
+	moviebrowser->setMode(MB_SHOW_YT);
+	
+	if (moviebrowser->exec(Path_local.c_str())) 
+	{
+		// get the current path and file name
+		Path_local = moviebrowser->getCurrentDir();
+		CFile * file;
+
+		if ((file = moviebrowser->getSelectedFile()) != NULL) 
+		{
+			moviePlayerGui->filename = file->Url.c_str();
+			
+			// movieinfos
+			p_movie_info = moviebrowser->getCurrentMovieInfo();
+			
+			moviePlayerGui->g_file_epg = p_movie_info->epgInfo1;
+			moviePlayerGui->g_file_epg1 = p_movie_info->epgInfo2;
+			
+			// play
+			moviePlayerGui->exec(NULL, "urlplayback");
+		}
+	}
+						
+	delete moviebrowser;	
 }
 
 

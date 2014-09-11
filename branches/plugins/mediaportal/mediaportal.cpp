@@ -195,9 +195,11 @@ void plugin_exec(void)
 	
 	// dummies
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("dummy 1", true, NULL, mpHandler, "ardmt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	/*
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("dummy 2", true, NULL, mpHandler, "zdfmt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("dummy 3", true, NULL, mpHandler, "orfmt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("dummy 4", true, NULL, mpHandler, "artemt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	*/
 	
 	mediaPortal->exec(NULL, "");
 	mediaPortal->hide();
