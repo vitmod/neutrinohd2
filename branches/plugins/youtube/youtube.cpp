@@ -55,8 +55,10 @@ void plugin_exec(void)
 			// movieinfos
 			p_movie_info = moviebrowser->getCurrentMovieInfo();
 			
-			moviePlayerGui->g_file_epg = p_movie_info->epgInfo1;
-			moviePlayerGui->g_file_epg1 = p_movie_info->epgInfo2;
+			moviePlayerGui->Title = p_movie_info->epgTitle;
+			moviePlayerGui->Info1 = p_movie_info->epgInfo1;
+			moviePlayerGui->Info2 = p_movie_info->epgInfo2;
+			moviePlayerGui->Channel = p_movie_info->epgChannel;
 			
 			// play
 			moviePlayerGui->exec(NULL, "urlplayback");
