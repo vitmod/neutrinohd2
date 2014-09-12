@@ -113,8 +113,12 @@ class CMoviePlayerGui : public CMenuTarget
 
 		unsigned int ac3state;
 
-		std::string g_file_epg;
-		std::string g_file_epg1;
+		std::string Title;
+		std::string /*g_file_epg*/Info1;
+		std::string /*g_file_epg1*/Info2;
+		std::string Channel;
+		//std::string serieName;
+		//std::string productionDate;
 
 		bool showaudioselectdialog;
 		

@@ -302,9 +302,9 @@ bool sortByType (const CFile& a, const CFile& b)
 
 bool sortByDate (const CFile& a, const CFile& b)
 {
-	if(a.getFileName()=="..")
+	if(a.getFileName() == "..")
 		return true;
-	if(b.getFileName()=="..")
+	if(b.getFileName() == "..")
 		return false;
 	return a.Time < b.Time ;
 }

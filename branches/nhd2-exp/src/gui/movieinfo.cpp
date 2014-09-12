@@ -453,6 +453,7 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 	std::string print_buffer;
 	tm *date_tm;
 	char date_char[100];
+	
 	// prepare print buffer  
 	print_buffer = movie_info.epgInfo1;
 	print_buffer += "\n";
