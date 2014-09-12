@@ -1202,7 +1202,7 @@ int CMovieBrowser::exec(const char * path)
 				if(m_movieSelectionHandler != NULL)
 				{
 					// If there is any available bookmark, show the bookmark menu
-					if( (show_mode != MB_SHOW_YT && show_mode != MB_SHOW_NETZKINO) && (m_movieSelectionHandler->bookmarks.lastPlayStop != 0 || m_movieSelectionHandler->bookmarks.start != 0) )
+					if( (show_mode != MB_SHOW_YT && show_mode != MB_SHOW_NETZKINO && show_mode != MB_SHOW_FILES) && (m_movieSelectionHandler->bookmarks.lastPlayStop != 0 || m_movieSelectionHandler->bookmarks.start != 0) )
 					{
 						dprintf(DEBUG_NORMAL, "[mb] stop: %d start:%d \r\n", m_movieSelectionHandler->bookmarks.lastPlayStop,m_movieSelectionHandler->bookmarks.start);
 						m_currentStartPos = showStartPosSelectionMenu(); // display start menu m_currentStartPos = 
@@ -2982,12 +2982,12 @@ bool CMovieBrowser::loadTsFileNamesFromDir(const std::string & dirname)
 					if(show_mode == MB_SHOW_FILES)
 					{
 						movieInfo.epgTitle = flist[i].getFileName();
-						//movieInfo.epgInfo1 = flist[i].getFileName();
-						movieInfo.epgInfo2 = flist[i].getFileName(); //IMDB???
+						movieInfo.epgInfo1 = flist[i].getFileName();
+						//movieInfo.epgInfo2 = flist[i].getFileName(); //IMDB???
 					}
 					
 					//TEST: remove me
-					if( (show_mode != MB_SHOW_YT) && (show_mode != MB_SHOW_NETZKINO) )
+					if( (show_mode != MB_SHOW_FILES) && (show_mode != MB_SHOW_YT) && (show_mode != MB_SHOW_NETZKINO) )
 					{
 						if(movieInfo.serieName.empty())
 							movieInfo.serieName = movieInfo.epgTitle;

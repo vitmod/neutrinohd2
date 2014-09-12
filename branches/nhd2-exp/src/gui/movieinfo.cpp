@@ -541,6 +541,7 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		print_buffer += date_char;
 	}
 	
+	// file size
 	if (movie_info.file.Size != 0) 
 	{
 		print_buffer += "\n";
@@ -552,6 +553,7 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		//print_buffer += "\n"; 
 	}
 	
+	// file path
 	if(movie_info.ytdate.empty())
 	{
 		print_buffer += "\n";
