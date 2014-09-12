@@ -1149,20 +1149,12 @@ void CMoviePlayerGui::PlayFile(void)
 		//
 		sel_filename = std::string(rindex(filename, '/') + 1);
 		
-		//if(g_file_epg.empty())
-		//	g_file_epg = sel_filename;
-		
-		//if(g_file_epg1.empty())
-		//	g_file_epg1 = sel_filename;
-		
 		if(Title.empty())
 			Title = sel_filename;
 		if(Info1.empty())
 			Info1 = sel_filename;
 		if(Info2.empty())
 			Info2 = sel_filename;
-		if(Channel.empty())
-			Channel = sel_filename;
 		
 		update_lcd = true;
 		start_play = true;
@@ -1236,9 +1228,8 @@ void CMoviePlayerGui::PlayFile(void)
 				*/
 				{
 					Title = sel_filename;
-					/*g_file_epg*/Info1 = sel_filename;
-					/*g_file_epg1*/Info2 = sel_filename;
-					Channel = sel_filename;
+					Info1 = sel_filename;
+					Info2 = sel_filename;
 				}
  
 				update_lcd = true;
@@ -1250,9 +1241,8 @@ void CMoviePlayerGui::PlayFile(void)
 				sel_filename = sel_filename;
 				
 				Title = sel_filename;
-				/*g_file_epg*/Info1 = sel_filename;
-				/*g_file_epg1*/Info2 = sel_filename;
-				Channel = sel_filename;
+				Info1 = sel_filename;
+				Info2 = sel_filename;
  
 				update_lcd = true;
 				start_play = true;
@@ -1327,13 +1317,13 @@ void CMoviePlayerGui::PlayFile(void)
 				if(sectionsd_getEPGidShort(epgid, &epgdata)) 
 				{
 					if (!(epgdata.title.empty())) 
-						/*g_file_epg*/Title = epgdata.title;
+						Title = epgdata.title;
 					
 					if(!(epgdata.info1.empty()))
-						/*g_file_epg1*/Info1 = epgdata.info1;
+						Info1 = epgdata.info1;
 					
 					if(!(epgdata.info2.empty()))
-						/*g_file_epg1 +*/ Info2 = epgdata.info2;
+						Info2 = epgdata.info2;
 				}
 			}
 			
@@ -1551,17 +1541,8 @@ void CMoviePlayerGui::PlayFile(void)
 						g_vpid = p_movie_info->epgVideoPid;
 						g_vtype = p_movie_info->VideoType;
 						
-						// needed for movies (not ts)
-						//if(!p_movie_info->epgTitle.empty())
-							/*g_file_epg*/Title = p_movie_info->epgTitle;
-						//else
-						//	g_file_epg = /*sel_filename*/file->Name.c_str();
-						
-						//if(!p_movie_info->epgInfo1.empty())
-							/*g_file_epg1*/Info1 = p_movie_info->epgInfo1;
-						//else
-						//	g_file_epg1 = /*sel_filename*/file->Name.c_str();
-						
+						Title = p_movie_info->epgTitle;
+						Info1 = p_movie_info->epgInfo1;
 						Info2 = p_movie_info->epgInfo2;
 						
 						dprintf(DEBUG_INFO, "CMoviePlayerGui::PlayFile: file %s apid 0x%X atype %d vpid 0x%X vtype %d\n", filename, g_currentapid, g_currentac3, g_vpid, g_vtype);
@@ -1743,12 +1724,9 @@ void CMoviePlayerGui::PlayFile(void)
 						filename = filelist[selected].Name.c_str();
 						sel_filename = filelist[selected].getFileName();
 						
-						//g_file_epg = sel_filename;
-						//g_file_epg1 = sel_filename;
 						Title = sel_filename;
 						Info1 = sel_filename;
 						Info2 = sel_filename;
-						Channel = sel_filename;
 
 						update_lcd = true;
 						start_play = true;
@@ -2054,7 +2032,7 @@ void CMoviePlayerGui::PlayFile(void)
 #endif	
 				
 				// show movieinfoviewer at start
-				g_InfoViewer->showMovieInfo(/*g_file_epg*/Title, /*g_file_epg1*/Info1, file_prozent, duration, ac3state, speed, playstate, false, isMovieBrowser);
+				g_InfoViewer->showMovieInfo(Title, Info1, file_prozent, duration, ac3state, speed, playstate, false, isMovieBrowser);
 			}
 		}
 
@@ -2198,7 +2176,7 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 				
 				if(!g_InfoViewer->m_visible)
-					g_InfoViewer->showMovieInfo(/*g_file_epg*/Title, /*g_file_epg1*/Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
+					g_InfoViewer->showMovieInfo(Title, Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
 			}
 		} 
 		else if ( msg == (neutrino_msg_t) g_settings.mpkey_pause) 
@@ -2260,7 +2238,7 @@ void CMoviePlayerGui::PlayFile(void)
 				}
 				
 				if(!g_InfoViewer->m_visible)
-					g_InfoViewer->showMovieInfo(/*g_file_epg*/Title, /*g_file_epg1*/Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
+					g_InfoViewer->showMovieInfo(Title, Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
 			}
 		} 
 		else if (msg == (neutrino_msg_t) g_settings.mpkey_bookmark) 
@@ -2375,7 +2353,7 @@ void CMoviePlayerGui::PlayFile(void)
 				FileTime.hide();
 				
 			if( !g_InfoViewer->m_visible )
-				g_InfoViewer->showMovieInfo(/*g_file_epg*/Title, /*g_file_epg1*/Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
+				g_InfoViewer->showMovieInfo(Title, Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
 		}
 		else if ( msg == (neutrino_msg_t) g_settings.mpkey_time )
 		{
@@ -2442,7 +2420,7 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 			
 			if(!g_InfoViewer->m_visible)
-				g_InfoViewer->showMovieInfo(/*g_file_epg*/Title, /*g_file_epg1*/Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
+				g_InfoViewer->showMovieInfo(Title, Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
 		}
 		else if (msg == (neutrino_msg_t) g_settings.mpkey_forward) 
 		{	// fast-forward
@@ -2477,7 +2455,7 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 			
 			if(!g_InfoViewer->m_visible)
-				g_InfoViewer->showMovieInfo(/*g_file_epg*/Title, /*g_file_epg1*/Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
+				g_InfoViewer->showMovieInfo(Title, Info1, file_prozent, duration, ac3state, speed, playstate, true, isMovieBrowser);
 		} 
 		else if (msg == CRCInput::RC_1) 
 		{	// Jump Backwards 1 minute
@@ -2725,10 +2703,9 @@ void CMoviePlayerGui::PlayFile(void)
 				filename = filelist[selected].Name.c_str();
 				sel_filename = filelist[selected].getFileName();
 				
-				/*g_file_epg*/Title = sel_filename;
-				/*g_file_epg1*/Info1 = sel_filename = sel_filename;
+				Title = sel_filename;
+				Info1 = sel_filename = sel_filename;
 				Info2 = sel_filename;
-				Channel = sel_filename;
 				
 				update_lcd = true;
 				start_play = true;
@@ -2742,10 +2719,9 @@ void CMoviePlayerGui::PlayFile(void)
 				filename = filelist[selected].Name.c_str();
 				sel_filename = filelist[selected].getFileName();
 				
-				/*g_file_epg*/Title = sel_filename;
-				/*g_file_epg1*/Info1 = sel_filename = sel_filename;
+				Title = sel_filename;
+				Info1 = sel_filename = sel_filename;
 				Info2 = sel_filename;
-				Channel = sel_filename;
 				
 				update_lcd = true;
 				start_play = true;
@@ -2913,7 +2889,7 @@ void CMoviePlayerGui::showFileInfoVLC()
 
 void CMoviePlayerGui::showFileInfo()
 {
-  #if 0
+	#if 0
 	if (p_movie_info != NULL)
 		cMovieInfo.showMovieInfo(*p_movie_info);
 	/*
@@ -2930,22 +2906,6 @@ void CMoviePlayerGui::showFileInfo()
 	buffer = Info1;
 	buffer += "\n";
 	buffer += Info2;
-	
-	if (!Channel.empty()) 
-	{
-		buffer += "\n\n";
-		buffer += g_Locale->getText(LOCALE_MOVIEBROWSER_INFO_CHANNEL);
-		buffer += ": ";
-		buffer += Channel;
-	}
-	
-	buffer += "\n\n";
-	
-	// path
-	buffer += "\n";
-	buffer += g_Locale->getText(LOCALE_MOVIEBROWSER_INFO_PATH);
-	buffer += ": ";
-	buffer += filename;
 	buffer += "\n";
 
 	ShowMsg2UTF(Title.c_str(), buffer.c_str(), CMsgBox::mbrBack, CMsgBox::mbBack);	// UTF-8*/ 
