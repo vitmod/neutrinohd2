@@ -58,7 +58,6 @@ void plugin_exec(void)
 			moviePlayerGui->Title = p_movie_info->epgTitle;
 			moviePlayerGui->Info1 = p_movie_info->epgInfo1;
 			moviePlayerGui->Info2 = p_movie_info->epgInfo2;
-			moviePlayerGui->Channel = p_movie_info->epgChannel;
 			
 			// play
 			moviePlayerGui->exec(NULL, "urlplayback");
