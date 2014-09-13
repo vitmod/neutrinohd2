@@ -226,7 +226,6 @@ class CAudioPlayerGui : public CMenuTarget
 		void printSearchTree();
 		void buildSearchTree();
 		unsigned char getFirstChar(CAudiofileExt &file);
-		void printTimevalDiff(timeval &start, timeval &end);
 
 		/**
 		* Saves the current playlist into a .m3u playlist file.
