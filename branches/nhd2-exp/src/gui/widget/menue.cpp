@@ -1894,12 +1894,12 @@ int CMenuForwarderItemMenuIcon::paint(bool selected)
 			frameBuffer->getIconSize(itemIcon.c_str(), &icon_w, &icon_h);
 			
 			//refresh pic box
-			if( ((FULL_HEIGHT - (hheight + fheight + 2*sp_height)) >= (ITEM_ICON_H) ) && (icon_w >= 100 || icon_h >= 100) )
+			if( ((FULL_HEIGHT - (hheight + fheight + 2*sp_height)) >= (ITEM_ICON_H) ) /*&& (icon_w >= 100 || icon_h >= 100)*/ )
 				frameBuffer->paintBoxRel(x + BORDER_LEFT + (dx/3)*2 + (((dx - (dx/3)*2 - BORDER_RIGHT)/2) - ITEM_ICON_W/2), ( frameBuffer->getScreenHeight(true) - ITEM_ICON_H)/2, ITEM_ICON_W, ITEM_ICON_H, COL_MENUCONTENTDARK_PLUS_0 ); // 25 foot height
 		
 			// paint item icon
-			if( ((FULL_HEIGHT - (hheight + fheight + 2*sp_height)) >= (ITEM_ICON_H) ) && (icon_w >= 100 || icon_h >= 100) )
-				frameBuffer->paintIcon(itemIcon.c_str(), x + BORDER_LEFT + (dx/3)*2 + ((( dx - (dx/3)*2 - BORDER_RIGHT)/2) - icon_w/2), ( frameBuffer->getScreenHeight(true) - icon_h)/2);  //25:foot height
+			if( ((FULL_HEIGHT - (hheight + fheight + 2*sp_height)) >= (ITEM_ICON_H) ) /*&& (icon_w >= 100 || icon_h >= 100)*/ )
+				frameBuffer->paintIcon(itemIcon.c_str(), x + BORDER_LEFT + (dx/3)*2 + ((( dx - (dx/3)*2 - BORDER_RIGHT)/2) - (icon_w > ITEM_ICON_W? ITEM_ICON_W : icon_w)/2), ( frameBuffer->getScreenHeight(true) - (icon_h > ITEM_ICON_H? ITEM_ICON_H : icon_h))/2, 0, true, (icon_w > ITEM_ICON_W? ITEM_ICON_W : icon_w), (icon_h > ITEM_ICON_H? ITEM_ICON_H : icon_h));  //25:foot height
 		}
 		
 		// help bar
