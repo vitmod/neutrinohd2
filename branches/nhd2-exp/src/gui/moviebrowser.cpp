@@ -2996,7 +2996,7 @@ bool CMovieBrowser::loadTsFileNamesFromDir(const std::string & dirname)
 					{
 						movieInfo.epgTitle = flist[i].getFileName();
 						movieInfo.epgInfo1 = flist[i].getFileName();
-						//movieInfo.epgInfo2 = flist[i].getFileName(); //IMDB???
+						movieInfo.epgInfo2 = flist[i].getFileName(); //IMDB???
 					}
 					
 					//TEST: remove me
@@ -4382,7 +4382,7 @@ void CDirMenu::show(void)
 	{
 		sprintf(tmp,"%d",i);
 		tmp[1]=0;
-		dirMenu.addItem( new CMenuForwarderNonLocalized ( (*dirList)[i].name.c_str(), (dirState[i] != DIR_STATE_UNKNOWN), dirOptionText[i],       this,tmp));
+		dirMenu.addItem( new CMenuForwarderNonLocalized ( (*dirList)[i].name.c_str(), (dirState[i] != DIR_STATE_UNKNOWN), dirOptionText[i], this, tmp));
 	}
 	dirMenu.exec(NULL," ");
 	return;
@@ -5485,7 +5485,9 @@ int CNKCategoriesMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	CMenuWidget m(LOCALE_MOVIEBROWSER_NK_CATEGORIES, NEUTRINO_ICON_NETZKINO_SMALL);
 
 	for (unsigned i = 0; i < cats.size(); i++)
-		m.addItem(new CMenuForwarderNonLocalized(cats[i].title.c_str(), true, ("(" + to_string(cats[i].post_count) + ")").c_str(), this, to_string(i).c_str(), CRCInput::convertDigitToKey(i + 1)), cats[i].id == *nkcategory);
+	{
+		m.addItem(new CMenuForwarderNonLocalized(cats[i].title.c_str(), true, /*("(" + to_string(cats[i].post_count) + ")").c_str()*/NULL, this, to_string(i).c_str(), CRCInput::convertDigitToKey(i + 1)), cats[i].id == *nkcategory);
+	}
 
 	m.exec(NULL, "");
 

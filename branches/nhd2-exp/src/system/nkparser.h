@@ -55,7 +55,7 @@ class cNKFeedParser
 {
 	private:
 
-		std::vector<sNKCategory> categories;
+		/*std::vector<sNKCategory>*/nk_category_list_t categories;
 
 		std::string thumbnail_dir;
 

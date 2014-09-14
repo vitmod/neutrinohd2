@@ -950,7 +950,7 @@ movieplayer.vlcdvdplayback VLC (DVD) Player
 movieplayer.vlcsvcdplayback VLC (SVCD) Player
 movieplayer.records Records Player
 movieplayer.movies Movies Player
-movieplayer.fileplayback File Player
+movieplayer.fileplayback Media Player
 movieplayer.showtshelp Help
 movieplayer.goto Jump to ...
 movieplayer.goto.h1 = -> absolute jump

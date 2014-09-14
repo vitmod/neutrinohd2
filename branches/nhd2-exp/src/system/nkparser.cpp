@@ -175,6 +175,7 @@ bool cNKFeedParser::parseCategoriesJSON(std::string &answer)
 		sNKCategory c;
 		c.id = 0;
 		c.post_count = 0;
+		
 		v = cat.get("id", "");
 		if (v.type() == Json::intValue || v.type() == Json::uintValue)
 			c.id = v.asInt();
