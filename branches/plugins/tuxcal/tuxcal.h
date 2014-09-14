@@ -440,6 +440,7 @@ enum {
 	GRID
 };
 
+/*
 enum {
 	TRANSP = 0xFF, 
 	WHITE = 0x10, 
@@ -459,6 +460,29 @@ enum {
 	DAY5, 
 	SKIN3, 
 	BLACK = 0x11, 
+	LGREY, 
+	MAGENTA
+};
+*/
+enum {
+	TRANSP = COL_BACKGROUND, 
+	WHITE = COL_WHITE0, 
+	SKIN0, 
+	SKIN1, 
+	SKIN2, 
+	ORANGE, 
+	GREEN = COL_GREEN0, 
+	YELLOW = COL_YELLOW0, 
+	RED = COL_RED0, 
+	BLUE = COL_BLUE0, 
+	GREY = COL_LIGHT_GRAY0, 
+	DAY1,
+	DAY2, 
+	DAY3, 
+	DAY4, 
+	DAY5, 
+	SKIN3, 
+	BLACK = COL_BLACK0, 
 	LGREY, 
 	MAGENTA
 };

@@ -351,8 +351,6 @@ int GetStringLen(const char *string, int size)
 */
 void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout, int size, uint8_t color)
 {
-	color = COL_MENUCONTENT;
-	
 	//set alignment
 	if(layout != LEFT)
 	{
@@ -421,7 +419,7 @@ void RenderInt(const char *string, int _sx, int _sy, int maxwidth, int layout, i
 	if (size == SMALL) 
 		sizey = FONTSIZE_SMALL;
 	else if (size == BIG) 
-		sizey=FONTSIZE_BIG;
+		sizey = FONTSIZE_BIG;
 	
 	x = _sx - 5;
 	y = _sy - sizey + 8;
@@ -2303,8 +2301,8 @@ void plugin_exec()
 		{
 			case RC_DBOX:
 			{
-				if (!ControlDaemon(TOGGLE_CLOCK))														// send hide/show clock to daemon
-					ShowMessage(CLOCKFAIL);																		// we didn't reach the daemon, show error
+				if (!ControlDaemon(TOGGLE_CLOCK))										// send hide/show clock to daemon
+					ShowMessage(CLOCKFAIL);											// we didn't reach the daemon, show error
 				else 
 					ShowMessage(CLOCKOK);
 			} break;

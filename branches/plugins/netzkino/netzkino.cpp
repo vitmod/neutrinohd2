@@ -26,6 +26,7 @@
 
 
 extern "C" void plugin_exec(void);
+
   
 void plugin_exec(void)
 {
@@ -43,6 +44,7 @@ void plugin_exec(void)
 	
 	moviebrowser->setMode(MB_SHOW_NETZKINO);
 	
+BROWSER:
 	if (moviebrowser->exec(Path_local.c_str())) 
 	{
 		// get the current path and file name
@@ -62,6 +64,16 @@ void plugin_exec(void)
 			
 			// play
 			moviePlayerGui->exec(NULL, "urlplayback");
+		}
+		
+		neutrino_msg_t msg;
+		neutrino_msg_data_t data;
+
+		g_RCInput->getMsg_ms(&msg, &data, 40);
+		
+		if (msg != CRCInput::RC_home) 
+		{
+			goto BROWSER;
 		}
 	}
 						

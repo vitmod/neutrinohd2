@@ -180,26 +180,16 @@ void plugin_exec(void)
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Youtube", true, NULL, mpHandler, "youtube", NULL, NULL, NEUTRINO_ICON_MENUITEM_YT));
 	
 	// netzkino
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Netzkino", true, NULL, mpHandler, "netzkino", NULL, NULL, NEUTRINO_ICON_MENUITEM_NETZKINO));
+	std::string netzKinoIcon = PLUGINDIR "/subtitles.png";
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Netzkino", true, NULL, mpHandler, "netzkino", NULL, NULL, /*NEUTRINO_ICON_MENUITEM_NETZKINO*/PLUGINDIR "/subtitles.png"));
 	
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Music Deluxe", true, NULL, mpHandler, "musicdeluxe", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
 	
 	// orf stream
-	/*
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 1", true, NULL, mpHandler, "orf1", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 2", true, NULL, mpHandler, "orf2", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 3", true, NULL, mpHandler, "orf3", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF Sport HQ", true, NULL, mpHandler, "orfsport", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
-	*/
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF Streams", true, NULL, mpHandler, "orf", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
 	
 	// dummies
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("dummy 1", true, NULL, mpHandler, "ardmt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
-	/*
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("dummy 2", true, NULL, mpHandler, "zdfmt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("dummy 3", true, NULL, mpHandler, "orfmt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("dummy 4", true, NULL, mpHandler, "artemt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
-	*/
 	
 	mediaPortal->exec(NULL, "");
 	mediaPortal->hide();
