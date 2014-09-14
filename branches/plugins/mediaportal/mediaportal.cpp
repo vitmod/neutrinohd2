@@ -106,6 +106,9 @@ void CMediaPortal::ORF(void)
 
 int CMediaPortal::exec(CMenuTarget *parent, const std::string &actionKey)
 {
+	int ret = menu_return::RETURN_REPAINT;
+	CMovieBrowser moviebrowser;
+	
 	if(parent)
 		parent->hide();
 
@@ -113,11 +116,91 @@ int CMediaPortal::exec(CMenuTarget *parent, const std::string &actionKey)
 	
 	if(actionKey == "youtube") 
 	{
-		moviePlayerGui->exec(NULL, "ytplayback");
+		//moviePlayerGui->exec(NULL, "ytplayback");
+	
+		std::string Path_local = "/";
+		MI_MOVIE_INFO * p_movie_info;
+		
+		moviebrowser.setMode(MB_SHOW_YT);
+		
+YT_BROWSER:	
+		if (moviebrowser.exec(Path_local.c_str())) 
+		{
+			// get the current path and file name
+			Path_local = moviebrowser.getCurrentDir();
+			CFile * file;
+
+			if ((file = moviebrowser.getSelectedFile()) != NULL) 
+			{
+				moviePlayerGui->filename = file->Url.c_str();
+				
+				// movieinfos
+				p_movie_info = moviebrowser.getCurrentMovieInfo();
+				
+				moviePlayerGui->Title = p_movie_info->epgTitle;
+				moviePlayerGui->Info1 = p_movie_info->epgInfo1;
+				moviePlayerGui->Info2 = p_movie_info->epgInfo2;
+				
+				// play
+				moviePlayerGui->exec(NULL, "urlplayback");
+			}
+			
+			neutrino_msg_t msg;
+			neutrino_msg_data_t data;
+
+			g_RCInput->getMsg_ms(&msg, &data, 40);
+			
+			if (msg != CRCInput::RC_home) 
+			{
+				goto YT_BROWSER;
+			}
+		}
+							
+		return ret;	
 	}
 	else if(actionKey == "netzkino") 
 	{
-		moviePlayerGui->exec(NULL, "netzkinoplayback");
+		//moviePlayerGui->exec(NULL, "netzkinoplayback");
+
+		MI_MOVIE_INFO * p_movie_info;
+		std::string Path_local = "/";
+		
+		moviebrowser.setMode(MB_SHOW_NETZKINO);
+		
+NK_BROWSER:
+		if (moviebrowser.exec(Path_local.c_str())) 
+		{
+			// get the current path and file name
+			Path_local = moviebrowser.getCurrentDir();
+			CFile * file;
+
+			if ((file = moviebrowser.getSelectedFile()) != NULL) 
+			{
+				moviePlayerGui->filename = file->Url.c_str();
+				
+				// movieinfos
+				p_movie_info = moviebrowser.getCurrentMovieInfo();
+				
+				moviePlayerGui->Title = p_movie_info->epgTitle;
+				moviePlayerGui->Info1 = p_movie_info->epgInfo1;
+				moviePlayerGui->Info2 = p_movie_info->epgInfo2;
+				
+				// play
+				moviePlayerGui->exec(NULL, "urlplayback");
+			}
+			
+			neutrino_msg_t msg;
+			neutrino_msg_data_t data;
+
+			g_RCInput->getMsg_ms(&msg, &data, 40);
+			
+			if (msg != CRCInput::RC_home) 
+			{
+				goto NK_BROWSER;
+			}
+		}
+		
+		return ret;
 	}
 	else if(actionKey == "musicdeluxe")
 	{
@@ -167,7 +250,7 @@ int CMediaPortal::exec(CMenuTarget *parent, const std::string &actionKey)
 		ORF();
 	}
 
-	return menu_return::RETURN_REPAINT;
+	return ret;
 }
 
 void plugin_exec(void)

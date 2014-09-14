@@ -30,7 +30,7 @@ extern "C" void plugin_exec(void);
 void plugin_exec(void)
 {
 	dprintf(DEBUG_INFO, "Plugins: starting DVDPlayer\n");
-	
+	/*
 	CMenuWidget * dvdPlayerMenu = new CMenuWidget("DVD/Blueray Player", NEUTRINO_ICON_STREAMING);
 	
 	// dvd
@@ -43,4 +43,50 @@ void plugin_exec(void)
 	dvdPlayerMenu->hide();
 	
 	delete dvdPlayerMenu;
+	*/
+	
+	CFileBrowser fileBrowser;
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("vob");
+	fileBrowser.Filter = &fileFilter;
+	
+	std::string Path_dvd = "/mnt/dvd";
+				
+	// create mount path
+	safe_mkdir((char *)Path_dvd.c_str());
+						
+	// mount selected iso image
+	char cmd[128];
+	sprintf(cmd, "mount -o loop /media/hdd/dvd.iso %s", (char *)Path_dvd.c_str());
+	system(cmd);
+	
+DVD_BROWSER:
+	if(fileBrowser.exec(Path_dvd.c_str()))
+	{
+		Path_dvd = fileBrowser.getCurrentDir();
+
+		CFile * file = fileBrowser.getSelectedFile();
+
+		if ((file = fileBrowser.getSelectedFile()) != NULL) 
+		{
+			moviePlayerGui->filename = file->Name.c_str();	
+			moviePlayerGui->Title = file->getFileName();
+			moviePlayerGui->Info1 = file->getFileName();
+			moviePlayerGui->Info2 = file->getFileName();
+
+			// play
+			moviePlayerGui->exec(NULL, "urlplayback");
+		}
+		
+		neutrino_msg_t msg;
+		neutrino_msg_data_t data;
+
+		g_RCInput->getMsg_ms(&msg, &data, 40);
+		
+		if (msg != CRCInput::RC_home) 
+		{
+			goto DVD_BROWSER;
+		}
+	}
 }
