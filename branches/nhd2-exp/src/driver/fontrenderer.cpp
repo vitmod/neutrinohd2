@@ -481,7 +481,7 @@ void CFont::RenderString(int x, int y, const int width, const char *text, const 
 	int pen1 = -1; // "pen" positions for kerning, pen2 is "x"
 
 	static fb_pixel_t oldbgcolor = 0, oldfgcolor = 0;
-	static fb_pixel_t colors[256] = {0};
+	static fb_pixel_t colors[256];
 
 	fb_pixel_t bgcolor = frameBuffer->realcolor[color];
 	fb_pixel_t fgcolor = frameBuffer->realcolor[((((color) + 2) | 7) - 2)];
@@ -527,8 +527,8 @@ void CFont::RenderString(int x, int y, const int width, const char *text, const 
 				 (((fgb + deltab * i / 255) & ((1 << bl) - 1)) << bo) |
 				 (((fgt + deltat * i / 255) & ((1 << tl) - 1)) << to));
 				 
-			/* FIXME must be better solution */
-			if(g_settings.contrast_fonts && ((255 - i) > 128))
+			// transparency
+			if(((255 - i) > 128))
 				colors[255 - i] |=  0xFF << to;
 		}
 	}

@@ -349,7 +349,7 @@ class CMovieBrowser : public CMenuTarget
 		bool showNKMenu();
 		int videoListsize;
 		
-		unsigned int Start, End;
+		int NKStart, NKEnd;
 		//
 	public:  // Functions //////////////////////////////////////////////////////////7
 		CMovieBrowser(const char * path); //P1 

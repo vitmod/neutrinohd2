@@ -1909,9 +1909,6 @@ void CNeutrinoApp::InitColorSettings(CMenuWidget &colorSettings)
 	
 	//font scaling
 	colorSettings.addItem(new CMenuForwarder(LOCALE_FONTMENU_SCALING, true, NULL, this, "font_scaling", CRCInput::convertDigitToKey(shortcutOSD++) ));
-	
-	// font contrast
-	colorSettings.addItem( new CMenuOptionChooser(LOCALE_COLORMENU_CONTRAST_FONTS, &g_settings.contrast_fonts, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutOSD++)));
 
 	// osd-timing
 	CMenuWidget *colorSettings_timing = new CMenuWidget(LOCALE_COLORMENU_TIMING, NEUTRINO_ICON_SETTINGS);

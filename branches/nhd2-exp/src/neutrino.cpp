@@ -701,8 +701,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.menu_Foot_Text_blue = configfile.getInt32( "menu_Foot_Text_blue", 50 );
 
 	strcpy( g_settings.font_file, configfile.getString( "font_file", FONTDIR"/neutrino.ttf" ).c_str() );
-	
-	g_settings.contrast_fonts = configfile.getInt32("contrast_fonts", 0);
 
 	// menue timing
 	for (int i = 0; i < TIMING_SETTING_COUNT; i++)
@@ -1207,7 +1205,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32( "screen_yres", g_settings.screen_yres);
 
 	configfile.setString("font_file", g_settings.font_file);
-	configfile.setInt32( "contrast_fonts", g_settings.contrast_fonts );
 
 	// menue timing
 	for (int i = 0; i < TIMING_SETTING_COUNT; i++)

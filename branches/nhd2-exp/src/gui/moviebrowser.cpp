@@ -1331,8 +1331,8 @@ int CMovieBrowser::paint(void)
 		return (false);
 	} 
 	
-	Start = 0;
-	End = m_pcBrowser->getLinesPerPage();
+	NKStart = 0;
+	NKEnd = m_pcBrowser->getLinesPerPage();
 	
 	return (true);
 }
@@ -1995,11 +1995,12 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 		}		
 		else if(show_mode == MB_SHOW_NETZKINO)
 		{
-			Start += m_pcBrowser->getLinesPerPage();
-			End += m_pcBrowser->getLinesPerPage();
+			NKEnd += m_pcBrowser->getLinesPerPage();
 			
-			if(End <= videoListsize)
+			if(NKEnd <= videoListsize)
 			{
+				NKStart += m_pcBrowser->getLinesPerPage();
+				
 				m_pcWindow->paintBackground();
 					
 				//
@@ -2007,7 +2008,7 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				loadBox.paint();
 				
 				nkparser.Cleanup();
-				loadNKTitles(m_settings.nkmode, m_settings.nksearch, m_settings.nkcategory, Start, End);
+				loadNKTitles(m_settings.nkmode, m_settings.nksearch, m_settings.nkcategory, NKStart, NKEnd);
 				
 				loadBox.hide();
 					
@@ -2018,6 +2019,10 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				//refreshMovieInfo();
 				refresh();
 			}
+			else
+				NKEnd -= m_pcBrowser->getLinesPerPage();
+			
+			printf("getLinesPerPages:%d, NKStart:%d NKEnd:%d\n", m_pcBrowser->getLinesPerPage(), NKStart, NKEnd);
 		}
 		else if(m_settings.gui == MB_GUI_MOVIE_INFO)
 			onSetGUIWindow(MB_GUI_FILTER);
@@ -2073,11 +2078,14 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 		}		
 		else if(show_mode == MB_SHOW_NETZKINO)
 		{
-			Start -= m_pcBrowser->getLinesPerPage();
-			End -= m_pcBrowser->getLinesPerPage();
+			NKStart -= m_pcBrowser->getLinesPerPage();
+			printf("[1], NKStart:%d\n", NKStart);
 			
-			if(Start >= m_pcBrowser->getLinesPerPage())
+			if(NKStart >= 0)
 			{
+				NKEnd -= m_pcBrowser->getLinesPerPage();
+				printf("[2], NKStart:%d NKEnd:%d\n", NKStart, NKEnd);
+				
 				m_pcWindow->paintBackground();
 					
 				//
@@ -2085,7 +2093,7 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				loadBox.paint();
 				
 				nkparser.Cleanup();
-				loadNKTitles(m_settings.nkmode, m_settings.nksearch, m_settings.nkcategory, Start, End);
+				loadNKTitles(m_settings.nkmode, m_settings.nksearch, m_settings.nkcategory, NKStart, NKEnd);
 				
 				loadBox.hide();
 					
@@ -2096,6 +2104,11 @@ bool CMovieBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				//refreshMovieInfo();
 				refresh();
 			}
+			else
+				NKStart += m_pcBrowser->getLinesPerPage();
+			
+			printf("[3] NKStart:%d NKEnd:%d\n", NKStart, NKEnd);
+
 		}
 		else if(m_settings.gui != MB_GUI_LAST_PLAY && m_settings.gui != MB_GUI_LAST_RECORD)
 		{
