@@ -2878,7 +2878,7 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::RealRun: initialized everything\n");
 
 	// start plugins
-	g_PluginList->startPlugin("startup.cfg"); //NOTE: startup.cfg not used anymore
+	//g_PluginList->startPlugin("startup.cfg"); //NOTE: startup.cfg not used anymore
 
 	// clear msg 
 	g_RCInput->clearRCMsg();
