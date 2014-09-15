@@ -107,7 +107,6 @@ void CMediaPortal::ORF(void)
 int CMediaPortal::exec(CMenuTarget *parent, const std::string &actionKey)
 {
 	int ret = menu_return::RETURN_REPAINT;
-	CMovieBrowser moviebrowser;
 	
 	if(parent)
 		parent->hide();
@@ -118,6 +117,7 @@ int CMediaPortal::exec(CMenuTarget *parent, const std::string &actionKey)
 	{
 		//moviePlayerGui->exec(NULL, "ytplayback");
 	
+		CMovieBrowser moviebrowser;
 		std::string Path_local = "/";
 		MI_MOVIE_INFO * p_movie_info;
 		
@@ -158,28 +158,27 @@ YT_BROWSER:
 							
 		return ret;	
 	}
+	/*
 	else if(actionKey == "netzkino") 
 	{
 		//moviePlayerGui->exec(NULL, "netzkinoplayback");
 
+		CNetzKinoBrowser nkBrowser;
 		MI_MOVIE_INFO * p_movie_info;
-		std::string Path_local = "/";
-		
-		moviebrowser.setMode(MB_SHOW_NETZKINO);
+		//std::string Path_local = "/";
 		
 NK_BROWSER:
-		if (moviebrowser.exec(Path_local.c_str())) 
+		if (nkBrowser.exec()) 
 		{
-			// get the current path and file name
-			Path_local = moviebrowser.getCurrentDir();
+			// get the current file name
 			CFile * file;
 
-			if ((file = moviebrowser.getSelectedFile()) != NULL) 
+			if ((file = nkBrowser.getSelectedFile()) != NULL) 
 			{
 				moviePlayerGui->filename = file->Url.c_str();
 				
 				// movieinfos
-				p_movie_info = moviebrowser.getCurrentMovieInfo();
+				p_movie_info = nkBrowser.getCurrentMovieInfo();
 				
 				moviePlayerGui->Title = p_movie_info->epgTitle;
 				moviePlayerGui->Info1 = p_movie_info->epgInfo1;
@@ -202,6 +201,7 @@ NK_BROWSER:
 		
 		return ret;
 	}
+	*/
 	else if(actionKey == "musicdeluxe")
 	{
 		moviePlayerGui->filename = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
@@ -263,8 +263,7 @@ void plugin_exec(void)
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Youtube", true, NULL, mpHandler, "youtube", NULL, NULL, NEUTRINO_ICON_MENUITEM_YT));
 	
 	// netzkino
-	std::string netzKinoIcon = PLUGINDIR "/subtitles.png";
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Netzkino", true, NULL, mpHandler, "netzkino", NULL, NULL, /*NEUTRINO_ICON_MENUITEM_NETZKINO*/PLUGINDIR "/subtitles.png"));
+	//mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Netzkino", true, NULL, mpHandler, "netzkino", NULL, NULL, PLUGINDIR "/netzkino.png"));
 	
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Music Deluxe", true, NULL, mpHandler, "musicdeluxe", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
 	

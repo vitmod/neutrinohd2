@@ -10,11 +10,12 @@ AM_CPPFLAGS =  \
 	-I$(top_srcdir)/../nhd2-exp/lib/libmd5sum \
 	-I$(top_srcdir)/../nhd2-exp/lib/libdvbapi \
 	-I$(top_srcdir)/../nhd2-exp/lib/libupnpclient \
+	-I$(top_srcdir)/../nhd2-exp/lib/jsoncpp/include \
 	@FREETYPE_CFLAGS@ 
 
 noinst_LTLIBRARIES = netzkino.la
 
-netzkino_la_SOURCES = netzkino.cpp
+netzkino_la_SOURCES = nkparser.cpp netzkino.cpp
 	 
 netzkino_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 
