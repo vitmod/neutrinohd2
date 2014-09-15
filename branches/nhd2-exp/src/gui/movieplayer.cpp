@@ -552,17 +552,6 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 		//isBlueRay = false;
 		isURL = false;
  	}
- 	else if (actionKey == "netzkinoplayback") 
-	{
-		isMovieBrowser = true;
-		moviebrowser->setMode(MB_SHOW_NETZKINO);
-		
-		timeshift = NO_TIMESHIFT;
-		//isVlc = false;
-		//isDVD = false;
-		//isBlueRay = false;
-		isURL = false;
- 	}
 	else if (actionKey == "fileplayback") 
 	{
 		isMovieBrowser = false;
@@ -1335,7 +1324,7 @@ void CMoviePlayerGui::PlayFile(void)
 		}
 
 		// movie infos (moviebrowser)
-		if (isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_YT && moviebrowser->getMode() != MB_SHOW_NETZKINO) 
+		if (isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_YT) 
 		{	  
 			// do all moviebrowser stuff here ( like commercial jump etc.)
 			if (playstate == CMoviePlayerGui::PLAY) 
@@ -1489,7 +1478,7 @@ void CMoviePlayerGui::PlayFile(void)
 
 					if ((file = moviebrowser->getSelectedFile()) != NULL) 
 					{
-						if (moviebrowser->getMode() == MB_SHOW_YT || moviebrowser->getMode() == MB_SHOW_NETZKINO) 
+						if (moviebrowser->getMode() == MB_SHOW_YT) 
 						{
 							filename = file->Url.c_str();
 						}
@@ -2083,7 +2072,7 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 			*/
 
-			if (isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_YT && moviebrowser->getMode() != MB_SHOW_NETZKINO && moviebrowser->getMode() != MB_SHOW_FILES) 
+			if (isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_YT && moviebrowser->getMode() != MB_SHOW_FILES) 
 			{
 				// if we have a movie information, try to save the stop position
 				ftime(&current_time);
@@ -2246,7 +2235,7 @@ void CMoviePlayerGui::PlayFile(void)
 			if (FileTime.IsVisible()) 
 				FileTime.hide();
 						
-			if(isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_YT && moviebrowser->getMode() != MB_SHOW_NETZKINO)
+			if(isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_YT )
 			{
 				int pos_sec = position / 1000;
 
@@ -2645,7 +2634,7 @@ void CMoviePlayerGui::PlayFile(void)
 		else if (msg == CRCInput::RC_0) 
 		{
 			// cancel bookmark jump
-			if (isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_YT && moviebrowser->getMode() != MB_SHOW_NETZKINO) 
+			if (isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_YT ) 
 			{
 				if (new_bookmark.pos != 0) 
 				{
@@ -2727,7 +2716,7 @@ void CMoviePlayerGui::PlayFile(void)
 				start_play = true;
 			}
 		}
-		else if (msg == (neutrino_msg_t)g_settings.key_screenshot && isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_YT && moviebrowser->getMode() != MB_SHOW_NETZKINO)
+		else if (msg == (neutrino_msg_t)g_settings.key_screenshot && isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_YT )
 		{
          		if(ShowMsgUTF (LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SCREENSHOT_ANNOUNCE), CMessageBox::mbrNo, CMessageBox:: mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) 
 			{
@@ -2756,7 +2745,7 @@ void CMoviePlayerGui::PlayFile(void)
 		{
 			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (3)\n");	
 
-			if (isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_YT && moviebrowser->getMode() != MB_SHOW_NETZKINO && moviebrowser->getMode() != MB_SHOW_FILES) 
+			if (isMovieBrowser == true && moviebrowser->getMode() != MB_SHOW_YT && moviebrowser->getMode() != MB_SHOW_FILES) 
 			{
 				// if we have a movie information, try to save the stop position
 				ftime(&current_time);

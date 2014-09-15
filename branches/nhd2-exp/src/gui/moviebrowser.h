@@ -84,7 +84,9 @@
 #include "driver/pictureviewer/pictureviewer.h"
 
 #include <system/ytparser.h>
-#include <system/nkparser.h>
+
+//nk
+//#include <system/nkparser.h>
 
 
 #define MAX_NUMBER_OF_BOOKMARK_ITEMS MI_MOVIE_BOOK_USER_MAX // we just use the same size as used in Movie info (MAX_NUMBER_OF_BOOKMARK_ITEMS is used for the number of menu items)
@@ -188,8 +190,7 @@ typedef enum
 {
 	MB_SHOW_RECORDS,
 	MB_SHOW_FILES,
-	MB_SHOW_YT,
-	MB_SHOW_NETZKINO
+	MB_SHOW_YT
 } MB_SHOW_MODE;
 
 #define MB_MAX_ROWS 6
@@ -242,19 +243,6 @@ typedef struct
 	std::string ytregion;
 	std::string ytvid;
 	std::string ytsearch;
-	
-	// netzkino	
-	int nkmode;
-	int nkcategory;
-	std::string nkcategoryname;
-	int nkresults;
-	int nkconcconn;
-	//int nksearch_history_size;
-	//int nksearch_history_max;
-	std::string nksearch;
-	//std::string nkthumbnaildir;
-	//std::list<std::string> nksearch_history;
-	//
 }MB_SETTINGS;
 
 // Priorities for Developmemt: P1: critical feature, P2: important feature, P3: for next release, P4: looks nice, lets see
@@ -333,7 +321,6 @@ class CMovieBrowser : public CMenuTarget
 		int movieInfoUpdateAll[MB_INFO_MAX_NUMBER];
 		int movieInfoUpdateAllIfDestEmptyOnly;
 
-		//bool restart_mb_timeout;
 		int show_mode;
 		
 		// youtube
@@ -341,16 +328,6 @@ class CMovieBrowser : public CMenuTarget
 		void loadYTitles(int mode, std::string search = "", std::string id = "");
 		bool showYTMenu(void);
 		
-		// netzkino		
-		cNKFeedParser nkparser;
-		std::string nkcategory_name;
-		
-		void loadNKTitles(int mode, std::string search, int id, unsigned int start, unsigned int end);
-		bool showNKMenu();
-		int videoListsize;
-		
-		int NKStart, NKEnd;
-		//
 	public:  // Functions //////////////////////////////////////////////////////////7
 		CMovieBrowser(const char * path); //P1 
 		CMovieBrowser(); //P1 
@@ -365,12 +342,8 @@ class CMovieBrowser : public CMenuTarget
 		void fileInfoStale(void); // call this function to force the Moviebrowser to reload all movie information from HD
 
 		bool readDir(const std::string & dirname, CFileList* flist);
-		//bool readDir_vlc(const std::string & dirname, CFileList* flist);
-		//bool readDir_std(const std::string & dirname, CFileList* flist);
 
 		bool delFile(CFile& file);
-		//bool delFile_vlc(CFile& file);
-		//bool delFile_std(CFile& file);
 		
 		// youtube
 		int  getMode() { return show_mode; }
@@ -411,7 +384,7 @@ class CMovieBrowser : public CMenuTarget
 		bool onButtonPressMovieInfoList(neutrino_msg_t msg); // P2
 		void onSetFocus(MB_FOCUS new_focus); // P2
 		void onSetFocusNext(void); // P2
-		void onSetFocusPrev(void); // P2
+		//void onSetFocusPrev(void); // P2
 		void onSetGUIWindow(MB_GUI gui);
 		void onSetGUIWindowNext(void);
 		void onSetGUIWindowPrev(void);

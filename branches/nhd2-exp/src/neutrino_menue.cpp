@@ -251,16 +251,16 @@ void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu, CMenuWidget &mainSettings
 		MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_FILEPLAYBACK, true, NULL, /*moviePlayerGui*/this, /*"fileplayback"*/"mediaplayer", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_FILEPLAYBACK ));	
 	
 	// yt/netzkino
-	if( g_PluginList->pluginfile_exists(PLUGINDIR "/youtube.so") || g_PluginList->pluginfile_exists(PLUGINDIR "/netzkino.so") )
-		MediaPlayer.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
+	//if( g_PluginList->pluginfile_exists(PLUGINDIR "/youtube.so") || g_PluginList->pluginfile_exists(PLUGINDIR "/netzkino.so") )
+	MediaPlayer.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
 	
 	// youtube player
-	if(g_PluginList->pluginfile_exists(PLUGINDIR "/youtube.so"))
-		MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_YTPLAYBACK, true, NULL, /*moviePlayerGui*/ this, /*"ytplayback"*/"youtube", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_YT, LOCALE_HELPTEXT_NETSTREAM ));
+	//if(g_PluginList->pluginfile_exists(PLUGINDIR "/youtube.so"))
+	MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_YTPLAYBACK, true, NULL, /*moviePlayerGui*/ this, /*"ytplayback"*/"youtube", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_YT, LOCALE_HELPTEXT_NETSTREAM ));
 	
 	// netzkino
-	if(g_PluginList->pluginfile_exists(PLUGINDIR "/netzkino.so"))
-		MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_NETZKINO, true, NULL, /*moviePlayerGui*/ this, /*"netzkinoplayback"*/"netzkino", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_NETZKINO, LOCALE_HELPTEXT_NETSTREAM ));
+	//if(g_PluginList->pluginfile_exists(PLUGINDIR "/netzkino.so"))
+	MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_NETZKINO, true, NULL, this, "netzkino", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_NETZKINO, LOCALE_HELPTEXT_NETSTREAM ));
 	
 	
 	// vlc player
