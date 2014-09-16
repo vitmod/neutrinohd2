@@ -83,7 +83,6 @@ typedef struct
 	// youtube
 	int ytmode;
 	int ytorderby;
-	int ytresults;
 	std::string ytregion;
 	std::string ytvid;
 	std::string ytsearch;
@@ -144,15 +143,11 @@ class CYTBrowser : public CMenuTarget
 		CFile * getSelectedFile(void); 
 		MI_MOVIE_INFO* getCurrentMovieInfo(void){return(m_movieSelectionHandler);};
 		
-		//void fileInfoStale(void);
-		
 	private:
 		// browser init
 		void init(void); 
 		void initGlobalSettings(void); 
 		void initFrames(void);
-		//void initDevelopment(void);
-		//void initRows(void);
 		void reinit(void);
 		
 		// browser main window
@@ -179,8 +174,6 @@ class CYTBrowser : public CMenuTarget
 		void onSetGUIWindow(YTB_GUI gui);
 		//void onSetGUIWindowNext(void);
 		//void onSetGUIWindowPrev(void);
-		
-		//bool onSortMovieInfoHandleList(std::vector<MI_MOVIE_INFO*>& pv_handle_list, MB_INFO_ITEM sort_type, MB_DIRECTION direction);
 		
 		void loadMovies();
 		
@@ -343,6 +336,8 @@ void CYTBrowser::init(void)
 void CYTBrowser::initGlobalSettings(void)
 {
 	dprintf(DEBUG_NORMAL, "CYTBrowser::initGlobalSettings\n");
+	
+	m_settings.gui = YTB_GUI_MOVIE_INFO;
 
 	// Browser List
 	m_settings.browserFrameHeight = g_settings.screen_EndY - g_settings.screen_StartY - 20 - ((g_settings.screen_EndY - g_settings.screen_StartY - 20)>>1) - (INTER_FRAME_SPACE>>1);
@@ -358,7 +353,6 @@ void CYTBrowser::initGlobalSettings(void)
 	// youtube
 	m_settings.ytmode = cYTFeedParser::MOST_POPULAR;
 	m_settings.ytorderby = cYTFeedParser::ORDERBY_PUBLISHED;
-	m_settings.ytresults = 25;
 	m_settings.ytregion = "default";
 }
 
@@ -424,8 +418,6 @@ int CYTBrowser::exec()
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_MOVIEPLAYER_NETZKINO));
 	
 	initGlobalSettings();
-	
-	m_settings.gui = YTB_GUI_MOVIE_INFO;
 	
 	// init frames
 	initFrames();
@@ -637,8 +629,6 @@ void CYTBrowser::refreshMovieInfo(void)
 
 		fname = m_movieSelectionHandler->tfile;
 		
-		//fname = m_movieSelectionHandler->file.Name;
-		
 		int ext_pos = 0;
 		ext_pos = fname.rfind('.');
 		if( ext_pos > 0)
@@ -648,8 +638,6 @@ void CYTBrowser::refreshMovieInfo(void)
 			extension = "." + extension;
 			strReplace(fname, extension.c_str(), ".jpg");
 		}
-		
-		//printf("screenshot name: %s\n", fname.c_str());
 		
 		logo_ok = !access(fname.c_str(), F_OK);
 		
@@ -716,15 +704,9 @@ void CYTBrowser::refreshBrowserList(void) //P1
 	// prepare Browser list for sorting and filtering
 	for(unsigned int file = 0; file < m_vMovieInfo.size(); file++)
 	{
-		//if(isFiltered(m_vMovieInfo[file]) == false)
-		{
-			movie_handle = &(m_vMovieInfo[file]);
-			m_vHandleBrowserList.push_back(movie_handle);
-		}
+		movie_handle = &(m_vMovieInfo[file]);
+		m_vHandleBrowserList.push_back(movie_handle);
 	}
-	
-	// sort the not filtered files
-	//onSortMovieInfoHandleList(m_vHandleBrowserList, m_settings.sorting.item, MB_DIRECTION_AUTO);
 
 	for(unsigned int handle = 0; handle < m_vHandleBrowserList.size() ;handle++)
 	{
@@ -776,7 +758,7 @@ void CYTBrowser::refreshTitle(void)
 	// movie icon
 	int icon_w, icon_h;
 	m_pcWindow->getIconSize(mb_icon.c_str(), &icon_w, &icon_h);
-	m_pcWindow->paintIcon(mb_icon, m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + 10, m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - icon_h)/2);
+	m_pcWindow->paintIcon(mb_icon, m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + 10, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_h)/2);
 
 	// setup icon
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_w, &icon_h);
@@ -819,35 +801,19 @@ void CYTBrowser::refreshFoot(void)
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 
 	// red
-	//if (m_settings.gui != MB_GUI_LAST_PLAY && m_settings.gui != MB_GUI_LAST_RECORD)
-	{
-		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
-		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_RED, m_cBoxFrame.iX + xpos1, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
+	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_RED, m_cBoxFrame.iX + xpos1, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
 
-		//1
-		//if (show_mode == MB_SHOW_YT || show_mode == MB_SHOW_NETZKINO ) 
-			m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_PREV_RESULTS), color, 0, true); // UTF-8
-		//else
-		//	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, sort_text.c_str(), color, 0, true); // UTF-8
-	}
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_PREV_RESULTS), color, 0, true); // UTF-8
 
 	// green
-	//if (m_settings.gui != MB_GUI_LAST_PLAY && m_settings.gui != MB_GUI_LAST_RECORD)
-	{
-		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_w, &icon_h);
-		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, m_cBoxFrame.iX + xpos2, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
+	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_w, &icon_h);
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, m_cBoxFrame.iX + xpos2, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
 
-		//2
-		//if (show_mode == MB_SHOW_YT || show_mode == MB_SHOW_NETZKINO ) 
-			m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width -30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_NEXT_RESULTS), color, 0, true); // UTF-8
-		//else
-		//	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width -30, filter_text.c_str(), color, 0, true); // UTF-8
-	}
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width -30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_NEXT_RESULTS), color, 0, true); // UTF-8
 
 	// yellow/ok
-	{
-		ok_text = g_Locale->getText(LOCALE_MOVIEBROWSER_FOOT_PLAY);
-	}
+	ok_text = g_Locale->getText(LOCALE_MOVIEBROWSER_FOOT_PLAY);
 
 	// ok
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &icon_w, &icon_h);
@@ -856,13 +822,10 @@ void CYTBrowser::refreshFoot(void)
 	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos3 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, ok_text.c_str(), color, 0, true); // UTF-8
 
 	// refresh/delete (mute/blue)
-	//if (show_mode != MB_SHOW_RECORDS) 
-	{
-		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
-		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, m_cBoxFrame.iX+xpos4, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + (ADD_FOOT_HEIGHT>>1));
+	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, m_cBoxFrame.iX+xpos4, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + (ADD_FOOT_HEIGHT>>1));
 
-		m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES), color, 0, true); // UTF-8
-	}
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES), color, 0, true); // UTF-8
 }
 
 bool CYTBrowser::onButtonPress(neutrino_msg_t msg)
@@ -1053,20 +1016,6 @@ bool CYTBrowser::onButtonPressMovieInfoList(neutrino_msg_t msg)
 
 void CYTBrowser::onSetGUIWindow(YTB_GUI gui)
 {
-	/*
-	if (show_mode == MB_SHOW_YT || show_mode == MB_SHOW_NETZKINO )
-	{
-		switch(gui) 
-		{
-			case MB_GUI_MOVIE_INFO:
-			case MB_GUI_FILTER:
-				break;
-			default:
-				gui = MB_GUI_MOVIE_INFO;
-		}
-	}
-	*/
-
 	m_settings.gui = gui;
 	
 	if(gui == YTB_GUI_MOVIE_INFO)
@@ -1149,8 +1098,6 @@ void CYTBrowser::updateMovieSelection(void)
 			old_movie_selection = m_currentBrowserSelection;
 			m_currentBrowserSelection = m_pcBrowser->getSelectedLine();
 			
-			//dprintf(DEBUG_NORMAL, "    sel1:%d\r\n",m_currentBrowserSelection);
-			
 			if(m_currentBrowserSelection != old_movie_selection)
 				new_selection = true;
 			
@@ -1170,7 +1117,7 @@ void CYTBrowser::loadMovies(void)
 {
 	dprintf(DEBUG_NORMAL, "CYTBrowser::loadMovies:\n");
 	
-	//first clear screen */
+	//first clear screen
 	m_pcWindow->paintBackground();
 	m_pcWindow->blit();	
 
@@ -1213,19 +1160,19 @@ bool CYTBrowser::getMovieInfoItem(MI_MOVIE_INFO& movie_info, YTB_INFO_ITEM item,
 			break;
 			
 		/*
-		case MB_INFO_INFO2: 					// 		= 7
+		case YTB_INFO_INFO2: 					// 		= 7
 			*item_string = movie_info.epgInfo2;
 			break;
 		*/
 		
 		/*
-		case MB_INFO_CHANNEL: 				// 		= 9,
+		case YTB_INFO_CHANNEL: 				// 		= 9,
 			*item_string = movie_info.epgChannel;
 			break;
 		*/
 		
 		/*
-		case MB_INFO_QUALITY: 				// 		= 11,
+		case YTB_INFO_QUALITY: 				// 		= 11,
 			snprintf(str_tmp,MAX_STR_TMP,"%d",movie_info.quality);
 			*item_string = str_tmp;
 			break;
@@ -1254,10 +1201,8 @@ void CYTBrowser::loadYTitles(int mode, std::string search, std::string id)
 		ytparser.SetRegion("");
 	else
 		ytparser.SetRegion(m_settings.ytregion);
-	
-	//printf("line per page:%d\n", m_pcBrowser->getLines());
 
-	ytparser.SetMaxResults(/*m_settings.ytresults*/ m_pcBrowser->getLinesPerPage());
+	ytparser.SetMaxResults(m_pcBrowser->getLinesPerPage());
 
 	if (!ytparser.Parsed() || (ytparser.GetFeedMode() != mode)) 
 	{
@@ -1269,6 +1214,8 @@ void CYTBrowser::loadYTitles(int mode, std::string search, std::string id)
 		{
 			//FIXME show error
 			DisplayErrorMessage(g_Locale->getText(LOCALE_MOVIEBROWSER_YT_ERROR));
+			m_reload_movies = true;
+			
 			return;
 		}
 	}
@@ -1349,7 +1296,6 @@ bool CYTBrowser::showYTMenu()
 	m_pcWindow->blit();
 
 	CMenuWidget mainMenu(LOCALE_MOVIEPLAYER_YTPLAYBACK, NEUTRINO_ICON_YT_SMALL);
-	//mainMenu.addIntroItems(LOCALE_MOVIEPLAYER_YTPLAYBACK);
 
 	int select = -1;
 	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
@@ -1384,7 +1330,6 @@ bool CYTBrowser::showYTMenu()
 	mainMenu.addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, selector, cnt, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
 
 	mainMenu.addItem(GenericMenuSeparatorLine);
-	//mainMenu.addItem(new CMenuOptionNumberChooser(LOCALE_MOVIEBROWSER_YT_MAX_RESULTS, &m_settings.ytresults, true, 10, 50, NULL));
 
 	char rstr[20];
 	sprintf(rstr, "%s", m_settings.ytregion.c_str());

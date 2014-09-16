@@ -31,15 +31,11 @@
 #include <bitset>
 #include <string>
 
-//#include "settings.h"
-//#include "helpers.h"
-//#include <global.h>
-//#include "set_threadname.h"
-
 #include <json/json.h>
 
 #include <nkparser.h>
 #include <system/helpers.h>
+#include <system/debug.h>
 
 
 #define URL_TIMEOUT 60
@@ -49,7 +45,7 @@ cNKFeedParser::cNKFeedParser()
 	thumbnail_dir = "/tmp/netzkino";
 	parsed = false;
 	max_results = 500;
-	concurrent_downloads = 1;
+	
 	curl_handle = curl_easy_init();
 }
 
@@ -84,14 +80,15 @@ bool cNKFeedParser::getUrl(std::string &url, std::string &answer, CURL *_curl_ha
 	char cerror[CURL_ERROR_SIZE];
 	curl_easy_setopt(_curl_handle, CURLOPT_ERRORBUFFER, cerror);
 
-	printf("try to get [%s] ...\n", url.c_str());
+	dprintf(DEBUG_INFO, "try to get [%s] ...\n", url.c_str());
+	
 	CURLcode httpres = curl_easy_perform(_curl_handle);
 
-	printf("http: res %d size %d\n", httpres, (int)answer.size());
+	dprintf(DEBUG_INFO, "http: res %d size %d\n", httpres, (int)answer.size());
 
 	if (httpres != 0 || answer.empty()) 
 	{
-		printf("error: %s\n", cerror);
+		dprintf(DEBUG_INFO, "error: %s\n", cerror);
 		return false;
 	}
 	return true;
@@ -118,18 +115,18 @@ bool cNKFeedParser::DownloadUrl(std::string &url, std::string &file, CURL *_curl
 	char cerror[CURL_ERROR_SIZE];
 	curl_easy_setopt(_curl_handle, CURLOPT_ERRORBUFFER, cerror);
 
-	printf("try to get [%s] ...\n", url.c_str());
+	dprintf(DEBUG_INFO, "try to get [%s] ...\n", url.c_str());
 	CURLcode httpres = curl_easy_perform(_curl_handle);
 
 	double dsize;
 	curl_easy_getinfo(_curl_handle, CURLINFO_SIZE_DOWNLOAD, &dsize);
 	fclose(fp);
 
-	printf("http: res %d size %g.\n", httpres, dsize);
+	dprintf(DEBUG_INFO, "http: res %d size %g.\n", httpres, dsize);
 
 	if (httpres != 0) 
 	{
-		printf("curl error: %s\n", cerror);
+		dprintf(DEBUG_INFO, "curl error: %s\n", cerror);
 		unlink(file.c_str());
 		return false;
 	}
@@ -360,7 +357,7 @@ bool cNKFeedParser::DownloadThumbnails(unsigned start, unsigned end)
 
 void cNKFeedParser::Cleanup(bool delete_thumbnails)
 {
-	printf("cNKFeedParser::Cleanup: %d videos\n", (int)videos.size());
+	dprintf(DEBUG_INFO, "cNKFeedParser::Cleanup: %d videos\n", (int)videos.size());
 	
 	if (delete_thumbnails) 
 	{

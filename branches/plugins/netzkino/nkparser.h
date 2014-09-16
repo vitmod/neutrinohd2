@@ -55,20 +55,18 @@ class cNKFeedParser
 {
 	private:
 
-		/*std::vector<sNKCategory>*/nk_category_list_t categories;
+		nk_category_list_t categories;
 
 		std::string thumbnail_dir;
 
 		int max_results;
-		int concurrent_downloads;
 		bool parsed;
-		bool stopThumbnailDownload;
 
 		nk_video_list_t videos;
 
 		CURL *curl_handle;
-
 		static size_t CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data);
+		
 		void encodeUrl(std::string &txt);
 		void decodeUrl(std::string &url);
 		bool getUrl(std::string &url, std::string &answer, CURL *_curl_handle = NULL);
@@ -95,9 +93,6 @@ class cNKFeedParser
 		nk_video_list_t &GetVideoList() { return videos; }
 		nk_category_list_t &GetCategoryList() { ParseCategories(); return categories; }
 		bool Parsed() { return parsed; }
-
-		void SetMaxResults(int count) { max_results = count; }
-		void SetConcurrentDownloads(int count) { concurrent_downloads = count; }
 };
 
 #endif

@@ -83,8 +83,6 @@ typedef struct
 	int nkmode;
 	int nkcategory;
 	std::string nkcategoryname;
-	int nkresults;
-	int nkconcconn;
 	std::string nksearch;
 }NKB_SETTINGS;
 
@@ -344,6 +342,8 @@ void CNetzKinoBrowser::init(void)
 void CNetzKinoBrowser::initGlobalSettings(void)
 {
 	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::initGlobalSettings\n");
+	
+	m_settings.gui = NKB_GUI_MOVIE_INFO;
 
 	// Browser List
 	m_settings.browserFrameHeight = g_settings.screen_EndY - g_settings.screen_StartY - 20 - ((g_settings.screen_EndY - g_settings.screen_StartY - 20)>>1) - (INTER_FRAME_SPACE>>1);
@@ -352,14 +352,13 @@ void CNetzKinoBrowser::initGlobalSettings(void)
 	m_settings.browserRowItem[0] = NKB_INFO_TITLE;
 	m_settings.browserRowItem[1] = NKB_INFO_INFO1;
 	m_settings.browserRowItem[2] = NKB_INFO_RECORDDATE;
-	m_settings.browserRowWidth[0] = m_defaultRowWidth[m_settings.browserRowItem[0]];		//300;
-	m_settings.browserRowWidth[1] = m_defaultRowWidth[m_settings.browserRowItem[1]]; 		//100;
-	m_settings.browserRowWidth[2] = m_defaultRowWidth[m_settings.browserRowItem[2]]; 		//80;
+	m_settings.browserRowWidth[0] = m_defaultRowWidth[m_settings.browserRowItem[0]];
+	m_settings.browserRowWidth[1] = m_defaultRowWidth[m_settings.browserRowItem[1]];
+	m_settings.browserRowWidth[2] = m_defaultRowWidth[m_settings.browserRowItem[2]];
 	
-	// netzkino	
+	// netzkino
+	m_settings.nkmode = cNKFeedParser::CATEGORY;
 	m_settings.nkcategory = 1;
-	m_settings.nkresults = 500;
-	m_settings.nkconcconn = 1;
 	m_settings.nkcategoryname = "Actionkino";
 }
 
@@ -426,7 +425,7 @@ int CNetzKinoBrowser::exec()
 	
 	initGlobalSettings();
 	
-	m_settings.gui = NKB_GUI_MOVIE_INFO;
+	//m_settings.gui = NKB_GUI_MOVIE_INFO;
 	
 	// init frames
 	initFrames();
@@ -464,7 +463,6 @@ int CNetzKinoBrowser::exec()
 
 	// get old movie selection and set position in windows	
 	m_currentBrowserSelection = m_prevBrowserSelection;
-
 	m_pcBrowser->setSelectedLine(m_currentBrowserSelection);
 
 	// update movie selection
@@ -639,12 +637,9 @@ void CNetzKinoBrowser::refreshMovieInfo(void)
 		
 		int lx, ly;
 		
-		// youtube
 		std::string fname;
 
 		fname = m_movieSelectionHandler->tfile;
-		
-		//fname = m_movieSelectionHandler->file.Name;
 		
 		int ext_pos = 0;
 		ext_pos = fname.rfind('.');
@@ -655,8 +650,6 @@ void CNetzKinoBrowser::refreshMovieInfo(void)
 			extension = "." + extension;
 			strReplace(fname, extension.c_str(), ".jpg");
 		}
-		
-		//printf("screenshot name: %s\n", fname.c_str());
 		
 		logo_ok = !access(fname.c_str(), F_OK);
 		
@@ -723,15 +716,9 @@ void CNetzKinoBrowser::refreshBrowserList(void) //P1
 	// prepare Browser list for sorting and filtering
 	for(unsigned int file = 0; file < m_vMovieInfo.size(); file++)
 	{
-		//if(isFiltered(m_vMovieInfo[file]) == false)
-		{
-			movie_handle = &(m_vMovieInfo[file]);
-			m_vHandleBrowserList.push_back(movie_handle);
-		}
+		movie_handle = &(m_vMovieInfo[file]);
+		m_vHandleBrowserList.push_back(movie_handle);
 	}
-	
-	// sort the not filtered files
-	//onSortMovieInfoHandleList(m_vHandleBrowserList, m_settings.sorting.item, MB_DIRECTION_AUTO);
 
 	for(unsigned int handle = 0; handle < m_vHandleBrowserList.size() ;handle++)
 	{
@@ -788,7 +775,7 @@ void CNetzKinoBrowser::refreshTitle(void)
 	// movie icon
 	int icon_w, icon_h;
 	m_pcWindow->getIconSize(mb_icon.c_str(), &icon_w, &icon_h);
-	m_pcWindow->paintIcon(mb_icon, m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + 10, m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - icon_h)/2);
+	m_pcWindow->paintIcon(mb_icon, m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + 10, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_h)/2);
 
 	// setup icon
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_w, &icon_h);
@@ -831,35 +818,19 @@ void CNetzKinoBrowser::refreshFoot(void)
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 
 	// red
-	//if (m_settings.gui != MB_GUI_LAST_PLAY && m_settings.gui != MB_GUI_LAST_RECORD)
-	{
-		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
-		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_RED, m_cBoxFrame.iX + xpos1, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
+	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_RED, m_cBoxFrame.iX + xpos1, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
 
-		//1
-		//if (show_mode == MB_SHOW_YT || show_mode == MB_SHOW_NETZKINO ) 
-			m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_PREV_RESULTS), color, 0, true); // UTF-8
-		//else
-		//	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, sort_text.c_str(), color, 0, true); // UTF-8
-	}
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_PREV_RESULTS), color, 0, true); // UTF-8
 
 	// green
-	//if (m_settings.gui != MB_GUI_LAST_PLAY && m_settings.gui != MB_GUI_LAST_RECORD)
-	{
-		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_w, &icon_h);
-		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, m_cBoxFrame.iX + xpos2, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
+	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_w, &icon_h);
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, m_cBoxFrame.iX + xpos2, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
 
-		//2
-		//if (show_mode == MB_SHOW_YT || show_mode == MB_SHOW_NETZKINO ) 
-			m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width -30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_NEXT_RESULTS), color, 0, true); // UTF-8
-		//else
-		//	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width -30, filter_text.c_str(), color, 0, true); // UTF-8
-	}
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width -30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_NEXT_RESULTS), color, 0, true); // UTF-8
 
 	// yellow/ok
-	{
-		ok_text = g_Locale->getText(LOCALE_MOVIEBROWSER_FOOT_PLAY);
-	}
+	ok_text = g_Locale->getText(LOCALE_MOVIEBROWSER_FOOT_PLAY);
 
 	// ok
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &icon_w, &icon_h);
@@ -868,13 +839,10 @@ void CNetzKinoBrowser::refreshFoot(void)
 	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos3 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, ok_text.c_str(), color, 0, true); // UTF-8
 
 	// refresh/delete (mute/blue)
-	//if (show_mode != MB_SHOW_RECORDS) 
-	{
-		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
-		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, m_cBoxFrame.iX+xpos4, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + (ADD_FOOT_HEIGHT>>1));
+	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, m_cBoxFrame.iX+xpos4, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + (ADD_FOOT_HEIGHT>>1));
 
-		m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES), color, 0, true); // UTF-8
-	}
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES), color, 0, true); // UTF-8
 }
 
 bool CNetzKinoBrowser::onButtonPress(neutrino_msg_t msg)
@@ -1074,20 +1042,6 @@ bool CNetzKinoBrowser::onButtonPressMovieInfoList(neutrino_msg_t msg)
 
 void CNetzKinoBrowser::onSetGUIWindow(NKB_GUI gui)
 {
-	/*
-	if (show_mode == MB_SHOW_YT || show_mode == MB_SHOW_NETZKINO )
-	{
-		switch(gui) 
-		{
-			case MB_GUI_MOVIE_INFO:
-			case MB_GUI_FILTER:
-				break;
-			default:
-				gui = MB_GUI_MOVIE_INFO;
-		}
-	}
-	*/
-
 	m_settings.gui = gui;
 	
 	if(gui == NKB_GUI_MOVIE_INFO)
@@ -1170,8 +1124,6 @@ void CNetzKinoBrowser::updateMovieSelection(void)
 			old_movie_selection = m_currentBrowserSelection;
 			m_currentBrowserSelection = m_pcBrowser->getSelectedLine();
 			
-			//dprintf(DEBUG_NORMAL, "    sel1:%d\r\n",m_currentBrowserSelection);
-			
 			if(m_currentBrowserSelection != old_movie_selection)
 				new_selection = true;
 			
@@ -1200,7 +1152,7 @@ void CNetzKinoBrowser::loadMovies(void)
 	loadBox.paint();
 
 	loadNKTitles(m_settings.nkmode, m_settings.nksearch, m_settings.nkcategory, 0, m_pcBrowser->getLinesPerPage());
-	nkparser.DownloadThumbnails(0, m_pcBrowser->getLinesPerPage());
+	//nkparser.DownloadThumbnails(0, m_pcBrowser->getLinesPerPage());
 	
 	loadBox.hide();
 
@@ -1236,19 +1188,19 @@ bool CNetzKinoBrowser::getMovieInfoItem(MI_MOVIE_INFO& movie_info, NKB_INFO_ITEM
 			break;
 			
 		/*
-		case MB_INFO_INFO2: 					// 		= 7
+		case NKB_INFO_INFO2: 					// 		= 7
 			*item_string = movie_info.epgInfo2;
 			break;
 		*/
 		
 		/*
-		case MB_INFO_CHANNEL: 				// 		= 9,
+		case NKB_INFO_CHANNEL: 				// 		= 9,
 			*item_string = movie_info.epgChannel;
 			break;
 		*/
 		
 		/*
-		case MB_INFO_QUALITY: 				// 		= 11,
+		case NKB_INFO_QUALITY: 				// 		= 11,
 			snprintf(str_tmp,MAX_STR_TMP,"%d",movie_info.quality);
 			*item_string = str_tmp;
 			break;
@@ -1277,10 +1229,7 @@ bool CNetzKinoBrowser::getMovieInfoItem(MI_MOVIE_INFO& movie_info, NKB_INFO_ITEM
 //netzkino
 void CNetzKinoBrowser::loadNKTitles(int mode, std::string search, int id, unsigned int start, unsigned int end)
 {
-	//nkparser.SetMaxResults(/*m_settings.nkresults*/m_pcBrowser->getLinesPerPage());
-	//nkparser.SetConcurrentDownloads(/*m_settings.ytconcconn*/1);
-	//nkparser.setThumbnailDir(m_settings.nkthumbnaildir);
-
+	//
 	if (nkparser.ParseFeed((cNKFeedParser::nk_feed_mode_t)mode, search, id)) 
 	{
 		nkparser.DownloadThumbnails(start, end);
@@ -1289,6 +1238,7 @@ void CNetzKinoBrowser::loadNKTitles(int mode, std::string search, int id, unsign
 	{
 		//FIXME show error
 		DisplayErrorMessage(g_Locale->getText(LOCALE_MOVIEBROWSER_NK_ERROR));
+		m_reload_movies = true;
 		return;
 	}
 	
@@ -1298,7 +1248,7 @@ void CNetzKinoBrowser::loadNKTitles(int mode, std::string search, int id, unsign
 	//
 	videoListsize = ylist.size();
 	
-	for (unsigned int i = start; i < /*m_settings.nkresults*/end && end /*m_settings.nkresults*/ <= ylist.size(); i++) 
+	for (unsigned int i = start; i < end && end <= ylist.size(); i++) 
 	{
 		MI_MOVIE_INFO movieInfo;
 		m_movieInfo.clearMovieInfo(&movieInfo); // refresh structure
@@ -1410,11 +1360,11 @@ bool CNetzKinoBrowser::showNKMenu()
 
 	int oldcat = m_settings.nkcategory;
 	int oldmode = m_settings.nkmode;
-	int oldresults = m_settings.nkresults;
+	//int oldresults = m_settings.nkresults;
 
 	mainMenu.exec(NULL, "");
 
-	nkparser.SetConcurrentDownloads(m_settings.nkconcconn);
+	//nkparser.SetConcurrentDownloads(m_settings.nkconcconn);
 	delete selector;
 
 	bool reload = false;
@@ -1448,7 +1398,7 @@ bool CNetzKinoBrowser::showNKMenu()
 			*/
 		}
 	}
-	else if (oldmode != m_settings.nkmode || oldcat != m_settings.nkcategory || oldresults != m_settings.nkresults) 
+	else if (oldmode != m_settings.nkmode || oldcat != m_settings.nkcategory /*|| oldresults != m_settings.nkresults*/) 
 	{
 		reload = true;
 	}

@@ -131,7 +131,6 @@ class cYTFeedParser
 		cYTFeedParser();
 		~cYTFeedParser();
 
-		//bool ParseFeed(yt_feed_mode_t mode = MOST_POPULAR, std::string search = "", std::string vid = "");
 		bool ParseFeed(yt_feed_mode_t mode = MOST_POPULAR, std::string search = "", std::string vid = "", yt_feed_orderby_t orderby = ORDERBY_PUBLISHED);
 		bool ParseVideoInfo(cYTVideoInfo &vinfo);
 		bool GetVideoUrls();
