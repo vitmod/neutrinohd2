@@ -241,7 +241,10 @@ void CPlugins::startPlugin(const char * const name)
 		printf("[CPlugins] could not find %s\n", name);
 		
 		std::string hint = name;
-		hint += " ist nicht installiert, bitte erneut installieren";
+		hint += " ";
+		//hint += " ist nicht installiert, bitte erneut installieren";
+		hint += g_Locale->getText(LOCALE_PLUGINS_NOT_INSTTALED);
+		
 		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, hint.c_str(), 450, 2 );
 	}
 

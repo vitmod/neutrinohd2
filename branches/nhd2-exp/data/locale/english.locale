@@ -1662,3 +1662,5 @@ moviebrowser.nk_rtmp netzKino URL Protokoll
 moviebrowser.nk_rtmp_http HTTP (mp4)
 moviebrowser.nk_rtmp_rtmp RTMP
 
+plugins.notinstalled not installed please install again.
+
