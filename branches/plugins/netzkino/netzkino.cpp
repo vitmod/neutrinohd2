@@ -1234,11 +1234,6 @@ bool CNetzKinoBrowser::getMovieInfoItem(MI_MOVIE_INFO& movie_info, NKB_INFO_ITEM
 	char str_tmp[MAX_STR_TMP];
 	bool result = true;
 	*item_string = "";
-	tm* tm_tmp;
-	
-	char text[20];
-	int i = 0;
-	int counter=0;
 
 	switch(item)
 	{
