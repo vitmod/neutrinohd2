@@ -1287,7 +1287,7 @@ bool CNetzKinoBrowser::getMovieInfoItem(MI_MOVIE_INFO& movie_info, NKB_INFO_ITEM
 			}		
 			break;
 			
-		case MB_INFO_MAX_NUMBER: 			//		= 20 
+		case NKB_INFO_MAX_NUMBER: 			//		= 20 
 		default:
 			*item_string = "";
 			result = false;
