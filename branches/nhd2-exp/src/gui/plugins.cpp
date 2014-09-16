@@ -243,7 +243,7 @@ void CPlugins::startPlugin(const char * const name)
 		std::string hint = name;
 		hint += " ";
 		//hint += " ist nicht installiert, bitte erneut installieren";
-		hint += g_Locale->getText(LOCALE_PLUGINS_NOT_INSTTALED);
+		hint += g_Locale->getText(LOCALE_PLUGINS_NOT_INSTALLED);
 		
 		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, hint.c_str(), 450, 2 );
 	}
