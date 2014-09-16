@@ -630,9 +630,6 @@ void CYTBrowser::refreshMovieInfo(void)
 		int pich = m_cBoxFrameInfo.iHeight - 10;
 		int picw = pich * (4.0 / 3);		// 4/3 format pics
 		
-		// netzkino
-		picw /= 2;
-		
 		int lx, ly;
 		
 		// youtube
