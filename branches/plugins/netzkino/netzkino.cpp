@@ -908,11 +908,11 @@ bool CNetzKinoBrowser::onButtonPress(neutrino_msg_t msg)
 		// if Main Frame didnot process the button, the focused window may do
 		switch(m_windowFocus)
 		{
-			case MB_FOCUS_BROWSER:
+			case NKB_FOCUS_BROWSER:
 			 	result = onButtonPressBrowserList(msg);		
 				break;
 				
-			case MB_FOCUS_MOVIE_INFO:
+			case NKB_FOCUS_MOVIE_INFO:
 			 	result = onButtonPressMovieInfoList(msg);		
 				break;
 				
