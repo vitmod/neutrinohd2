@@ -250,4 +250,3 @@ neutrino_locale_t CLocaleManager::getWeekday(const struct tm * struct_tm_p)
 {
 	return locale_weekday[struct_tm_p->tm_wday];
 }
-
