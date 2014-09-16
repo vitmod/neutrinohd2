@@ -580,12 +580,6 @@ void CMovieBrowser::initGlobalSettings(void)
 	m_settings.remount = false;
 	m_settings.browser_serie_mode = 0;
 	m_settings.serie_auto_create = 0;
-	
-	// youtube
-	m_settings.ytmode = cYTFeedParser::MOST_POPULAR;
-	m_settings.ytorderby = cYTFeedParser::ORDERBY_PUBLISHED;
-	m_settings.ytresults = 25;
-	m_settings.ytregion = "default";
 }
 
 void CMovieBrowser::initFrames(void)
@@ -758,14 +752,6 @@ bool CMovieBrowser::loadSettings(MB_SETTINGS *settings)
 		result = false;
 	}
 	
-	// youtube
-	settings->ytmode = configfile.getInt32("mb_ytmode", cYTFeedParser::MOST_POPULAR);
-	settings->ytorderby = configfile.getInt32("mb_ytorderby", cYTFeedParser::ORDERBY_PUBLISHED);
-	settings->ytresults = configfile.getInt32("mb_ytresults", 25);
-	settings->ytregion = configfile.getString("mb_ytregion", "default");
-	settings->ytsearch = configfile.getString("mb_ytsearch", "");
-	settings->ytvid = configfile.getString("mb_ytvid", "");
-	
 	return (result);
 }
 
@@ -822,14 +808,6 @@ bool CMovieBrowser::saveSettings(MB_SETTINGS *settings)
 	
 	// show_mode
 	//configfile.setInt32("show_mode", show_mode);
-	
-	// youtube
-	configfile.setInt32("mb_ytmode", settings->ytmode);
-	configfile.setInt32("mb_ytorderby", settings->ytorderby);
-	configfile.setInt32("mb_ytresults", settings->ytresults);
-	configfile.setString("mb_ytregion", settings->ytregion);
-	configfile.setString("mb_ytsearch", settings->ytsearch);
-	configfile.setString("mb_ytvid", settings->ytvid);
  
  	if (configfile.getModifiedFlag())
 		configfile.saveConfig(MOVIEBROWSER_SETTINGS_FILE);
