@@ -117,7 +117,7 @@ class CNetzKinoBrowser : public CMenuTarget
 		
 		NKB_FOCUS m_windowFocus;
 		
-		bool m_file_info_stale;
+		bool m_reload_movies;
 		
 		static CFont * m_pcFontFoot;
 		static CFont * m_pcFontTitle;
@@ -148,7 +148,7 @@ class CNetzKinoBrowser : public CMenuTarget
 		CFile * getSelectedFile(void); 
 		MI_MOVIE_INFO* getCurrentMovieInfo(void){return(m_movieSelectionHandler);};
 		
-		void fileInfoStale(void);
+		//void fileInfoStale(void);
 		
 	private:
 		// browser init
@@ -251,7 +251,7 @@ const neutrino_locale_t m_localizedItemName[MB_INFO_MAX_NUMBER + 1] =
 
 // default row size in pixel for any element
 #define	NKB_ROW_WIDTH_FILENAME 		150
-#define	NKB_ROW_WIDTH_TITLE		500
+#define	NKB_ROW_WIDTH_TITLE		750
 #define	NKB_ROW_WIDTH_INFO1		200
 //#define	MB_ROW_WIDTH_INFO2 		36
 //#define	MB_ROW_WIDTH_CHANNEL		100
@@ -293,31 +293,13 @@ CNetzKinoBrowser::~CNetzKinoBrowser()
 	}
 }
 
-void CNetzKinoBrowser::fileInfoStale(void)
-{
-	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::fileInfoStale\n");
-	
-	m_file_info_stale = true;
-	
-	m_vMovieInfo.clear();
-	m_vHandleBrowserList.clear();
-
-	m_movieSelectionHandler = NULL;
-	
-	//
-	for(int i = 0; i < LF_MAX_ROWS; i++)
-	{
-		m_browserListLines.lineArray[i].clear();
-	}
-}
-
 void CNetzKinoBrowser::init(void)
 {
 	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::init\n");
 	
 	initGlobalSettings();
 		
-	m_file_info_stale = true;
+	m_reload_movies = true;
 
 	m_pcWindow = CFrameBuffer::getInstance();
 	
@@ -469,16 +451,16 @@ int CNetzKinoBrowser::exec()
 	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd( timeout );
 	
 	// reload movies
-	//if(m_file_info_stale == true)
-	//{
-	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::exec\n");
-	loadMovies();
-	//}
-	//else
-	//{
-	//	// since we cleared everything above, we have to refresh the list now.
-		//refreshBrowserList();	
-	//}
+	if(m_reload_movies == true)
+	{
+		dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::exec\n");
+		loadMovies();
+	}
+	else
+	{
+		// since we cleared everything above, we have to refresh the list now.
+		refreshBrowserList();	
+	}
 
 	// get old movie selection and set position in windows	
 	m_currentBrowserSelection = m_prevBrowserSelection;
@@ -1221,11 +1203,11 @@ void CNetzKinoBrowser::loadMovies(void)
 	nkparser.DownloadThumbnails(0, m_pcBrowser->getLinesPerPage());
 	
 	loadBox.hide();
-	
-	m_file_info_stale = false;
 
 	refreshBrowserList();	
 	refreshMovieInfo();	// is done by refreshBrowserList if needed
+	
+	m_reload_movies = false;
 }
 
 bool CNetzKinoBrowser::getMovieInfoItem(MI_MOVIE_INFO& movie_info, NKB_INFO_ITEM item, std::string* item_string)
