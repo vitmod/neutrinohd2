@@ -194,7 +194,7 @@ class CNetzKinoBrowser : public CMenuTarget
 		bool getMovieInfoItem(MI_MOVIE_INFO& movie_info, NKB_INFO_ITEM item, std::string* item_string);
 };
 
-#define MESSAGEBOX_NKBROWSER_ROW_ITEM_COUNT 4
+#define MESSAGEBOX_NKBROWSER_ROW_ITEM_COUNT 5
 const CMenuOptionChooser::keyval MESSAGEBOX_NKBROWSER_ROW_ITEM[MESSAGEBOX_NKBROWSER_ROW_ITEM_COUNT] =
 {
 	{ NKB_INFO_FILENAME, LOCALE_MOVIEBROWSER_INFO_FILENAME, NULL },
@@ -216,7 +216,7 @@ const CMenuOptionChooser::keyval MESSAGEBOX_NKBROWSER_ROW_ITEM[MESSAGEBOX_NKBROW
 	//{ MB_INFO_LENGTH, LOCALE_MOVIEBROWSER_INFO_LENGTH, NULL },
 	//{ MB_INFO_SIZE, LOCALE_MOVIEBROWSER_INFO_SIZE, NULL },
 	//{ MB_INFO_BOOKMARK, LOCALE_MOVIEBROWSER_MENU_MAIN_BOOKMARKS, NULL },
-	//{ MB_INFO_FILENAME, LOCALE_MOVIEBROWSER_INFO_FILENAME, NULL }
+	{ MB_INFO_FILENAME, LOCALE_MOVIEBROWSER_INFO_FILENAME, NULL }
  };
  
  #define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
@@ -245,7 +245,7 @@ const neutrino_locale_t m_localizedItemName[MB_INFO_MAX_NUMBER + 1] =
 	//LOCALE_MOVIEBROWSER_SHORT_INFO2,
 	//LOCALE_MOVIEBROWSER_SHORT_CHANNEL ,
 	//LOCALE_MOVIEBROWSER_SHORT_QUALITY,
-	//LOCALE_MOVIEBROWSER_SHORT_RECORDDATE,
+	LOCALE_MOVIEBROWSER_SHORT_RECORDDATE,
 	NONEXISTANT_LOCALE
 };
 
@@ -316,9 +316,6 @@ void CNetzKinoBrowser::init(void)
 	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::init\n");
 	
 	initGlobalSettings();
-	
-	// load settings
-	//loadSettings(&m_settings);
 		
 	m_file_info_stale = true;
 
@@ -401,9 +398,6 @@ void CNetzKinoBrowser::initFrames(void)
 	m_cBoxFrameTitleRel.iWidth = 		m_cBoxFrame.iWidth;
 	m_cBoxFrameTitleRel.iHeight = 		m_pcFontTitle->getHeight();
 
-	//if(m_cBoxFrameTitleRel.iHeight < PIC_H) 
-	//	m_cBoxFrameTitleRel.iHeight = PIC_H;
-
 	m_cBoxFrameBrowserList.iX = 		m_cBoxFrame.iX;
 	m_cBoxFrameBrowserList.iY = 		m_cBoxFrame.iY + m_cBoxFrameTitleRel.iHeight;
 	m_cBoxFrameBrowserList.iWidth = 	m_cBoxFrame.iWidth;
@@ -447,6 +441,8 @@ int CNetzKinoBrowser::exec()
 	neutrino_msg_data_t data;
 
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_MOVIEPLAYER_NETZKINO));
+	
+	initGlobalSettings();
 	
 	m_settings.gui = NKB_GUI_MOVIE_INFO;
 	
@@ -1222,7 +1218,7 @@ void CNetzKinoBrowser::loadMovies(void)
 	loadBox.paint();
 
 	loadNKTitles(m_settings.nkmode, m_settings.nksearch, m_settings.nkcategory, 0, m_pcBrowser->getLinesPerPage());
-	nkparser.DownloadThumbnails(0, /*m_settings.nkresults*/m_pcBrowser->getLinesPerPage());
+	nkparser.DownloadThumbnails(0, m_pcBrowser->getLinesPerPage());
 	
 	loadBox.hide();
 	
