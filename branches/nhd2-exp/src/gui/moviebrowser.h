@@ -83,7 +83,6 @@
 #include <driver/fb_window.h>
 #include "driver/pictureviewer/pictureviewer.h"
 
-#include <system/ytparser.h>
 
 //nk
 //#include <system/nkparser.h>
@@ -190,7 +189,7 @@ typedef enum
 {
 	MB_SHOW_RECORDS,
 	MB_SHOW_FILES,
-	MB_SHOW_YT
+	MB_SHOW_OTHERS
 } MB_SHOW_MODE;
 
 #define MB_MAX_ROWS 6
@@ -235,14 +234,6 @@ typedef struct
 	int lastRecordRowNr;
 	MB_INFO_ITEM lastRecordRow[MB_MAX_ROWS];
 	int lastRecordRowWidth[MB_MAX_ROWS];
-	
-	// youtube
-	int ytmode;
-	int ytorderby;
-	int ytresults;
-	std::string ytregion;
-	std::string ytvid;
-	std::string ytsearch;
 }MB_SETTINGS;
 
 // Priorities for Developmemt: P1: critical feature, P2: important feature, P3: for next release, P4: looks nice, lets see
@@ -323,11 +314,6 @@ class CMovieBrowser : public CMenuTarget
 
 		int show_mode;
 		
-		// youtube
-		cYTFeedParser ytparser;
-		void loadYTitles(int mode, std::string search = "", std::string id = "");
-		bool showYTMenu(void);
-		
 	public:  // Functions //////////////////////////////////////////////////////////7
 		CMovieBrowser(const char * path); //P1 
 		CMovieBrowser(); //P1 
@@ -345,7 +331,6 @@ class CMovieBrowser : public CMenuTarget
 
 		bool delFile(CFile& file);
 		
-		// youtube
 		int  getMode() { return show_mode; }
 		void  setMode(int mode) { show_mode = mode; }
 	
@@ -422,9 +407,6 @@ class CMovieBrowser : public CMenuTarget
 		void updateFilterSelection(void);
 		void updateSerienames(void);
         	void autoFindSerie(void);
-		
-		// yt
-		neutrino_locale_t getFeedLocale(void);
 };
 
 // Class to show Moviebrowser Information, to be used by menu
