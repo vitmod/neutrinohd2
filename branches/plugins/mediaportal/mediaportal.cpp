@@ -113,6 +113,7 @@ int CMediaPortal::exec(CMenuTarget *parent, const std::string &actionKey)
 
 	printf("CMediaPortal::exec: %s\n", actionKey.c_str());
 	
+	/*
 	if(actionKey == "youtube") 
 	{
 		//moviePlayerGui->exec(NULL, "ytplayback");
@@ -158,6 +159,7 @@ YT_BROWSER:
 							
 		return ret;	
 	}
+	*/
 	/*
 	else if(actionKey == "netzkino") 
 	{
@@ -202,7 +204,7 @@ NK_BROWSER:
 		return ret;
 	}
 	*/
-	else if(actionKey == "musicdeluxe")
+	/*else*/ if(actionKey == "musicdeluxe")
 	{
 		moviePlayerGui->filename = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
 		moviePlayerGui->Title = "Music Deluxe";

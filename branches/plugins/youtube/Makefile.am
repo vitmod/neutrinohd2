@@ -14,7 +14,7 @@ AM_CPPFLAGS =  \
 
 noinst_LTLIBRARIES = youtube.la
 
-youtube_la_SOURCES = youtube.cpp
+youtube_la_SOURCES = ytparser.cpp youtube.cpp
 	 
 youtube_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 
