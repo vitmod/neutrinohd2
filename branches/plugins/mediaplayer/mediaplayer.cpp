@@ -32,7 +32,10 @@ void plugin_exec(void)
 	printf("Plugins: starting mediaplayer\n");
 	
 	//moviePlayerGui->exec(NULL, "fileplayback");
-	CFileBrowser filebrowser;
+	CFileBrowser * fileBrowser;
+	
+	fileBrowser = new CFileBrowser();
+	
 	CFileFilter fileFilter;
 	CFileList filelist;
 	
@@ -64,16 +67,16 @@ void plugin_exec(void)
 	fileFilter.addFilter("wma");
 	fileFilter.addFilter("ogg");
 
-	//filebrowser.Multi_Select    = true;
-	//filebrowser.Dirs_Selectable = true;
-	filebrowser.Filter = &fileFilter;
+	//fileBrowser->Multi_Select    = true;
+	//fileBrowser->Dirs_Selectable = true;
+	fileBrowser->Filter = &fileFilter;
 
 BROWSER:
-	if (filebrowser.exec(g_settings.network_nfs_moviedir))
+	if (fileBrowser->exec(g_settings.network_nfs_moviedir))
 	{
-		filelist = filebrowser.getSelectedFiles();
+		filelist = fileBrowser->getSelectedFiles();
 		
-		CFile *file = filebrowser.getSelectedFile();
+		CFile *file = fileBrowser->getSelectedFile();
 		filelist.clear();
 		filelist.push_back(*file);
 		
@@ -101,4 +104,6 @@ BROWSER:
 			goto BROWSER;
 		}
 	}
+	
+	delete fileBrowser;
 }
