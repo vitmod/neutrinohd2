@@ -33,25 +33,9 @@
 typedef enum
 {
 	NKB_INFO_FILENAME 		= 0,
-	//MB_INFO_FILEPATH 		= 1,
 	NKB_INFO_TITLE 			= 1,
-	//MB_INFO_SERIE 			= 3,
 	NKB_INFO_INFO1 			= 2,
-	//MB_INFO_MAJOR_GENRE 		= 5,
-	//MB_INFO_MINOR_GENRE 		= 6,
-	//MB_INFO_INFO2 			= 7,
-	//MB_INFO_PARENTAL_LOCKAGE	= 8,
-	//MB_INFO_CHANNEL 		= 9,
-	//MB_INFO_BOOKMARK		= 10,
-	//MB_INFO_QUALITY 		= 11,
-	//MB_INFO_PREVPLAYDATE 		= 12,
 	NKB_INFO_RECORDDATE 		= 3,
-	//MB_INFO_PRODDATE 		= 14,
-	//MB_INFO_COUNTRY 		= 15,
-	//MB_INFO_GEOMETRIE 		= 16,
-	//MB_INFO_AUDIO 			= 17,
-	//MB_INFO_LENGTH 			= 18,
-	//MB_INFO_SIZE 			= 19, 
 	NKB_INFO_MAX_NUMBER		= 4 	// MUST be allways the last item in the list
 }NKB_INFO_ITEM;
 
@@ -146,16 +130,12 @@ class CNetzKinoBrowser : public CMenuTarget
 		CFile * getSelectedFile(void); 
 		MI_MOVIE_INFO* getCurrentMovieInfo(void){return(m_movieSelectionHandler);};
 		
-		//void fileInfoStale(void);
-		
 	private:
 		// browser init
 		void init(void); 
 		void initGlobalSettings(void); 
 		void initFrames(void);
-		//void initDevelopment(void);
-		//void initRows(void);
-		void reinit(void);
+		//void reinit(void);
 		
 		// browser main window
 		int paint(void); 
@@ -176,18 +156,12 @@ class CNetzKinoBrowser : public CMenuTarget
 		
 		void onSetFocus(NKB_FOCUS new_focus);
 		void onSetFocusNext(void);
-		//void onSetFocusPrev(void);
 		
 		void onSetGUIWindow(NKB_GUI gui);
-		//void onSetGUIWindowNext(void);
-		//void onSetGUIWindowPrev(void);
-		
-		//bool onSortMovieInfoHandleList(std::vector<MI_MOVIE_INFO*>& pv_handle_list, MB_INFO_ITEM sort_type, MB_DIRECTION direction);
 		
 		void loadMovies();
 		
 		// misc
-		void showHelp(void);
 		void updateMovieSelection(void);
 		bool getMovieInfoItem(MI_MOVIE_INFO& movie_info, NKB_INFO_ITEM item, std::string* item_string);
 };
@@ -196,24 +170,9 @@ class CNetzKinoBrowser : public CMenuTarget
 const CMenuOptionChooser::keyval MESSAGEBOX_NKBROWSER_ROW_ITEM[MESSAGEBOX_NKBROWSER_ROW_ITEM_COUNT] =
 {
 	{ NKB_INFO_FILENAME, LOCALE_MOVIEBROWSER_INFO_FILENAME, NULL },
-	//{ MB_INFO_FILEPATH, LOCALE_MOVIEBROWSER_INFO_PATH, NULL },
 	{ NKB_INFO_TITLE, LOCALE_MOVIEBROWSER_INFO_TITLE, NULL },
-	//{ MB_INFO_SERIE, LOCALE_MOVIEBROWSER_INFO_SERIE, NULL },
 	{ NKB_INFO_INFO1, LOCALE_MOVIEBROWSER_INFO_INFO1, NULL },
-	//{ MB_INFO_MAJOR_GENRE, LOCALE_MOVIEBROWSER_INFO_GENRE_MAJOR, NULL },
-	//{ MB_INFO_MINOR_GENRE, LOCALE_MOVIEBROWSER_INFO_GENRE_MINOR, NULL },
-	//{ MB_INFO_PARENTAL_LOCKAGE, LOCALE_MOVIEBROWSER_INFO_PARENTAL_LOCKAGE, NULL },
-	//{ MB_INFO_CHANNEL, LOCALE_MOVIEBROWSER_INFO_CHANNEL, NULL },
-	//{ MB_INFO_QUALITY, LOCALE_MOVIEBROWSER_INFO_QUALITY, NULL },
-	//{ MB_INFO_PREVPLAYDATE, LOCALE_MOVIEBROWSER_INFO_PREVPLAYDATE, NULL },
 	{ NKB_INFO_RECORDDATE, LOCALE_MOVIEBROWSER_INFO_RECORDDATE, NULL },
-	//{ MB_INFO_PRODDATE, LOCALE_MOVIEBROWSER_INFO_PRODYEAR, NULL },
-	//{ MB_INFO_COUNTRY, LOCALE_MOVIEBROWSER_INFO_PRODCOUNTRY, NULL },
-	//{ MB_INFO_GEOMETRIE, LOCALE_MOVIEBROWSER_INFO_VIDEOFORMAT, NULL },
-	//{ MB_INFO_AUDIO, LOCALE_MOVIEBROWSER_INFO_AUDIO, NULL },
-	//{ MB_INFO_LENGTH, LOCALE_MOVIEBROWSER_INFO_LENGTH, NULL },
-	//{ MB_INFO_SIZE, LOCALE_MOVIEBROWSER_INFO_SIZE, NULL },
-	//{ MB_INFO_BOOKMARK, LOCALE_MOVIEBROWSER_MENU_MAIN_BOOKMARKS, NULL },
 	{ NKB_INFO_FILENAME, LOCALE_MOVIEBROWSER_INFO_FILENAME, NULL }
  };
  
@@ -240,9 +199,6 @@ const neutrino_locale_t m_localizedItemName[NKB_INFO_MAX_NUMBER + 1] =
 	LOCALE_MOVIEBROWSER_SHORT_FILENAME,
 	LOCALE_MOVIEBROWSER_SHORT_TITLE ,
 	LOCALE_MOVIEBROWSER_SHORT_INFO1,
-	//LOCALE_MOVIEBROWSER_SHORT_INFO2,
-	//LOCALE_MOVIEBROWSER_SHORT_CHANNEL ,
-	//LOCALE_MOVIEBROWSER_SHORT_QUALITY,
 	LOCALE_MOVIEBROWSER_SHORT_RECORDDATE,
 	NONEXISTANT_LOCALE
 };
@@ -251,9 +207,6 @@ const neutrino_locale_t m_localizedItemName[NKB_INFO_MAX_NUMBER + 1] =
 #define	NKB_ROW_WIDTH_FILENAME 		150
 #define	NKB_ROW_WIDTH_TITLE		750
 #define	NKB_ROW_WIDTH_INFO1		200
-//#define	MB_ROW_WIDTH_INFO2 		36
-//#define	MB_ROW_WIDTH_CHANNEL		100
-//#define	MB_ROW_WIDTH_QUALITY 		120
 #define	NKB_ROW_WIDTH_RECORDDATE 	120
 
 const int m_defaultRowWidth[NKB_INFO_MAX_NUMBER + 1] = 
@@ -261,9 +214,6 @@ const int m_defaultRowWidth[NKB_INFO_MAX_NUMBER + 1] =
 	NKB_ROW_WIDTH_FILENAME ,
 	NKB_ROW_WIDTH_TITLE,
 	NKB_ROW_WIDTH_INFO1,
-	//MB_ROW_WIDTH_INFO2 ,
-	//MB_ROW_WIDTH_CHANNEL,
-	//MB_ROW_WIDTH_QUALITY ,
 	NKB_ROW_WIDTH_RECORDDATE ,
 	0 //MB_ROW_WIDTH_MAX_NUMBER 
 };
@@ -334,7 +284,6 @@ void CNetzKinoBrowser::init(void)
 	}
 
 	initFrames();
-	//initRows();
 	
 	refreshBrowserList();	
 }
@@ -424,8 +373,6 @@ int CNetzKinoBrowser::exec()
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_MOVIEPLAYER_NETZKINO));
 	
 	initGlobalSettings();
-	
-	//m_settings.gui = NKB_GUI_MOVIE_INFO;
 	
 	// init frames
 	initFrames();
@@ -1152,7 +1099,6 @@ void CNetzKinoBrowser::loadMovies(void)
 	loadBox.paint();
 
 	loadNKTitles(m_settings.nkmode, m_settings.nksearch, m_settings.nkcategory, 0, m_pcBrowser->getLinesPerPage());
-	//nkparser.DownloadThumbnails(0, m_pcBrowser->getLinesPerPage());
 	
 	loadBox.hide();
 
@@ -1171,11 +1117,11 @@ bool CNetzKinoBrowser::getMovieInfoItem(MI_MOVIE_INFO& movie_info, NKB_INFO_ITEM
 
 	switch(item)
 	{
-		case NKB_INFO_FILENAME: 				// 		= 0,
+		case NKB_INFO_FILENAME: 
 			*item_string = movie_info.file.getFileName();
 			break;
 			
-		case NKB_INFO_TITLE: 				// 		= 2,
+		case NKB_INFO_TITLE:
 			*item_string = movie_info.epgTitle;
 			if(strcmp("not available", movie_info.epgTitle.c_str()) == 0)
 				result = false;
@@ -1183,30 +1129,11 @@ bool CNetzKinoBrowser::getMovieInfoItem(MI_MOVIE_INFO& movie_info, NKB_INFO_ITEM
 				result = false;
 			break;
 			
-		case NKB_INFO_INFO1: 			//		= 4,
+		case NKB_INFO_INFO1:
 			*item_string = movie_info.epgInfo1;
 			break;
 			
-		/*
-		case NKB_INFO_INFO2: 					// 		= 7
-			*item_string = movie_info.epgInfo2;
-			break;
-		*/
-		
-		/*
-		case NKB_INFO_CHANNEL: 				// 		= 9,
-			*item_string = movie_info.epgChannel;
-			break;
-		*/
-		
-		/*
-		case NKB_INFO_QUALITY: 				// 		= 11,
-			snprintf(str_tmp,MAX_STR_TMP,"%d",movie_info.quality);
-			*item_string = str_tmp;
-			break;
-		*/
-			
-		case NKB_INFO_RECORDDATE: 			// 		= 13,
+		case NKB_INFO_RECORDDATE:
 			// YYYY-MM-DD hh:mm:ss
 			int day, month, year;
 			if (3 == sscanf(movie_info.ytdate.c_str(), "%d-%d-%d", &day, &month, &year)) 
@@ -1216,7 +1143,7 @@ bool CNetzKinoBrowser::getMovieInfoItem(MI_MOVIE_INFO& movie_info, NKB_INFO_ITEM
 			}		
 			break;
 			
-		case NKB_INFO_MAX_NUMBER: 			//		= 20 
+		case NKB_INFO_MAX_NUMBER:
 		default:
 			*item_string = "";
 			result = false;

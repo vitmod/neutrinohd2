@@ -33,25 +33,9 @@
 typedef enum
 {
 	YTB_INFO_FILENAME 		= 0,
-	//MB_INFO_FILEPATH 		= 1,
 	YTB_INFO_TITLE 			= 1,
-	//MB_INFO_SERIE 			= 3,
 	YTB_INFO_INFO1 			= 2,
-	//MB_INFO_MAJOR_GENRE 		= 5,
-	//MB_INFO_MINOR_GENRE 		= 6,
-	//MB_INFO_INFO2 			= 7,
-	//MB_INFO_PARENTAL_LOCKAGE	= 8,
-	//MB_INFO_CHANNEL 		= 9,
-	//MB_INFO_BOOKMARK		= 10,
-	//MB_INFO_QUALITY 		= 11,
-	//MB_INFO_PREVPLAYDATE 		= 12,
 	YTB_INFO_RECORDDATE 		= 3,
-	//MB_INFO_PRODDATE 		= 14,
-	//MB_INFO_COUNTRY 		= 15,
-	//MB_INFO_GEOMETRIE 		= 16,
-	//MB_INFO_AUDIO 			= 17,
-	//MB_INFO_LENGTH 			= 18,
-	//MB_INFO_SIZE 			= 19, 
 	YTB_INFO_MAX_NUMBER		= 4 	// MUST be allways the last item in the list
 }YTB_INFO_ITEM;
 
@@ -148,7 +132,7 @@ class CYTBrowser : public CMenuTarget
 		void init(void); 
 		void initGlobalSettings(void); 
 		void initFrames(void);
-		void reinit(void);
+		//void reinit(void);
 		
 		// browser main window
 		int paint(void); 
@@ -169,16 +153,12 @@ class CYTBrowser : public CMenuTarget
 		
 		void onSetFocus(YTB_FOCUS new_focus);
 		void onSetFocusNext(void);
-		//void onSetFocusPrev(void);
 		
 		void onSetGUIWindow(YTB_GUI gui);
-		//void onSetGUIWindowNext(void);
-		//void onSetGUIWindowPrev(void);
 		
 		void loadMovies();
 		
 		// misc
-		void showHelp(void);
 		void updateMovieSelection(void);
 		bool getMovieInfoItem(MI_MOVIE_INFO& movie_info, YTB_INFO_ITEM item, std::string* item_string);
 		
@@ -190,26 +170,11 @@ class CYTBrowser : public CMenuTarget
 const CMenuOptionChooser::keyval MESSAGEBOX_YTBROWSER_ROW_ITEM[MESSAGEBOX_YTBROWSER_ROW_ITEM_COUNT] =
 {
 	{ YTB_INFO_FILENAME, LOCALE_MOVIEBROWSER_INFO_FILENAME, NULL },
-	//{ MB_INFO_FILEPATH, LOCALE_MOVIEBROWSER_INFO_PATH, NULL },
 	{ YTB_INFO_TITLE, LOCALE_MOVIEBROWSER_INFO_TITLE, NULL },
-	//{ MB_INFO_SERIE, LOCALE_MOVIEBROWSER_INFO_SERIE, NULL },
 	{ YTB_INFO_INFO1, LOCALE_MOVIEBROWSER_INFO_INFO1, NULL },
-	//{ MB_INFO_MAJOR_GENRE, LOCALE_MOVIEBROWSER_INFO_GENRE_MAJOR, NULL },
-	//{ MB_INFO_MINOR_GENRE, LOCALE_MOVIEBROWSER_INFO_GENRE_MINOR, NULL },
-	//{ MB_INFO_PARENTAL_LOCKAGE, LOCALE_MOVIEBROWSER_INFO_PARENTAL_LOCKAGE, NULL },
-	//{ MB_INFO_CHANNEL, LOCALE_MOVIEBROWSER_INFO_CHANNEL, NULL },
-	//{ MB_INFO_QUALITY, LOCALE_MOVIEBROWSER_INFO_QUALITY, NULL },
-	//{ MB_INFO_PREVPLAYDATE, LOCALE_MOVIEBROWSER_INFO_PREVPLAYDATE, NULL },
 	{ YTB_INFO_RECORDDATE, LOCALE_MOVIEBROWSER_INFO_RECORDDATE, NULL },
-	//{ MB_INFO_PRODDATE, LOCALE_MOVIEBROWSER_INFO_PRODYEAR, NULL },
-	//{ MB_INFO_COUNTRY, LOCALE_MOVIEBROWSER_INFO_PRODCOUNTRY, NULL },
-	//{ MB_INFO_GEOMETRIE, LOCALE_MOVIEBROWSER_INFO_VIDEOFORMAT, NULL },
-	//{ MB_INFO_AUDIO, LOCALE_MOVIEBROWSER_INFO_AUDIO, NULL },
-	//{ MB_INFO_LENGTH, LOCALE_MOVIEBROWSER_INFO_LENGTH, NULL },
-	//{ MB_INFO_SIZE, LOCALE_MOVIEBROWSER_INFO_SIZE, NULL },
-	//{ MB_INFO_BOOKMARK, LOCALE_MOVIEBROWSER_MENU_MAIN_BOOKMARKS, NULL },
 	{ YTB_INFO_FILENAME, LOCALE_MOVIEBROWSER_INFO_FILENAME, NULL }
- };
+};
  
  #define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
 #define MAX_WINDOW_HEIGHT 		(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
@@ -234,9 +199,6 @@ const neutrino_locale_t m_localizedItemName[YTB_INFO_MAX_NUMBER + 1] =
 	LOCALE_MOVIEBROWSER_SHORT_FILENAME,
 	LOCALE_MOVIEBROWSER_SHORT_TITLE ,
 	LOCALE_MOVIEBROWSER_SHORT_INFO1,
-	//LOCALE_MOVIEBROWSER_SHORT_INFO2,
-	//LOCALE_MOVIEBROWSER_SHORT_CHANNEL ,
-	//LOCALE_MOVIEBROWSER_SHORT_QUALITY,
 	LOCALE_MOVIEBROWSER_SHORT_RECORDDATE,
 	NONEXISTANT_LOCALE
 };
@@ -245,9 +207,6 @@ const neutrino_locale_t m_localizedItemName[YTB_INFO_MAX_NUMBER + 1] =
 #define	YTB_ROW_WIDTH_FILENAME 		150
 #define	YTB_ROW_WIDTH_TITLE		750
 #define	YTB_ROW_WIDTH_INFO1		200
-//#define	MB_ROW_WIDTH_INFO2 		36
-//#define	MB_ROW_WIDTH_CHANNEL		100
-//#define	MB_ROW_WIDTH_QUALITY 		120
 #define	YTB_ROW_WIDTH_RECORDDATE 	120
 
 const int m_defaultRowWidth[YTB_INFO_MAX_NUMBER + 1] = 
@@ -255,9 +214,6 @@ const int m_defaultRowWidth[YTB_INFO_MAX_NUMBER + 1] =
 	YTB_ROW_WIDTH_FILENAME ,
 	YTB_ROW_WIDTH_TITLE,
 	YTB_ROW_WIDTH_INFO1,
-	//MB_ROW_WIDTH_INFO2 ,
-	//MB_ROW_WIDTH_CHANNEL,
-	//MB_ROW_WIDTH_QUALITY ,
 	YTB_ROW_WIDTH_RECORDDATE ,
 	0 //MB_ROW_WIDTH_MAX_NUMBER 
 };
@@ -328,7 +284,6 @@ void CYTBrowser::init(void)
 	}
 
 	initFrames();
-	//initRows();
 	
 	refreshBrowserList();	
 }
@@ -1143,11 +1098,11 @@ bool CYTBrowser::getMovieInfoItem(MI_MOVIE_INFO& movie_info, YTB_INFO_ITEM item,
 
 	switch(item)
 	{
-		case YTB_INFO_FILENAME: 				// 		= 0,
+		case YTB_INFO_FILENAME:
 			*item_string = movie_info.file.getFileName();
 			break;
 			
-		case YTB_INFO_TITLE: 				// 		= 2,
+		case YTB_INFO_TITLE:
 			*item_string = movie_info.epgTitle;
 			if(strcmp("not available", movie_info.epgTitle.c_str()) == 0)
 				result = false;
@@ -1155,34 +1110,15 @@ bool CYTBrowser::getMovieInfoItem(MI_MOVIE_INFO& movie_info, YTB_INFO_ITEM item,
 				result = false;
 			break;
 			
-		case YTB_INFO_INFO1: 			//		= 4,
+		case YTB_INFO_INFO1:
 			*item_string = movie_info.epgInfo1;
 			break;
 			
-		/*
-		case YTB_INFO_INFO2: 					// 		= 7
-			*item_string = movie_info.epgInfo2;
-			break;
-		*/
-		
-		/*
-		case YTB_INFO_CHANNEL: 				// 		= 9,
-			*item_string = movie_info.epgChannel;
-			break;
-		*/
-		
-		/*
-		case YTB_INFO_QUALITY: 				// 		= 11,
-			snprintf(str_tmp,MAX_STR_TMP,"%d",movie_info.quality);
-			*item_string = str_tmp;
-			break;
-		*/
-			
-		case YTB_INFO_RECORDDATE: 			// 		= 13,
+		case YTB_INFO_RECORDDATE:
 			*item_string = movie_info.ytdate;	
 			break;
 			
-		case YTB_INFO_MAX_NUMBER: 			//		= 20 
+		case YTB_INFO_MAX_NUMBER:
 		default:
 			*item_string = "";
 			result = false;
@@ -1415,9 +1351,6 @@ extern "C" void plugin_exec(void);
 void plugin_exec(void)
 {
 	printf("Plugins: starting youtube player\n");
-	
-	// start netzkino
-	//moviePlayerGui->exec(NULL, "ytplayback");
 	
 	CYTBrowser * moviebrowser;
 	
