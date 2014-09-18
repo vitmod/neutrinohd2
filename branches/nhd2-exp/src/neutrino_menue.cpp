@@ -246,25 +246,25 @@ void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu, CMenuWidget &mainSettings
 	// movie player
 	MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_MOVIES, true, NULL, moviePlayerGui, "moviebrowser", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_TSMOVIEBROWSER ));
 
-	//if( g_PluginList->pluginfile_exists(PLUGINDIR "/youtube.so") || g_PluginList->pluginfile_exists(PLUGINDIR "/netzkino.so") )
-	MediaPlayer.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
+	if( g_PluginList->plugin_exists("mediaplayer") || g_PluginList->plugin_exists("youtube") || g_PluginList->plugin_exists("netzkino") || g_PluginList->plugin_exists("vlcplayer"))
+	      MediaPlayer.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
 	
 	// file player
-	//if(g_PluginList->pluginfile_exists(PLUGINDIR "/mediaplayer.so"))
-	MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_FILEPLAYBACK, true, NULL, this, "mediaplayer", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_FILEPLAYBACK ));	
+	if(g_PluginList->plugin_exists("mediaplayer"))
+		MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_FILEPLAYBACK, true, NULL, this, "mediaplayer", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_FILEPLAYBACK ));	
 
 	// youtube player
-	//if(g_PluginList->pluginfile_exists(PLUGINDIR "/youtube.so"))
-	MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_YTPLAYBACK, true, NULL, this, "youtube", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_YT, LOCALE_HELPTEXT_NETSTREAM ));
+	if(g_PluginList->plugin_exists("youtube"))
+		MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_YTPLAYBACK, true, NULL, this, "youtube", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_YT, LOCALE_HELPTEXT_NETSTREAM ));
 	
 	// netzkino
-	//if(g_PluginList->pluginfile_exists(PLUGINDIR "/netzkino.so"))
-	MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_NETZKINO, true, NULL, this, "netzkino", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_NETZKINO, LOCALE_HELPTEXT_NETSTREAM ));
+	if(g_PluginList->plugin_exists("netzkino"))
+		MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_NETZKINO, true, NULL, this, "netzkino", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_NETZKINO, LOCALE_HELPTEXT_NETSTREAM ));
 	
 	
 	// vlc player
-	//if(g_PluginList->pluginfile_exists(PLUGINDIR "/vlcplayer.so"))
-	MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_VLCPLAYBACK, true, NULL, this, "vlcplayer", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_VLC, LOCALE_HELPTEXT_NETSTREAM ));
+	if(g_PluginList->plugin_exists("vlcplayer"))
+		MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_VLCPLAYBACK, true, NULL, this, "vlcplayer", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_VLC, LOCALE_HELPTEXT_NETSTREAM ));
 #endif	
 
 	MediaPlayer.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
