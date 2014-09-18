@@ -23,6 +23,11 @@ tuxcom_la_LIBADD = \
 tuxcom_la_LDFLAGS = -rpath $(PLUGINDIR) -module -avoid-version 
 
 install-exec-local:
-	install -d $(DESTDIR)$(PLUGINDIR)
-	install .libs/tuxcom.so $(DESTDIR)$(PLUGINDIR)
-	install -m 0644 $(srcdir)/tuxcom.cfg $(DESTDIR)$(PLUGINDIR)
+	install -d $(DESTDIR)$(PLUGINDIR)/tuxcom
+	install .libs/tuxcom.so $(DESTDIR)$(PLUGINDIR)/tuxcom
+	install -m 0644 $(srcdir)/tuxcom.cfg $(DESTDIR)$(PLUGINDIR)/tuxcom
+
+uninstall-local:
+	-rm $(DESTDIR)$(PLUGINDIR)/tuxcom/tuxcom.so
+	-rm $(DESTDIR)$(PLUGINDIR)/tuxcom/tuxcom.cfg
+	-rmdir $(DESTDIR)$(PLUGINDIR)/tuxcom

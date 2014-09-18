@@ -25,9 +25,13 @@ tuxcal_la_LIBADD = \
 tuxcal_la_LDFLAGS = -rpath $(PLUGINDIR) -module -avoid-version
 
 install-exec-local:
-	install -d $(DESTDIR)$(PLUGINDIR)
-	install -d $(DESTDIR)$(CONFIGDIR)
-	install -d $(DESTDIR)$(CONFIGDIR)/tuxcal
-	install .libs/tuxcal.so $(DESTDIR)$(PLUGINDIR)
-	install -m 0644 $(srcdir)/tuxcal.cfg $(DESTDIR)$(PLUGINDIR)
-	install -m 0644 $(srcdir)/tuxcal.conf $(DESTDIR)$(CONFIGDIR)/tuxcal
+	install -d $(DESTDIR)$(PLUGINDIR)/tuxcal
+	install .libs/tuxcal.so $(DESTDIR)$(PLUGINDIR)/tuxcal
+	install -m 0644 $(srcdir)/tuxcal.cfg $(DESTDIR)$(PLUGINDIR)/tuxcal
+	install -m 0644 $(srcdir)/tuxcal.conf $(DESTDIR)$(PLUGINDIR)/tuxcal
+
+uninstall-local:
+	-rm $(DESTDIR)$(PLUGINDIR)/tuxcal/tuxcal.so
+	-rm $(DESTDIR)$(PLUGINDIR)/tuxcal/tuxcal.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/tuxcal/tuxcal.conf
+	-rmdir $(DESTDIR)$(PLUGINDIR)/tuxcal

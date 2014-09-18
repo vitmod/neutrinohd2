@@ -215,7 +215,7 @@ enum {
 	BLUE3
 };
 
-#define CONFIG_FILE PLUGINDIR "/tuxcom.conf"
+#define CONFIG_FILE PLUGINDIR "/tuxcom/tuxcom.conf"
 
 uint8_t trans_map[] = {
 	BLUE1, 

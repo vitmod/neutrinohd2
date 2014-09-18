@@ -21,13 +21,14 @@ mediaportal_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 mediaportal_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
 install-exec-local:
-	install -d $(DESTDIR)$(PLUGINDIR)
-	install .libs/mediaportal.so $(DESTDIR)$(PLUGINDIR)
-	install -m 0644 mediaportal.cfg $(DESTDIR)$(PLUGINDIR)
+	install -d $(DESTDIR)$(PLUGINDIR)/mediaportal
+	install .libs/mediaportal.so $(DESTDIR)$(PLUGINDIR)/mediaportal
+	install -m 0644 mediaportal.cfg $(DESTDIR)$(PLUGINDIR)/mediaportal
 
 uninstall-local:
-	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal.so
-	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/mediaportal.so
+	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/mediaportal.cfg
+	-rmdir $(DESTDIR)$(PLUGINDIR)/mediaportal
 
 
 

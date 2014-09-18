@@ -21,15 +21,16 @@ youtube_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 youtube_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
 install-exec-local:
-	install -d $(DESTDIR)$(PLUGINDIR)
-	install .libs/youtube.so $(DESTDIR)$(PLUGINDIR)
-	install -m 0644 youtube.cfg $(DESTDIR)$(PLUGINDIR)
-	install -m 0644 youtube.png $(DESTDIR)$(PLUGINDIR)
+	install -d $(DESTDIR)$(PLUGINDIR)/youtube
+	install .libs/youtube.so $(DESTDIR)$(PLUGINDIR)/youtube
+	install -m 0644 youtube.cfg $(DESTDIR)$(PLUGINDIR)/youtube
+	install -m 0644 youtube.png $(DESTDIR)$(PLUGINDIR)/youtube
 
 uninstall-local:
-	-rm $(DESTDIR)$(PLUGINDIR)/youtube.so
-	-rm $(DESTDIR)$(PLUGINDIR)/youtube.cfg
-	-rm $(DESTDIR)$(PLUGINDIR)/youtube.png
+	-rm $(DESTDIR)$(PLUGINDIR)/youtube/youtube.so
+	-rm $(DESTDIR)$(PLUGINDIR)/youtube/youtube.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/youtube/youtube.png
+	-rmdir $(DESTDIR)$(PLUGINDIR)/youtube
 
 
 

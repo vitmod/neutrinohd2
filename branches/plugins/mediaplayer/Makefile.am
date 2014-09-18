@@ -21,13 +21,14 @@ mediaplayer_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 mediaplayer_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
 install-exec-local:
-	install -d $(DESTDIR)$(PLUGINDIR)
-	install .libs/mediaplayer.so $(DESTDIR)$(PLUGINDIR)
-	install -m 0644 mediaplayer.cfg $(DESTDIR)$(PLUGINDIR)
+	install -d $(DESTDIR)$(PLUGINDIR)/mediaplayer
+	install .libs/mediaplayer.so $(DESTDIR)$(PLUGINDIR)/mediaplayer
+	install -m 0644 mediaplayer.cfg $(DESTDIR)$(PLUGINDIR)/mediaplayer
 
 uninstall-local:
-	-rm $(DESTDIR)$(PLUGINDIR)/mediaplayer.so
-	-rm $(DESTDIR)$(PLUGINDIR)/mediaplayer.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/mediaplayer/mediaplayer.so
+	-rm $(DESTDIR)$(PLUGINDIR)/mediaplayer/mediaplayer.cfg
+	-rmdir $(DESTDIR)$(PLUGINDIR)/mediaplayer
 
 
 

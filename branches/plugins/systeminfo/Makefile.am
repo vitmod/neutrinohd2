@@ -21,13 +21,14 @@ systeminfo_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 systeminfo_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
 install-exec-local:
-	install -d $(DESTDIR)$(PLUGINDIR)
-	install .libs/systeminfo.so $(DESTDIR)$(PLUGINDIR)
-	install -m 0644  systeminfo.cfg $(DESTDIR)$(PLUGINDIR)
+	install -d $(DESTDIR)$(PLUGINDIR)/systeminfo
+	install .libs/systeminfo.so $(DESTDIR)$(PLUGINDIR)/systeminfo
+	install -m 0644  systeminfo.cfg $(DESTDIR)$(PLUGINDIR)/systeminfo
 
 uninstall-local:
-	-rm $(DESTDIR)$(PLUGINDIR)/systeminfo.so
-	-rm $(DESTDIR)$(PLUGINDIR)/systeminfo.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/systeminfo/systeminfo.so
+	-rm $(DESTDIR)$(PLUGINDIR)/systeminfo/systeminfo.cfg
+	-rmdir $(DESTDIR)$(PLUGINDIR)/systeminfo
 	
 
 

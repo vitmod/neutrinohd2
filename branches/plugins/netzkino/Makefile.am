@@ -22,15 +22,16 @@ netzkino_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 netzkino_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
 install-exec-local:
-	install -d $(DESTDIR)$(PLUGINDIR)
-	install .libs/netzkino.so $(DESTDIR)$(PLUGINDIR)
-	install -m 0644  netzkino.cfg $(DESTDIR)$(PLUGINDIR)
-	install -m 0644  netzkino.png $(DESTDIR)$(PLUGINDIR)
+	install -d $(DESTDIR)$(PLUGINDIR)/netzkino
+	install .libs/netzkino.so $(DESTDIR)$(PLUGINDIR)/netzkino
+	install -m 0644  netzkino.cfg $(DESTDIR)$(PLUGINDIR)/netzkino
+	install -m 0644  netzkino.png $(DESTDIR)$(PLUGINDIR)/netzkino
 
 uninstall-local:
-	-rm $(DESTDIR)$(PLUGINDIR)/netzkino.so
-	-rm $(DESTDIR)$(PLUGINDIR)/netzkino.cfg
-	-rm $(DESTDIR)$(PLUGINDIR)/netzkino.png
+	-rm $(DESTDIR)$(PLUGINDIR)/netzkino/netzkino.so
+	-rm $(DESTDIR)$(PLUGINDIR)/netzkino/netzkino.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/netzkino/netzkino.png
+	-rmdir $(DESTDIR)$(PLUGINDIR)/netzkino
 
 
 

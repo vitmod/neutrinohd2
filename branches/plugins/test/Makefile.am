@@ -21,15 +21,16 @@ test_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 test_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
 install-exec-local:
-	install -d $(DESTDIR)$(PLUGINDIR)
-	install .libs/test.so $(DESTDIR)$(PLUGINDIR)
-	install -m 0644  test.cfg $(DESTDIR)$(PLUGINDIR)
-	install -m 0644 test.png $(DESTDIR)$(PLUGINDIR)
+	install -d $(DESTDIR)$(PLUGINDIR)/test
+	install .libs/test.so $(DESTDIR)$(PLUGINDIR)/test
+	install -m 0644  test.cfg $(DESTDIR)$(PLUGINDIR)/test
+	install -m 0644 test.png $(DESTDIR)$(PLUGINDIR)/test
 
 uninstall-local:
-	-rm $(DESTDIR)$(PLUGINDIR)/test.so
-	-rm $(DESTDIR)$(PLUGINDIR)/test.cfg
-	-rm $(DESTDIR)$(PLUGINDIR)/test.png
+	-rm $(DESTDIR)$(PLUGINDIR)/test/test.so
+	-rm $(DESTDIR)$(PLUGINDIR)/test/test.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/test/test.png
+	-rmdir $(DESTDIR)$(PLUGINDIR)/test
 	
 
 

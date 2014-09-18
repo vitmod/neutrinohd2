@@ -21,19 +21,20 @@ fbcallmonitor_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 fbcallmonitor_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
 install-exec-local:
-	install -d $(DESTDIR)$(PLUGINDIR)
-	install .libs/fbcallmonitor.so $(DESTDIR)$(PLUGINDIR)
-	install -m 0644 fbcallmonitor.cfg $(DESTDIR)$(PLUGINDIR)
-	install -m 0644 fritzbox.png $(DESTDIR)$(PLUGINDIR)
-	install -m 0755 fb.sh $(DESTDIR)$(PLUGINDIR)
-	install -m 0644 fb.csv $(DESTDIR)$(PLUGINDIR)
+	install -d $(DESTDIR)$(PLUGINDIR)/fbcallmonitor
+	install .libs/fbcallmonitor.so $(DESTDIR)$(PLUGINDIR)/fbcallmonitor
+	install -m 0644 fbcallmonitor.cfg $(DESTDIR)$(PLUGINDIR)/fbcallmonitor
+	install -m 0644 fritzbox.png $(DESTDIR)$(PLUGINDIR)/fbcallmonitor
+	install -m 0755 fb.sh $(DESTDIR)$(PLUGINDIR)/fbcallmonitor
+	install -m 0644 fb.csv $(DESTDIR)$(PLUGINDIR)/fbcallmonitor
 
 uninstall-local:
-	-rm $(DESTDIR)$(PLUGINDIR)/fbcallmonitor.so
-	-rm $(DESTDIR)$(PLUGINDIR)/fbcallmonitor.cfg
-	-rm $(DESTDIR)$(PLUGINDIR)/fritzbox.png
-	-rm $(DESTDIR)$(PLUGINDIR)/fb.sh
-	-rm $(DESTDIR)$(PLUGINDIR)/fb.csv
+	-rm $(DESTDIR)$(PLUGINDIR)/fbcallmonitor/fbcallmonitor.so
+	-rm $(DESTDIR)$(PLUGINDIR)/fbcallmonitor/fbcallmonitor.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/fbcallmonitor/fritzbox.png
+	-rm $(DESTDIR)$(PLUGINDIR)/fbcallmonitor/fb.sh
+	-rm $(DESTDIR)$(PLUGINDIR)/fbcallmonitor/fb.csv
+	-rmdir $(DESTDIR)$(PLUGINDIR)/fbcallmonitor
 
 	
 

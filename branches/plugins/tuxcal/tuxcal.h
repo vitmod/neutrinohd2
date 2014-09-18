@@ -28,7 +28,7 @@
 
 #define SCKFILE 	"/tmp/tuxcald.socket"						//! socket-file, connection to daemon
 #define RUNFILE 	"/var/etc/.tuxcald"						//! autostart-file for daemon
-#define CFGPATH 	CONFIGDIR "tuxcal/"						//! config-path
+#define CFGPATH 	PLUGINDIR "tuxcal/"						//! config-path
 #define CFGFILE 	"tuxcal.conf"							//! config-file
 #define EVTFILE 	"tuxcal.list"							//! database-file
 

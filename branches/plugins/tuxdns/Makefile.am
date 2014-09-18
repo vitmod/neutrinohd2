@@ -21,13 +21,15 @@ tuxdns_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 tuxdns_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
 install-exec-local:
-	install -d $(DESTDIR)$(PLUGINDIR)
-	install .libs/tuxdns.so $(DESTDIR)$(PLUGINDIR)
-	install -m 0644 tuxdns.cfg $(DESTDIR)$(PLUGINDIR)
+	install -d $(DESTDIR)$(PLUGINDIR)/tuxdns
+	install .libs/tuxdns.so $(DESTDIR)$(PLUGINDIR)/tuxdns
+	install -m 0644 tuxdns.cfg $(DESTDIR)$(PLUGINDIR)/tuxdns
 
 uninstall-local:
-	-rm $(DESTDIR)$(PLUGINDIR)/tuxdns.so
-	-rm $(DESTDIR)$(PLUGINDIR)/tuxdns.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/tuxdns/tuxdns.so
+	-rm $(DESTDIR)$(PLUGINDIR)/tuxdns/tuxdns.cfg
+	-rmdir $(DESTDIR)$(PLUGINDIR)/tuxdns
+	
 	
 
 

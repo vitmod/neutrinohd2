@@ -21,13 +21,14 @@ dvdplayer_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 dvdplayer_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
 install-exec-local:
-	install -d $(DESTDIR)$(PLUGINDIR)
-	install .libs/dvdplayer.so $(DESTDIR)$(PLUGINDIR)
-	install -m 0644 dvdplayer.cfg $(DESTDIR)$(PLUGINDIR)
+	install -d $(DESTDIR)$(PLUGINDIR)/dvdplayer
+	install .libs/dvdplayer.so $(DESTDIR)$(PLUGINDIR)/dvdplayer
+	install -m 0644 dvdplayer.cfg $(DESTDIR)$(PLUGINDIR)/dvdplayer
 
 uninstall-local:
-	-rm $(DESTDIR)$(PLUGINDIR)/dvdplayer.so
-	-rm $(DESTDIR)$(PLUGINDIR)/dvdplayer.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/dvdplayer/dvdplayer.so
+	-rm $(DESTDIR)$(PLUGINDIR)/dvdplayer/dvdplayer.cfg
+	-rmdir $(DESTDIR)$(PLUGINDIR)/dvdplayer
 
 
 
