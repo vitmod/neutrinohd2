@@ -313,8 +313,6 @@ void CPluginList::paintItem(int pos)
 			IconName += "/";
 			IconName += actplugin->icon;
 			
-			printf("IconName:%s\n", IconName.c_str());
-			
 			frameBuffer->getIconSize(NEUTRINO_ICON_PLUGIN, &icon_w, &icon_h);
 			
 			if (!actplugin->icon.empty() && (!access(IconName.c_str(), F_OK)))
