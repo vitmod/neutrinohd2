@@ -309,7 +309,7 @@ void CPluginList::paintItem(int pos)
 			std::string IconName;
 			IconName = PLUGINDIR;
 			IconName += "/";
-			IconName += /*actplugin->name*/g_PluginList->getFileName(pluginlist[liststart + pos]->number);
+			IconName += g_PluginList->getFileName(pluginlist[liststart + pos]->number);
 			IconName += "/";
 			IconName += actplugin->icon;
 			
