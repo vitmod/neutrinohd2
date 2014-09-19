@@ -912,6 +912,10 @@ bool CNetzKinoBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 	{
 		showNKMenu();
 	}
+	else if (msg == CRCInput::RC_spkr)
+	{
+		nkparser.downloadMovie(m_movieSelectionHandler->file.Name, m_movieSelectionHandler->file.Url);
+	}
 	else
 	{
 		dprintf(DEBUG_INFO, "CNetzKinoBrowser::onButtonPressMainFrame: none\r\n");

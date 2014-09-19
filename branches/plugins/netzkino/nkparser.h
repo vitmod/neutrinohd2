@@ -58,6 +58,7 @@ class cNKFeedParser
 		nk_category_list_t categories;
 
 		std::string thumbnail_dir;
+		std::string movie_dir;
 
 		int max_results;
 		bool parsed;
@@ -70,7 +71,7 @@ class cNKFeedParser
 		void encodeUrl(std::string &txt);
 		void decodeUrl(std::string &url);
 		bool getUrl(std::string &url, std::string &answer, CURL *_curl_handle = NULL);
-		bool DownloadUrl(std::string &url, std::string &file, CURL *_curl_handle = NULL);
+		bool DownloadUrl(std::string &url, std::string &file, CURL *_curl_handle = NULL, bool download = false);
 		bool parseFeedJSON(std::string &answer);
 		bool parseCategoriesJSON(std::string &answer);
 		bool ParseFeed(std::string &url);
@@ -93,6 +94,8 @@ class cNKFeedParser
 		nk_video_list_t &GetVideoList() { return videos; }
 		nk_category_list_t &GetCategoryList() { ParseCategories(); return categories; }
 		bool Parsed() { return parsed; }
+		
+		bool downloadMovie(std::string &fname, std::string &url);
 };
 
 #endif

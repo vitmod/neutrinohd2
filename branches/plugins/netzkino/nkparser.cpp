@@ -37,8 +37,11 @@
 #include <system/helpers.h>
 #include <system/debug.h>
 
+#include <global.h>
 
-#define URL_TIMEOUT 60
+
+#define URL_TIMEOUT 		60
+#define DOWNLOAD_TIMEOUT	1800
 
 cNKFeedParser::cNKFeedParser()
 {
@@ -47,6 +50,8 @@ cNKFeedParser::cNKFeedParser()
 	max_results = 500;
 	
 	curl_handle = curl_easy_init();
+	
+	movie_dir = g_settings.network_nfs_moviedir;
 }
 
 cNKFeedParser::~cNKFeedParser()
@@ -91,10 +96,11 @@ bool cNKFeedParser::getUrl(std::string &url, std::string &answer, CURL *_curl_ha
 		dprintf(DEBUG_INFO, "error: %s\n", cerror);
 		return false;
 	}
+	
 	return true;
 }
 
-bool cNKFeedParser::DownloadUrl(std::string &url, std::string &file, CURL *_curl_handle)
+bool cNKFeedParser::DownloadUrl(std::string &url, std::string &file, CURL *_curl_handle, bool download)
 {
 	if (!_curl_handle)
 		_curl_handle = curl_handle;
@@ -109,7 +115,7 @@ bool cNKFeedParser::DownloadUrl(std::string &url, std::string &file, CURL *_curl
 	curl_easy_setopt(_curl_handle, CURLOPT_WRITEFUNCTION, NULL);
 	curl_easy_setopt(_curl_handle, CURLOPT_FILE, fp);
 	curl_easy_setopt(_curl_handle, CURLOPT_FAILONERROR, 1);
-	curl_easy_setopt(_curl_handle, CURLOPT_TIMEOUT, URL_TIMEOUT);
+	curl_easy_setopt(_curl_handle, CURLOPT_TIMEOUT, download? DOWNLOAD_TIMEOUT : URL_TIMEOUT);
 	curl_easy_setopt(_curl_handle, CURLOPT_NOSIGNAL, (long)1);
 
 	char cerror[CURL_ERROR_SIZE];
@@ -370,4 +376,31 @@ void cNKFeedParser::Cleanup(bool delete_thumbnails)
 	videos.clear();
 	parsed = false;
 }
+
+bool cNKFeedParser::downloadMovie(std::string &fname, std::string &url)
+{
+	bool ret = false;
+	
+	if (safe_mkdir(movie_dir.c_str()) && errno != EEXIST) 
+	{
+		perror(movie_dir.c_str());
+		return false;
+	}
+	
+	std::string filename;
+	filename += movie_dir;
+	filename += "/";
+	filename += fname;
+			
+	if (!url.empty()) 
+	{
+		DownloadUrl(url, filename, curl_handle, true);
+				
+		ret = true;
+	}
+	
+	return ret;
+}
+
+
 
