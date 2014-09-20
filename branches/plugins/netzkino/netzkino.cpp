@@ -23,7 +23,6 @@
 */
 
 #include <plugin.h>
-
 #include <nkparser.h>
 
 #define MIN_NKBROWSER_FRAME_HEIGHT 	100
@@ -36,31 +35,31 @@ typedef enum
 	NKB_INFO_TITLE 			= 1,
 	NKB_INFO_INFO1 			= 2,
 	NKB_INFO_RECORDDATE 		= 3,
-	NKB_INFO_MAX_NUMBER		= 4 	// MUST be allways the last item in the list
+	NKB_INFO_MAX_NUMBER		= 4
 }NKB_INFO_ITEM;
 
 typedef enum
 {
 	NKB_FOCUS_BROWSER = 0,
 	NKB_FOCUS_MOVIE_INFO = 1,
-	NKB_FOCUS_MAX_NUMBER = 2	// MUST be allways the last item in the list
+	NKB_FOCUS_MAX_NUMBER = 2
 }NKB_FOCUS;
 
 typedef enum
 {
 	NKB_GUI_BROWSER_ONLY = 0,
 	NKB_GUI_MOVIE_INFO = 1,
-	NKB_GUI_MAX_NUMBER = 2	// MUST be allways the last item in the list
+	NKB_GUI_MAX_NUMBER = 2
 }NKB_GUI;
 
 typedef struct
 {
-	NKB_GUI gui; 				//MB_GUI
+	NKB_GUI gui;
 	
 	// these variables are used for the listframes
 	int browserFrameHeight;
 	int browserRowNr;
-	NKB_INFO_ITEM browserRowItem[NKB_MAX_ROWS];//MB_INFO_ITEM
+	NKB_INFO_ITEM browserRowItem[NKB_MAX_ROWS];
 	int browserRowWidth[NKB_MAX_ROWS];
 	
 	// netzkino	
@@ -135,7 +134,6 @@ class CNetzKinoBrowser : public CMenuTarget
 		void init(void); 
 		void initGlobalSettings(void); 
 		void initFrames(void);
-		//void reinit(void);
 		
 		// browser main window
 		int paint(void); 
@@ -164,19 +162,9 @@ class CNetzKinoBrowser : public CMenuTarget
 		// misc
 		void updateMovieSelection(void);
 		bool getMovieInfoItem(MI_MOVIE_INFO& movie_info, NKB_INFO_ITEM item, std::string* item_string);
-};
-
-#define MESSAGEBOX_NKBROWSER_ROW_ITEM_COUNT 5
-const CMenuOptionChooser::keyval MESSAGEBOX_NKBROWSER_ROW_ITEM[MESSAGEBOX_NKBROWSER_ROW_ITEM_COUNT] =
-{
-	{ NKB_INFO_FILENAME, LOCALE_MOVIEBROWSER_INFO_FILENAME, NULL },
-	{ NKB_INFO_TITLE, LOCALE_MOVIEBROWSER_INFO_TITLE, NULL },
-	{ NKB_INFO_INFO1, LOCALE_MOVIEBROWSER_INFO_INFO1, NULL },
-	{ NKB_INFO_RECORDDATE, LOCALE_MOVIEBROWSER_INFO_RECORDDATE, NULL },
-	{ NKB_INFO_FILENAME, LOCALE_MOVIEBROWSER_INFO_FILENAME, NULL }
- };
+}; 
  
- #define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
+#define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
 #define MAX_WINDOW_HEIGHT 		(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
 
 #define MIN_WINDOW_WIDTH  		((g_settings.screen_EndX - g_settings.screen_StartX)>>1)
@@ -588,15 +576,7 @@ void CNetzKinoBrowser::refreshMovieInfo(void)
 
 		fname = m_movieSelectionHandler->tfile;
 		
-		int ext_pos = 0;
-		ext_pos = fname.rfind('.');
-		if( ext_pos > 0)
-		{
-			std::string extension;
-			extension = fname.substr(ext_pos + 1, fname.length() - ext_pos);
-			extension = "." + extension;
-			strReplace(fname, extension.c_str(), ".jpg");
-		}
+		changeFileNameExt(fname, ".jpg");
 		
 		logo_ok = !access(fname.c_str(), F_OK);
 		

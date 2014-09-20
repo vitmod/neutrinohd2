@@ -240,23 +240,42 @@ NK_BROWSER:
 		moviePlayerGui->Info1 = "Stream";
 		moviePlayerGui->exec(NULL, "urlplayback");
 	}
+	else if(actionKey == "filmonasia")
+	{
+		moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/198.high.stream";
+		moviePlayerGui->Title = "Filmon asia";
+		moviePlayerGui->Info1 = "Stream";
+		moviePlayerGui->exec(NULL, "urlplayback");
+	}
+	else if(actionKey == "filmonblack")
+	{
+		moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/244.high.stream";
+		moviePlayerGui->Title = "Filmon black";
+		moviePlayerGui->Info1 = "Stream";
+		moviePlayerGui->exec(NULL, "urlplayback");
+	}
+	else if(actionKey == "filmon1")
+	{
+		moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/247.high.stream";
+		moviePlayerGui->Title = "Filmon 1";
+		moviePlayerGui->Info1 = "Stream";
+		moviePlayerGui->exec(NULL, "urlplayback");
+	}
+	else if(actionKey == "filmon2")
+	{
+		moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/245.high.stream";
+		moviePlayerGui->Title = "Filmon 2";
+		moviePlayerGui->Info1 = "Stream";
+		moviePlayerGui->exec(NULL, "urlplayback");
+	}
+	else if(actionKey == "filmon3")
+	{
+		moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/246.high.stream";
+		moviePlayerGui->Title = "Filmon 3";
+		moviePlayerGui->Info1 = "Stream";
+		moviePlayerGui->exec(NULL, "urlplayback");
+	}
 	/*
-	else if(actionKey == "ardmt")
-	{
-		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "not yet", 450, 2 );
-	}
-	else if(actionKey == "zdfmt")
-	{
-		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "not yet", 450, 2 );
-	}
-	else if(actionKey == "orfmt")
-	{
-		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "not yet", 450, 2 );
-	}
-	else if(actionKey == "artemt")
-	{
-		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "not yet", 450, 2 );
-	}
 	else if(actionKey == "orf")
 	{
 		ORF();
@@ -278,19 +297,23 @@ void plugin_exec(void)
 	// netzkino
 	//mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Netzkino", true, NULL, mpHandler, "netzkino", NULL, NULL, PLUGINDIR "/netzkino.png"));
 	
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Music Deluxe", true, NULL, mpHandler, "musicdeluxe", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Music Deluxe", true, NULL, mpHandler, "musicdeluxe", NULL, NULL, PLUGINDIR "/mediaportal/deluxemusic.png"));
 	
-	// orf 1
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 1", true, NULL, mpHandler, "orf1", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	// orf
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 1", true, NULL, mpHandler, "orf1", NULL, NULL, PLUGINDIR "/mediaportal/orf.png"));
 	
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 2", true, NULL, mpHandler, "orf2", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 2", true, NULL, mpHandler, "orf2", NULL, NULL, PLUGINDIR "/mediaportal/orf.png"));
 	
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 3", true, NULL, mpHandler, "orf3", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 3", true, NULL, mpHandler, "orf3", NULL, NULL, PLUGINDIR "/mediaportal/orf.png"));
 	
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF Sport", true, NULL, mpHandler, "orfsport", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF Sport", true, NULL, mpHandler, "orfsport", NULL, NULL, PLUGINDIR "/mediaportal/orf.png"));
 	
-	// dummies
-	//mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("dummy 1", true, NULL, mpHandler, "ardmt", NULL, NULL, NEUTRINO_ICON_MENUITEM_WEBTV));
+	// filmon
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Filmon asia", true, NULL, mpHandler, "filmonasia", NULL, NULL, PLUGINDIR "/mediaportal/filmon.png"));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Filmon black", true, NULL, mpHandler, "filmonblack", NULL, NULL, PLUGINDIR "/mediaportal/filmon.png"));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Filmon 1", true, NULL, mpHandler, "filmon1", NULL, NULL, PLUGINDIR "/mediaportal/filmon.png"));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Filmon 2", true, NULL, mpHandler, "filmon2", NULL, NULL, PLUGINDIR "/mediaportal/filmon.png"));
+	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Filmon 3", true, NULL, mpHandler, "filmon3", NULL, NULL, PLUGINDIR "/mediaportal/filmon.png"));
 	
 	mediaPortal->exec(NULL, "");
 	mediaPortal->hide();

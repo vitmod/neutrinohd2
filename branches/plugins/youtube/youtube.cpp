@@ -25,6 +25,7 @@
 #include <plugin.h>
 #include <ytparser.h>
 
+
 //
 #define MIN_YTBROWSER_FRAME_HEIGHT 	100
 #define MAX_YTBROWSER_FRAME_HEIGHT 	400
@@ -36,32 +37,32 @@ typedef enum
 	YTB_INFO_TITLE 			= 1,
 	YTB_INFO_INFO1 			= 2,
 	YTB_INFO_RECORDDATE 		= 3,
-	YTB_INFO_MAX_NUMBER		= 4 	// MUST be allways the last item in the list
+	YTB_INFO_MAX_NUMBER		= 4
 }YTB_INFO_ITEM;
 
 typedef enum
 {
 	YTB_FOCUS_BROWSER = 0,
 	YTB_FOCUS_MOVIE_INFO = 1,
-	YTB_FOCUS_MAX_NUMBER = 2	// MUST be allways the last item in the list
+	YTB_FOCUS_MAX_NUMBER = 2
 }YTB_FOCUS;
 
 typedef enum
 {
 	YTB_GUI_BROWSER_ONLY = 0,
 	YTB_GUI_MOVIE_INFO = 1,
-	YTB_GUI_MAX_NUMBER = 2	// MUST be allways the last item in the list
+	YTB_GUI_MAX_NUMBER = 2
 }YTB_GUI;
 
 // settings
 typedef struct
 {
-	YTB_GUI gui; 				//MB_GUI
+	YTB_GUI gui;
 	
 	// these variables are used for the listframes
 	int browserFrameHeight;
 	int browserRowNr;
-	YTB_INFO_ITEM browserRowItem[YTB_MAX_ROWS];//MB_INFO_ITEM
+	YTB_INFO_ITEM browserRowItem[YTB_MAX_ROWS];
 	int browserRowWidth[YTB_MAX_ROWS];
 	
 	// youtube
@@ -132,7 +133,6 @@ class CYTBrowser : public CMenuTarget
 		void init(void); 
 		void initGlobalSettings(void); 
 		void initFrames(void);
-		//void reinit(void);
 		
 		// browser main window
 		int paint(void); 
@@ -165,18 +165,8 @@ class CYTBrowser : public CMenuTarget
 		// yt
 		neutrino_locale_t getFeedLocale(void);
 };
-
-#define MESSAGEBOX_YTBROWSER_ROW_ITEM_COUNT 5
-const CMenuOptionChooser::keyval MESSAGEBOX_YTBROWSER_ROW_ITEM[MESSAGEBOX_YTBROWSER_ROW_ITEM_COUNT] =
-{
-	{ YTB_INFO_FILENAME, LOCALE_MOVIEBROWSER_INFO_FILENAME, NULL },
-	{ YTB_INFO_TITLE, LOCALE_MOVIEBROWSER_INFO_TITLE, NULL },
-	{ YTB_INFO_INFO1, LOCALE_MOVIEBROWSER_INFO_INFO1, NULL },
-	{ YTB_INFO_RECORDDATE, LOCALE_MOVIEBROWSER_INFO_RECORDDATE, NULL },
-	{ YTB_INFO_FILENAME, LOCALE_MOVIEBROWSER_INFO_FILENAME, NULL }
-};
  
- #define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
+#define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
 #define MAX_WINDOW_HEIGHT 		(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
 
 #define MIN_WINDOW_WIDTH  		((g_settings.screen_EndX - g_settings.screen_StartX)>>1)
@@ -301,9 +291,9 @@ void CYTBrowser::initGlobalSettings(void)
 	m_settings.browserRowItem[0] = YTB_INFO_TITLE;
 	m_settings.browserRowItem[1] = YTB_INFO_INFO1;
 	m_settings.browserRowItem[2] = YTB_INFO_RECORDDATE;
-	m_settings.browserRowWidth[0] = m_defaultRowWidth[m_settings.browserRowItem[0]];		//300;
-	m_settings.browserRowWidth[1] = m_defaultRowWidth[m_settings.browserRowItem[1]]; 		//100;
-	m_settings.browserRowWidth[2] = m_defaultRowWidth[m_settings.browserRowItem[2]]; 		//80;
+	m_settings.browserRowWidth[0] = m_defaultRowWidth[m_settings.browserRowItem[0]];
+	m_settings.browserRowWidth[1] = m_defaultRowWidth[m_settings.browserRowItem[1]];
+	m_settings.browserRowWidth[2] = m_defaultRowWidth[m_settings.browserRowItem[2]];
 	
 	// youtube
 	m_settings.ytmode = cYTFeedParser::MOST_POPULAR;
@@ -584,15 +574,7 @@ void CYTBrowser::refreshMovieInfo(void)
 
 		fname = m_movieSelectionHandler->tfile;
 		
-		int ext_pos = 0;
-		ext_pos = fname.rfind('.');
-		if( ext_pos > 0)
-		{
-			std::string extension;
-			extension = fname.substr(ext_pos + 1, fname.length() - ext_pos);
-			extension = "." + extension;
-			strReplace(fname, extension.c_str(), ".jpg");
-		}
+		changeFileNameExt(fname, ".jpg");
 		
 		logo_ok = !access(fname.c_str(), F_OK);
 		
@@ -759,13 +741,13 @@ void CYTBrowser::refreshFoot(void)
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_RED, m_cBoxFrame.iX + xpos1, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_PREV_RESULTS), color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, /*g_Locale->getText(LOCALE_MOVIEBROWSER_YT_PREV_RESULTS)*/ "Prev results", color, 0, true); // UTF-8
 
 	// green
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_w, &icon_h);
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, m_cBoxFrame.iX + xpos2, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width -30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_NEXT_RESULTS), color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width -30, /*g_Locale->getText(LOCALE_MOVIEBROWSER_YT_NEXT_RESULTS)*/ "Next results", color, 0, true); // UTF-8
 
 	// yellow/ok
 	ok_text = g_Locale->getText(LOCALE_MOVIEBROWSER_FOOT_PLAY);
@@ -780,7 +762,7 @@ void CYTBrowser::refreshFoot(void)
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, m_cBoxFrame.iX+xpos4, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + (ADD_FOOT_HEIGHT>>1));
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES), color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, /*g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES)*/ " scan for movies", color, 0, true); // UTF-8
 }
 
 bool CYTBrowser::onButtonPress(neutrino_msg_t msg)

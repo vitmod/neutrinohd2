@@ -24,10 +24,16 @@ install-exec-local:
 	install -d $(DESTDIR)$(PLUGINDIR)/mediaportal
 	install .libs/mediaportal.so $(DESTDIR)$(PLUGINDIR)/mediaportal
 	install -m 0644 mediaportal.cfg $(DESTDIR)$(PLUGINDIR)/mediaportal
+	install -m 0644 deluxemusic.png $(DESTDIR)$(PLUGINDIR)/mediaportal
+	install -m 0644 filmon.png $(DESTDIR)$(PLUGINDIR)/mediaportal
+	install -m 0644 orf.png $(DESTDIR)$(PLUGINDIR)/mediaportal
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/mediaportal.so
 	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/mediaportal.cfg
+	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/deluxemusic.png
+	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/filmon.png
+	-rm $(DESTDIR)$(PLUGINDIR)/mediaportal/orf.png
 	-rmdir $(DESTDIR)$(PLUGINDIR)/mediaportal
 
 
