@@ -531,6 +531,21 @@ std::string to_string(unsigned long long i)
 	return s.str();
 }
 
+std::string changeFileNameExt(std::string &filename, const char *ext)
+{
+	int ext_pos = 0;
+	ext_pos = filename.rfind('.');
+	if( ext_pos > 0)
+	{
+		std::string extension;
+		extension = filename.substr(ext_pos + 1, filename.length() - ext_pos);
+		extension = "." + extension;
+		strReplace(filename, extension.c_str(), ext);
+	}
+	
+	return filename;
+}
+
 CFileHelpers::CFileHelpers()
 {
 	doCopyFlag = true;
