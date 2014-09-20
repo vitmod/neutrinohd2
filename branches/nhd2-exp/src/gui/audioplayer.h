@@ -108,7 +108,7 @@ class CAudioPlayerGui : public CMenuTarget
 		enum
 		{
 			LOCALRADIO,
-			//SHOUTCAST,
+			SHOUTCAST,
 			ICECAST
 		};
 
@@ -215,6 +215,10 @@ class CAudioPlayerGui : public CMenuTarget
 		* Reads the icecast directory (XML file) and calls scanXmlData
 		*/
 		void readDir_ic(void);
+		
+		// shoutcast
+		//std::string sc_init_dir;
+		void readDir_sc(void);
 
 		void selectTitle(unsigned char selectionChar);
 		/**

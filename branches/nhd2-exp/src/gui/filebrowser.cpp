@@ -340,22 +340,19 @@ CFileBrowser::CFileBrowser()
 {
 	commonInit();
 	base = "";
-	//m_Mode = ModeFile;
+	m_Mode = ModeFile;
 }
 
-CFileBrowser::CFileBrowser(const char * const _base/*, const tFileBrowserMode mode*/)
+CFileBrowser::CFileBrowser(const char * const _base, const tFileBrowserMode mode)
 {
 	commonInit();
 	base = _base;
-	//m_Mode = mode;
+	m_Mode = mode;
 }
 
 void CFileBrowser::commonInit()
 {
 	frameBuffer = CFrameBuffer::getInstance();
-	
-	//shoutcast
-	//sc_init_dir = "/legacy/genrelist?k=" + g_settings.shoutcast_dev_id;
 
 	Filter = NULL;
 	use_filter = true;
@@ -402,11 +399,11 @@ void CFileBrowser::ChangeDir(const std::string & filename, int selection)
 {
 	std::string newpath;
 	
-	if( /*(m_Mode != ModeSC) &&*/ (filename == ".."))
+	if((filename == ".."))
 	{
 		std::string::size_type pos = Path.substr(0, Path.length()-1).rfind('/');
 
-		//bool is_vlc = (strncmp(Path.c_str(), VLC_URI, strlen(VLC_URI)) == 0);
+		bool is_vlc = (strncmp(Path.c_str(), VLC_URI, strlen(VLC_URI)) == 0);
 
 		if (pos == std::string::npos)
 		{
@@ -414,13 +411,13 @@ void CFileBrowser::ChangeDir(const std::string & filename, int selection)
 		}
 		else
 		{
-			//if (is_vlc && (pos < strlen(VLC_URI) - 1))
-			//	newpath = VLC_URI;
-			//else
-			newpath = Path.substr(0, pos + 1);
+			if (is_vlc && (pos < strlen(VLC_URI) - 1))
+				newpath = VLC_URI;
+			else
+				newpath = Path.substr(0, pos + 1);
 		}
 
-		if (strncmp(/*is_vlc ? &(newpath.c_str()[strlen(VLC_URI)]) :*/ newpath.c_str(), base.c_str(), base.length()) != 0)
+		if (strncmp(is_vlc ? &(newpath.c_str()[strlen(VLC_URI)]) : newpath.c_str(), base.c_str(), base.length()) != 0)
 			return;
 	}
 	else
@@ -428,7 +425,7 @@ void CFileBrowser::ChangeDir(const std::string & filename, int selection)
 		newpath=filename;
 	}
 	
-	if( /*m_Mode != ModeSC &&*/ (newpath.rfind('/') != newpath.length()-1 || newpath.length() == 0))
+	if((newpath.rfind('/') != newpath.length()-1 || newpath.length() == 0))
 	{
 		newpath += '/';
 	}
@@ -486,16 +483,11 @@ void CFileBrowser::ChangeDir(const std::string & filename, int selection)
 	paint();
 }
 
-#if 0
 bool CFileBrowser::readDir(const std::string & dirname, CFileList* flist)
 {
 	bool ret;
 
-	if (m_Mode == ModeSC) 
-	{
-		ret = readDir_sc(dirname, flist);
-	}
-	else if (strncmp(dirname.c_str(), VLC_URI, strlen(VLC_URI)) == 0)
+	if (strncmp(dirname.c_str(), VLC_URI, strlen(VLC_URI)) == 0)
 	{
 		ret = readDir_vlc(dirname, flist);
 	}
@@ -506,14 +498,12 @@ bool CFileBrowser::readDir(const std::string & dirname, CFileList* flist)
 	
 	return ret;
 }
-#endif
 
-#if 0
-bool CFileBrowser::readDir_vlc(const std::string & dirname, CFileList* flist)
+bool CFileBrowser::readDir_vlc(const std::string &dirname, CFileList* flist)
 {
-	//printf("readDir_vlc %s\n",dirname.c_str());
+	dprintf(DEBUG_INFO, "CFileBrowser::readDir_vlc: %s\n", dirname.c_str());
 	
-	std::string answer="";
+	std::string answer = "";
 	char *dir_escaped = curl_escape(dirname.substr(strlen(VLC_URI)).c_str(), 0);
 	std::string url = m_baseurl;
 	url += dir_escaped;
@@ -540,8 +530,6 @@ bool CFileBrowser::readDir_vlc(const std::string & dirname, CFileList* flist)
 	httpres = curl_easy_perform(curl_handle);
 	/* cleanup curl stuff */
 	curl_easy_cleanup(curl_handle);
-
-	// std::cout << "Answer:" << std::endl << "----------------" << std::endl << answer << std::endl;
 	
 	if (!answer.empty() && httpres == 0)
 	{
@@ -554,7 +542,7 @@ bool CFileBrowser::readDir_vlc(const std::string & dirname, CFileList* flist)
 			char *ptr;
 			if (element == NULL) 
 			{
-				printf("[FileBrowser] vlc: Drive is not readable. Possibly no disc inserted\n");
+				dprintf(DEBUG_INFO, "CFileBrowser::readDir_vlc: Drive is not readable. Possibly no disc inserted\n");
 				CFile file;
 				file.Mode = S_IFDIR + 0777 ;
 				file.Name = dirname + "..";
@@ -606,200 +594,8 @@ bool CFileBrowser::readDir_vlc(const std::string & dirname, CFileList* flist)
 
 	return false;
 }
-#endif
 
-#if 0
-bool CFileBrowser::readDir_sc(const std::string & dirname, CFileList* flist)
-{
-#define GET_SHOUTCAST_TIMEOUT	60
-/* how the shoutcast xml interfaces looks/works:
-1st step: get http://www.shoutcast.com/sbin/newxml.phtml
-example answer:
-
-<genrelist>
-...
-<genre name="Trance"/>
-<genre name=...
-...
-
-2nd step: get http://www.shoutcast.com/sbin/newxml.phtml?genre=Trance
-example answer:
-
-<stationlist>
-<tunein base="/sbin/tunein-station.pls"/>
-<station name="TechnoBase.FM - 24h Techno, Dance, Trance, House and More - 128k MP3" mt="audio/mpeg" id="524" br="128" genre="Techno Trance Dance House" ct="We aRe oNe" lc="4466"/>
-<station name=...
-...
-
-3rd step: get/decode playlist http://www.shoutcast.com/sbin/tunein-station.pls?id=524
-and add to neutrino playlist
-
-4th step: play from neutrio playlist
-*/
-
-	//shoutcast
-	const std::string sc_get_top500 = "/legacy/Top500?k=" + g_settings.shoutcast_dev_id;
-	const std::string sc_get_genre = "/legacy/stationsearch?k=" + g_settings.shoutcast_dev_id + "&search=";
-	const std::string sc_tune_in_base = "http://yp.shoutcast.com";
-
-	std::string answer = "";
-	std::string url = m_baseurl;
-	url += dirname;
-	std::cout << "[FileBrowser] SC URL: " << url << std::endl;
-	CURL *curl_handle;
-	CURLcode httpres;
-	/* init the curl session */
-	curl_handle = curl_easy_init();
-	/* specify URL to get */
-	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
-	/* send all data to this function  */
-	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, CurlWriteToString);
-	/* we pass our 'chunk' struct to the callback function */
-	curl_easy_setopt(curl_handle, CURLOPT_FILE, (void *)&answer);
-	/* Generate error if http error >= 400 occurs */
-	curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
-	/* set timeout to 30 seconds */
-	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, GET_SHOUTCAST_TIMEOUT);
-
-	/* error handling */
-	char error[CURL_ERROR_SIZE];
-	curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, error);
-	/* get it! */
-	httpres = curl_easy_perform(curl_handle);
-	/* cleanup curl stuff */
-	curl_easy_cleanup(curl_handle);
-	
-	if (!answer.empty() && httpres == 0)
-	{
-		printf("CFileBrowser::readDir_sc: read done, size %d\n", answer.size());
-		xmlDocPtr answer_parser = parseXml(answer.c_str());
-
-		if (answer_parser != NULL) 
-		{
-			char *ptr;
-			unsigned char xml_decode = 0;
-			xmlNodePtr element = xmlDocGetRootElement(answer_parser);
-
-			if (strcmp(xmlGetName(element), "genrelist") == 0) 
-				xml_decode = 1;
-			else if (strcmp(xmlGetName(element), "stationlist") == 0) 
-				xml_decode = 2;
-			element = element->xmlChildrenNode;
-
-			if (element == NULL) 
-			{
-				printf("[FileBrowser] SC: Directory cannot be read.\n");
-				CFile file;
-				file.Mode = S_IFDIR + 0777 ;
-				file.Name = dirname + "..";
-				file.Size = 0;
-				file.Time = 0;
-				flist->push_back(file);
-			} 
-			else 
-			{
-				char * tunein_base = NULL;
-
-				if (xml_decode == 1) 
-				{
-					CFile file;
-					file.Mode = S_IFDIR + 0777 ;
-					file.Name = " Top500"; // use space to have it at the beginning of the list
-					file.Url = sc_get_top500;
-					file.Size = 0;
-					file.Time = 0;
-					flist->push_back(file);
-				} 
-				else if (xml_decode == 2) 
-				{
-					CFile file2;
-					file2.Mode = S_IFDIR + 0777 ;
-					file2.Name = "..";
-					file2.Url = sc_init_dir;
-					file2.Size = 0;
-					file2.Time = 0;
-					flist->push_back(file2);
-				}
-				
-				while (element) 
-				{
-					CFile file;
-					if (xml_decode == 1) 
-					{
-						file.Mode = S_IFDIR + 0777 ;
-						file.Name = xmlGetAttribute(element, (char *) "name");
-						file.Url = "/sbin/newxml.phtml?genre=" + file.Name;
-						file.Size = 0;
-						file.Time = 0;
-						flist->push_back(file);
-					}
-					else if (xml_decode == 2) 
-					{
-						ptr = xmlGetName(element);
-						if (ptr != NULL) 
-						{
-							if (strcmp(ptr, "tunein")==0) 
-							{
-								ptr = xmlGetAttribute(element, (char *) "base");
-								if (ptr)
-									tunein_base = ptr;
-							} 
-							else if (strcmp(ptr, "station")==0) 
-							{
-								ptr = xmlGetAttribute(element, (char *) "mt");
-								if (ptr && (strcmp(ptr, "audio/mpeg")==0)) 
-								{
-									file.Mode = S_IFREG + 0777 ;
-									file.Name = xmlGetAttribute(element, (char *) "name");
-									
-									file.Url = sc_tune_in_base + tunein_base + (std::string)"?id=" + xmlGetAttribute(element, "id") + (std::string)"&k=" + g_settings.shoutcast_dev_id;
-									
-									//printf("adding %s (%s)\n", file.Name.c_str(), file.Url.c_str());
-									
-									ptr = xmlGetAttribute(element, (char *) "br");
-									if (ptr) 
-									{
-										file.Size = atoi(ptr);
-										file.Time = atoi(ptr);
-									} 
-									else 
-									{
-										file.Size = 0;
-										file.Time = 0;
-									}
-									flist->push_back(file);
-								}
-							}
-						}
-					}
-					element = element->xmlNextNode;
-				}
-			}
-			xmlFreeDoc(answer_parser);
-			return true;
-		}
-	}
-	
-	/* since all CURL error messages use only US-ASCII characters, when can safely print them as if they were UTF-8 encoded */
-	if (httpres == 22) 
-	{
-	    strcat(error, "\nProbably wrong link.");
-	}
-	printf("CFileBrowser::readDir_sc: httpres %d error, %s\n", httpres, error);
-	DisplayErrorMessage(error); // UTF-8
-	CFile file;
-
-	file.Name = dirname + "..";
-	file.Mode = S_IFDIR + 0777;
-	file.Size = 0;
-	file.Time = 0;
-	flist->push_back(file);
-
-	return false;
-}
-#endif
-
-bool CFileBrowser::readDir(const std::string & dirname, CFileList* flist)
+bool CFileBrowser::readDir_std(const std::string & dirname, CFileList* flist)
 {
 	dprintf(DEBUG_INFO, "CFileBrowser::readDir %s\n", dirname.c_str());
 	
@@ -821,7 +617,6 @@ bool CFileBrowser::readDir(const std::string & dirname, CFileList* flist)
 		{
 			file.Name = dirname + namelist[i]->d_name;
 
-			//printf("file.Name: '%s', getFileName: '%s' getPath: '%s'\n",file.Name.c_str(),file.getFileName().c_str(),file.getPath().c_str());
 			if(my_stat((file.Name).c_str(),&statbuf) != 0)
 				perror("stat error");
 			else
@@ -847,16 +642,10 @@ bool CFileBrowser::exec(const char * const dirname)
 
 	bool res = false;
 
-	/*
-	if (m_Mode == ModeSC) 
-	{
-		m_baseurl = base;
-	}
-	else // vlc mode
+	if (m_Mode == ModeVLC) 
 	{
 		m_baseurl = "http://" + g_settings.streaming_server_ip + ':' + g_settings.streaming_server_port + "/requests/browse.xml?dir=";
 	}
-	*/
 
 	name = dirname;
 	std::replace(name.begin(), name.end(), '\\', '/');
@@ -974,38 +763,16 @@ bool CFileBrowser::exec(const char * const dirname)
 			{
 				if (S_ISDIR(filelist[selected].Mode))
 				{
-					/*
-					if (m_Mode == ModeSC) 
+	 				if (filelist[selected].getFileName() != "..") 
 					{
-						ChangeDir(filelist[selected].Url);
-					} 
-					else 
-					*/
-					{
-	 					if (filelist[selected].getFileName() != "..") 
-						{
-							selections.push_back(selected);
-							ChangeDir(filelist[selected].Name);
-						}
+						selections.push_back(selected);
+						ChangeDir(filelist[selected].Name);
 					}
 				}
 			}
 		}
 		else if ( msg == CRCInput::RC_left )
 		{
-			/*
-			if (m_Mode == ModeSC)
-			{
-				for(unsigned int i = 0; i < filelist.size();i++) 
-				{
-					if (S_ISDIR(filelist[i].Mode) && filelist[i].getFileName() == "..") 
-					{
-						ChangeDir(filelist[i].Url);
-						break;
-					}
-				}
-			}
-			else */
 			if (selections.size() > 0)
 			{
 				ChangeDir("..",selections.back());
@@ -1029,7 +796,7 @@ bool CFileBrowser::exec(const char * const dirname)
 		{
 			loop = false;
 		}
-		else if ( msg == CRCInput::RC_spkr /*&& strncmp(Path.c_str(), VLC_URI, strlen(VLC_URI)) != 0*/ ) //Not in vlc mode
+		else if ( msg == CRCInput::RC_spkr && strncmp(Path.c_str(), VLC_URI, strlen(VLC_URI)) != 0) //Not in vlc mode
 		{
 			if(".." !=(filelist[selected].getFileName().substr(0, 2))) // do not delete that
 			{
@@ -1062,30 +829,23 @@ bool CFileBrowser::exec(const char * const dirname)
 			{
 				if (filelist[selected].getFileName() == "..")
 				{
-					/*
-					if (m_Mode == ModeSC)
-						ChangeDir(filelist[selected].Url);
-					else
-					*/
+					if (selections.size() > 0)
 					{
-						if (selections.size() > 0)
+						ChangeDir("..", selections.back());
+						selections.pop_back();
+					} 
+					else
+					{
+						std::string::size_type pos = Path.substr(0, Path.length()-1).rfind('/');
+						if (pos != std::string::npos) 
 						{
-							ChangeDir("..", selections.back());
-							selections.pop_back();
-						} 
-						else
+							ChangeDir("..");
+						}
+						else 
 						{
-							std::string::size_type pos = Path.substr(0, Path.length()-1).rfind('/');
-							if (pos != std::string::npos) 
-							{
-								ChangeDir("..");
-							}
-							else 
-							{
-								loop = false;
-								res = true;
-								filelist[selected].Name = "/";
-							}
+							loop = false;
+							res = true;
+							filelist[selected].Name = "/";
 						}
 					}
 				}
@@ -1096,15 +856,8 @@ bool CFileBrowser::exec(const char * const dirname)
 					{
 						if((!Multi_Select) && S_ISDIR(filelist[selected].Mode) && !Dir_Mode)
 						{
-							/*
-							if (m_Mode == ModeSC)
-								ChangeDir(filelist[selected].Url);
-							else
-							*/
-							{
-								selections.push_back(selected);
-								ChangeDir(filelist[selected].Name);
-							}
+							selections.push_back(selected);
+							ChangeDir(filelist[selected].Name);
 						}
 						else
 						{
@@ -1158,13 +911,9 @@ bool CFileBrowser::exec(const char * const dirname)
 			{
 				if(S_ISDIR(filelist[i].Mode)) 
 				{
-					/*
-					if (m_Mode == ModeSC)
-						addRecursiveDir(&selected_filelist,filelist[i].Url, true, progress);
-					else
-					*/
-						addRecursiveDir(&selected_filelist,filelist[i].Name, true, progress);
-				} else
+					addRecursiveDir(&selected_filelist,filelist[i].Name, true, progress);
+				} 
+				else
 					selected_filelist.push_back(filelist[i]);
 			}
 		}
@@ -1203,7 +952,7 @@ void CFileBrowser::addRecursiveDir(CFileList * re_filelist, std::string rpath, b
 	if(bCancel)
 		return;
 
-	if ( /*(m_Mode != ModeSC) &&*/ ((rpath.empty()) || ((*rpath.rbegin()) != '/')))
+	if ( ((rpath.empty()) || ((*rpath.rbegin()) != '/')))
 	{
 		rpath += '/';
 	}
@@ -1415,12 +1164,7 @@ void CFileBrowser::paintHead()
 	frameBuffer->getIconSize(NEUTRINO_ICON_FOLDER, &icon_w, &icon_h);
 	frameBuffer->paintIcon(NEUTRINO_ICON_FOLDER, x + 10, y + 8);
 
-	/*
-	if(m_Mode == ModeSC)
-		snprintf(l_name, sizeof(l_name), "%s %s", g_Locale->getText(LOCALE_AUDIOPLAYER_ADD_SC), FILESYSTEM_ENCODING_TO_UTF8_STRING(name).c_str()); // UTF-8
-	else
-	*/
-		snprintf(l_name, sizeof(l_name), "%s %s", g_Locale->getText(LOCALE_FILEBROWSER_HEAD), FILESYSTEM_ENCODING_TO_UTF8_STRING(name).c_str()); // UTF-8
+	snprintf(l_name, sizeof(l_name), "%s %s", g_Locale->getText(LOCALE_FILEBROWSER_HEAD), FILESYSTEM_ENCODING_TO_UTF8_STRING(name).c_str()); // UTF-8
 
 	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_TITLE]->RenderString(x + 10 + icon_w + 5, y + theight + 1, width - 10 - icon_w - 5, l_name, COL_MENUHEAD, 0, true); // UTF-8
 }
@@ -1470,7 +1214,6 @@ void CFileBrowser::paintFoot()
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + 35 + (1 * dx), ty2, dx - 35, g_Locale->getText(sortByNames[g_settings.filebrowser_sortmethod]), COL_INFOBAR /*_SHADOW_PLUS_1*/, 0, true); // UTF-8
 
 		// mute button
-		#if 0
 		if (strncmp(Path.c_str(), VLC_URI, strlen(VLC_URI)) != 0) 
 		{ 
 			//Not in vlc mode
@@ -1478,7 +1221,6 @@ void CFileBrowser::paintFoot()
 
 			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + 35 + (2 * dx), ty2, dx - 35, g_Locale->getText(LOCALE_FILEBROWSER_DELETE), COL_INFOBAR /*_SHADOW_PLUS_1*/, 0, true); // UTF-8
 		}
-		#endif
 
 		if(m_SMSKeyInput.getOldKey() !=0)
 		{

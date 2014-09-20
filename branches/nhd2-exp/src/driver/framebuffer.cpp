@@ -1057,7 +1057,7 @@ void CFrameBuffer::loadPal(const std::string & filename, const unsigned char off
 		return;
 
 	struct rgbData rgbdata;
-	int            _fd;
+	int _fd;
 
 	_fd = open((iconBasePath + filename).c_str(), O_RDONLY);
 
@@ -1081,6 +1081,7 @@ void CFrameBuffer::loadPal(const std::string & filename, const unsigned char off
 		readb = read(_fd, &rgbdata,  sizeof(rgbdata) );
 		pos++;
 	}
+	
 	paletteSet(&cmap);
 	close(_fd);
 }
@@ -1188,136 +1189,6 @@ void CFrameBuffer::setBackgroundColor(const fb_pixel_t color)
 {
 	backgroundColor = color;
 }
-
-// raw as background image
-bool CFrameBuffer::loadPictureToMem(const std::string & filename, const uint16_t width, const uint16_t height, const uint16_t _stride, fb_pixel_t * memp)
-{
-	struct rawHeader header;
-	int              _fd;	
-
-	_fd = open((iconBasePath + filename).c_str(), O_RDONLY );
-
-	if (_fd == -1)
-	{
-		printf("CFrameBuffer::loadPictureToMem: error while loading icon: %s%s\n", iconBasePath.c_str(), filename.c_str());
-		return false;
-	}
-
-	read(_fd, &header, sizeof(struct rawHeader));
-
-	if ((width  != ((header.width_hi  << 8) | header.width_lo)) || (height != ((header.height_hi << 8) | header.height_lo)))
-	{
-		printf("CFrameBuffer::loadPictureToMem: error while loading icon: %s - invalid resolution = %hux%hu\n", filename.c_str(), width, height);
-		return false;
-	}
-
-	if ((_stride == 0) || (_stride == width * sizeof(fb_pixel_t)))
-		read(_fd, memp, height * width * sizeof(fb_pixel_t));
-	else
-	{
-		for (int i = 0; i < height; i++)
-			read(_fd, ((uint8_t *)memp) + i * _stride, width * sizeof(fb_pixel_t));
-	}
-
-	close(_fd);
-	
-	return true;
-}
-
-bool CFrameBuffer::loadPicture2Mem(const std::string & filename, fb_pixel_t * memp)
-{
-	return loadPictureToMem(filename, BACKGROUNDIMAGEWIDTH, BACKGROUNDIMAGEHEIGHT, 0, memp);
-}
-
-bool CFrameBuffer::loadPicture2FrameBuffer(const std::string & filename)
-{
-	if (!getActive())
-		return false;
-
-	return loadPictureToMem(filename, BACKGROUNDIMAGEWIDTH, BACKGROUNDIMAGEHEIGHT, getStride(), getFrameBufferPointer());
-}
-
-bool CFrameBuffer::savePictureFromMem(const std::string & filename, const fb_pixel_t * const memp)
-{
-	struct rawHeader header;
-	uint16_t         width, height;
-	int              _fd;
-	
-	width = BACKGROUNDIMAGEWIDTH;
-	height = BACKGROUNDIMAGEHEIGHT;
-
-	header.width_lo  = width  &  0xFF;
-	header.width_hi  = width  >>    8;
-	header.height_lo = height &  0xFF;
-	header.height_hi = height >>    8;
-	header.transp    =              0;
-
-	_fd = open((iconBasePath + filename).c_str(), O_WRONLY | O_CREAT, 0x644);
-
-	if (_fd==-1)
-	{
-		printf("CFrameBuffer::savePictureFromMem: error while saving icon: %s%s", iconBasePath.c_str(), filename.c_str() );
-		return false;
-	}
-
-	write(_fd, &header, sizeof(struct rawHeader));
-
-	write(_fd, memp, width * height * sizeof(fb_pixel_t));
-
-	close(_fd);
-	
-	return true;
-}
-
-bool CFrameBuffer::loadBackground(const std::string & filename, const unsigned char offset)
-{
-	if ((backgroundFilename == filename) && (background))
-		return true;
-
-	if (background)
-		delete[] background;
-
-	background = new fb_pixel_t[BACKGROUNDIMAGEWIDTH * BACKGROUNDIMAGEHEIGHT];
-
-	if (!loadPictureToMem(filename, BACKGROUNDIMAGEWIDTH, BACKGROUNDIMAGEHEIGHT, 0, background))
-	{
-		delete[] background;
-		background=0;
-		return false;
-	}
-
-	if (offset != 0)//pic-offset
-	{
-		fb_pixel_t * bpos = background;
-
-		int pos = BACKGROUNDIMAGEWIDTH * BACKGROUNDIMAGEHEIGHT;
-		
-		while (pos > 0)
-		{
-			*bpos += offset;
-			bpos++;
-			pos--;
-		}
-	}
-
-	fb_pixel_t * dest = background + BACKGROUNDIMAGEWIDTH * BACKGROUNDIMAGEHEIGHT;
-	uint8_t    * src  = ((uint8_t * )background)+ BACKGROUNDIMAGEWIDTH * BACKGROUNDIMAGEHEIGHT;
-
-	for (int i = BACKGROUNDIMAGEHEIGHT - 1; i >= 0; i--)
-	{
-		for (int j = BACKGROUNDIMAGEWIDTH - 1; j >= 0; j--)
-		{
-			dest--;
-			src--;
-			paintPixel(dest, *src);
-		}
-	}
-
-	backgroundFilename = filename;
-
-	return true;
-}
-// end raw bg
 
 bool CFrameBuffer::loadBackgroundPic(const std::string & filename, bool show)
 {
@@ -1487,7 +1358,7 @@ void * CFrameBuffer::convertRGB2FB(unsigned char * rgbbuff, unsigned long x, uns
 	
 	if(fbbuff == NULL)
 	{
-		printf("CFrameBuffer::convertRGB2FB: Error: malloc\n");
+		dprintf(DEBUG_INFO, "CFrameBuffer::convertRGB2FB: Error: malloc\n");
 		return NULL;
 	}
 	
@@ -1615,7 +1486,7 @@ unsigned char * CFrameBuffer::Resize(unsigned char * origin, int ox, int oy, int
 
 		if(cr == NULL)
 		{
-			printf("Error: malloc\n");
+			dprintf(DEBUG_INFO, "Error: malloc\n");
 			return(origin);
 		}
 	} 
@@ -1768,7 +1639,7 @@ CFormathandler * fh_getsize(const char *name, int *x, int *y, int width_wanted, 
 	return (NULL);
 }
 
-fb_pixel_t * CFrameBuffer::getImage(const std::string & name, int width, int height)
+fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int height)
 {
 	int x, y;
 	CFormathandler * fh;
@@ -1785,7 +1656,7 @@ fb_pixel_t * CFrameBuffer::getImage(const std::string & name, int width, int hei
 		
 		if (buffer == NULL) 
 		{
-		  	printf ("CFrameBuffer::getImage: Error: malloc\n");
+		  	dprintf(DEBUG_INFO, "CFrameBuffer::getImage: Error: malloc\n");
 		  	return false;
 		}
 		
@@ -1825,64 +1696,18 @@ fb_pixel_t * CFrameBuffer::getImage(const std::string & name, int width, int hei
 		} 
 		else 
 		{
-	  		printf ("CFrameBuffer::getImage: Error decoding file %s\n", name.c_str ());
+	  		dprintf(DEBUG_INFO, "CFrameBuffer::getImage: Error decoding file %s\n", name.c_str ());
 	  		free (buffer);
 	  		buffer = NULL;
 		}
   	} 
 	else
-		printf("CFrameBuffer::getImage: Error open file %s\n", name.c_str ());
+	{
+		dprintf(DEBUG_INFO, "CFrameBuffer::getImage: Error open file %s\n", name.c_str ());
+	}
 
 	return ret;
 }
-
-/*
-fb_pixel_t * CFrameBuffer::getIcon(const std::string & name, int * width, int * height)
-{
-	int x, y;
-	CFormathandler * fh;
-	unsigned char * rgbbuff;
-	fb_pixel_t * fbbuff = NULL;
-	int _bpp = 0;
-
-  	fh = fh_getsize(name.c_str(), &x, &y, INT_MAX, INT_MAX);
-	
-  	if (!fh) 
-	{
-		return NULL;
-	}
-	
-	rgbbuff = (unsigned char *) malloc (x*y*4);
-	
-	if (rgbbuff == NULL) 
-	{
-		printf ("CFrameBuffer::getIcon: Error: malloc\n");
-		return NULL;
-	}
-	
-	int load_ret = png_load_ext(name.c_str(), &rgbbuff, &x, &y, &_bpp);
-	
-	if(load_ret == FH_ERROR_OK)
-	{
-		// convert RGB2FB
-		// with alpha
-		if (_bpp == 4)
-			fbbuff = (fb_pixel_t *) convertRGB2FB(rgbbuff, x, y, 0, TM_INI, true);
-		else
-			fbbuff = (fb_pixel_t *) convertRGB2FB(rgbbuff, x, y, convertSetupAlpha2Alpha(g_settings.infobar_alpha));
-
-		// size
-		*width = x;
-		*height = y;
-	} 
-	else 
-		printf ("Error decoding file %s\n", name.c_str ());
-
-	free (rgbbuff);
-
-	return fbbuff;
-}
-*/
 
 //
 #ifndef FBIO_WAITFORVSYNC

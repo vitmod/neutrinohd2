@@ -410,7 +410,7 @@ static std::string fribidiShapeChar(const char * text)
 }
 #endif
 
-void CFont::RenderString(int x, int y, const int width, const char *text, const uint8_t color, const int boxheight, const bool utf8_encoded)
+void CFont::RenderString(int x, int y, const int width, const char *text, const uint8_t color, const int boxheight, const bool utf8_encoded, const bool useBackground)
 {
 	if (!frameBuffer->getActive())
 		return;
@@ -483,8 +483,8 @@ void CFont::RenderString(int x, int y, const int width, const char *text, const 
 	static fb_pixel_t oldbgcolor = 0, oldfgcolor = 0;
 	static fb_pixel_t colors[256];
 
-	fb_pixel_t bgcolor = frameBuffer->realcolor[color];
-	fb_pixel_t fgcolor = frameBuffer->realcolor[((((color) + 2) | 7) - 2)];
+	fb_pixel_t bgcolor = useBackground? (*(frameBuffer->getFrameBufferPointer() + x + y * frameBuffer->getStride() / sizeof(fb_pixel_t))) : frameBuffer->realcolor[color];
+	fb_pixel_t fgcolor = useBackground? color : frameBuffer->realcolor[((((color) + 2) | 7) - 2)];
 
 	if((oldbgcolor != bgcolor) || (oldfgcolor != fgcolor)) 
 	{
@@ -652,9 +652,9 @@ void CFont::RenderString(int x, int y, const int width, const char *text, const 
 	pthread_mutex_unlock( &renderer->render_mutex );
 }
 
-void CFont::RenderString(int x, int y, const int width, const std::string & text, const uint8_t color, const int boxheight, const bool utf8_encoded)
+void CFont::RenderString(int x, int y, const int width, const std::string & text, const uint8_t color, const int boxheight, const bool utf8_encoded, const bool useBackground)
 {
-	RenderString(x, y, width, text.c_str(), color, boxheight, utf8_encoded);
+	RenderString(x, y, width, text.c_str(), color, boxheight, utf8_encoded, useBackground);
 }
 
 int CFont::getRenderWidth(const char *text, const bool utf8_encoded)
