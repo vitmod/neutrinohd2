@@ -440,30 +440,30 @@ enum {
 	GRID
 };
 
-/*
 enum {
-	TRANSP = 0xFF, 
-	WHITE = 0x10, 
+	TRANSP, 
+	WHITE, 
 	SKIN0, 
 	SKIN1, 
 	SKIN2, 
 	ORANGE, 
-	GREEN = 0x0B, 
-	YELLOW = 0x0C, 
-	RED = 0x0A, 
-	BLUE = 0x0D, 
-	GREY = 0x08, 
+	GREEN, 
+	YELLOW, 
+	RED, 
+	BLUE, 
+	GREY, 
 	DAY1,
 	DAY2, 
 	DAY3, 
 	DAY4, 
 	DAY5, 
 	SKIN3, 
-	BLACK = 0x11, 
+	BLACK, 
 	LGREY, 
 	MAGENTA
 };
-*/
+
+/*
 enum {
 	TRANSP = COL_BACKGROUND, 
 	WHITE = COL_WHITE0, 
@@ -486,6 +486,7 @@ enum {
 	LGREY = COL_LIGHT_GRAY0, 
 	MAGENTA
 };
+*/
 
 unsigned short rccode;
 int startx, starty, sx, ex, sy, ey;

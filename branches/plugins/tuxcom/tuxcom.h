@@ -178,25 +178,25 @@ enum {
 	GRID
 };
 
-/*
 enum {
-	TRANSP = 0xFF, 
-	WHITE = 0x10, 
-	BLACK = 0x11, 
-	BLUE1 = 0x0D, 
-	BLUE2 = 0x05, 
-	ORANGE = 0x06, 
-	GREEN = 0x0B, 
-	YELLOW = 0x0C, 
-	RED = 0x0A, 
-	GRAY = 0x08,
-	GREEN2 = 0x03,
-	GRAY2 = 0x09, 
-	BLUE_TRANSP = 0x0F, 
-	GRAY_TRANSP = 0x08, 
-	BLUE3 = 0xFE
+	TRANSP, 
+	WHITE, 
+	BLACK, 
+	BLUE1, 
+	BLUE2, 
+	ORANGE, 
+	GREEN, 
+	YELLOW, 
+	RED, 
+	GRAY,
+	GREEN2,
+	GRAY2, 
+	BLUE_TRANSP, 
+	GRAY_TRANSP, 
+	BLUE3
 };
-*/
+
+/*
 enum {
 	TRANSP = COL_BACKGROUND, 
 	WHITE = COL_WHITE0, 
@@ -214,6 +214,7 @@ enum {
 	GRAY_TRANSP = COL_LIGHT_GRAY0, 
 	BLUE3
 };
+*/
 
 #define CONFIG_FILE PLUGINDIR "/tuxcom/tuxcom.conf"
 
