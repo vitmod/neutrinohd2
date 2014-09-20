@@ -369,7 +369,7 @@ void RenderString(const char *string, int _sx, int _sy, int maxwidth, int layout
 		}
 	}
 	
-	g_Font[size]->RenderString(startx + _sx, starty + _sy, maxwidth, string, color, 0, true); // UTF-8
+	g_Font[size]->RenderString(startx + _sx, starty + _sy, maxwidth, string, color, 0, true, true); // UTF-8
 }
 
 //
