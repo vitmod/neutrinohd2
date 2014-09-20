@@ -144,7 +144,7 @@ void CHintBox::paint(void)
 			       height + borderwidth);
 	refresh();
 	
-	//CFrameBuffer::getInstance()->blit();
+	CFrameBuffer::getInstance()->blit();
 }
 
 void CHintBox::refresh(void)
