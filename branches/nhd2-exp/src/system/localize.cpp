@@ -147,12 +147,12 @@ CLocaleManager::loadLocale_ret_t CLocaleManager::loadLocale(const char * const l
 			char * val    = NULL;
 			char * tmpptr = buf;
 
-			for(; (*tmpptr!=10) && (*tmpptr!=13);tmpptr++)
+			for(; (*tmpptr!=10) && (*tmpptr!=13); tmpptr++)
 			{
 				if ((*tmpptr == ' ') && (val == NULL))
 				{
 					*tmpptr  = 0;
-					val      = tmpptr + 1;
+					val = tmpptr + 1;
 				}
 			}
 			*tmpptr = 0;
@@ -250,3 +250,4 @@ neutrino_locale_t CLocaleManager::getWeekday(const struct tm * struct_tm_p)
 {
 	return locale_weekday[struct_tm_p->tm_wday];
 }
+

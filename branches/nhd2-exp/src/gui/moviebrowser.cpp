@@ -1315,17 +1315,6 @@ void CMovieBrowser::refreshMovieInfo(void)
 		std::string fname;
 		fname = m_movieSelectionHandler->file.Name;
 		
-		/*
-		int ext_pos = 0;
-		ext_pos = fname.rfind('.');
-		if( ext_pos > 0)
-		{
-			std::string extension;
-			extension = fname.substr(ext_pos + 1, fname.length() - ext_pos);
-			extension = "." + extension;
-			strReplace(fname, extension.c_str(), ".jpg");
-		}
-		*/
 		changeFileNameExt(fname, ".jpg");
 		
 		logo_ok = !access(fname.c_str(), F_OK);

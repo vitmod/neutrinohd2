@@ -1001,6 +1001,8 @@ bool CFrameBuffer::paintIcon(const std::string & filename, const int x, const in
 		
 		if(!data) 
 		{
+			dprintf(DEBUG_NORMAL, "paintIcon: error while loading icon: %s\n", newname.c_str());
+			
 			//data = getIcon(filename, &width, &height);
 			if(width == 0 || height == 0)	
 				getIconSize(filename.c_str(), &width, &height);
@@ -1026,7 +1028,7 @@ bool CFrameBuffer::paintIcon(const std::string & filename, const int x, const in
 		}
 		else
 		{
-			dprintf(DEBUG_NORMAL, "paintIcon: error while loading icon: %s\n", newname.c_str());
+			dprintf(DEBUG_NORMAL, "paintIcon: error while loading icon: %s\n", filename.c_str());
 			return false;
 		}
 	} 
