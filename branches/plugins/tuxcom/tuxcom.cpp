@@ -180,7 +180,7 @@ void RenderMenuLine(int highlight, int refresh)
 		RenderBox( (viewx/COLORBUTTONS) *i, viewy-MENUSIZE/2, (viewx/COLORBUTTONS) *(i+1), viewy, FILL, (i == 0 ? RED    :
 		                                                            					                   (i == 1 ? GREEN  :                                                        					                   (i == 2 ? YELLOW : BLUE1))));
 		RenderBox( (viewx/COLORBUTTONS) *i ,viewy-MENUSIZE/2, (i < COLORBUTTONS-1 ? (viewx/COLORBUTTONS) *(i+1) : viewx) , viewy , GRID,  WHITE );
-		RenderString(colorline[colortool[i]*NUM_LANG+language], (viewx/COLORBUTTONS) *i , viewy- FONT_OFFSET_BIG , viewx/COLORBUTTONS, CENTER, SMALL  , /*(i == 2 ? BLACK : WHITE)*/WHITE);
+		RenderString(colorline[colortool[i]*NUM_LANG+language], (viewx/COLORBUTTONS) *i , viewy- FONT_OFFSET_BIG , viewx/COLORBUTTONS, CENTER, SMALL  , (i == 2 ? BLACK : WHITE));
 	}
 	
 	if (refresh == YES)
@@ -252,7 +252,7 @@ void RenderFrame(int frame)
 		fcolor = WHITE;
 		if ((pfe->fentry.st_mode & S_IRUSR) == S_IRUSR )
 		{
-			fcolor = GREEN2/*WHITE*/ ;
+			fcolor = /*GREEN2*/WHITE;
 			if (bselected)
 			{
 				tool[ACTION_COPY-1] = (finfo[1-frame].writable  ? ACTION_COPY : ACTION_NOACTION); // copy allowed, if other frame writable;
@@ -262,7 +262,7 @@ void RenderFrame(int frame)
 		
 		if ((pfe->fentry.st_mode & S_IWUSR) == S_IWUSR )
 		{
-			fcolor = GRAY /*WHITE*/;
+			fcolor = /*GRAY*/WHITE;
 			if (bselected)
 			{
 				tool[ACTION_MOVE-1] = (finfo[1-frame].writable && finfo[frame].writable ? ACTION_MOVE   : ACTION_NOACTION); // move   allowed, if both frames writable;
@@ -274,7 +274,7 @@ void RenderFrame(int frame)
 		
 		if      ((pfe->fentry.st_mode & S_IXUSR) == S_IXUSR )
 		{
-			fcolor = YELLOW /*WHITE*/ ;
+			fcolor = /*YELLOW*/WHITE;
 		}
 		
 		if     (S_ISDIR(pfe->fentry.st_mode))
@@ -289,7 +289,7 @@ void RenderFrame(int frame)
 		}
 		else if (S_ISLNK(pfe->fentry.st_mode))
 		{
-			fcolor = ORANGE /*WHITE*/ ;
+			fcolor = /*ORANGE*/WHITE;
 			sprintf(sizeString,"<LINK>");
 			if (bselected)
 				tool[ACTION_VIEW-1] = ACTION_NOACTION; // view not allowed
