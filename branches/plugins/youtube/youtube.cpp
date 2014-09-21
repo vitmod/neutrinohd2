@@ -77,15 +77,15 @@ class CYTBrowser : public CMenuTarget
 {
 	private:
 		CFrameBuffer * m_pcWindow;
-		CListFrame * m_pcBrowser;
 		
+		CListFrame * m_pcBrowser;
 		CTextBox * m_pcInfo;
 		
 		CBox m_cBoxFrame;
 		CBox m_cBoxFrameBrowserList;
-		CBox m_cBoxFrameInfo;
 		CBox m_cBoxFrameFootRel;
 		CBox m_cBoxFrameTitleRel;
+		CBox m_cBoxFrameInfo;
 		
 		LF_LINES m_browserListLines;
 		
@@ -573,8 +573,6 @@ void CYTBrowser::refreshMovieInfo(void)
 		std::string fname;
 
 		fname = m_movieSelectionHandler->tfile;
-		
-		changeFileNameExt(fname, ".jpg");
 		
 		logo_ok = !access(fname.c_str(), F_OK);
 		

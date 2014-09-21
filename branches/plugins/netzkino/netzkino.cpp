@@ -576,8 +576,6 @@ void CNetzKinoBrowser::refreshMovieInfo(void)
 
 		fname = m_movieSelectionHandler->tfile;
 		
-		changeFileNameExt(fname, ".jpg");
-		
 		logo_ok = !access(fname.c_str(), F_OK);
 		
 		// display screenshot if exists
