@@ -484,7 +484,7 @@ void CFont::RenderString(int x, int y, const int width, const char *text, const 
 	static fb_pixel_t colors[256];
 
 	fb_pixel_t bgcolor = useBackground? (*(frameBuffer->getFrameBufferPointer() + x + y * frameBuffer->getStride() / sizeof(fb_pixel_t))) : frameBuffer->realcolor[color];
-	fb_pixel_t fgcolor = useBackground? color : frameBuffer->realcolor[((((color) + 2) | 7) - 2)];
+	fb_pixel_t fgcolor = /*useBackground? color :*/ frameBuffer->realcolor[((((color) + 2) | 7) - 2)];
 
 	if((oldbgcolor != bgcolor) || (oldfgcolor != fgcolor)) 
 	{
