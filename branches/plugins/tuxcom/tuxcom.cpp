@@ -1200,7 +1200,7 @@ int GetInputString(int width, int maxchars, char *str, char *message, int pass)
 //
 int DoEditString(int x, int y, int width, unsigned int maxchars, char* str, int vsize, int back, int pass)
 {
-#if 0
+#if 1
 	unsigned int pos = 0, markpos = 0, start = 0;
 	int slen, he = (vsize==BIG ? FONTHEIGHT_BIG : FONTHEIGHT_SMALL);
 	int prev_key = -1;
@@ -1226,81 +1226,13 @@ int DoEditString(int x, int y, int width, unsigned int maxchars, char* str, int 
 	colortool[3] = (pass == NO ? ACTION_INSTEXT  : ACTION_NOACTION);
 	RenderMenuLine(-1, EDIT);
 
-	memcpy(lfb, lbb, fix_screeninfo.line_length * var_screeninfo.yres);
+	//memcpy(lfb, lbb, fix_screeninfo.line_length * var_screeninfo.yres);
+	//blit
+	CFrameBuffer::getInstance()->blit();
 
 	do{
 		while (getRCcode() == 0);
-//#ifdef HAVE_DBOX_HARDWARE
-		if ((rccode >=0x20) && (rccode < 0x0100))
-		{
-		  kbcode=rccode;
-		  if ((kbcode>=RC_0) && (kbcode<=RC_9))
-		  {
-		  	rccode-=RC_0;
-		  	kbcode=0;
-					if (markmode == 0)
-					{
-						if (prev_key != -1 && rccode != prev_key) // jump to next char when other number pressed
-						{
-							pos++;
-							if (pos >= strlen(szdst))
-							{
-								if (pos > maxchars) pos = maxchars;
-								else
-									strcat(szdst," ");
-							}
-						}
-						prev_key = rccode;
-						pch = strchr(numberchars[rccode],tolower(szdst[pos]));
-						if (pch == NULL) szdst[pos] = (textuppercase == 0 ? numberchars[rccode][0] : toupper(numberchars[rccode][0]));
-						else
-						{
-							if (pch == &(numberchars[rccode][strlen(numberchars[rccode])-1])) szdst[pos] = (textuppercase == 0 ? numberchars[rccode][0]: toupper(numberchars[rccode][0]));
-							else szdst[pos] = (textuppercase == 0 ? *((char*)pch+1) : toupper(*((char*)pch+1)));
-						}
-					}
-		  }
-		}
-		else if ((rccode >= 0x0201) && (rccode <= 0x020A))
-		{
-		  kbcode = (rccode & 0x00FF) ;
-		  if (kbcode == 10) kbcode = 0;
-		  kbcode += RC_0;
-		}
-		else
-		  kbcode = 0;
-//#endif
-		if (kbcode != 0 && markmode == 0)
-		{
-			if (kbcode == 0x7f) // backspace
-			{
-				if (pos > 0)
-				{
-					if (pos == strlen(szdst)-1) // remove last char when at end of line
-					{
-						szdst[pos-1] = 0x00;
-					}
-					else if (szdst[pos] != 0x00)
-					{
-						strcpy(szbuf,(char*)(szdst+pos));
-						strcpy((char*)(szdst+pos-1),szbuf);
-					}
-					pos--;
-				}
-			}
-			else if (kbcode >= 0x20)
-			{
-				if (szdst[pos] != 0x00)
-				{
-					strcpy(szbuf,(char*)(szdst+pos));
-					szdst[pos] = kbcode;
-					strcpy((char*)(szdst+pos+1),szbuf);
-				}
-				pos++;
-			}
-			prev_key = -1;
-			rccode = -1;
-		}
+		
 		switch(rccode)
 		{
 				case RC_OK:
@@ -1371,7 +1303,7 @@ int DoEditString(int x, int y, int width, unsigned int maxchars, char* str, int 
 				case RC_DOWN:
 					if (markmode == 0)
 					{
-						pch = strchr(charset, (char *)szdst[pos]);
+						pch = strchr((char *)charset, /*(char *)*/szdst[pos]);
 						if (pch == NULL) szdst[pos] = ' ';
 						else
 						{
@@ -1384,7 +1316,7 @@ int DoEditString(int x, int y, int width, unsigned int maxchars, char* str, int 
 				case RC_UP:
 					if (markmode == 0)
 					{
-						pch = strchr(charset,szdst[pos]);
+						pch = strchr((char *)charset, szdst[pos]);
 						if (pch == NULL) szdst[pos] = ' ';
 						else
 						{
@@ -1417,7 +1349,7 @@ int DoEditString(int x, int y, int width, unsigned int maxchars, char* str, int 
 							}
 						}
 						prev_key = rccode;
-						pch = strchr(numberchars[rccode],tolower(szdst[pos]));
+						pch = strchr((char *)numberchars[rccode], tolower(szdst[pos]));
 						if (pch == NULL) szdst[pos] = (textuppercase == 0 ? numberchars[rccode][0] : toupper(numberchars[rccode][0]));
 						else
 						{
@@ -1544,7 +1476,9 @@ int DoEditString(int x, int y, int width, unsigned int maxchars, char* str, int 
 			colortool[3] = ACTION_NOACTION;
 		}
 		RenderMenuLine(-1, EDIT);
-		memcpy(lfb, lbb, fix_screeninfo.line_length * var_screeninfo.yres);
+		//memcpy(lfb, lbb, fix_screeninfo.line_length * var_screeninfo.yres);
+		// blit
+		CFrameBuffer::getInstance()->blit();
 	}while(1);
 #endif	
 
@@ -3232,6 +3166,7 @@ void ReadZip(int typ)
 	strcpy(finfo[curframe].zippath,"/");
 	finfo[curframe].ziptype = typ;
 	_pipe = OpenPipe(szAction);
+	
 	if (_pipe== NULL)
 	{
 		printf("tuxcom: could not open pipe\n");
@@ -3241,6 +3176,7 @@ void ReadZip(int typ)
 
 		return;
 	}
+	
 	while (fgets(szLine, 400, _pipe))
 	{
 		p=strchr(szLine,'\n');
@@ -3593,6 +3529,7 @@ void ShowFile(FILE* _pipe, char* szAction)
 			RenderString(szAction,2*BORDERSIZE, BORDERSIZE+FONTHEIGHT_BIG-FONT_OFFSET_BIG  , viewx-4*BORDERSIZE, CENTER, BIG, WHITE);
 		}
 	}
+	
 	if (row>0)
 	{
 		//memcpy(lfb, lbb, fix_screeninfo.line_length * var_screeninfo.yres);
@@ -3690,10 +3627,10 @@ void ReadSettings()
 	finfo[LEFTFRAME].sort = SORT_UP;
 	finfo[RIGHTFRAME].sort = SORT_UP;
 
-	fp = fopen( CONFIGDIR "/tuxcom.conf", "r" );
+	fp = fopen(CONFIG_FILE, "r" );
 	if ( !fp )
 	{
-		printf("tuxcom: could not open " CONFIGDIR "/tuxcom.conf !!!\n");
+		printf("%s\n", CONFIG_FILE);
 	}
 	else
 	{
@@ -3815,7 +3752,7 @@ void WriteSettings()
 {
 	FILE *fp;
 
-	fp = fopen( CONFIGDIR "/tuxcom.conf", "w" );
+	fp = fopen(CONFIG_FILE, "w" );
 	if ( !fp )
 	{
 		printf("tuxcom: could not open " CONFIGDIR "/tuxcom.conf !!!\n");

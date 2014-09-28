@@ -40,7 +40,7 @@ void CFBCallMonitor::ReadSettings()
 {
 	CConfigFile *bpfbconfig = new CConfigFile(',');
 	bpfbconfig->clear();
-	bpfbconfig->loadConfig(PLUGINDIR "/fb.conf");
+	bpfbconfig->loadConfig(CONFIG_FILE);
 	
 	FB_IP_STRG = bpfbconfig->getString("FRITZBOXIP", "fritz.box");
 	FB_PORT_STRG = bpfbconfig->getString("TELDPORT", "1012");
@@ -85,7 +85,7 @@ bool CFBCallMonitor::SaveSettings()
 	bpfbconfig->setInt32("popup", FB_POPUP);
 	bpfbconfig->setInt32("invers", FB_INVERS);
 	
-	bpfbconfig->saveConfig(PLUGINDIR "/fb.conf");
+	bpfbconfig->saveConfig(CONFIG_FILE);
 	
 	return true;
 }

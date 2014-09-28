@@ -29,6 +29,8 @@
 #include <plugin.h>
 
 
+#define CONFIG_FILE		PLUGINDIR "/fbcallmonitor/fb.conf"
+
 class CFBCallMonitor : public CMenuTarget
 {
 	private:

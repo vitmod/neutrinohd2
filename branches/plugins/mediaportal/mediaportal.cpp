@@ -30,10 +30,99 @@ extern "C" void plugin_exec(void);
 //
 class CMediaPortal : public CMenuTarget
 {
-        public:
+	private:
+		CFrameBuffer * mp_frameBuffer;
+		int mp_title_height;
+		int mp_width;
+		int mp_height;
+		int mp_x;
+		int mp_y;	
+		
+		int icon_head_w;
+		int icon_head_h;
+		
 		//void ORF(void);
+		
+        public:
+		CMediaPortal();
+		~CMediaPortal();
                 int exec(CMenuTarget *parent,  const std::string &actionkey);
+		
+		void paintHead();
+		void hide();
+		void paintGrid();
 };
+
+CMediaPortal::CMediaPortal()
+{
+	mp_frameBuffer = CFrameBuffer::getInstance();
+	
+	mp_width = mp_frameBuffer->getScreenWidth(true) - 50; 
+	mp_height = mp_frameBuffer->getScreenHeight(true) - 50;
+	
+	mp_x = ((g_settings.screen_EndX - g_settings.screen_StartX) - mp_width)/2 + g_settings.screen_StartX;
+	mp_y = ((g_settings.screen_EndY - g_settings.screen_StartY) - mp_height)/ 2 + g_settings.screen_StartY;
+	
+	mp_title_height = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight()*2 + 20 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(); + 5;
+}
+
+CMediaPortal::~CMediaPortal()
+{
+	hide();
+}
+
+void CMediaPortal::hide()
+{
+	mp_frameBuffer->paintBackgroundBoxRel(mp_x, mp_y, mp_width, mp_title_height);
+}
+
+void CMediaPortal::paintHead()
+{
+	mp_frameBuffer->paintBoxRel(mp_x, mp_y, mp_width, mp_title_height - 10, COL_MENUCONTENT_PLUS_6 );
+	mp_frameBuffer->paintBoxRel(mp_x + 2, mp_y + 2 , mp_width - 4, mp_title_height - 14, COL_MENUCONTENTSELECTED_PLUS_0);
+	
+	// title
+	std::string title = "neutrinoHD2 Media Portlal (C)";
+	int tw = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(title, true); // UTF-8
+	int xstart = (mp_width - tw) / 2;
+	if(xstart < 10)
+		xstart = 10;
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(mp_x + xstart, mp_y + 4 + 1*g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), mp_width - 20, title, COL_MENUCONTENTSELECTED, 0, true); // UTF-8
+	
+	// info
+	std::string info = "Mediatheck Archiv";
+	int iw = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(info, true); // UTF-8
+	xstart = (mp_width - iw) / 2;
+	if(xstart < 10)
+		xstart = 10;
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(mp_x + xstart, mp_y + 4 + 2*g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), mp_width - 20, "Mediatheck Archiv", COL_MENUCONTENTSELECTED, 0, true); // UTF-8	
+	
+	// icon
+	// head icon
+	std::string icon_head = PLUGINDIR "/mediaportal/mp.png";
+	mp_frameBuffer->getIconSize(icon_head.c_str(), &icon_head_w, &icon_head_h);
+	mp_frameBuffer->paintIcon(icon_head.c_str(), mp_x + 10, mp_y + (mp_title_height - 10 - icon_head_h)/2);
+}
+
+void CMediaPortal::paintGrid()
+{
+	/*
+	int COL_H = 44;
+	int COL_W = 104;
+	int COLS = (mp_height - mp_title_height)/COL_H;
+	int COLX = mp_width/COL_W;
+	int SPACE = 2;
+	
+	//for (int y = mp_y + mp_title_height + SPACE; y < COL_H*COLS; y++)
+	{
+		for (int x = mp_x; x < COLX*COL_W; x++)
+		{
+			mp_frameBuffer->paintBoxRel(x, mp_y + mp_title_height + SPACE, COL_W, COL_H, COL_MENUCONTENTSELECTED_PLUS_0 );
+		}
+	}
+	*/
+}
+
 
 /*
 void CMediaPortal::ORF(void)
@@ -113,8 +202,6 @@ int CMediaPortal::exec(CMenuTarget *parent, const std::string &actionKey)
 	
 	if(parent)
 		parent->hide();
-
-	printf("CMediaPortal::exec: %s\n", actionKey.c_str());
 	
 	/*
 	if(actionKey == "youtube") 
@@ -204,7 +291,13 @@ NK_BROWSER:
 		
 		return ret;
 	}
+	else if(actionKey == "orf")
+	{
+		ORF();
+	}
 	*/
+	
+	#if 0
 	if(actionKey == "musicdeluxe")
 	{
 		moviePlayerGui->filename = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
@@ -275,12 +368,132 @@ NK_BROWSER:
 		moviePlayerGui->Info1 = "Stream";
 		moviePlayerGui->exec(NULL, "urlplayback");
 	}
-	/*
-	else if(actionKey == "orf")
+	#endif
+	
+	paintHead();
+	
+	mp_frameBuffer->blit();
+	
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+	
+	bool loop = true;
+		
+	while (loop)
 	{
-		ORF();
+		g_RCInput->getMsg_ms(&msg, &data, 100);
+		
+		if(msg == CRCInput::RC_up)
+		{
+			loop = false;
+		}
+		else if (msg == CRCInput::RC_down)
+		{
+			loop = false;
+		}
+		else if (msg == CRCInput::RC_home)
+		{
+			loop = false;
+		}
+		if(msg == CRCInput::RC_1)
+		{
+			hide();
+			moviePlayerGui->filename = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
+			moviePlayerGui->Title = "Music Deluxe";
+			moviePlayerGui->Info1 = "Stream";
+			moviePlayerGui->exec(NULL, "urlplayback");
+			paintHead();
+		}
+		else if(msg == CRCInput::RC_2)
+		{
+			hide();
+			moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf1_q6a/orf.sdp";
+			moviePlayerGui->Title = "ORF 1";
+			moviePlayerGui->Info1 = "Stream";
+			moviePlayerGui->exec(NULL, "urlplayback");
+			paintHead();
+		}
+		else if(msg == CRCInput::RC_3)
+		{
+			hide();
+			moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf2_q6a/orf.sdp";	
+			moviePlayerGui->Title = "ORF 2";
+			moviePlayerGui->Info1 = "Stream";
+			moviePlayerGui->exec(NULL, "urlplayback");
+			paintHead();
+		}
+		else if(msg == CRCInput::RC_4)
+		{
+			hide();
+			moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf3_q6a/orf.sdp";	
+			moviePlayerGui->Title = "ORF 3";
+			moviePlayerGui->Info1 = "Stream";
+			moviePlayerGui->exec(NULL, "urlplayback");
+			paintHead();
+		}
+		else if(msg == CRCInput::RC_5)
+		{
+			hide();
+			moviePlayerGui->filename = "rtsp://apasfwl.apa.at/orfs_q6a/orf.sdp";
+			moviePlayerGui->Title = "ORF Sport";
+			moviePlayerGui->Info1 = "Stream";
+			moviePlayerGui->exec(NULL, "urlplayback");
+			paintHead();
+		}
+		else if(msg == CRCInput::RC_6)
+		{
+			hide();
+			moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/198.high.stream";
+			moviePlayerGui->Title = "Filmon asia";
+			moviePlayerGui->Info1 = "Stream";
+			moviePlayerGui->exec(NULL, "urlplayback");
+			paintHead();
+		}
+		else if(msg == CRCInput::RC_7)
+		{
+			hide();
+			moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/244.high.stream";
+			moviePlayerGui->Title = "Filmon black";
+			moviePlayerGui->Info1 = "Stream";
+			moviePlayerGui->exec(NULL, "urlplayback");
+			paintHead();
+		}
+		else if(msg == CRCInput::RC_8)
+		{
+			hide();
+			moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/247.high.stream";
+			moviePlayerGui->Title = "Filmon 1";
+			moviePlayerGui->Info1 = "Stream";
+			moviePlayerGui->exec(NULL, "urlplayback");
+			paintHead();
+		}
+		else if(msg == CRCInput::RC_9)
+		{
+			hide();
+			moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/245.high.stream";
+			moviePlayerGui->Title = "Filmon 2";
+			moviePlayerGui->Info1 = "Stream";
+			moviePlayerGui->exec(NULL, "urlplayback");
+			paintHead();
+		}
+		else if(msg == CRCInput::RC_0)
+		{
+			hide();
+			moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/246.high.stream";
+			moviePlayerGui->Title = "Filmon 3";
+			moviePlayerGui->Info1 = "Stream";
+			moviePlayerGui->exec(NULL, "urlplayback");
+			paintHead();
+		}
+		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
+		{
+			dprintf(DEBUG_NORMAL, "CTest: forward events to neutrino\n");
+				
+			loop = false;
+		}
+		
+		mp_frameBuffer->blit();	
 	}
-	*/
 
 	return ret;
 }
@@ -289,14 +502,16 @@ void plugin_exec(void)
 {
 	printf("Plugins: starting Media Portal\n");
 	
-	CMenuWidget * mediaPortal = new CMenuWidget("Media Portal", NEUTRINO_ICON_STREAMING);
+	//CMenuWidget * mediaPortal = new CMenuWidget("Media Portal", NEUTRINO_ICON_STREAMING);
 	CMediaPortal * mpHandler = new CMediaPortal();
 	
+	// youtube
 	//mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Youtube", true, NULL, mpHandler, "youtube", NULL, NULL, NEUTRINO_ICON_MENUITEM_YT));
 	
 	// netzkino
 	//mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Netzkino", true, NULL, mpHandler, "netzkino", NULL, NULL, PLUGINDIR "/netzkino.png"));
 	
+	#if 0
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Music Deluxe", true, NULL, mpHandler, "musicdeluxe", NULL, NULL, PLUGINDIR "/mediaportal/deluxemusic.png"));
 	
 	// orf
@@ -314,12 +529,18 @@ void plugin_exec(void)
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Filmon 1", true, NULL, mpHandler, "filmon1", NULL, NULL, PLUGINDIR "/mediaportal/filmon.png"));
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Filmon 2", true, NULL, mpHandler, "filmon2", NULL, NULL, PLUGINDIR "/mediaportal/filmon.png"));
 	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Filmon 3", true, NULL, mpHandler, "filmon3", NULL, NULL, PLUGINDIR "/mediaportal/filmon.png"));
+	#endif
 	
-	mediaPortal->exec(NULL, "");
-	mediaPortal->hide();
+	//mediaPortal->exec(NULL, "");
+	//mediaPortal->hide();
+	
+	//mpHandler->paintHead();
+	//mpHandler->paintGrid();
+	
+	mpHandler->exec(NULL, "");
 	
 	delete mpHandler;
-	delete mediaPortal;
+	//delete mediaPortal;
 }
 
 

@@ -28,9 +28,9 @@
 
 #define SCKFILE 	"/tmp/tuxcald.socket"						//! socket-file, connection to daemon
 #define RUNFILE 	"/var/etc/.tuxcald"						//! autostart-file for daemon
-#define CFGPATH 	PLUGINDIR "tuxcal/"						//! config-path
-#define CFGFILE 	"tuxcal.conf"							//! config-file
-#define EVTFILE 	"tuxcal.list"							//! database-file
+#define CFGPATH 	PLUGINDIR "/tuxcal"						//! config-path
+#define CFGFILE 	CFGPATH "/tuxcal.conf"							//! config-file
+#define EVTFILE 	CFGPATH "/tuxcal.list"							//! database-file
 
 // OSD   different languages
 int osdidx = 0;																				// actual used language
@@ -441,36 +441,12 @@ enum {
 };
 
 enum {
-	TRANSP, 
-	WHITE, 
-	SKIN0, 
-	SKIN1, 
-	SKIN2, 
-	ORANGE, 
-	GREEN, 
-	YELLOW, 
-	RED, 
-	BLUE, 
-	GREY, 
-	DAY1,
-	DAY2, 
-	DAY3, 
-	DAY4, 
-	DAY5, 
-	SKIN3, 
-	BLACK, 
-	LGREY, 
-	MAGENTA
-};
-
-/*
-enum {
-	TRANSP = COL_BACKGROUND, 
+	TRANSP = COL_TRANSP0, 
 	WHITE = COL_WHITE0, 
 	SKIN0, 
 	SKIN1, 
 	SKIN2 = COL_LIGHT_BLUE0, 
-	ORANGE, 
+	ORANGE = COL_ORANGE0, 
 	GREEN = COL_GREEN0, 
 	YELLOW = COL_YELLOW0, 
 	RED = COL_RED0, 
@@ -484,9 +460,8 @@ enum {
 	SKIN3 = COL_DARK_BLUE0, 
 	BLACK = COL_BLACK0, 
 	LGREY = COL_LIGHT_GRAY0, 
-	MAGENTA
+	MAGENTA = COL_PURPLE0
 };
-*/
 
 unsigned short rccode;
 int startx, starty, sx, ex, sy, ey;

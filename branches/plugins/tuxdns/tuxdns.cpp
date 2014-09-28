@@ -27,7 +27,7 @@
 
 extern "C" void plugin_exec(void);
 
-#define TuxdnsCFG CONFIGDIR "/tuxdns.conf"
+#define TuxdnsCFG PLUGINDIR "/tuxdns/tuxdns.conf"
 
 #define OPTIONS_OFF_ON_OPTION_COUNT 2
 const CMenuOptionChooser::keyval OPTIONS_OFF_ON_OPTIONS[OPTIONS_OFF_ON_OPTION_COUNT] =

@@ -39,7 +39,7 @@ void ReadConf()
 	char line_buffer[256];
 
 	// open config-file
-	if (!(fd_conf = fopen(CFGPATH CFGFILE, "r")))
+	if (!(fd_conf = fopen(CFGFILE, "r")))
 	{
 		printf("TuxCal <Config not found, using defaults>\n");
 		return;
@@ -187,7 +187,7 @@ int WriteConf()
 	FILE *fd_conf;
 
 	// open config-file
-	if (!(fd_conf = fopen(CFGPATH CFGFILE , "w")))
+	if (!(fd_conf = fopen(CFGFILE , "w")))
 	{
 		return 0;
 	}
@@ -753,13 +753,13 @@ int *PaintEdit(EVT_DB* pEvt, int iEditLine, uint8_t iEditCol)
 		
 		switch (y)
 		{
-			case 0: iColor=RED; break;
-			case 1: iColor=GREEN; break;
-			case 2: iColor=YELLOW; break;
-			case 3: iColor=BLUE; break;
+			case 0: iColor=RED; CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_RED, l, t + 6);break;
+			case 1: iColor=GREEN; CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, l, t + 6);break;
+			case 2: iColor=YELLOW; CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, l, t + 6);break;
+			case 3: iColor=BLUE; CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, l, t + 6);break;
 		}
 
-		RenderSObject(l,t+6,iColor,OBJ_CIRCLE);
+		//RenderSObject(l,t+6,iColor,OBJ_CIRCLE);
 		RenderString(szEditBoxInfo[y][osdidx],20 + l, b - 4,MAXSCREEN_X/2, LEFT, SMALL, ORANGE);
 		
 		// paint function-buttons
@@ -2001,7 +2001,7 @@ void LoadDatabase(void)
 	char* p2;
 	
 	// read the tuxcal-event-file
-	if ((fd_evt = fopen(CFGPATH EVTFILE, "r"))!=NULL)
+	if ((fd_evt = fopen(EVTFILE, "r"))!=NULL)
 	{
 		// read line by line
 		while (fgets(linebuffer, sizeof(linebuffer), fd_evt))
@@ -2137,7 +2137,7 @@ void SaveDatabase(void)
 	char info_yr2[5];
 		
 	// open the tuxcal-event-file
-	if ((fd_evt = fopen(CFGPATH EVTFILE, "w"))!=NULL)
+	if ((fd_evt = fopen(EVTFILE, "w"))!=NULL)
 	{
 		while (iEntry<MAXENTRYS)
 		{
