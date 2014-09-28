@@ -288,7 +288,7 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &)
 	m_height = m_theight + m_info_height + m_title_height + 2*m_buttonHeight + m_listmaxshow * m_fheight; // recalc height
 
 	m_x = (((g_settings.screen_EndX - g_settings.screen_StartX) - (m_width + ConnectLineBox_Width)) / 2) + g_settings.screen_StartX + ConnectLineBox_Width;
-	m_y = (((g_settings.screen_EndY- g_settings.screen_StartY) - m_height)/ 2) + g_settings.screen_StartY;
+	m_y = (((g_settings.screen_EndY - g_settings.screen_StartY) - m_height)/ 2) + g_settings.screen_StartY;
 	
 	m_idletime = time(NULL);
 	m_screensaver = g_settings.audioplayer_screensaver_type;
@@ -1753,78 +1753,6 @@ bool CAudioPlayerGui::openFilebrowser(void)
 	return ( result);
 }
 
-/*
-bool CAudioPlayerGui::openSCbrowser(void)
-{
-	bool result = false;
-	
-	const char *sc_base_dir	= "http://api.shoutcast.com";
-	CFileBrowser filebrowser(sc_base_dir, CFileBrowser::ModeSC);
-
-	filebrowser.Multi_Select    = true;
-	filebrowser.Dirs_Selectable = true;
-	filebrowser.Filter          = NULL;//&audiofilefilter;
-
-	hide();
-
-	if (filebrowser.exec(filebrowser.sc_init_dir.c_str()))
-	{
-		CProgressWindow progress;
-		long maxProgress = (filebrowser.getSelectedFiles().size() > 1) ? filebrowser.getSelectedFiles().size() - 1: 1;
-		long currentProgress = -1;
-		
-		//if (maxProgress > SHOW_FILE_LOAD_LIMIT)
-		{
-			progress.setTitle(LOCALE_AUDIOPLAYER_READING_FILES);
-			progress.exec(this,"");
-		}
-
-		m_Path = filebrowser.getCurrentDir();
-		CFileList::const_iterator files = filebrowser.getSelectedFiles().begin();
-		neutrino_msg_t      msg;
-		neutrino_msg_data_t data;
-		g_RCInput->getMsg(&msg, &data, 0);
-		
-		for(; (files != filebrowser.getSelectedFiles().end()) && (msg != CRCInput::RC_home);files++)
-		{
-			//if (maxProgress > SHOW_FILE_LOAD_LIMIT)
-			{
-				currentProgress++;
-				// show progress
-				int global = 100*currentProgress/maxProgress;
-				progress.showGlobalStatus(global);
-				progress.showStatusMessageUTF(files->Name);			
-#if ENABLE_LCD
-#ifdef LCD_UPDATE
-				CVFD::getInstance()->showProgressBar(global, "read metadata...");
-				CVFD::getInstance()->setMode(CVFD::MODE_PROGRESSBAR);
-#endif				
-#endif
-			}
-			//printf("processPlaylistUrl(%s, %s)\n", files->Url.c_str(), files->Name.c_str());
-			processPlaylistUrl(files->Url.c_str(), files->Name.c_str(), files->Time);
-			g_RCInput->getMsg(&msg, &data, 0);
-		}
-		
-		//FIXME: do we need this???
-		progress.hide();
-		
-		
-		if (m_select_title_by_name)
-		{
-			buildSearchTree();
-		}
-
-		result = true;
-	}
-	
-	CVFD::getInstance()->setMode(CVFD::MODE_AUDIO, g_Locale->getText(m_inetmode? LOCALE_INETRADIO_NAME : LOCALE_AUDIOPLAYER_HEAD));	
-	paintLCD();
-
-	return ( result);
-}
-*/
-
 void CAudioPlayerGui::hide()
 {
 	//printf("hide(){\n");
@@ -1850,7 +1778,7 @@ void CAudioPlayerGui::paintItem(int pos)
 {
 	int ypos = m_y + m_title_height + m_theight + pos*m_fheight;
 	
-	uint8_t    color;
+	uint8_t color;
 	fb_pixel_t bgcolor;
 
 	if ((pos + m_liststart) == m_selected)
@@ -2125,6 +2053,7 @@ void CAudioPlayerGui::paintInfo()
 			tmp += sNr ;
 		}
 
+		// first line
 		int w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
 		int xstart = (m_width - w) / 2;
 		if(xstart < 10)
@@ -2153,13 +2082,6 @@ void CAudioPlayerGui::paintInfo()
 			tmp += " / ";
 			tmp += m_curr_audiofile.MetaData.title;
 		}
-		
-		// cover
-		if (!m_curr_audiofile.MetaData.cover.empty())
-		{
-			if(!access("/tmp/cover.jpg", F_OK))
-				g_PicViewer->DisplayImage("/tmp/cover.jpg", m_x + 2, m_y + 2, m_title_height - 14, m_title_height - 14);		
-		}
 
 		w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
 		xstart=(m_width-w)/2;
@@ -2167,6 +2089,13 @@ void CAudioPlayerGui::paintInfo()
 			xstart = 10;
 		
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x+xstart, m_y + 4 + 2*m_fheight, m_width - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8		
+		
+		// cover
+		if (!m_curr_audiofile.MetaData.cover.empty())
+		{
+			if(!access("/tmp/cover.jpg", F_OK))
+				g_PicViewer->DisplayImage("/tmp/cover.jpg", m_x + 2, m_y + 2, m_title_height - 14, m_title_height - 14);		
+		}
 
 		// reset so fields get painted always
 		m_metainfo.clear();
