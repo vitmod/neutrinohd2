@@ -643,7 +643,7 @@ void CYTBrowser::refreshBrowserList(void) //P1
 		m_vHandleBrowserList.push_back(movie_handle);
 	}
 
-	for(unsigned int handle = 0; handle < m_vHandleBrowserList.size() ;handle++)
+	for(unsigned int handle = 0; handle < m_vHandleBrowserList.size(); handle++)
 	{
 		for(int row = 0; row < m_settings.browserRowNr ;row++)
 		{

@@ -43,7 +43,7 @@ CVLCPlayer::CVLCPlayer()
 	Path_vlc_settings = g_settings.streaming_server_startdir;
 	
 	// filebrowser
-	filebrowser = new CFileBrowser(Path_vlc.c_str(), CFileBrowser::ModeVLC);
+	filebrowser = new CFileBrowser(Path_vlc.c_str());
 	
 	filebrowser->Dirs_Selectable = false;
 	
