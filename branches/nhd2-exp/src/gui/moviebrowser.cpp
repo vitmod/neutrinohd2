@@ -2738,6 +2738,7 @@ bool CMovieBrowser::readDir(const std::string & dirname, CFileList* flist)
 		perror(("[mb] scandir: "+dirname).c_str());
 		return false;
 	}
+	
 	CFile file;
 	for(int i = 0; i < n;i++)
 	{
@@ -2771,7 +2772,7 @@ bool CMovieBrowser::delFile(CFile& file)
 {
 	bool result = true;
 	unlink(file.Name.c_str()); // fix: use full path
-	dprintf(DEBUG_NORMAL, "  delete file: %s\r\n",file.Name.c_str());
+	dprintf(DEBUG_NORMAL, "  delete file: %s\r\n", file.Name.c_str());
 	return(result);
 }
 
