@@ -130,7 +130,7 @@ class CMPBrowser : public CMenuTarget
         	void hide(void); 
 		void refreshBrowserList(void);
 		void refreshItemInfo(void);
-		//void refreshFoot(void);
+		void refreshFoot(void);
 		void refreshTitle(void);
 		void refreshInfo(void);
 		void refreshLCD(void);
@@ -294,7 +294,7 @@ void CMPBrowser::initFrames(void)
 	mp_BoxFrameTitleRel.iX =		0;
 	mp_BoxFrameTitleRel.iY = 		0;
 	mp_BoxFrameTitleRel.iWidth = 		mp_BoxFrame.iWidth;
-	mp_BoxFrameTitleRel.iHeight = 		/*mp_FontTitle->getHeight()*/g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight()*2 + 20 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight() + 5;
+	mp_BoxFrameTitleRel.iHeight = 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight()*2 + 20;
 
 	mp_BoxFrameBrowserList.iX = 		mp_BoxFrame.iX;
 	mp_BoxFrameBrowserList.iY = 		mp_BoxFrame.iY + mp_BoxFrameTitleRel.iHeight + INTER_FRAME_SPACE;
@@ -302,14 +302,14 @@ void CMPBrowser::initFrames(void)
 	mp_BoxFrameBrowserList.iHeight = 	mp_settings.browserFrameHeight;
 
 	mp_BoxFrameFootRel.iX = 		0;
-	mp_BoxFrameFootRel.iY = 		mp_BoxFrame.iHeight - mp_FontFoot->getHeight();
+	mp_BoxFrameFootRel.iY = 		mp_BoxFrame.iHeight - mp_FontFoot->getHeight()*2 + INTER_FRAME_SPACE;
 	mp_BoxFrameFootRel.iWidth = 		mp_BoxFrameBrowserList.iWidth;
-	mp_BoxFrameFootRel.iHeight = 		mp_FontFoot->getHeight();
+	mp_BoxFrameFootRel.iHeight = 		mp_FontFoot->getHeight()*2;
 	
 	mp_BoxFrameInfo.iX = 			mp_BoxFrameBrowserList.iX;
 	mp_BoxFrameInfo.iY = 			mp_BoxFrameBrowserList.iY + mp_BoxFrameBrowserList.iHeight + INTER_FRAME_SPACE;
 	mp_BoxFrameInfo.iWidth = 		mp_BoxFrameBrowserList.iWidth;
-	mp_BoxFrameInfo.iHeight = 		mp_BoxFrame.iHeight - mp_BoxFrameBrowserList.iHeight - INTER_FRAME_SPACE - mp_BoxFrameFootRel.iHeight - mp_BoxFrameTitleRel.iHeight;
+	mp_BoxFrameInfo.iHeight = 		mp_BoxFrame.iHeight - mp_BoxFrameBrowserList.iHeight - 2*INTER_FRAME_SPACE - mp_BoxFrameFootRel.iHeight - mp_BoxFrameTitleRel.iHeight;
 }
 
 int CMPBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
@@ -507,7 +507,7 @@ void CMPBrowser::refresh(void)
 	if (mp_Info != NULL && mp_showItemInfo == true) 
 		refreshItemInfo();
 		
-	//refreshFoot();
+	refreshFoot();
 	refreshLCD();
 }
 
@@ -656,10 +656,8 @@ void CMPBrowser::refreshTitle(void)
 {
 	dprintf(DEBUG_INFO, "CMPBrowser::refreshTitle\n");
 	
-	//mp_frameBuffer->paintBoxRel(mp_x, mp_y, mp_width, mp_title_height - 10, COL_MENUCONTENT_PLUS_6 );
 	mp_Window->paintBoxRel(mp_BoxFrame.iX + mp_BoxFrameTitleRel.iX, mp_BoxFrame.iY + mp_BoxFrameTitleRel.iY, mp_BoxFrameTitleRel.iWidth, mp_BoxFrameTitleRel.iHeight, COL_MENUCONTENT_PLUS_6 );
-	//mp_frameBuffer->paintBoxRel(mp_x + 2, mp_y + 2 , mp_width - 4, mp_title_height - 14, COL_MENUCONTENTSELECTED_PLUS_0);
-	mp_Window->paintBoxRel(mp_BoxFrame.iX + mp_BoxFrameTitleRel.iX + 2, mp_BoxFrame.iY + mp_BoxFrameTitleRel.iY + 2 , mp_BoxFrameTitleRel.iWidth - 4, mp_BoxFrameTitleRel.iHeight - 14, COL_MENUCONTENTSELECTED_PLUS_0);
+	mp_Window->paintBoxRel(mp_BoxFrame.iX + mp_BoxFrameTitleRel.iX + 2, mp_BoxFrame.iY + mp_BoxFrameTitleRel.iY + 2 , mp_BoxFrameTitleRel.iWidth - 4, mp_BoxFrameTitleRel.iHeight - 4, COL_MENUCONTENTSELECTED_PLUS_0);
 	
 	// title
 	std::string title = "neutrinoHD2 Media Portlal (C)";
@@ -682,52 +680,14 @@ void CMPBrowser::refreshTitle(void)
 	std::string icon_head = PLUGINDIR "/mediaportal/mp.png";
 	mp_Window->getIconSize(icon_head.c_str(), &icon_head_w, &icon_head_h);
 	mp_Window->paintIcon(icon_head.c_str(), mp_BoxFrame.iX + mp_BoxFrameTitleRel.iX + 10, mp_BoxFrame.iY + mp_BoxFrameTitleRel.iY + (mp_BoxFrameTitleRel.iHeight - 10 - icon_head_h)/2);
-	
-	
-	
-	
-	
-	
-	/*
-	
-	// title
-	std::string title;
-	std::string mb_icon;
-	
-	title = g_Locale->getText(LOCALE_MOVIEPLAYER_YTPLAYBACK);
-	title += " : ";
-		
-	neutrino_locale_t loc = getFeedLocale();
-	title += g_Locale->getText(loc);
-	if (loc == LOCALE_MOVIEBROWSER_YT_RELATED || loc == LOCALE_MOVIEBROWSER_YT_SEARCH)
-		title += " \"" + m_settings.ytsearch + "\"";
-		
-	mb_icon = NEUTRINO_ICON_YT_SMALL;
-	//
+}
 
-	// head box
-	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY, m_cBoxFrameTitleRel.iWidth, m_cBoxFrameTitleRel.iHeight, TITLE_BACKGROUND_COLOR, RADIUS_MID, CORNER_TOP, CFrameBuffer::PAINT_SHADING, 2);
+void CMPBrowser::refreshFoot(void) 
+{
+	dprintf(DEBUG_INFO, "CMPBrowser::refreshFoot\n");
 	
-	// movie icon
-	int icon_w, icon_h;
-	m_pcWindow->getIconSize(mb_icon.c_str(), &icon_w, &icon_h);
-	m_pcWindow->paintIcon(mb_icon, m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + 10, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_h)/2);
-
-	// setup icon
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_w, &icon_h);
-	int xpos1 = m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + m_cBoxFrameTitleRel.iWidth - 10;
-	int ypos = m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_w)/2;
-
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_SETUP, xpos1 - icon_w, ypos);
-
-	// help icon
-	int icon_h_w, icon_h_h;
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_h_w, &icon_h_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HELP, xpos1 - icon_w - 2 - icon_h_w, ypos);
-	
-	// head title
-	m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + TEXT_BORDER_WIDTH + icon_w + 10, m_cBoxFrame.iY+m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight, m_cBoxFrameTitleRel.iWidth - (TEXT_BORDER_WIDTH << 1) - 2*icon_w - 10 - icon_h_w, title.c_str(), TITLE_FONT_COLOR, 0, true); // UTF-8
-	*/
+	mp_Window->paintBoxRel(mp_BoxFrame.iX + mp_BoxFrameFootRel.iX, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY, mp_BoxFrameFootRel.iWidth, mp_BoxFrameFootRel.iHeight, COL_MENUCONTENT_PLUS_6 );
+	mp_Window->paintBoxRel(mp_BoxFrame.iX + mp_BoxFrameFootRel.iX + 2, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY + 2 , mp_BoxFrameFootRel.iWidth - 4, mp_BoxFrameFootRel.iHeight - 4, COL_MENUCONTENTSELECTED_PLUS_0);
 }
 
 bool CMPBrowser::onButtonPress(neutrino_msg_t msg)
@@ -914,7 +874,7 @@ void CMPBrowser::onSetFocus(MPB_FOCUS new_focus)
 	}
 	
 	updateItemSelection();
-	//refreshFoot();	
+	refreshFoot();	
 }
 
 void CMPBrowser::onSetFocusNext(void) 
