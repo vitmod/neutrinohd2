@@ -205,8 +205,6 @@ const int m_defaultRowWidth[NKB_INFO_MAX_NUMBER + 1] =
 	NKB_ROW_WIDTH_RECORDDATE ,
 	0 //MB_ROW_WIDTH_MAX_NUMBER 
 };
-
-static MI_MOVIE_INFO* playing_info;
  
 CNetzKinoBrowser::CNetzKinoBrowser()
 {
@@ -434,7 +432,6 @@ int CNetzKinoBrowser::exec()
 			{
 				if(m_movieSelectionHandler != NULL)
 				{
-					playing_info = m_movieSelectionHandler;
 					res = true;
 					loop = false;
 				}
@@ -1341,19 +1338,15 @@ void plugin_exec(void)
 	//moviePlayerGui->exec(NULL, "netzkinoplayback");
 	
 	
-	/*CMovieBrowser*/CNetzKinoBrowser * moviebrowser;
+	CNetzKinoBrowser * moviebrowser;
 	MI_MOVIE_INFO * p_movie_info;
 	
-	moviebrowser = new /*CMovieBrowser*/CNetzKinoBrowser();
-	std::string Path_local = "/";
-	
-	//moviebrowser->setMode(MB_SHOW_NETZKINO);
+	moviebrowser = new CNetzKinoBrowser();
 	
 BROWSER:
-	if (moviebrowser->exec(/*Path_local.c_str()*/)) 
+	if (moviebrowser->exec()) 
 	{
-		// get the current path and file name
-		//Path_local = moviebrowser->getCurrentDir();
+		// get the current file name
 		CFile * file;
 
 		if ((file = moviebrowser->getSelectedFile()) != NULL) 

@@ -97,6 +97,7 @@ class CMPBrowser : public CMenuTarget
 		
 		bool mp_showBrowserFiles;
 		bool mp_showItemInfo;
+		bool mp_reload_items;
 		
 		CFile * mp_itemSelectionHandler;
 		
@@ -106,8 +107,6 @@ class CMPBrowser : public CMenuTarget
 		static CFont * mp_FontTitle;
 		
 		MPB_SETTINGS mp_settings;
-		
-		CFile filelist;
 		
         public:
 		CMPBrowser();
@@ -146,11 +145,15 @@ class CMPBrowser : public CMenuTarget
 		
 		void onSetGUIWindow(MPB_GUI gui);
 		
+		void addMusicDeluxe(void);
+		void addFilmon1(void);
+		void addFilmon2(void);
+		void addFilmon3(void);
 		void loadItems(void);
 		
 		// misc
 		void updateItemSelection(void);
-		bool getItemInfoItem(CFileList& item_info, MPB_INFO_ITEM item, std::string* item_string);
+		bool getItemInfoItem(CFile &item_info, MPB_INFO_ITEM item, std::string* item_string);
 };
 
 #define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
@@ -222,7 +225,7 @@ void CMPBrowser::init(void)
 	
 	initGlobalSettings();
 		
-	//m_reload_movies = true;
+	mp_reload_items = true;
 
 	mp_Window = CFrameBuffer::getInstance();
 	
@@ -346,9 +349,9 @@ int CMPBrowser::exec()
 	initFrames();
 
 	// Clear all, to avoid 'jump' in screen 
-	//m_vHandleBrowserList.clear();
+	mp_vHandleBrowserList.clear();
 	
-	//m_movieSelectionHandler = NULL;
+	mp_itemSelectionHandler = NULL;
 
 	for(int i = 0; i < LF_MAX_ROWS; i++)
 	{
@@ -365,26 +368,24 @@ int CMPBrowser::exec()
 	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd( timeout );
 	
 	// reload movies
-	/*
-	if(m_reload_movies == true)
+	if(mp_reload_items == true)
 	{
 		dprintf(DEBUG_NORMAL, "CYTBrowser::exec\n");
-		loadMovies();
+		loadItems();
 	}
 	else
-	  */
 	{
 		// since we cleared everything above, we have to refresh the list now.
 		refreshBrowserList();	
 	}
 
 	// get old movie selection and set position in windows	
-	//mp_currentBrowserSelection = m_prevBrowserSelection;
+	mp_currentBrowserSelection = mp_prevBrowserSelection;
 
-	//mp_Browser->setSelectedLine(mp_currentBrowserSelection);
+	mp_Browser->setSelectedLine(mp_currentBrowserSelection);
 
 	// update movie selection
-	//updateMovieSelection();
+	updateItemSelection();
 
 	// refresh title
 	refreshTitle();
@@ -415,7 +416,7 @@ int CMPBrowser::exec()
 			}
 			else if(msg == CRCInput::RC_ok)
 			{
-				//if(m_movieSelectionHandler != NULL)
+				if(mp_itemSelectionHandler != NULL)
 				{
 					//playing_info = m_movieSelectionHandler;
 					res = true;
@@ -443,7 +444,7 @@ int CMPBrowser::exec()
 	hide();
 	
 	//
-	//m_prevBrowserSelection = m_currentBrowserSelection;
+	mp_prevBrowserSelection = mp_currentBrowserSelection;
 	
 	return (res);
 }
@@ -457,7 +458,7 @@ void CMPBrowser::hide(void)
 	
 	if (mp_Browser != NULL)
 	{
-		//m_currentBrowserSelection = m_pcBrowser->getSelectedLine();
+		mp_currentBrowserSelection = mp_Browser->getSelectedLine();
 		delete mp_Browser;
 		mp_Browser = NULL;
 	}
@@ -513,19 +514,17 @@ void CMPBrowser::refresh(void)
 
 CFile * CMPBrowser::getSelectedFile(void)
 {
-	//dprintf(DEBUG_INFO, "CMPBrowser::getSelectedFile: %s\n", mp_itemSelectionHandler->file.Name.c_str());
+	dprintf(DEBUG_INFO, "CMPBrowser::getSelectedFile: %s\n", mp_itemSelectionHandler->Name.c_str());
 
-	/*
 	if(mp_itemSelectionHandler != NULL)
-		return(&mp_itemSelectionHandler->file);
+		return(mp_itemSelectionHandler);
 	else
-	  */
 		return(NULL);
 }
 
 void CMPBrowser::refreshItemInfo(void)
 {
-	//dprintf(DEBUG_INFO, "CMPBrowser::refreshMovieInfo: m_vMovieInfo.size %d\n", m_vMovieInfo.size());
+	dprintf(DEBUG_INFO, "CMPBrowser::refreshItemInfo: mp_ItemInfo.size %d\n", mp_ItemInfo.size());
 	
 	std::string emptytext = " ";
 	
@@ -604,7 +603,7 @@ void CMPBrowser::refreshBrowserList(void)
 		mp_browserListLines.rowWidth[row] = mp_settings.browserRowWidth[row];
 		mp_browserListLines.lineHeader[row]= g_Locale->getText(mp_localizedItemName[mp_settings.browserRowItem[row]]);
 	}
-	//m_vHandleBrowserList.clear();
+	mp_vHandleBrowserList.clear();
 	
 	if(mp_ItemInfo.size() <= 0) 
 	{
@@ -622,22 +621,20 @@ void CMPBrowser::refreshBrowserList(void)
 	for(unsigned int file = 0; file < mp_ItemInfo.size(); file++)
 	{
 		item_handle = &(mp_ItemInfo[file]);
-		//mp_vHandleBrowserList.push_back(item_handle);
+		mp_vHandleBrowserList.push_back(*item_handle);
 	}
 
 	for(unsigned int handle = 0; handle < mp_vHandleBrowserList.size(); handle++)
 	{
 		for(int row = 0; row < mp_settings.browserRowNr ;row++)
 		{
-			/*
-			if ( getItemInfoItem(*mp_vHandleBrowserList[handle], mp_settings.browserRowItem[row], &string_item) == false)
+			if ( getItemInfoItem(mp_vHandleBrowserList[handle], mp_settings.browserRowItem[row], &string_item) == false)
 			{
 				string_item = "n/a";
 				if(mp_settings.browserRowItem[row] == MPB_INFO_TITLE)
-					getItemInfoItem(*mp_vHandleBrowserList[handle], MPB_INFO_FILENAME, &string_item);
+					getItemInfoItem(mp_vHandleBrowserList[handle], MPB_INFO_FILENAME, &string_item);
 			}
 			mp_browserListLines.lineArray[row].push_back(string_item);
-			*/
 		}
 	}
 	
@@ -679,7 +676,7 @@ void CMPBrowser::refreshTitle(void)
 	// head icon
 	std::string icon_head = PLUGINDIR "/mediaportal/mp.png";
 	mp_Window->getIconSize(icon_head.c_str(), &icon_head_w, &icon_head_h);
-	mp_Window->paintIcon(icon_head.c_str(), mp_BoxFrame.iX + mp_BoxFrameTitleRel.iX + 10, mp_BoxFrame.iY + mp_BoxFrameTitleRel.iY + (mp_BoxFrameTitleRel.iHeight - 10 - icon_head_h)/2);
+	mp_Window->paintIcon(icon_head.c_str(), mp_BoxFrame.iX + mp_BoxFrameTitleRel.iX + 10, mp_BoxFrame.iY + mp_BoxFrameTitleRel.iY + (mp_BoxFrameTitleRel.iHeight - icon_head_h)/2);
 }
 
 void CMPBrowser::refreshFoot(void) 
@@ -740,7 +737,7 @@ bool CMPBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 	else if (msg == CRCInput::RC_blue) 
 	{
 		//ytparser.Cleanup();
-		//loadMovies();
+		loadItems();
 		refresh();
 	}
 	else if (msg == CRCInput::RC_red ) 
@@ -926,8 +923,8 @@ void CMPBrowser::updateItemSelection(void)
 			if(mp_currentBrowserSelection != old_item_selection)
 				new_selection = true;
 			
-			//if(mp_currentBrowserSelection < mp_vHandleBrowserList.size())
-			//	mp_itemSelectionHandler = mp_vHandleBrowserList[mp_currentBrowserSelection];
+			if(mp_currentBrowserSelection < mp_vHandleBrowserList.size())
+				mp_itemSelectionHandler = &mp_vHandleBrowserList[mp_currentBrowserSelection];
 		}
 	}
 	
@@ -938,21 +935,87 @@ void CMPBrowser::updateItemSelection(void)
 	}
 }
 
+void CMPBrowser::addMusicDeluxe(void)
+{
+	//
+	CFile file;
+		
+	file.Title = "Music deluxe";
+	file.Info1 = "stream";
+	file.Info2 = "Musik Sender";
+	file.thumbnail = PLUGINDIR "/mediaportal/deluxemusic.png";
+	file.Name = "Music Deluxe";
+	file.Url = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
+		
+	mp_ItemInfo.push_back(file);
+}
+
+void CMPBrowser::addFilmon1(void)
+{
+	//
+	CFile file;
+		
+	file.Title = "Filmon 1";
+	file.Info1 = "stream";
+	file.Info2 = "Porno Sender";
+	file.thumbnail = PLUGINDIR "/mediaportal/filmon.png";
+	file.Name = "Filmon 1";
+	file.Url = "rtmp://live190.la3.origin.filmon.com:8086/live/247.high.stream";
+		
+	mp_ItemInfo.push_back(file);
+}
+
+void CMPBrowser::addFilmon2(void)
+{
+	//
+	CFile file;
+		
+	file.Title = "Filmon 2";
+	file.Info1 = "stream";
+	file.Info2 = "Porno Sender";
+	file.thumbnail = PLUGINDIR "/mediaportal/filmon.png";
+	file.Name = "Filmon 2";
+	file.Url = "rtmp://live190.la3.origin.filmon.com:8086/live/245.high.stream";
+		
+	mp_ItemInfo.push_back(file);
+}
+
+void CMPBrowser::addFilmon3(void)
+{
+	//
+	CFile file;
+		
+	file.Title = "Filmon 3";
+	file.Info1 = "stream";
+	file.Info2 = "Porno Sender";
+	file.thumbnail = PLUGINDIR "/mediaportal/filmon.png";
+	file.Name = "Filmon 3";
+	file.Url = "rtmp://live190.la3.origin.filmon.com:8086/live/246.high.stream";
+		
+	mp_ItemInfo.push_back(file);
+}
+
 void CMPBrowser::loadItems(void)
 {
 	dprintf(DEBUG_NORMAL, "CMPBrowser::loadItems:\n");
 	
 	//first clear screen
 	mp_Window->paintBackground();
-	mp_Window->blit();	
+	mp_Window->blit();
+	
+	// music deluxe
+	addMusicDeluxe();
+	addFilmon1();
+	addFilmon2();
+	addFilmon3();
 
 	refreshBrowserList();	
 	refreshItemInfo();	// is done by refreshBrowserList if needed
 	
-	//m_reload_movies = false;
+	mp_reload_items = false;
 }
 
-bool CMPBrowser::getItemInfoItem(CFileList& item_info, MPB_INFO_ITEM item, std::string* item_string)
+bool CMPBrowser::getItemInfoItem(CFile &item_info, MPB_INFO_ITEM item, std::string* item_string)
 {
 	#define MAX_STR_TMP 100
 	bool result = true;
@@ -961,18 +1024,18 @@ bool CMPBrowser::getItemInfoItem(CFileList& item_info, MPB_INFO_ITEM item, std::
 	switch(item)
 	{
 		case MPB_INFO_FILENAME:
-			//*item_string = item_info.file.getFileName();
+			*item_string = item_info.getFileName();
 			break;
 			
 		case MPB_INFO_TITLE:
-			//*item_string = item_info.Title;
+			*item_string = item_info.Title;
 			
-			//if(item_info.Title.empty())
-			//	result = false;
+			if(item_info.Title.empty())
+				result = false;
 			break;
 			
 		case MPB_INFO_INFO1:
-			//*item_string = item_info.Info1;
+			*item_string = item_info.Info1;
 			break;
 			
 		case MPB_INFO_RECORDDATE:
@@ -981,85 +1044,13 @@ bool CMPBrowser::getItemInfoItem(CFileList& item_info, MPB_INFO_ITEM item, std::
 			
 		case MPB_INFO_MAX_NUMBER:
 		default:
-			//*item_string = "";
+			*item_string = "";
 			result = false;
 			break;
 	}
 	
 	return(result);
 }
-
-/*
-void CMediaPortal::ORF(void)
-{
-	static int old_select = 0;
-	char cnt[5];
-	
-	CMenuWidget InputSelector(LOCALE_WEBTV_HEAD, NEUTRINO_ICON_WEBTV_SMALL);
-	int count = 0;
-	int select = -1;
-					
-	CMenuSelectorTarget *ORFInputChanger = new CMenuSelectorTarget(&select);
-			
-	// orf1
-	sprintf(cnt, "%d", count);
-	InputSelector.addItem(new CMenuForwarderNonLocalized("ORF 1", true, NULL, ORFInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
-	
-	// orf 2
-	sprintf(cnt, "%d", ++count);
-	InputSelector.addItem(new CMenuForwarderNonLocalized("ORF 2", true, NULL, ORFInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
-
-	// orf 3
-	sprintf(cnt, "%d", ++count);
-	InputSelector.addItem(new CMenuForwarderNonLocalized("ORF 3", true, NULL, ORFInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
-	
-	// orf sport
-	sprintf(cnt, "%d", ++count);
-	InputSelector.addItem(new CMenuForwarderNonLocalized("ORF Sport", true, NULL, ORFInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
-	
-	hide();
-	InputSelector.exec(NULL, "");
-	delete ORFInputChanger;
-					
-	if(select >= 0)
-	{
-		old_select = select;
-					
-		switch (select) 
-		{
-			case 0:
-				moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf1_q6a/orf.sdp";
-				moviePlayerGui->Title = "ORF 1";
-				moviePlayerGui->Info1 = "Stream";
-				
-				moviePlayerGui->exec(NULL, "urlplayback");
-				break;
-						
-			case 1:
-				moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf2_q6a/orf.sdp";
-				moviePlayerGui->Title = "ORF 2";
-				moviePlayerGui->Info1 = "Stream";
-				moviePlayerGui->exec(NULL, "urlplayback");
-				break;
-				
-			case 2:
-				moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf3_q6a/orf.sdp";	
-				moviePlayerGui->Title = "ORF 3";
-				moviePlayerGui->Info1 = "Stream";
-				moviePlayerGui->exec(NULL, "urlplayback");
-				break;
-			case 3:
-				moviePlayerGui->filename = "rtsp://apasfwl.apa.at/orfs_q6a/orf.sdp";
-				moviePlayerGui->Title = "ORF Sport";
-				moviePlayerGui->Info1 = "Stream";
-				moviePlayerGui->exec(NULL, "urlplayback");
-				break;
-						
-			default: break;
-		}
-	}
-}
-*/
 
 #if 0
 int CMPBrowser::exec(CMenuTarget *parent, const std::string &actionKey)
@@ -1369,45 +1360,39 @@ void plugin_exec(void)
 {
 	printf("Plugins: starting Media Portal\n");
 	
-	//CMenuWidget * mediaPortal = new CMenuWidget("Media Portal", NEUTRINO_ICON_STREAMING);
 	CMPBrowser * mpHandler = new CMPBrowser();
 	
-	// youtube
-	//mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Youtube", true, NULL, mpHandler, "youtube", NULL, NULL, NEUTRINO_ICON_MENUITEM_YT));
-	
-	// netzkino
-	//mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Netzkino", true, NULL, mpHandler, "netzkino", NULL, NULL, PLUGINDIR "/netzkino.png"));
-	
-	#if 0
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Music Deluxe", true, NULL, mpHandler, "musicdeluxe", NULL, NULL, PLUGINDIR "/mediaportal/deluxemusic.png"));
-	
-	// orf
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 1", true, NULL, mpHandler, "orf1", NULL, NULL, PLUGINDIR "/mediaportal/orf.png"));
-	
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 2", true, NULL, mpHandler, "orf2", NULL, NULL, PLUGINDIR "/mediaportal/orf.png"));
-	
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF 3", true, NULL, mpHandler, "orf3", NULL, NULL, PLUGINDIR "/mediaportal/orf.png"));
-	
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("ORF Sport", true, NULL, mpHandler, "orfsport", NULL, NULL, PLUGINDIR "/mediaportal/orf.png"));
-	
-	// filmon
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Filmon asia", true, NULL, mpHandler, "filmonasia", NULL, NULL, PLUGINDIR "/mediaportal/filmon.png"));
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Filmon black", true, NULL, mpHandler, "filmonblack", NULL, NULL, PLUGINDIR "/mediaportal/filmon.png"));
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Filmon 1", true, NULL, mpHandler, "filmon1", NULL, NULL, PLUGINDIR "/mediaportal/filmon.png"));
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Filmon 2", true, NULL, mpHandler, "filmon2", NULL, NULL, PLUGINDIR "/mediaportal/filmon.png"));
-	mediaPortal->addItem(new CMenuForwarderItemMenuIconNonLocalized("Filmon 3", true, NULL, mpHandler, "filmon3", NULL, NULL, PLUGINDIR "/mediaportal/filmon.png"));
-	#endif
-	
-	//mediaPortal->exec(NULL, "");
-	//mediaPortal->hide();
-	
-	//mpHandler->paintHead();
-	//mpHandler->paintGrid();
-	
-	mpHandler->exec();
+BROWSER:
+	if (mpHandler->exec()) 
+	{
+		// get the current file name
+		CFile * file;
+
+		if ((file = mpHandler->getSelectedFile()) != NULL) 
+		{
+			moviePlayerGui->filename = file->Url.c_str();
+			
+			// movieinfos
+			moviePlayerGui->Title = file->Title;
+			moviePlayerGui->Info1 = file->Info1;
+			moviePlayerGui->Info2 = file->Info2;
+			
+			// play
+			moviePlayerGui->exec(NULL, "urlplayback");
+		}
+		
+		neutrino_msg_t msg;
+		neutrino_msg_data_t data;
+
+		g_RCInput->getMsg_ms(&msg, &data, 40);
+		
+		if (msg != CRCInput::RC_home) 
+		{
+			goto BROWSER;
+		}
+	}
 	
 	delete mpHandler;
-	//delete mediaPortal;
 }
 
 

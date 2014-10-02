@@ -207,8 +207,6 @@ const int m_defaultRowWidth[YTB_INFO_MAX_NUMBER + 1] =
 	YTB_ROW_WIDTH_RECORDDATE ,
 	0 //MB_ROW_WIDTH_MAX_NUMBER 
 };
-
-static MI_MOVIE_INFO* playing_info;
  
 CYTBrowser::CYTBrowser()
 {
@@ -437,7 +435,6 @@ int CYTBrowser::exec()
 			{
 				if(m_movieSelectionHandler != NULL)
 				{
-					playing_info = m_movieSelectionHandler;
 					res = true;
 					loop = false;
 				}
