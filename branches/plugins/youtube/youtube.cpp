@@ -212,13 +212,13 @@ static MI_MOVIE_INFO* playing_info;
  
 CYTBrowser::CYTBrowser()
 {
-	dprintf(DEBUG_NORMAL, "$Id: youtube Browser, v 0.0.1 2014/09/15 12:00:30 mohousch Exp $\r\n");
+	dprintf(DEBUG_NORMAL, "$Id: youtube Browser, v 0.0.1 2014/09/15 12:00:30 mohousch Exp $\n");
 	init();
 }
 
 CYTBrowser::~CYTBrowser()
 {
-	dprintf(DEBUG_NORMAL, "CYTBrowser: del\r\n");
+	dprintf(DEBUG_NORMAL, "CYTBrowser: del\n");
 	
 	m_vMovieInfo.clear();
 	m_vHandleBrowserList.clear();
