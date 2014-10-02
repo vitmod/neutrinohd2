@@ -23,6 +23,8 @@
 */
 
 #include <plugin.h>
+#include <netzkino.h>
+#include <youtube.h>
 
 
 extern "C" void plugin_exec(void);
@@ -149,6 +151,8 @@ class CMPBrowser : public CMenuTarget
 		void addFilmon1(void);
 		void addFilmon2(void);
 		void addFilmon3(void);
+		void addNetzKino(void);
+		void addYouTube(void);
 		void loadItems(void);
 		
 		// misc
@@ -995,6 +999,34 @@ void CMPBrowser::addFilmon3(void)
 	mp_ItemInfo.push_back(file);
 }
 
+void CMPBrowser::addNetzKino(void)
+{
+	//
+	CFile file;
+		
+	file.Title = "NetzKino";
+	file.Info1 = "netzkino Browser";
+	file.Info2 = "Film Archiv";
+	file.thumbnail = PLUGINDIR "/mediaportal/netzkino.png";
+	file.Name = "netzkino";
+		
+	mp_ItemInfo.push_back(file);
+}
+
+void CMPBrowser::addYouTube(void)
+{
+	//
+	CFile file;
+		
+	file.Title = "YouTube";
+	file.Info1 = "youtube Browser";
+	file.Info2 = "youtube";
+	file.thumbnail = PLUGINDIR "/mediaportal/youtube.png";
+	file.Name = "youtube";
+		
+	mp_ItemInfo.push_back(file);
+}
+
 void CMPBrowser::loadItems(void)
 {
 	dprintf(DEBUG_NORMAL, "CMPBrowser::loadItems:\n");
@@ -1008,6 +1040,8 @@ void CMPBrowser::loadItems(void)
 	addFilmon1();
 	addFilmon2();
 	addFilmon3();
+	addNetzKino();
+	addYouTube();
 
 	refreshBrowserList();	
 	refreshItemInfo();	// is done by refreshBrowserList if needed
@@ -1052,310 +1086,7 @@ bool CMPBrowser::getItemInfoItem(CFile &item_info, MPB_INFO_ITEM item, std::stri
 	return(result);
 }
 
-#if 0
-int CMPBrowser::exec(CMenuTarget *parent, const std::string &actionKey)
-{
-	int ret = menu_return::RETURN_REPAINT;
-	
-	if(parent)
-		parent->hide();
-	
-	/*
-	if(actionKey == "youtube") 
-	{
-		//moviePlayerGui->exec(NULL, "ytplayback");
-	
-		CMovieBrowser moviebrowser;
-		std::string Path_local = "/";
-		MI_MOVIE_INFO * p_movie_info;
-		
-		moviebrowser.setMode(MB_SHOW_YT);
-		
-YT_BROWSER:	
-		if (moviebrowser.exec(Path_local.c_str())) 
-		{
-			// get the current path and file name
-			Path_local = moviebrowser.getCurrentDir();
-			CFile * file;
-
-			if ((file = moviebrowser.getSelectedFile()) != NULL) 
-			{
-				moviePlayerGui->filename = file->Url.c_str();
-				
-				// movieinfos
-				p_movie_info = moviebrowser.getCurrentMovieInfo();
-				
-				moviePlayerGui->Title = p_movie_info->epgTitle;
-				moviePlayerGui->Info1 = p_movie_info->epgInfo1;
-				moviePlayerGui->Info2 = p_movie_info->epgInfo2;
-				
-				// play
-				moviePlayerGui->exec(NULL, "urlplayback");
-			}
-			
-			neutrino_msg_t msg;
-			neutrino_msg_data_t data;
-
-			g_RCInput->getMsg_ms(&msg, &data, 40);
-			
-			if (msg != CRCInput::RC_home) 
-			{
-				goto YT_BROWSER;
-			}
-		}
-							
-		return ret;	
-	}
-	else if(actionKey == "netzkino") 
-	{
-		//moviePlayerGui->exec(NULL, "netzkinoplayback");
-
-		CNetzKinoBrowser nkBrowser;
-		MI_MOVIE_INFO * p_movie_info;
-		//std::string Path_local = "/";
-		
-NK_BROWSER:
-		if (nkBrowser.exec()) 
-		{
-			// get the current file name
-			CFile * file;
-
-			if ((file = nkBrowser.getSelectedFile()) != NULL) 
-			{
-				moviePlayerGui->filename = file->Url.c_str();
-				
-				// movieinfos
-				p_movie_info = nkBrowser.getCurrentMovieInfo();
-				
-				moviePlayerGui->Title = p_movie_info->epgTitle;
-				moviePlayerGui->Info1 = p_movie_info->epgInfo1;
-				moviePlayerGui->Info2 = p_movie_info->epgInfo2;
-				
-				// play
-				moviePlayerGui->exec(NULL, "urlplayback");
-			}
-			
-			neutrino_msg_t msg;
-			neutrino_msg_data_t data;
-
-			g_RCInput->getMsg_ms(&msg, &data, 40);
-			
-			if (msg != CRCInput::RC_home) 
-			{
-				goto NK_BROWSER;
-			}
-		}
-		
-		return ret;
-	}
-	else if(actionKey == "orf")
-	{
-		ORF();
-	}
-	*/
-	
-	#if 0
-	if(actionKey == "musicdeluxe")
-	{
-		moviePlayerGui->filename = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
-		moviePlayerGui->Title = "Music Deluxe";
-		moviePlayerGui->Info1 = "Stream";
-		moviePlayerGui->exec(NULL, "urlplayback");
-	}
-	else if(actionKey == "orf1")
-	{
-		moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf1_q6a/orf.sdp";
-		moviePlayerGui->Title = "ORF 1";
-		moviePlayerGui->Info1 = "Stream";
-		moviePlayerGui->exec(NULL, "urlplayback");
-	}
-	else if(actionKey == "orf2")
-	{
-		moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf2_q6a/orf.sdp";	
-		moviePlayerGui->Title = "ORF 2";
-		moviePlayerGui->Info1 = "Stream";
-		moviePlayerGui->exec(NULL, "urlplayback");
-	}
-	else if(actionKey == "orf3")
-	{
-		moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf3_q6a/orf.sdp";	
-		moviePlayerGui->Title = "ORF 3";
-		moviePlayerGui->Info1 = "Stream";
-		moviePlayerGui->exec(NULL, "urlplayback");
-	}
-	else if(actionKey == "orfsport")
-	{
-		moviePlayerGui->filename = "rtsp://apasfwl.apa.at/orfs_q6a/orf.sdp";
-		moviePlayerGui->Title = "ORF Sport";
-		moviePlayerGui->Info1 = "Stream";
-		moviePlayerGui->exec(NULL, "urlplayback");
-	}
-	else if(actionKey == "filmonasia")
-	{
-		moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/198.high.stream";
-		moviePlayerGui->Title = "Filmon asia";
-		moviePlayerGui->Info1 = "Stream";
-		moviePlayerGui->exec(NULL, "urlplayback");
-	}
-	else if(actionKey == "filmonblack")
-	{
-		moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/244.high.stream";
-		moviePlayerGui->Title = "Filmon black";
-		moviePlayerGui->Info1 = "Stream";
-		moviePlayerGui->exec(NULL, "urlplayback");
-	}
-	else if(actionKey == "filmon1")
-	{
-		moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/247.high.stream";
-		moviePlayerGui->Title = "Filmon 1";
-		moviePlayerGui->Info1 = "Stream";
-		moviePlayerGui->exec(NULL, "urlplayback");
-	}
-	else if(actionKey == "filmon2")
-	{
-		moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/245.high.stream";
-		moviePlayerGui->Title = "Filmon 2";
-		moviePlayerGui->Info1 = "Stream";
-		moviePlayerGui->exec(NULL, "urlplayback");
-	}
-	else if(actionKey == "filmon3")
-	{
-		moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/246.high.stream";
-		moviePlayerGui->Title = "Filmon 3";
-		moviePlayerGui->Info1 = "Stream";
-		moviePlayerGui->exec(NULL, "urlplayback");
-	}
-	#endif
-	
-	paintHead();
-	
-	mp_frameBuffer->blit();
-	
-	neutrino_msg_t msg;
-	neutrino_msg_data_t data;
-	
-	bool loop = true;
-		
-	while (loop)
-	{
-		g_RCInput->getMsg_ms(&msg, &data, 100);
-		
-		if(msg == CRCInput::RC_up)
-		{
-			loop = false;
-		}
-		else if (msg == CRCInput::RC_down)
-		{
-			loop = false;
-		}
-		else if (msg == CRCInput::RC_home)
-		{
-			loop = false;
-		}
-		if(msg == CRCInput::RC_1)
-		{
-			hide();
-			moviePlayerGui->filename = "rtmp://flash.cdn.deluxemusic.tv/deluxemusic.tv-live/web_850.stream";
-			moviePlayerGui->Title = "Music Deluxe";
-			moviePlayerGui->Info1 = "Stream";
-			moviePlayerGui->exec(NULL, "urlplayback");
-			paintHead();
-		}
-		else if(msg == CRCInput::RC_2)
-		{
-			hide();
-			moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf1_q6a/orf.sdp";
-			moviePlayerGui->Title = "ORF 1";
-			moviePlayerGui->Info1 = "Stream";
-			moviePlayerGui->exec(NULL, "urlplayback");
-			paintHead();
-		}
-		else if(msg == CRCInput::RC_3)
-		{
-			hide();
-			moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf2_q6a/orf.sdp";	
-			moviePlayerGui->Title = "ORF 2";
-			moviePlayerGui->Info1 = "Stream";
-			moviePlayerGui->exec(NULL, "urlplayback");
-			paintHead();
-		}
-		else if(msg == CRCInput::RC_4)
-		{
-			hide();
-			moviePlayerGui->filename = "rtsp://apasfwl.apa.at:80/orf3_q6a/orf.sdp";	
-			moviePlayerGui->Title = "ORF 3";
-			moviePlayerGui->Info1 = "Stream";
-			moviePlayerGui->exec(NULL, "urlplayback");
-			paintHead();
-		}
-		else if(msg == CRCInput::RC_5)
-		{
-			hide();
-			moviePlayerGui->filename = "rtsp://apasfwl.apa.at/orfs_q6a/orf.sdp";
-			moviePlayerGui->Title = "ORF Sport";
-			moviePlayerGui->Info1 = "Stream";
-			moviePlayerGui->exec(NULL, "urlplayback");
-			paintHead();
-		}
-		else if(msg == CRCInput::RC_6)
-		{
-			hide();
-			moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/198.high.stream";
-			moviePlayerGui->Title = "Filmon asia";
-			moviePlayerGui->Info1 = "Stream";
-			moviePlayerGui->exec(NULL, "urlplayback");
-			paintHead();
-		}
-		else if(msg == CRCInput::RC_7)
-		{
-			hide();
-			moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/244.high.stream";
-			moviePlayerGui->Title = "Filmon black";
-			moviePlayerGui->Info1 = "Stream";
-			moviePlayerGui->exec(NULL, "urlplayback");
-			paintHead();
-		}
-		else if(msg == CRCInput::RC_8)
-		{
-			hide();
-			moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/247.high.stream";
-			moviePlayerGui->Title = "Filmon 1";
-			moviePlayerGui->Info1 = "Stream";
-			moviePlayerGui->exec(NULL, "urlplayback");
-			paintHead();
-		}
-		else if(msg == CRCInput::RC_9)
-		{
-			hide();
-			moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/245.high.stream";
-			moviePlayerGui->Title = "Filmon 2";
-			moviePlayerGui->Info1 = "Stream";
-			moviePlayerGui->exec(NULL, "urlplayback");
-			paintHead();
-		}
-		else if(msg == CRCInput::RC_0)
-		{
-			hide();
-			moviePlayerGui->filename = "rtmp://live190.la3.origin.filmon.com:8086/live/246.high.stream";
-			moviePlayerGui->Title = "Filmon 3";
-			moviePlayerGui->Info1 = "Stream";
-			moviePlayerGui->exec(NULL, "urlplayback");
-			paintHead();
-		}
-		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
-		{
-			dprintf(DEBUG_NORMAL, "CTest: forward events to neutrino\n");
-				
-			loop = false;
-		}
-		
-		mp_frameBuffer->blit();	
-	}
-
-	return ret;
-}
-#endif
-
+//plugin API
 void plugin_exec(void)
 {
 	printf("Plugins: starting Media Portal\n");
@@ -1370,15 +1101,78 @@ BROWSER:
 
 		if ((file = mpHandler->getSelectedFile()) != NULL) 
 		{
-			moviePlayerGui->filename = file->Url.c_str();
-			
-			// movieinfos
-			moviePlayerGui->Title = file->Title;
-			moviePlayerGui->Info1 = file->Info1;
-			moviePlayerGui->Info2 = file->Info2;
-			
-			// play
-			moviePlayerGui->exec(NULL, "urlplayback");
+			if( strcmp(file->Name.c_str(), "netzkino") )
+			{
+				CNetzKinoBrowser * nkbrowser;
+				MI_MOVIE_INFO * nk_movie_info;
+				
+				nkbrowser = new CNetzKinoBrowser();
+				
+				if (nkbrowser->exec()) 
+				{
+					// get the current file name
+					CFile * nkfile;
+
+					if ((nkfile = nkbrowser->getSelectedFile()) != NULL) 
+					{
+						moviePlayerGui->filename = nkfile->Url.c_str();
+						
+						// movieinfos
+						nk_movie_info = nkbrowser->getCurrentMovieInfo();
+						
+						moviePlayerGui->Title = nk_movie_info->epgTitle;
+						moviePlayerGui->Info1 = nk_movie_info->epgInfo1;
+						moviePlayerGui->Info2 = nk_movie_info->epgInfo2;
+						
+						// play
+						moviePlayerGui->exec(NULL, "urlplayback");
+					}
+				}
+				
+				delete nkbrowser;
+			}
+			else if( strcmp(file->Name.c_str(), "youtube") )
+			{
+				CYTBrowser * ytbrowser;
+				MI_MOVIE_INFO * yt_movie_info;
+				
+				ytbrowser = new CYTBrowser();
+				
+				if (ytbrowser->exec()) 
+				{
+					// get the current file name
+					CFile * ytfile;
+
+					if ((ytfile = ytbrowser->getSelectedFile()) != NULL) 
+					{
+						moviePlayerGui->filename = ytfile->Url.c_str();
+						
+						// movieinfos
+						yt_movie_info = ytbrowser->getCurrentMovieInfo();
+						
+						moviePlayerGui->Title = yt_movie_info->epgTitle;
+						moviePlayerGui->Info1 = yt_movie_info->epgInfo1;
+						moviePlayerGui->Info2 = yt_movie_info->epgInfo2;
+						
+						// play
+						moviePlayerGui->exec(NULL, "urlplayback");
+					}
+				}
+				
+				delete ytbrowser;
+			}
+			else
+			{
+				moviePlayerGui->filename = file->Url.c_str();
+				
+				// movieinfos
+				moviePlayerGui->Title = file->Title;
+				moviePlayerGui->Info1 = file->Info1;
+				moviePlayerGui->Info2 = file->Info2;
+				
+				// play
+				moviePlayerGui->exec(NULL, "urlplayback");
+			}
 		}
 		
 		neutrino_msg_t msg;
