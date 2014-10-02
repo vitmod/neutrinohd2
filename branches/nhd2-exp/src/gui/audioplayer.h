@@ -217,7 +217,6 @@ class CAudioPlayerGui : public CMenuTarget
 		void readDir_ic(void);
 		
 		// shoutcast
-		//std::string sc_init_dir;
 		void readDir_sc(void);
 
 		void selectTitle(unsigned char selectionChar);
