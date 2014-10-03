@@ -38,8 +38,7 @@ typedef enum
 	MPB_INFO_FILENAME 		= 0,
 	MPB_INFO_TITLE 			= 1,
 	MPB_INFO_INFO1 			= 2,
-	MPB_INFO_RECORDDATE 		= 3,
-	MPB_INFO_MAX_NUMBER		= 4
+	MPB_INFO_MAX_NUMBER		= 3
 }MPB_INFO_ITEM;
 
 typedef enum

@@ -51,22 +51,19 @@ const neutrino_locale_t mp_localizedItemName[MPB_INFO_MAX_NUMBER + 1] =
 	LOCALE_MOVIEBROWSER_SHORT_FILENAME,
 	LOCALE_MOVIEBROWSER_SHORT_TITLE ,
 	LOCALE_MOVIEBROWSER_SHORT_INFO1,
-	LOCALE_MOVIEBROWSER_SHORT_RECORDDATE,
 	NONEXISTANT_LOCALE
 };
 
 // default row size in pixel for any element
 #define	MPB_ROW_WIDTH_FILENAME 		150
-#define	MPB_ROW_WIDTH_TITLE		750
-#define	MPB_ROW_WIDTH_INFO1		200
-#define	MPB_ROW_WIDTH_RECORDDATE 	120
+#define	MPB_ROW_WIDTH_TITLE		800
+#define	MPB_ROW_WIDTH_INFO1		250
 
 const int mp_defaultRowWidth[MPB_INFO_MAX_NUMBER + 1] = 
 {
 	MPB_ROW_WIDTH_FILENAME ,
 	MPB_ROW_WIDTH_TITLE,
 	MPB_ROW_WIDTH_INFO1,
-	MPB_ROW_WIDTH_RECORDDATE ,
 	0 //MPB_ROW_WIDTH_MAX_NUMBER 
 };
 
@@ -122,13 +119,11 @@ void CMPBrowser::init(void)
 		dprintf(DEBUG_NORMAL, " row error\r\n");
 		
 		// init browser row elements if not configured correctly by neutrino.config
-		mp_settings.browserRowNr = 3;
+		mp_settings.browserRowNr = 2;
 		mp_settings.browserRowItem[0] = MPB_INFO_TITLE;
 		mp_settings.browserRowItem[1] = MPB_INFO_INFO1;
-		mp_settings.browserRowItem[2] = MPB_INFO_RECORDDATE;
-		mp_settings.browserRowWidth[0] = mp_defaultRowWidth[mp_settings.browserRowItem[0]];		//300;
-		mp_settings.browserRowWidth[1] = mp_defaultRowWidth[mp_settings.browserRowItem[1]]; 		//100;
-		mp_settings.browserRowWidth[2] = mp_defaultRowWidth[mp_settings.browserRowItem[2]]; 		//80;
+		mp_settings.browserRowWidth[0] = mp_defaultRowWidth[mp_settings.browserRowItem[0]];
+		mp_settings.browserRowWidth[1] = mp_defaultRowWidth[mp_settings.browserRowItem[1]]; 
 	}
 
 	initFrames();
@@ -145,13 +140,11 @@ void CMPBrowser::initGlobalSettings(void)
 	// Browser List
 	mp_settings.browserFrameHeight = g_settings.screen_EndY - g_settings.screen_StartY - 20 - ((g_settings.screen_EndY - g_settings.screen_StartY - 20)>>1) - (INTER_FRAME_SPACE>>1);
 	
-	mp_settings.browserRowNr = 3;
+	mp_settings.browserRowNr = 2;
 	mp_settings.browserRowItem[0] = MPB_INFO_TITLE;
 	mp_settings.browserRowItem[1] = MPB_INFO_INFO1;
-	mp_settings.browserRowItem[2] = MPB_INFO_RECORDDATE;
 	mp_settings.browserRowWidth[0] = mp_defaultRowWidth[mp_settings.browserRowItem[0]];
 	mp_settings.browserRowWidth[1] = mp_defaultRowWidth[mp_settings.browserRowItem[1]];
-	mp_settings.browserRowWidth[2] = mp_defaultRowWidth[mp_settings.browserRowItem[2]];
 }
 
 void CMPBrowser::initFrames(void)
@@ -980,10 +973,6 @@ bool CMPBrowser::getItemInfoItem(CFile &item_info, MPB_INFO_ITEM item, std::stri
 			
 		case MPB_INFO_INFO1:
 			*item_string = item_info.Info1;
-			break;
-			
-		case MPB_INFO_RECORDDATE:
-			//*item_string = item_info.date;	
 			break;
 			
 		case MPB_INFO_MAX_NUMBER:
