@@ -169,10 +169,11 @@ bool CRCInput::loadKeyMap(const char * const fileName)
 	key_sat = configfile.getInt32("key_sat", KEY_SAT);
 			
 	key_record = configfile.getInt32("key_record", KEY_RECORD);
-	key_play = configfile.getInt32("key_play", KEY_PLAY);
-#if defined (PLATFORM_GIGABLUE) || defined(PLATFORM_VUPLUS) || defined(PLATFORM_ODIN)
+#if defined (PLATFORM_GIGABLUE) || defined(PLATFORM_VUPLUS) || defined(PLATFORM_ODIN)	
+	key_play = configfile.getInt32("key_play", 0xA4);
 	key_pause = configfile.getInt32("key_pause", 0x16A);
 #else
+	key_play = configfile.getInt32("key_play", KEY_PLAY);
 	key_pause = configfile.getInt32("key_pause", KEY_PAUSE);
 #endif	
 	key_forward = configfile.getInt32("key_forward", KEY_FASTFORWARD);
@@ -209,11 +210,17 @@ bool CRCInput::loadKeyMap(const char * const fileName)
 	key_pipsubch = configfile.getInt32("key_pipsubch", 0x188);
 
 	key_net = configfile.getInt32("key_net", KEY_NET);
-			
+	
+#if defined (PLATFORM_GIGABLUE) || defined(PLATFORM_VUPLUS) || defined(PLATFORM_ODIN)
+	key_bookmark = configfile.getInt32("key_bookmark", 0x169);
+#else
 	key_bookmark = configfile.getInt32("key_bookmark", 0x9C);
+#endif	
 
 #if defined (PLATFORM_DGS)
 	key_multifeed = configfile.getInt32("key_multifeed", 0x42);
+#elif defined (PLATFORM_GIGABLUE) || defined(PLATFORM_VUPLUS) || defined(PLATFORM_ODIN)
+	key_multifeed = configfile.getInt32("key_multifeed", 0x172);
 #else
 	key_multifeed = configfile.getInt32("key_multifeed", 0x165);
 #endif
