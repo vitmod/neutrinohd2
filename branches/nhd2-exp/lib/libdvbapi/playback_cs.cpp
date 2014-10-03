@@ -37,14 +37,9 @@
 #include <driver/framebuffer.h>
 #include <system/debug.h>
 
-#include "audio_cs.h"
-#include "video_cs.h"
-
 
 static const char * FILENAME = "[playback_cs.cpp]";
 
-extern cVideo *videoDecoder;
-extern cAudio *audioDecoder;
 
 // global
 bool isTS = false;
@@ -315,12 +310,6 @@ bool cPlayback::Open()
 	mSpeed = 0;
 	playing = false;
 	
-	// zapit client dont close early av decoders, so increase them here to be sure
-	if(videoDecoder)
-		videoDecoder->Close();
-	if(audioDecoder)
-		audioDecoder->Close();
-	
 #if defined (ENABLE_GSTREAMER)
 	// create gst pipeline
 	m_gst_playbin = gst_element_factory_make("playbin2", "playbin");
@@ -427,12 +416,6 @@ void cPlayback::Close(void)
 	if(player != NULL)
 		player = NULL;
 #endif	
-
-	//NOTE: just to be sure
-	if(videoDecoder)
-		videoDecoder->Open();
-	if(audioDecoder)
-		audioDecoder->Open();
 }
 
 // start
