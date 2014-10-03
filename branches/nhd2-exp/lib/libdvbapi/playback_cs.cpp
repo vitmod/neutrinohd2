@@ -692,9 +692,11 @@ bool cPlayback::SetSpeed(int speed)
 	if(m_gst_playbin)
 	{
 		if(speed == 0)
-			trickSeek(0.0);
+			//trickSeek(0.0);
+			gst_element_set_state(m_gst_playbin, GST_STATE_NULL);
 		else if(speed == 1)
-			trickSeek(1.0);
+			//trickSeek(1.0);
+			gst_element_set_state(GST_ELEMENT(m_gst_playbin), GST_STATE_PLAYING);
 		else
 			trickSeek(speed);
 	}
