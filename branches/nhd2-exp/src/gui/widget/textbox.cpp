@@ -490,10 +490,7 @@ void CTextBox::refresh(void)
 		}
 			
 		// display screenshot
-		if(thumbnail.find(".png") == (thumbnail.length() - 4) )
-			g_PicViewer->DisplayImage(thumbnail.c_str(), lx + 3, ly + 3, tw - 3, th - 3, true);
-		else
-			g_PicViewer->DisplayImage(thumbnail.c_str(), lx + 3, ly + 3, tw - 3, th - 3);
+		g_PicViewer->DisplayImage(thumbnail.c_str(), lx + 3, ly + 3, tw - 3, th - 3);
 	}
 }
 
