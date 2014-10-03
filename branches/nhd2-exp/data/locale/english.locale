@@ -908,6 +908,7 @@ moviebrowser.menu_save_all Start update of movie info files
 moviebrowser.option_browser Browser Options
 moviebrowser.reload_at_start Reload movie info at start
 moviebrowser.remount_at_start Remount at start
+moviebrowser.next_focus next focus
 moviebrowser.scan_for_movies Scan for Movies ...
 moviebrowser.serie_auto_create Serie auto create
 moviebrowser.serie_head Serie
