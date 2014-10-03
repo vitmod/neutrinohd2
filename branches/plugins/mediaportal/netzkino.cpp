@@ -584,7 +584,7 @@ void CNetzKinoBrowser::refreshFoot(void)
 	uint8_t color = COL_MENUHEAD;
 	
 	// ok (play)
-	std::string ok_text = g_Locale->getText(LOCALE_MOVIEBROWSER_FOOT_PLAY);
+	std::string next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
 	
 	// draw the background first
 	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameFootRel.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, m_cBoxFrameFootRel.iWidth, m_cBoxFrameFootRel.iHeight + 6, COL_MENUHEAD_PLUS_0, RADIUS_MID, (g_settings.rounded_corners == ONLY_TOP) ? 0x0 : CORNER_BOTTOM, CFrameBuffer::PAINT_SHADING, 2);
@@ -612,16 +612,15 @@ void CNetzKinoBrowser::refreshFoot(void)
 
 	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width -30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_NEXT_RESULTS), color, 0, true); // UTF-8
 
-	// yellow/ok
-	ok_text = g_Locale->getText(LOCALE_MOVIEBROWSER_FOOT_PLAY);
+	// yellow
+	next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
 
-	// ok
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &icon_w, &icon_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, m_cBoxFrame.iX + xpos3, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2);
+	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, m_cBoxFrame.iX + xpos3, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2);
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos3 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, ok_text.c_str(), color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos3 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, next_text.c_str(), color, 0, true); // UTF-8
 
-	// refresh/delete (mute/blue)
+	// blue
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, m_cBoxFrame.iX+xpos4, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + (ADD_FOOT_HEIGHT>>1));
 
