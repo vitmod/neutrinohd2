@@ -489,8 +489,11 @@ void CTextBox::refresh(void)
 			frameBuffer->paintHLineRel(lx, tw, ly + th, COL_WHITE);
 		}
 			
-			// display screenshot
-		g_PicViewer->DisplayImage(thumbnail.c_str(), lx + 3, ly + 3, tw - 3, th - 3);
+		// display screenshot
+		if(thumbnail.find(".png") == (thumbnail.length() - 4) )
+			g_PicViewer->DisplayImage(thumbnail.c_str(), lx + 3, ly + 3, tw - 3, th - 3, true);
+		else
+			g_PicViewer->DisplayImage(thumbnail.c_str(), lx + 3, ly + 3, tw - 3, th - 3);
 	}
 }
 
