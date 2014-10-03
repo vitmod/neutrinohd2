@@ -38,9 +38,11 @@ CVLCPlayer::CVLCPlayer()
 {
 	// vlc path
 	Path_vlc  = "vlc://";
+	/*
 	if ((g_settings.streaming_vlc10 < 2) || (strcmp(g_settings.streaming_server_startdir, "/") != 0))
 		Path_vlc += g_settings.streaming_server_startdir;
 	Path_vlc_settings = g_settings.streaming_server_startdir;
+	*/
 	
 	// filebrowser
 	filebrowser = new CFileBrowser(Path_vlc.c_str());
@@ -68,9 +70,9 @@ CVLCPlayer::CVLCPlayer()
 	selected = 0;
 	
 	stream_url = "http://";
-	stream_url += g_settings.streaming_server_ip;
+	//stream_url += g_settings.streaming_server_ip;
 	stream_url += ':';
-	stream_url += g_settings.streaming_server_port;
+	//stream_url += g_settings.streaming_server_port;
 	stream_url += "/dboxstream";
 	
 	moviePlayerGui->filename = stream_url.c_str();
@@ -116,9 +118,9 @@ bool CVLCPlayer::VlcRequestStream(char * mrl, int  transcodeVideo, int transcode
 {
 	CURLcode httpres;
 	std::string baseurl = "http://";
-	baseurl += g_settings.streaming_server_ip;
+	//baseurl += g_settings.streaming_server_ip;
 	baseurl += ':';
-	baseurl += g_settings.streaming_server_port;
+	//baseurl += g_settings.streaming_server_port;
 	baseurl += '/';
 
 	// add sout (URL encoded)
@@ -131,6 +133,7 @@ bool CVLCPlayer::VlcRequestStream(char * mrl, int  transcodeVideo, int transcode
 	const char * res_horiz;
 	const char * res_vert;
 	
+	/*
 	switch(g_settings.streaming_resolution)
 	{
 		case 0:
@@ -157,6 +160,7 @@ bool CVLCPlayer::VlcRequestStream(char * mrl, int  transcodeVideo, int transcode
 			res_horiz = "352";
 			res_vert = "288";
 	} //switch
+	*/
 	
 	souturl = "#";
 	if(transcodeVideo != TRANSCODE_VIDEO_OFF || transcodeAudio != 0)
@@ -167,8 +171,8 @@ bool CVLCPlayer::VlcRequestStream(char * mrl, int  transcodeVideo, int transcode
 			souturl += "vcodec=";
 			souturl += (transcodeVideo == TRANSCODE_VIDEO_MPEG1) ? "mpgv" : "mp2v";
 			souturl += ",vb=";
-			souturl += g_settings.streaming_videorate;
-			if (g_settings.streaming_vlc10 != 0)
+			//souturl += g_settings.streaming_videorate;
+			//if (g_settings.streaming_vlc10 != 0)
 			{
 				souturl += ",scale=1,vfilter=canvas{padd,width=";
 				souturl += res_horiz;
@@ -176,7 +180,7 @@ bool CVLCPlayer::VlcRequestStream(char * mrl, int  transcodeVideo, int transcode
 				souturl += res_vert;
 				souturl += ",aspect=4:3}";
 			}
-			else
+			//else
 			{
 				souturl += ",width=";
 				souturl += res_horiz;
@@ -191,15 +195,14 @@ bool CVLCPlayer::VlcRequestStream(char * mrl, int  transcodeVideo, int transcode
 			if(transcodeVideo!=TRANSCODE_VIDEO_OFF)
 				souturl += ",";
 			souturl += "acodec=mpga,ab=";
-			souturl += g_settings.streaming_audiorate;
+			//souturl += g_settings.streaming_audiorate;
 			souturl += ",channels=2";
 		}
 		souturl += "}:";
 	}
 	souturl += "std{access=http,mux=ts,dst=";
-	//souturl += g_settings.streaming_server_ip;
 	souturl += ':';
-	souturl += g_settings.streaming_server_port;
+	//souturl += g_settings.streaming_server_port;
 	souturl += "/dboxstream}";
 	
 	char *tmp = curl_escape (souturl.c_str (), 0);
@@ -208,9 +211,9 @@ bool CVLCPlayer::VlcRequestStream(char * mrl, int  transcodeVideo, int transcode
 	url += "requests/status.xml?command=in_play&input=";
 	url += mrl;	
 	
-	if (g_settings.streaming_vlc10 > 1)
-		url += "&option=";
-	else
+	//if (g_settings.streaming_vlc10 > 1)
+	//	url += "&option=";
+	//else
 		url += "%20";
 	url += "%3Asout%3D";
 	url += tmp;
@@ -226,9 +229,9 @@ int CVLCPlayer::VlcGetStreamTime()
 {
 	// TODO calculate REAL position as position returned by VLC does not take the ringbuffer into consideration
 	std::string positionurl = "http://";
-	positionurl += g_settings.streaming_server_ip;
+	//positionurl += g_settings.streaming_server_ip;
 	positionurl += ':';
-	positionurl += g_settings.streaming_server_port;
+	//positionurl += g_settings.streaming_server_port;
 	positionurl += "/requests/status.xml";
 	//printf("[movieplayer.cpp] positionurl=%s\n",positionurl.c_str());
 	std::string response = "";
@@ -261,9 +264,9 @@ int CVLCPlayer::VlcGetStreamLength()
 {
 	// TODO calculate REAL position as position returned by VLC does not take the ringbuffer into consideration
 	std::string positionurl = "http://";
-	positionurl += g_settings.streaming_server_ip;
+	//positionurl += g_settings.streaming_server_ip;
 	positionurl += ':';
-	positionurl += g_settings.streaming_server_port;
+	//positionurl += g_settings.streaming_server_port;
 	positionurl += "/requests/status.xml";
 	//printf("[movieplayer.cpp] positionurl=%s\n",positionurl.c_str());
 	std::string response = "";
@@ -299,9 +302,9 @@ bool CVLCPlayer::VlcReceiveStreamStart(void * mrl)
 	// Get Server and Port from Config
 	std::string response;
 	std::string baseurl = "http://";
-	baseurl += g_settings.streaming_server_ip;
+	//baseurl += g_settings.streaming_server_ip;
 	baseurl += ':';
-	baseurl += g_settings.streaming_server_port;
+	//baseurl += g_settings.streaming_server_port;
 	baseurl += '/';
 	baseurl += "requests/status.xml";
 	CURLcode httpres = sendGetRequest(baseurl, response);
@@ -323,29 +326,31 @@ bool CVLCPlayer::VlcReceiveStreamStart(void * mrl)
 		 !strcasecmp(sMRL.substr(sMRL.length()-4).c_str(), "mpeg") ||
 		 !strcasecmp(sMRL.substr(sMRL.length()-3).c_str(), "m2p")))
 	{
-		if(g_settings.streaming_force_transcode_video)
-			transcodeVideo=g_settings.streaming_transcode_video_codec+1;
-		else
+		//if(g_settings.streaming_force_transcode_video)
+		//	transcodeVideo=g_settings.streaming_transcode_video_codec+1;
+		//else
 			transcodeVideo=0;
-		transcodeAudio=g_settings.streaming_transcode_audio;
+		//transcodeAudio=g_settings.streaming_transcode_audio;
 	}
 	else
 	{
-		transcodeVideo = g_settings.streaming_transcode_video_codec + 1;
+	  /*
+		//transcodeVideo = g_settings.streaming_transcode_video_codec + 1;
 		if((!memcmp((char*)mrl, "dvd", 3) && !g_settings.streaming_transcode_audio) ||
 			(!strcasecmp(sMRL.substr(sMRL.length()-3).c_str(), "vob") && !g_settings.streaming_transcode_audio) ||
 			(!strcasecmp(sMRL.substr(sMRL.length()-3).c_str(), "ac3") && !g_settings.streaming_transcode_audio) ||
 			g_settings.streaming_force_avi_rawaudio)
 			transcodeAudio = 0;
 		else
+		  */
 			transcodeAudio = 1;
 	}
 	
 	VlcRequestStream((char*)mrl, transcodeVideo, transcodeAudio);
 
-	const char * server = g_settings.streaming_server_ip.c_str();
+	const char * server = /*g_settings.streaming_server_ip.c_str()*/"192.168.2.50";
 	int port;
-	sscanf(g_settings.streaming_server_port, "%d", &port);
+	sscanf(/*g_settings.streaming_server_port*/ "8080", "%d", &port);
 
 	struct sockaddr_in servAddr;
 	servAddr.sin_family = AF_INET;
@@ -473,13 +478,15 @@ void plugin_exec(void)
 						
 			int namepos = VLCPlayer->_filelist[VLCPlayer->selected].Name.rfind("vlc://");
 			std::string mrl_str = "";
-						
+			
+			/*
 			if (g_settings.streaming_vlc10 > 1)
 			{
 				mrl_str += "file://";
 				if (VLCPlayer->filename[namepos + 6] != '/')
 					mrl_str += "/";
 			}
+			*/
 						
 			mrl_str += VLCPlayer->_filelist[VLCPlayer->selected].Name.substr(namepos + 6);
 			char * tmp = curl_escape(mrl_str.c_str (), 0);
@@ -494,9 +501,9 @@ void plugin_exec(void)
 		if( VLCPlayer->VlcReceiveStreamStart(VLCPlayer->_mrl) )
 		{
 			VLCPlayer->stream_url = "http://";
-			VLCPlayer->stream_url += g_settings.streaming_server_ip;
+			//VLCPlayer->stream_url += g_settings.streaming_server_ip;
 			VLCPlayer->stream_url += ':';
-			VLCPlayer->stream_url += g_settings.streaming_server_port;
+			//VLCPlayer->stream_url += g_settings.streaming_server_port;
 			VLCPlayer->stream_url += "/dboxstream";
 			
 			moviePlayerGui->filename = VLCPlayer->stream_url.c_str();

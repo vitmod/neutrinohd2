@@ -3,7 +3,7 @@
   
   https://code.google.com/p/neutrinohd2/
   
-  $Id: youtube.cpp 2014/01/22 mohousch Exp $
+  $Id: youtube.cpp 2014/10/03 mohousch Exp $
 
   License: GPL
 
@@ -22,149 +22,8 @@
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <plugin.h>
-#include <ytparser.h>
+#include <youtube.h>
 
-
-//
-#define MIN_YTBROWSER_FRAME_HEIGHT 	100
-#define MAX_YTBROWSER_FRAME_HEIGHT 	400
-#define YTB_MAX_ROWS 			3
-
-typedef enum
-{
-	YTB_INFO_FILENAME 		= 0,
-	YTB_INFO_TITLE 			= 1,
-	YTB_INFO_INFO1 			= 2,
-	YTB_INFO_RECORDDATE 		= 3,
-	YTB_INFO_MAX_NUMBER		= 4
-}YTB_INFO_ITEM;
-
-typedef enum
-{
-	YTB_FOCUS_BROWSER = 0,
-	YTB_FOCUS_MOVIE_INFO = 1,
-	YTB_FOCUS_MAX_NUMBER = 2
-}YTB_FOCUS;
-
-typedef enum
-{
-	YTB_GUI_BROWSER_ONLY = 0,
-	YTB_GUI_MOVIE_INFO = 1,
-	YTB_GUI_MAX_NUMBER = 2
-}YTB_GUI;
-
-// settings
-typedef struct
-{
-	YTB_GUI gui;
-	
-	// these variables are used for the listframes
-	int browserFrameHeight;
-	int browserRowNr;
-	YTB_INFO_ITEM browserRowItem[YTB_MAX_ROWS];
-	int browserRowWidth[YTB_MAX_ROWS];
-	
-	// youtube
-	int ytmode;
-	int ytorderby;
-	std::string ytregion;
-	std::string ytvid;
-	std::string ytsearch;
-}YTB_SETTINGS;
-
-class CYTBrowser : public CMenuTarget
-{
-	private:
-		CFrameBuffer * m_pcWindow;
-		
-		CListFrame * m_pcBrowser;
-		CTextBox * m_pcInfo;
-		
-		CBox m_cBoxFrame;
-		CBox m_cBoxFrameBrowserList;
-		CBox m_cBoxFrameFootRel;
-		CBox m_cBoxFrameTitleRel;
-		CBox m_cBoxFrameInfo;
-		
-		LF_LINES m_browserListLines;
-		
-		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
-		std::vector<MI_MOVIE_INFO*> m_vHandleBrowserList;
-		
-		unsigned int m_currentBrowserSelection;
- 		unsigned int m_prevBrowserSelection;
-		
-		bool m_showBrowserFiles;
-		bool m_showMovieInfo;
-		
-		MI_MOVIE_INFO * m_movieSelectionHandler;
-		
-		YTB_FOCUS m_windowFocus;
-		
-		bool m_reload_movies;
-		
-		static CFont * m_pcFontFoot;
-		static CFont * m_pcFontTitle;
-		
-		std::string m_textTitle;
-		
-		YTB_SETTINGS m_settings;
-		
-		CMovieInfo m_movieInfo;
-		
-		// youtube
-		cYTFeedParser ytparser;
-		void loadYTitles(int mode, std::string search = "", std::string id = "");
-		bool showYTMenu(void);
-		
-	public:
-		CYTBrowser();
-		~CYTBrowser();
-		
-		int exec();
-		int exec(CMenuTarget* parent, const std::string & actionKey);
-		
-		CFile * getSelectedFile(void); 
-		MI_MOVIE_INFO* getCurrentMovieInfo(void){return(m_movieSelectionHandler);};
-		
-	private:
-		// browser init
-		void init(void); 
-		void initGlobalSettings(void); 
-		void initFrames(void);
-		
-		// browser main window
-		int paint(void); 
-		void refresh(void);
-        	void hide(void); 
-		void refreshBrowserList(void);
-		void refreshMovieInfo(void);
-		void refreshFoot(void);
-		void refreshTitle(void);
-		void refreshInfo(void);
-		void refreshLCD(void);
-		
-		// event
-		bool onButtonPress(neutrino_msg_t msg); 
-		bool onButtonPressMainFrame(neutrino_msg_t msg);
-		bool onButtonPressBrowserList(neutrino_msg_t msg);
-		bool onButtonPressMovieInfoList(neutrino_msg_t msg);
-		
-		void onSetFocus(YTB_FOCUS new_focus);
-		void onSetFocusNext(void);
-		
-		void onSetGUIWindow(YTB_GUI gui);
-		
-		void loadMovies();
-		
-		// misc
-		void updateMovieSelection(void);
-		bool getMovieInfoItem(MI_MOVIE_INFO& movie_info, YTB_INFO_ITEM item, std::string* item_string);
-		
-		// yt
-		neutrino_locale_t getFeedLocale(void);
-};
  
 #define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
 #define MAX_WINDOW_HEIGHT 		(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
@@ -716,7 +575,7 @@ void CYTBrowser::refreshFoot(void)
 	uint8_t color = COL_MENUHEAD;
 	
 	// ok (play)
-	std::string ok_text = g_Locale->getText(LOCALE_MOVIEBROWSER_FOOT_PLAY);
+	std::string next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
 	
 	// draw the background first
 	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameFootRel.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, m_cBoxFrameFootRel.iWidth, m_cBoxFrameFootRel.iHeight + 6, COL_MENUHEAD_PLUS_0, RADIUS_MID, (g_settings.rounded_corners == ONLY_TOP) ? 0x0 : CORNER_BOTTOM, CFrameBuffer::PAINT_SHADING, 2);
@@ -736,28 +595,27 @@ void CYTBrowser::refreshFoot(void)
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_RED, m_cBoxFrame.iX + xpos1, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, /*g_Locale->getText(LOCALE_MOVIEBROWSER_YT_PREV_RESULTS)*/ "Prev results", color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_PREV_RESULTS), color, 0, true); // UTF-8
 
 	// green
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_w, &icon_h);
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, m_cBoxFrame.iX + xpos2, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width -30, /*g_Locale->getText(LOCALE_MOVIEBROWSER_YT_NEXT_RESULTS)*/ "Next results", color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width -30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_NEXT_RESULTS), color, 0, true); // UTF-8
 
-	// yellow/ok
-	ok_text = g_Locale->getText(LOCALE_MOVIEBROWSER_FOOT_PLAY);
+	// yellow
+	next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
 
-	// ok
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &icon_w, &icon_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, m_cBoxFrame.iX + xpos3, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2);
+	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, m_cBoxFrame.iX + xpos3, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2);
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos3 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, ok_text.c_str(), color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos3 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, next_text.c_str(), color, 0, true); // UTF-8
 
-	// refresh/delete (mute/blue)
+	// blue
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, m_cBoxFrame.iX+xpos4, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + (ADD_FOOT_HEIGHT>>1));
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, /*g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES)*/ " scan for movies", color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES), color, 0, true); // UTF-8
 }
 
 bool CYTBrowser::onButtonPress(neutrino_msg_t msg)

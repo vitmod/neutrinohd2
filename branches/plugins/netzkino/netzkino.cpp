@@ -3,7 +3,7 @@
   
   https://code.google.com/p/neutrinohd2/
   
-  $Id: netzkino.cpp 2014/01/22 mohousch Exp $
+  $Id: netzkino.cpp 2014/10/03 mohousch Exp $
 
   License: GPL
 
@@ -22,147 +22,8 @@
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <plugin.h>
-#include <nkparser.h>
+#include <netzkino.h>
 
-#define MIN_NKBROWSER_FRAME_HEIGHT 	100
-#define MAX_NKBROWSER_FRAME_HEIGHT 	400
-#define NKB_MAX_ROWS 			3
-
-typedef enum
-{
-	NKB_INFO_FILENAME 		= 0,
-	NKB_INFO_TITLE 			= 1,
-	NKB_INFO_INFO1 			= 2,
-	NKB_INFO_RECORDDATE 		= 3,
-	NKB_INFO_MAX_NUMBER		= 4
-}NKB_INFO_ITEM;
-
-typedef enum
-{
-	NKB_FOCUS_BROWSER = 0,
-	NKB_FOCUS_MOVIE_INFO = 1,
-	NKB_FOCUS_MAX_NUMBER = 2
-}NKB_FOCUS;
-
-typedef enum
-{
-	NKB_GUI_BROWSER_ONLY = 0,
-	NKB_GUI_MOVIE_INFO = 1,
-	NKB_GUI_MAX_NUMBER = 2
-}NKB_GUI;
-
-typedef struct
-{
-	NKB_GUI gui;
-	
-	// these variables are used for the listframes
-	int browserFrameHeight;
-	int browserRowNr;
-	NKB_INFO_ITEM browserRowItem[NKB_MAX_ROWS];
-	int browserRowWidth[NKB_MAX_ROWS];
-	
-	// netzkino	
-	int nkmode;
-	int nkcategory;
-	std::string nkcategoryname;
-	std::string nksearch;
-}NKB_SETTINGS;
-
-class CNetzKinoBrowser : public CMenuTarget
-{
-	private:
-		CFrameBuffer * m_pcWindow;
-		CListFrame * m_pcBrowser;
-		
-		CTextBox * m_pcInfo;
-		
-		CBox m_cBoxFrame;
-		CBox m_cBoxFrameBrowserList;
-		CBox m_cBoxFrameInfo;
-		CBox m_cBoxFrameFootRel;
-		CBox m_cBoxFrameTitleRel;
-		
-		LF_LINES m_browserListLines;
-		
-		std::vector<MI_MOVIE_INFO> m_vMovieInfo;
-		std::vector<MI_MOVIE_INFO*> m_vHandleBrowserList;
-		
-		unsigned int m_currentBrowserSelection;
- 		unsigned int m_prevBrowserSelection;
-		
-		bool m_showBrowserFiles;
-		bool m_showMovieInfo;
-		
-		MI_MOVIE_INFO * m_movieSelectionHandler;
-		
-		NKB_FOCUS m_windowFocus;
-		
-		bool m_reload_movies;
-		
-		static CFont * m_pcFontFoot;
-		static CFont * m_pcFontTitle;
-		
-		std::string m_textTitle;
-		
-		NKB_SETTINGS m_settings;
-		
-		CMovieInfo m_movieInfo;
-		
-		// netzkino		
-		cNKFeedParser nkparser;
-		std::string nkcategory_name;
-		
-		void loadNKTitles(int mode, std::string search, int id, unsigned int start, unsigned int end);
-		bool showNKMenu();
-		int videoListsize;
-		
-		int NKStart, NKEnd;
-		
-	public:
-		CNetzKinoBrowser();
-		~CNetzKinoBrowser();
-		
-		int exec();
-		int exec(CMenuTarget* parent, const std::string & actionKey);
-		
-		CFile * getSelectedFile(void); 
-		MI_MOVIE_INFO* getCurrentMovieInfo(void){return(m_movieSelectionHandler);};
-		
-	private:
-		// browser init
-		void init(void); 
-		void initGlobalSettings(void); 
-		void initFrames(void);
-		
-		// browser main window
-		int paint(void); 
-		void refresh(void);
-        	void hide(void); 
-		void refreshBrowserList(void);
-		void refreshMovieInfo(void);
-		void refreshFoot(void);
-		void refreshTitle(void);
-		void refreshInfo(void);
-		void refreshLCD(void);
-		
-		// event
-		bool onButtonPress(neutrino_msg_t msg); 
-		bool onButtonPressMainFrame(neutrino_msg_t msg);
-		bool onButtonPressBrowserList(neutrino_msg_t msg);
-		bool onButtonPressMovieInfoList(neutrino_msg_t msg);
-		
-		void onSetFocus(NKB_FOCUS new_focus);
-		void onSetFocusNext(void);
-		
-		void onSetGUIWindow(NKB_GUI gui);
-		
-		void loadMovies();
-		
-		// misc
-		void updateMovieSelection(void);
-		bool getMovieInfoItem(MI_MOVIE_INFO& movie_info, NKB_INFO_ITEM item, std::string* item_string);
-}; 
  
 #define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
 #define MAX_WINDOW_HEIGHT 		(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
@@ -208,13 +69,13 @@ const int m_defaultRowWidth[NKB_INFO_MAX_NUMBER + 1] =
  
 CNetzKinoBrowser::CNetzKinoBrowser()
 {
-	dprintf(DEBUG_NORMAL, "$Id: netzkinobrowser, v 0.0.1 2014/09/15 12:00:30 mohousch Exp $\r\n");
+	dprintf(DEBUG_NORMAL, "$Id: netzkino browser, v 0.0.1 2014/09/15 12:00:30 mohousch Exp $\n");
 	init();
 }
 
 CNetzKinoBrowser::~CNetzKinoBrowser()
 {
-	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser: del\r\n");
+	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser: del\n");
 	
 	m_vMovieInfo.clear();
 	m_vHandleBrowserList.clear();
@@ -257,7 +118,7 @@ void CNetzKinoBrowser::init(void)
 	// Browser List 
 	if(m_settings.browserRowNr == 0)
 	{
-		dprintf(DEBUG_NORMAL, " row error\r\n");
+		dprintf(DEBUG_NORMAL, " row error\n");
 		
 		// init browser row elements if not configured correctly by neutrino.config
 		m_settings.browserRowNr = 3;
@@ -442,7 +303,7 @@ int CNetzKinoBrowser::exec()
 			}
 			else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
 			{
-				dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::exec: getInstance\r\n");
+				dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::exec: getInstance\n");
 				
 				loop = false;
 			}
@@ -531,7 +392,7 @@ void CNetzKinoBrowser::refresh(void)
 
 CFile * CNetzKinoBrowser::getSelectedFile(void)
 {
-	dprintf(DEBUG_INFO, "CNetzKinoBrowser::getSelectedFile: %s\r\n", m_movieSelectionHandler->file.Name.c_str());
+	dprintf(DEBUG_INFO, "CNetzKinoBrowser::getSelectedFile: %s\n", m_movieSelectionHandler->file.Name.c_str());
 
 	if(m_movieSelectionHandler != NULL)
 		return(&m_movieSelectionHandler->file);
@@ -723,7 +584,7 @@ void CNetzKinoBrowser::refreshFoot(void)
 	uint8_t color = COL_MENUHEAD;
 	
 	// ok (play)
-	std::string ok_text = g_Locale->getText(LOCALE_MOVIEBROWSER_FOOT_PLAY);
+	std::string next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
 	
 	// draw the background first
 	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameFootRel.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, m_cBoxFrameFootRel.iWidth, m_cBoxFrameFootRel.iHeight + 6, COL_MENUHEAD_PLUS_0, RADIUS_MID, (g_settings.rounded_corners == ONLY_TOP) ? 0x0 : CORNER_BOTTOM, CFrameBuffer::PAINT_SHADING, 2);
@@ -751,16 +612,15 @@ void CNetzKinoBrowser::refreshFoot(void)
 
 	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width -30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_NEXT_RESULTS), color, 0, true); // UTF-8
 
-	// yellow/ok
-	ok_text = g_Locale->getText(LOCALE_MOVIEBROWSER_FOOT_PLAY);
+	// yellow
+	next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
 
-	// ok
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &icon_w, &icon_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, m_cBoxFrame.iX + xpos3, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2);
+	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, m_cBoxFrame.iX + xpos3, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2);
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos3 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, ok_text.c_str(), color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos3 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, next_text.c_str(), color, 0, true); // UTF-8
 
-	// refresh/delete (mute/blue)
+	// blue
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, m_cBoxFrame.iX+xpos4, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + (ADD_FOOT_HEIGHT>>1));
 
@@ -893,7 +753,7 @@ bool CNetzKinoBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 	}
 	else
 	{
-		dprintf(DEBUG_INFO, "CNetzKinoBrowser::onButtonPressMainFrame: none\r\n");
+		dprintf(DEBUG_INFO, "CNetzKinoBrowser::onButtonPressMainFrame: none\n");
 		
 		result = false;
 	}
@@ -1012,14 +872,14 @@ void CNetzKinoBrowser::onSetFocusNext(void)
 	{
 		if(m_windowFocus == NKB_FOCUS_BROWSER)
 		{
-			dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::onSetFocusNext: NKB_FOCUS_MOVIE_INFO\r\n");
+			dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::onSetFocusNext: NKB_FOCUS_MOVIE_INFO\n");
 			
 			onSetFocus(NKB_FOCUS_MOVIE_INFO);
 			m_windowFocus = NKB_FOCUS_MOVIE_INFO;
 		}
 		else
 		{
-			dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::onSetFocusNext: NKB_FOCUS_BROWSER\r\n");
+			dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::onSetFocusNext: NKB_FOCUS_BROWSER\n");
 			onSetFocus(NKB_FOCUS_BROWSER);
 		}
 	}
