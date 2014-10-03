@@ -620,23 +620,8 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	// movieplayer
 	strcpy( g_settings.network_nfs_moviedir, configfile.getString( "network_nfs_moviedir", "/media/hdd/movie" ).c_str() );
 	
-	//streaming (server)
-	g_settings.streaming_type = configfile.getInt32( "streaming_type", 0 );
-	g_settings.streaming_server_ip = configfile.getString("streaming_server_ip", "192.168.1.234");
-	strcpy( g_settings.streaming_server_port, configfile.getString( "streaming_server_port", "8080").c_str() );
-	strcpy( g_settings.streaming_server_cddrive, configfile.getString("streaming_server_cddrive", "D:").c_str() );
-	strcpy( g_settings.streaming_videorate,  configfile.getString("streaming_videorate", "1000").c_str() );
-	strcpy( g_settings.streaming_audiorate, configfile.getString("streaming_audiorate", "192").c_str() );
-	strcpy( g_settings.streaming_server_startdir, configfile.getString("streaming_server_startdir", "C:/Movies").c_str() );
-	g_settings.streaming_transcode_audio = configfile.getInt32( "streaming_transcode_audio", 0 );
-	g_settings.streaming_force_transcode_video = configfile.getInt32( "streaming_force_transcode_video", 0 );
-	g_settings.streaming_transcode_video_codec = configfile.getInt32( "streaming_transcode_video_codec", 0 );
-	g_settings.streaming_force_avi_rawaudio = configfile.getInt32( "streaming_force_avi_rawaudio", 0 );
-	g_settings.streaming_resolution = configfile.getInt32( "streaming_resolution", 0 );
-	g_settings.streaming_vlc10 = configfile.getInt32( "streaming_vlc10", 0);
-	
 	// multi select
-	g_settings.streaming_allow_multiselect = configfile.getBool("streaming_allow_multiselect", false);
+	g_settings.movieplayer_allow_multiselect = configfile.getBool("movieplayer_allow_multiselect", false);
 	// end movieplayer
 
 	// OSD
@@ -1105,23 +1090,8 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	// MOVIEPLAYER
 	configfile.setString( "network_nfs_moviedir", g_settings.network_nfs_moviedir);
 	
-	//streaming
-	configfile.setInt32 ( "streaming_type", g_settings.streaming_type );
-	configfile.setString( "streaming_server_ip", g_settings.streaming_server_ip );
-	configfile.setString( "streaming_server_port", g_settings.streaming_server_port );
-	configfile.setString( "streaming_server_cddrive", g_settings.streaming_server_cddrive );
-	configfile.setString( "streaming_videorate", g_settings.streaming_videorate );
-	configfile.setString( "streaming_audiorate", g_settings.streaming_audiorate );
-	configfile.setString( "streaming_server_startdir", g_settings.streaming_server_startdir );
-	configfile.setInt32 ( "streaming_transcode_audio", g_settings.streaming_transcode_audio );
-	configfile.setInt32 ( "streaming_force_avi_rawaudio", g_settings.streaming_force_avi_rawaudio );
-	configfile.setInt32 ( "streaming_force_transcode_video", g_settings.streaming_force_transcode_video );
-	configfile.setInt32 ( "streaming_transcode_video_codec", g_settings.streaming_transcode_video_codec );
-	configfile.setInt32 ( "streaming_resolution", g_settings.streaming_resolution );
-	configfile.setInt32 ( "streaming_vlc10", g_settings.streaming_vlc10 );
-	
 	// multi select
-	configfile.setBool ("streaming_allow_multiselect", g_settings.streaming_allow_multiselect);
+	configfile.setBool ("movieplayer_allow_multiselect", g_settings.movieplayer_allow_multiselect);
 	// END MOVIEPLAYER
 
 	// OSD
@@ -2560,7 +2530,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 	CMenuWidget languageSettings(LOCALE_LANGUAGESETUP_HEAD, NEUTRINO_ICON_LANGUAGE );
 	CMenuWidget networkSettings(LOCALE_NETWORKMENU_HEAD, NEUTRINO_ICON_NETWORK);
 	CMenuWidget recordingSettings(LOCALE_RECORDINGMENU_HEAD, NEUTRINO_ICON_RECORDING );
-	CMenuWidget streamingSettings(LOCALE_STREAMINGMENU_HEAD, NEUTRINO_ICON_STREAMING );
+	CMenuWidget moviePlayerSettings(LOCALE_STREAMINGMENU_HEAD, NEUTRINO_ICON_STREAMING );
 	CMenuWidget colorSettings(LOCALE_MAINSETTINGS_OSD, NEUTRINO_ICON_COLORS );
 	CMenuWidget lcdSettings(LOCALE_LCDMENU_HEAD, NEUTRINO_ICON_LCD );
 	CMenuWidget keySettings(LOCALE_MAINSETTINGS_KEYBINDING, NEUTRINO_ICON_KEYBINDING );
@@ -2586,7 +2556,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 		     service, 
 		     audioplayerSettings, 
 		     PicViewerSettings, 
-		     streamingSettings, 
+		     moviePlayerSettings, 
 		     MediaPlayer);
 
 	// service
@@ -2705,8 +2675,8 @@ int CNeutrinoApp::run(int argc, char **argv)
 	// recordingsettings
 	InitRecordingSettings(recordingSettings);
 
-	// streamingsettings
-	InitStreamingSettings(streamingSettings);
+	// movieplayer settings
+	InitMoviePlayerSettings(moviePlayerSettings);
 
 	// lcdsettinsg
 	InitLcdSettings(lcdSettings);
@@ -2751,9 +2721,9 @@ int CNeutrinoApp::run(int argc, char **argv)
 		if(ret != menu_return::RETURN_EXIT_ALL)
 			recordingSettings.exec(NULL, "");
 		
-		// streamingsettings
+		// movieplayer settings
 		if(ret != menu_return::RETURN_EXIT_ALL)
-			streamingSettings.exec(NULL, "");
+			moviePlayerSettings.exec(NULL, "");
 		
 		// audioplayersettings
 		if(ret != menu_return::RETURN_EXIT_ALL)

@@ -129,25 +129,8 @@ struct SNeutrinoSettings
 	// MOVIEPLAYER
 	char network_nfs_moviedir[100];
 	
-	int  streaming_type;
-	std::string streaming_server_ip;
-	char streaming_server_port[10];
-	char streaming_server_cddrive[MAX_INPUT_CHARS + 1];
-	char streaming_videorate[6];
-	char streaming_audiorate[6];
-	char streaming_server_startdir[MAX_INPUT_CHARS + 1];
-	int streaming_transcode_audio;
-	int streaming_force_avi_rawaudio;
-	int streaming_force_transcode_video;
-	int streaming_transcode_video_codec;
-	int streaming_resolution;
-	int streaming_vlc10;
-	
-	// for upnp video playing
-	std::string streaming_server_url;
-	
 	// multi select
-	int streaming_allow_multiselect;
+	int movieplayer_allow_multiselect;
 	// END MOVIEPLAYER
 
 	// OSD
