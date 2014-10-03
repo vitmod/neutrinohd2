@@ -3,7 +3,7 @@
   
   https://code.google.com/p/neutrinohd2/
   
-  $Id: mediaportal.cpp 2014/03/09 mohousch Exp $
+  $Id: mediaportal.cpp 2014/10/03 mohousch Exp $
 
   License: GPL
 
@@ -22,143 +22,11 @@
   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <plugin.h>
+#include <mediaportal.h>	// plugin.h
+
 #include <netzkino.h>
 #include <youtube.h>
 
-
-extern "C" void plugin_exec(void);
-
-//
-#define MIN_MPBROWSER_FRAME_HEIGHT 	100
-#define MAX_MPBROWSER_FRAME_HEIGHT 	400
-#define MPB_MAX_ROWS 			3
-
-typedef enum
-{
-	MPB_INFO_FILENAME 		= 0,
-	MPB_INFO_TITLE 			= 1,
-	MPB_INFO_INFO1 			= 2,
-	MPB_INFO_RECORDDATE 		= 3,
-	MPB_INFO_MAX_NUMBER		= 4
-}MPB_INFO_ITEM;
-
-typedef enum
-{
-	MPB_FOCUS_BROWSER = 0,
-	MPB_FOCUS_MOVIE_INFO = 1,
-	MPB_FOCUS_MAX_NUMBER = 2
-}MPB_FOCUS;
-
-typedef enum
-{
-	MPB_GUI_BROWSER_ONLY = 0,
-	MPB_GUI_MOVIE_INFO = 1,
-	MPB_GUI_MAX_NUMBER = 2
-}MPB_GUI;
-
-// settings
-typedef struct
-{
-	MPB_GUI gui;
-	
-	// these variables are used for the listframes
-	int browserFrameHeight;
-	int browserRowNr;
-	MPB_INFO_ITEM browserRowItem[MPB_MAX_ROWS];
-	int browserRowWidth[MPB_MAX_ROWS];
-}MPB_SETTINGS;
-
-//
-class CMPBrowser : public CMenuTarget
-{
-	private:
-		CFrameBuffer * mp_Window;
-		
-		// mp icon
-		int icon_head_w;
-		int icon_head_h;
-		
-		//
-		CListFrame * mp_Browser;
-		CTextBox * mp_Info;
-		
-		CBox mp_BoxFrame;
-		CBox mp_BoxFrameBrowserList;
-		CBox mp_BoxFrameFootRel;
-		CBox mp_BoxFrameTitleRel;
-		CBox mp_BoxFrameInfo;
-		
-		LF_LINES mp_browserListLines;
-		
-		CFileList mp_ItemInfo;
-		CFileList mp_vHandleBrowserList;
-		
-		unsigned int mp_currentBrowserSelection;
- 		unsigned int mp_prevBrowserSelection;
-		
-		bool mp_showBrowserFiles;
-		bool mp_showItemInfo;
-		bool mp_reload_items;
-		
-		CFile * mp_itemSelectionHandler;
-		
-		MPB_FOCUS mp_windowFocus;
-		
-		static CFont * mp_FontFoot;
-		static CFont * mp_FontTitle;
-		
-		MPB_SETTINGS mp_settings;
-		
-        public:
-		CMPBrowser();
-		~CMPBrowser();
-		
-		int exec();
-		int exec(CMenuTarget* parent, const std::string & actionKey);
-		
-		CFile * getSelectedFile(void); 
-		
-	private:
-		// browser init
-		void init(void); 
-		void initGlobalSettings(void); 
-		void initFrames(void);
-		
-		// browser main window
-		int paint(void); 
-		void refresh(void);
-        	void hide(void); 
-		void refreshBrowserList(void);
-		void refreshItemInfo(void);
-		void refreshFoot(void);
-		void refreshTitle(void);
-		void refreshInfo(void);
-		void refreshLCD(void);
-		
-		// event
-		bool onButtonPress(neutrino_msg_t msg); 
-		bool onButtonPressMainFrame(neutrino_msg_t msg);
-		bool onButtonPressBrowserList(neutrino_msg_t msg);
-		bool onButtonPressItemInfoList(neutrino_msg_t msg);
-		
-		void onSetFocus(MPB_FOCUS new_focus);
-		void onSetFocusNext(void);
-		
-		void onSetGUIWindow(MPB_GUI gui);
-		
-		void addMusicDeluxe(void);
-		void addFilmon1(void);
-		void addFilmon2(void);
-		void addFilmon3(void);
-		void addNetzKino(void);
-		void addYouTube(void);
-		void loadItems(void);
-		
-		// misc
-		void updateItemSelection(void);
-		bool getItemInfoItem(CFile &item_info, MPB_INFO_ITEM item, std::string* item_string);
-};
 
 #define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
 #define MAX_WINDOW_HEIGHT 		(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
@@ -1087,6 +955,8 @@ bool CMPBrowser::getItemInfoItem(CFile &item_info, MPB_INFO_ITEM item, std::stri
 }
 
 //plugin API
+extern "C" void plugin_exec(void);
+
 void plugin_exec(void)
 {
 	printf("Plugins: starting Media Portal\n");
@@ -1101,7 +971,9 @@ BROWSER:
 
 		if ((file = mpHandler->getSelectedFile()) != NULL) 
 		{
-			if( strcmp(file->Name.c_str(), "netzkino") )
+			dprintf(DEBUG_NORMAL, "CMPBrowser::exec_plugin: %s\n", file->Name.c_str());
+			
+			if( file->Name == "netzkino" )
 			{
 				CNetzKinoBrowser * nkbrowser;
 				MI_MOVIE_INFO * nk_movie_info;
@@ -1131,7 +1003,7 @@ BROWSER:
 				
 				delete nkbrowser;
 			}
-			else if( strcmp(file->Name.c_str(), "youtube") )
+			else if( file->Name == "youtube" )
 			{
 				CYTBrowser * ytbrowser;
 				MI_MOVIE_INFO * yt_movie_info;
