@@ -692,11 +692,9 @@ bool cPlayback::SetSpeed(int speed)
 	if(m_gst_playbin)
 	{
 		if(speed == 0)
-			//trickSeek(0.0);
-			gst_element_set_state(m_gst_playbin, GST_STATE_NULL);
+			trickSeek(0.0);
 		else if(speed == 1)
-			//trickSeek(1.0);
-			gst_element_set_state(GST_ELEMENT(m_gst_playbin), GST_STATE_PLAYING);
+			trickSeek(1.0);
 		else
 			trickSeek(speed);
 	}
@@ -822,35 +820,8 @@ bool cPlayback::GetPosition(int64_t &position, int64_t &duration)
 			g_signal_emit_by_name(audioSink ? audioSink : videoSink, "get-decoder-time", &pts);
 			GST_CLOCK_TIME_IS_VALID(pts);
 		}
-
-		/*
-		if(audioSink && !isTS)
-		{
-			gchar *name = gst_element_get_name(audioSink);
-				
-			gboolean use_get_decoder_time = strstr(name, "dvbaudiosink") || strstr(name, "dvbvideosink");
-				
-			g_free(name);
-
-			if (use_get_decoder_time)
-				g_signal_emit_by_name(audioSink, "get-decoder-time", &pts);
-			else
-				gst_element_query_position(m_gst_playbin, &fmt, &pts);
-		}
-		else if(videoSink && !isTS)
-		{
-			gchar *name = gst_element_get_name(videoSink);
-				
-			gboolean use_get_decoder_time = strstr(name, "dvbaudiosink") || strstr(name, "dvbvideosink");
-				
-			g_free(name);
-
-			if (use_get_decoder_time)
-				g_signal_emit_by_name(videoSink, "get-decoder-time", &pts);
-			else
-				gst_element_query_position(m_gst_playbin, &fmt, &pts);
-		}
-		*/		  
+		
+		gst_element_query_position(m_gst_playbin, &fmt, &pts);
 #endif		
 			
 		position = pts / 1000000;	// in ms
