@@ -557,6 +557,46 @@ void CMPBrowser::refreshFoot(void)
 	
 	mp_Window->paintBoxRel(mp_BoxFrame.iX + mp_BoxFrameFootRel.iX, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY, mp_BoxFrameFootRel.iWidth, mp_BoxFrameFootRel.iHeight, COL_MENUCONTENT_PLUS_6 );
 	mp_Window->paintBoxRel(mp_BoxFrame.iX + mp_BoxFrameFootRel.iX + 2, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY + 2 , mp_BoxFrameFootRel.iWidth - 4, mp_BoxFrameFootRel.iHeight - 4, COL_MENUCONTENTSELECTED_PLUS_0);
+	
+	uint8_t color = COL_MENUHEAD;
+	std::string next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
+	
+	int width = mp_BoxFrameFootRel.iWidth>>2;
+	int xpos1 = mp_BoxFrameFootRel.iX + 10;
+	int xpos2 = xpos1 + width;
+	int xpos3 = xpos2 + width;
+	int xpos4 = xpos3 + width;
+	
+	int icon_w = 0;
+	int icon_h = 0;
+
+	// red
+	mp_Window->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
+
+	mp_Window->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
+	mp_Window->paintIcon(NEUTRINO_ICON_BUTTON_RED, mp_BoxFrame.iX + xpos1, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY + (mp_BoxFrameFootRel.iHeight - icon_h)/2 );
+
+	mp_FontFoot->RenderString(mp_BoxFrame.iX + xpos1 + 5 + icon_w, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY + (mp_BoxFrameFootRel.iHeight + mp_FontFoot->getHeight())/2, width - 30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_PREV_RESULTS), color, 0, true); // UTF-8
+
+	// green
+	mp_Window->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_w, &icon_h);
+	mp_Window->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, mp_BoxFrame.iX + xpos2, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY + (mp_BoxFrameFootRel.iHeight - icon_h)/2 );
+
+	mp_FontFoot->RenderString(mp_BoxFrame.iX + xpos2 + 5 + icon_w, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY + (mp_BoxFrameFootRel.iHeight + mp_FontFoot->getHeight())/2, width -30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_NEXT_RESULTS), color, 0, true); // UTF-8
+
+	// yellow
+	next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
+
+	mp_Window->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
+	mp_Window->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, mp_BoxFrame.iX + xpos3, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY + (mp_BoxFrameFootRel.iHeight - icon_h)/2);
+
+	mp_FontFoot->RenderString(mp_BoxFrame.iX + xpos3 + 5 + icon_w, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY + (mp_BoxFrameFootRel.iHeight + mp_FontFoot->getHeight())/2, width - 30, next_text.c_str(), color, 0, true); // UTF-8
+
+	// blue
+	mp_Window->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
+	mp_Window->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, mp_BoxFrame.iX + xpos4, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY + (mp_BoxFrameFootRel.iHeight - icon_h)/2);
+
+	mp_FontFoot->RenderString(mp_BoxFrame.iX + xpos4 + 5 + icon_w, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY + (mp_BoxFrameFootRel.iHeight + mp_FontFoot->getHeight())/2, width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES), color, 0, true); // UTF-8
 }
 
 bool CMPBrowser::onButtonPress(neutrino_msg_t msg)

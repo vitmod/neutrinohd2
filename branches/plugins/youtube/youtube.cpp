@@ -574,7 +574,7 @@ void CYTBrowser::refreshFoot(void)
 	
 	uint8_t color = COL_MENUHEAD;
 	
-	// ok (play)
+	// yellow
 	std::string next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
 	
 	// draw the background first
@@ -588,10 +588,10 @@ void CYTBrowser::refreshFoot(void)
 	
 	int icon_w = 0;
 	int icon_h = 0;
-	
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 
 	// red
+	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
+
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_RED, m_cBoxFrame.iX + xpos1, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
 
