@@ -608,7 +608,6 @@ bool CMPBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 	}
 	else if (msg == CRCInput::RC_blue) 
 	{
-		//ytparser.Cleanup();
 		loadItems();
 		refresh();
 	}
@@ -902,6 +901,9 @@ void CMPBrowser::loadItems(void)
 	//first clear screen
 	mp_Window->paintBackground();
 	mp_Window->blit();
+	
+	// clear
+	mp_ItemInfo.clear();
 	
 	// music deluxe
 	addMusicDeluxe();
