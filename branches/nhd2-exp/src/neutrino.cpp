@@ -5726,6 +5726,9 @@ int main(int argc, char *argv[])
 	signal(SIGHUP, sighandler);
 	signal(SIGPIPE, SIG_IGN);
 	
+	// set localtime
+	tzset();
+	
 	// init globals
 	initGlobals();
 
