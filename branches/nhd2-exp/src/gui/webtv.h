@@ -83,6 +83,9 @@ class CWebTV
 		unsigned int   	selected;
 		unsigned int oldselected;
 		int tuned;
+		int count;
+		int n_count;
+		char userBouquet[255];
 		
 		unsigned int   	liststart;
 		int		buttonHeight;

@@ -574,7 +574,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	snprintf(g_settings.ifname, sizeof(g_settings.ifname), "%s", configfile.getString("ifname", "eth0").c_str());
 
 	// nfs entries
-	for(int i=0 ; i < NETWORK_NFS_NR_OF_ENTRIES ; i++) 
+	for(int i = 0 ; i < NETWORK_NFS_NR_OF_ENTRIES ; i++) 
 	{
 		sprintf(cfg_key, "network_nfs_ip_%d", i);
 		g_settings.network_nfs_ip[i] = configfile.getString(cfg_key, "");
@@ -763,7 +763,12 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.mb_truncate = configfile.getInt32( "mb_truncate", CRCInput::RC_nokey );
 	
 	// webtv
-	strcpy( g_settings.webtv_settings, configfile.getString( "webtv_settings", "").c_str() );
+	for(int i = 0; i < WEBTV_USER_BOUQUET_NR_OF_ENTRIES; i++) 
+	{
+		sprintf(cfg_key, "webtv_user_bouquet_%d", i);
+		strcpy( g_settings.webtv_user_bouquet[i], configfile.getString( cfg_key, "" ).c_str() );
+		//strcpy( g_settings.webtv_settings, configfile.getString( "webtv_settings", "").c_str() );
+	}
 	
         // USERMENU -> in system/settings.h
         //-------------------------------------------
@@ -1053,7 +1058,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	
 	configfile.setString("ifname", g_settings.ifname);
 
-	for(int i=0 ; i < NETWORK_NFS_NR_OF_ENTRIES ; i++) 
+	for(int i = 0 ; i < NETWORK_NFS_NR_OF_ENTRIES ; i++) 
 	{
 		sprintf(cfg_key, "network_nfs_ip_%d", i);
 		configfile.setString( cfg_key, g_settings.network_nfs_ip[i] );
@@ -1241,7 +1246,12 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32( "mb_truncate", g_settings.mb_truncate );
 	
 	// webtv
-	configfile.setString("webtv_settings", g_settings.webtv_settings);
+	for(int i = 0 ; i < WEBTV_USER_BOUQUET_NR_OF_ENTRIES ; i++) 
+	{
+		sprintf(cfg_key, "webtv_user_bouquet_%d", i);
+		configfile.setString( cfg_key, g_settings.webtv_user_bouquet[i] );
+		//configfile.setString("webtv_settings", g_settings.webtv_settings);
+	}
 	
         // USERMENU
         char txt1[81];
