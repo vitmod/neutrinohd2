@@ -954,8 +954,8 @@ void CWebTV::paintItem(int pos)
 struct button_label CWebTVButtons[NUM_LIST_BUTTONS] =
 {
 	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_WEBTV_ADD_BOUQUETS},
-	{NEUTRINO_ICON_BUTTON_GREEN , LOCALE_FILEBROWSER_NEXTPAGE},
-	{NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_PREVPAGE},
+	{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_FILEBROWSER_NEXTPAGE},
+	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_PREVPAGE},
 	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_WEBTV_BOUQUETS}
 };
 
@@ -994,24 +994,6 @@ void CWebTV::paintHead()
 	}
 	
 	//head title
-	/*
-	std::string title = g_Locale->getText(LOCALE_WEBTV_HEAD);
-	
-	switch(mode)
-	{
-		case WEBTV:
-			title = g_Locale->getText(LOCALE_WEBTV_HEAD);
-			break;
-			
-		case USER:
-			title = g_Locale->getText(LOCALE_WEBTV_USER);
-			break;
-			
-		default:
-			break;	
-	}
-	*/
-	
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_webtv_w + 5, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - 20 - icon_webtv_w - timestr_len, title.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 }
 
