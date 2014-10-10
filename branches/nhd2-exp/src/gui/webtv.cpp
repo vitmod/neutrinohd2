@@ -53,6 +53,7 @@
 #include <client/zapittools.h>
 
 #include <system/debug.h>
+#include <system/helpers.h>
 
 /* libdvbapi */
 #include <playback_cs.h>
@@ -376,9 +377,12 @@ void CWebTV::showUserBouquet(void)
 	for (int i = 0; i < count; i++)
 	{
 		sprintf(cnt, "%d", i + 1);
-		//userBouquet = std::string(rindex(g_settings.webtv_user_bouquet[i], '/') + 1);
-		sprintf(userBouquet, "User Bouquet %d", i + 1);
-		InputSelector.addItem(new CMenuForwarderNonLocalized(userBouquet, true, NULL, WebTVInputChanger, cnt, NULL), old_select == i + 1);
+		userBouquet = std::string(rindex(g_settings.webtv_user_bouquet[i], '/') + 1);
+		strReplace(userBouquet, ".xml", "");
+		strReplace(userBouquet, ".tv", "");
+		strReplace(userBouquet, "userbouquet.", "");
+		//sprintf(userBouquet, "User Bouquet %d", i + 1);
+		InputSelector.addItem(new CMenuForwarderNonLocalized(userBouquet.c_str(), true, NULL, WebTVInputChanger, cnt, NULL), old_select == i + 1);
 	}
 	
 	hide();

@@ -85,7 +85,8 @@ class CWebTV
 		int tuned;
 		int count;
 		int n_count;
-		char userBouquet[255];
+		//char userBouquet[255];
+		std::string userBouquet;
 		
 		unsigned int   	liststart;
 		int		buttonHeight;
