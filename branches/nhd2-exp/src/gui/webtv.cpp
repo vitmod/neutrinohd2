@@ -225,15 +225,23 @@ void CWebTV::loadChannels(void)
 	switch(mode)
 	{
 		case WEBTV:
+		{
 			readChannellist(DEFAULT_WEBTV_XMLFILE);
-			break;
+			title = g_Locale->getText(LOCALE_WEBTV_HEAD);
+		}
+		break;
 			
 		case USER:
+		{
 			readChannellist(g_settings.webtv_user_bouquet[n_count]);
-			break;
+			title = std::string(rindex(g_settings.webtv_user_bouquet[n_count - 1], '/') + 1);
+			strReplace(title, ".xml", "");
+			strReplace(title, ".tv", "");
+			strReplace(title, "userbouquet.", "");
+		}
+		break;
 			
-		default:
-			break;	
+		default: break;	
 	}
 }
 
@@ -400,6 +408,7 @@ void CWebTV::showUserBouquet(void)
 			mode = WEBTV;
 			readChannellist(DEFAULT_WEBTV_XMLFILE);
 			selected = 0;
+			title = g_Locale->getText(LOCALE_WEBTV_HEAD);
 		}
 		else
 		{
@@ -407,6 +416,10 @@ void CWebTV::showUserBouquet(void)
 			readChannellist(g_settings.webtv_user_bouquet[select - 1]);
 			selected = 0;
 			n_count = select - 1;
+			title = std::string(rindex(g_settings.webtv_user_bouquet[select - 1], '/') + 1);
+			strReplace(title, ".xml", "");
+			strReplace(title, ".tv", "");
+			strReplace(title, "userbouquet.", "");
 		}
 	}
 }
@@ -981,6 +994,7 @@ void CWebTV::paintHead()
 	}
 	
 	//head title
+	/*
 	std::string title = g_Locale->getText(LOCALE_WEBTV_HEAD);
 	
 	switch(mode)
@@ -990,12 +1004,13 @@ void CWebTV::paintHead()
 			break;
 			
 		case USER:
-			title = /*g_Locale->getText(LOCALE_WEBTV_USER)*/userBouquet;
+			title = g_Locale->getText(LOCALE_WEBTV_USER);
 			break;
 			
 		default:
 			break;	
 	}
+	*/
 	
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_webtv_w + 5, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - 20 - icon_webtv_w - timestr_len, title.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 }
@@ -1145,6 +1160,10 @@ void CWebTV::openFilebrowser(void)
 		mode = USER;
 		
 		readChannellist(g_settings.webtv_user_bouquet[count]);
+		title = std::string(rindex(g_settings.webtv_user_bouquet[count], '/') + 1);
+		strReplace(title, ".xml", "");
+		strReplace(title, ".tv", "");
+		strReplace(title, "userbouquet.", "");
 		selected = 0;
 		++count;
 	}
