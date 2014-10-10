@@ -168,7 +168,7 @@ CWebTV::CWebTV()
 	selected = 0;
 	liststart = 0;
 	tuned = -1;
-	count = 1;
+	count = 0;
 	n_count = 1;
 	
 	parser = NULL;
@@ -297,8 +297,6 @@ bool CWebTV::readChannellist(std::string filename)
 				
 					description = "stream";
 					
-					printf("title:%s url:%s desc:%s\n", title.c_str(), urlDecode(url).c_str(), description.c_str());
-					
 					webtv_channels * tmp = new webtv_channels();
 						
 					tmp->title = title.c_str();
@@ -375,12 +373,12 @@ void CWebTV::showUserBouquet(void)
 	InputSelector.addItem(new CMenuForwarder(LOCALE_WEBTV_HEAD, true, NULL, WebTVInputChanger, cnt, NULL), old_select == 0);
 	
 	// divers
-	for (int i = 1; i <= WEBTV_USER_BOUQUET_NR_OF_ENTRIES; i++)
+	for (int i = 0; i < count; i++)
 	{
-		sprintf(cnt, "%d", i);
+		sprintf(cnt, "%d", i + 1);
 		//userBouquet = std::string(rindex(g_settings.webtv_user_bouquet[i], '/') + 1);
-		sprintf(userBouquet, "User Bouquet %d", i);
-		InputSelector.addItem(new CMenuForwarderNonLocalized(userBouquet, true, NULL, WebTVInputChanger, cnt, NULL), old_select == i);
+		sprintf(userBouquet, "User Bouquet %d", i + 1);
+		InputSelector.addItem(new CMenuForwarderNonLocalized(userBouquet, true, NULL, WebTVInputChanger, cnt, NULL), old_select == i + 1);
 	}
 	
 	hide();
@@ -402,9 +400,9 @@ void CWebTV::showUserBouquet(void)
 		else
 		{
 			mode = USER;
-			readChannellist(g_settings.webtv_user_bouquet[select]);
+			readChannellist(g_settings.webtv_user_bouquet[select - 1]);
 			selected = 0;
-			n_count = select;
+			n_count = select - 1;
 		}
 	}
 }
