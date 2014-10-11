@@ -3363,8 +3363,7 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 				{
 					if(webtv)
 					{
-						if(webtv->getTunedChannel() > -1)
-							webtv->showInfo();
+						webtv->showInfo();
 					}
 				}
 				else
