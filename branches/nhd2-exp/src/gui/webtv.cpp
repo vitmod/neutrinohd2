@@ -169,7 +169,7 @@ CWebTV::CWebTV()
 	selected = 0;
 	liststart = 0;
 	tuned = -1;
-	count = 0;
+	count = g_settings.user_bouquet_count;
 	n_count = 1;
 	
 	parser = NULL;
@@ -188,6 +188,7 @@ CWebTV::CWebTV()
 CWebTV::~CWebTV()
 {
 	ClearChannels();
+	g_settings.user_bouquet_count = count;
 }
 
 void CWebTV::ClearChannels(void)
@@ -198,9 +199,9 @@ void CWebTV::ClearChannels(void)
 		parser = NULL;
 	}
 	
-	for(unsigned int count = 0; count < channels.size(); count++)
+	for(unsigned int j = 0; j < channels.size(); j++)
 	{
-		delete channels[count];
+		delete channels[j];
 	}
 	channels.clear();
 }
@@ -234,7 +235,7 @@ void CWebTV::loadChannels(void)
 		case USER:
 		{
 			readChannellist(g_settings.webtv_user_bouquet[n_count]);
-			title = std::string(rindex(g_settings.webtv_user_bouquet[n_count - 1], '/') + 1);
+			title = std::string(rindex(g_settings.webtv_user_bouquet[n_count], '/') + 1);
 			strReplace(title, ".xml", "");
 			strReplace(title, ".tv", "");
 			strReplace(title, "userbouquet.", "");
@@ -389,7 +390,6 @@ void CWebTV::showUserBouquet(void)
 		strReplace(userBouquet, ".xml", "");
 		strReplace(userBouquet, ".tv", "");
 		strReplace(userBouquet, "userbouquet.", "");
-		//sprintf(userBouquet, "User Bouquet %d", i + 1);
 		InputSelector.addItem(new CMenuForwarderNonLocalized(userBouquet.c_str(), true, NULL, WebTVInputChanger, cnt, NULL), old_select == i + 1);
 	}
 	
@@ -819,6 +819,7 @@ showList:
 		else if (msg == CRCInput::RC_red) 
 		{
 			openFilebrowser();
+			g_settings.user_bouquet_count = count;
 			res = -1;
 			
 			goto showList;

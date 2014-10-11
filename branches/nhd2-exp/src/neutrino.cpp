@@ -767,8 +767,8 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	{
 		sprintf(cfg_key, "webtv_user_bouquet_%d", i);
 		strcpy( g_settings.webtv_user_bouquet[i], configfile.getString( cfg_key, "" ).c_str() );
-		//strcpy( g_settings.webtv_settings, configfile.getString( "webtv_settings", "").c_str() );
 	}
+	g_settings.user_bouquet_count = configfile.getInt32( "user_bouquet_count", 0 );
 	
         // USERMENU -> in system/settings.h
         //-------------------------------------------
@@ -1250,8 +1250,8 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	{
 		sprintf(cfg_key, "webtv_user_bouquet_%d", i);
 		configfile.setString( cfg_key, g_settings.webtv_user_bouquet[i] );
-		//configfile.setString("webtv_settings", g_settings.webtv_settings);
 	}
+	configfile.setInt32( "user_bouquet_count", g_settings.user_bouquet_count );
 	
         // USERMENU
         char txt1[81];

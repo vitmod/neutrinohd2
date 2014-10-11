@@ -320,6 +320,7 @@ struct SNeutrinoSettings
 	// webtv
 #define WEBTV_USER_BOUQUET_NR_OF_ENTRIES 20
 	char webtv_user_bouquet[WEBTV_USER_BOUQUET_NR_OF_ENTRIES][255];
+	int user_bouquet_count;
 
 	// USERMENU
         typedef enum
