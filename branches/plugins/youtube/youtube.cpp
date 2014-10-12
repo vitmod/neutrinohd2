@@ -554,14 +554,21 @@ void CYTBrowser::refreshTitle(void)
 	// setup icon
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_w, &icon_h);
 	int xpos1 = m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + m_cBoxFrameTitleRel.iWidth - 10;
-	int ypos = m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_w)/2;
+	int ypos = m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_h)/2;
 
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_SETUP, xpos1 - icon_w, ypos);
 
 	// help icon
 	int icon_h_w, icon_h_h;
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_h_w, &icon_h_h);
+	ypos = m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_h_h)/2;
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HELP, xpos1 - icon_w - 2 - icon_h_w, ypos);
+	
+	// 0 button icon (reload movies)
+	int icon_0_w, icon_0_h;
+	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_0, &icon_0_w, &icon_0_h);
+	ypos = m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - icon_0_h)/2;
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_0, xpos1 - icon_w - 2 - icon_h_w - 2 - icon_0_w, ypos);
 	
 	// head title
 	m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + TEXT_BORDER_WIDTH + icon_w + 10, m_cBoxFrame.iY+m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight, m_cBoxFrameTitleRel.iWidth - (TEXT_BORDER_WIDTH << 1) - 2*icon_w - 10 - icon_h_w, title.c_str(), TITLE_FONT_COLOR, 0, true); // UTF-8
@@ -615,7 +622,7 @@ void CYTBrowser::refreshFoot(void)
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, m_cBoxFrame.iX+xpos4, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + (ADD_FOOT_HEIGHT>>1));
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES), color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(/*LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES*/LOCALE_MOVIEBROWSER_YT_RELATED), color, 0, true); // UTF-8
 }
 
 bool CYTBrowser::onButtonPress(neutrino_msg_t msg)
@@ -685,9 +692,21 @@ bool CYTBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 	}
 	else if (msg == CRCInput::RC_blue) 
 	{
-		ytparser.Cleanup();
-		loadMovies();
-		refresh();
+		// related videos
+		if (m_settings.ytvid != m_movieSelectionHandler->ytid) 
+		{
+			printf("get related for: %s\n", m_movieSelectionHandler->ytid.c_str());
+			m_settings.ytvid = m_movieSelectionHandler->ytid;
+		
+			m_pcWindow->paintBackground();
+			CHintBox loadBox(LOCALE_MOVIEPLAYER_YTPLAYBACK, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+			loadBox.paint();
+			ytparser.Cleanup();
+			loadYTitles(cYTFeedParser::RELATED, m_settings.ytsearch, m_settings.ytvid);
+			loadBox.hide();
+			refreshBrowserList();
+			refresh();
+		}
 	}
 	else if (msg == CRCInput::RC_red ) 
 	{	
@@ -728,6 +747,12 @@ bool CYTBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 	else if (msg == CRCInput::RC_setup) 
 	{
 		showYTMenu();	
+	}
+	else if (msg == CRCInput::RC_0)
+	{
+		ytparser.Cleanup();
+		loadMovies();
+		refresh();
 	}
 	else
 	{
