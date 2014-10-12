@@ -629,46 +629,46 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	strcpy(g_settings.language, configfile.getString("language", "english").c_str());
 
 	// themes
-	g_settings.menu_Head_alpha = configfile.getInt32( "menu_Head_alpha", 0x00 );
-	g_settings.menu_Head_red = configfile.getInt32( "menu_Head_red", 0x00 );
-	g_settings.menu_Head_green = configfile.getInt32( "menu_Head_green", 0x0A );
-	g_settings.menu_Head_blue = configfile.getInt32( "menu_Head_blue", 0x19 );
-	g_settings.menu_Head_Text_alpha = configfile.getInt32( "menu_Head_Text_alpha", 0x00 );
-	g_settings.menu_Head_Text_red = configfile.getInt32( "menu_Head_Text_red", 0x5f );
-	g_settings.menu_Head_Text_green = configfile.getInt32( "menu_Head_Text_green", 0x46 );
-	g_settings.menu_Head_Text_blue = configfile.getInt32( "menu_Head_Text_blue", 0x00 );
-	g_settings.menu_Content_alpha = configfile.getInt32( "menu_Content_alpha", 0x14 );
-	g_settings.menu_Content_red = configfile.getInt32( "menu_Content_red", 0x00 );
-	g_settings.menu_Content_green = configfile.getInt32( "menu_Content_green", 0x0f );
-	g_settings.menu_Content_blue = configfile.getInt32( "menu_Content_blue", 0x23 );
-	g_settings.menu_Content_Text_alpha = configfile.getInt32( "menu_Content_Text_alpha", 0x00 );
-	g_settings.menu_Content_Text_red = configfile.getInt32( "menu_Content_Text_red", 0x64 );
-	g_settings.menu_Content_Text_green = configfile.getInt32( "menu_Content_Text_green", 0x64 );
-	g_settings.menu_Content_Text_blue = configfile.getInt32( "menu_Content_Text_blue", 0x64 );
-	g_settings.menu_Content_Selected_alpha = configfile.getInt32( "menu_Content_Selected_alpha", 0x14 );
-	g_settings.menu_Content_Selected_red = configfile.getInt32( "menu_Content_Selected_red", 0x19 );
-	g_settings.menu_Content_Selected_green = configfile.getInt32( "menu_Content_Selected_green", 0x37 );
-	g_settings.menu_Content_Selected_blue = configfile.getInt32( "menu_Content_Selected_blue", 0x64 );
-	g_settings.menu_Content_Selected_Text_alpha = configfile.getInt32( "menu_Content_Selected_Text_alpha", 0x00 );
-	g_settings.menu_Content_Selected_Text_red = configfile.getInt32( "menu_Content_Selected_Text_red", 0x00 );
-	g_settings.menu_Content_Selected_Text_green = configfile.getInt32( "menu_Content_Selected_Text_green", 0x00 );
-	g_settings.menu_Content_Selected_Text_blue = configfile.getInt32( "menu_Content_Selected_Text_blue", 0x00 );
-	g_settings.menu_Content_inactive_alpha = configfile.getInt32( "menu_Content_inactive_alpha", 0x14 );
-	g_settings.menu_Content_inactive_red = configfile.getInt32( "menu_Content_inactive_red", 0x00 );
-	g_settings.menu_Content_inactive_green = configfile.getInt32( "menu_Content_inactive_green", 0x0f );
-	g_settings.menu_Content_inactive_blue = configfile.getInt32( "menu_Content_inactive_blue", 0x23 );
-	g_settings.menu_Content_inactive_Text_alpha = configfile.getInt32( "menu_Content_inactive_Text_alpha", 0x00 );
-	g_settings.menu_Content_inactive_Text_red = configfile.getInt32( "menu_Content_inactive_Text_red", 55 );
-	g_settings.menu_Content_inactive_Text_green = configfile.getInt32( "menu_Content_inactive_Text_green", 70 );
-	g_settings.menu_Content_inactive_Text_blue = configfile.getInt32( "menu_Content_inactive_Text_blue", 85 );
-	g_settings.infobar_alpha = configfile.getInt32( "infobar_alpha", 0x14 );
-	g_settings.infobar_red = configfile.getInt32( "infobar_red", 0x00 );
-	g_settings.infobar_green = configfile.getInt32( "infobar_green", 0x0e );
-	g_settings.infobar_blue = configfile.getInt32( "infobar_blue", 0x23 );
-	g_settings.infobar_Text_alpha = configfile.getInt32( "infobar_Text_alpha", 0x00 );
-	g_settings.infobar_Text_red = configfile.getInt32( "infobar_Text_red", 0x64 );
-	g_settings.infobar_Text_green = configfile.getInt32( "infobar_Text_green", 0x64 );
-	g_settings.infobar_Text_blue = configfile.getInt32( "infobar_Text_blue", 0x64 );
+	g_settings.menu_Head_alpha = configfile.getInt32( "menu_Head_alpha", 20 );
+	g_settings.menu_Head_red = configfile.getInt32( "menu_Head_red", 5 );
+	g_settings.menu_Head_green = configfile.getInt32( "menu_Head_green", 10 );
+	g_settings.menu_Head_blue = configfile.getInt32( "menu_Head_blue", 60 );
+	g_settings.menu_Head_Text_alpha = configfile.getInt32( "menu_Head_Text_alpha", 0 );
+	g_settings.menu_Head_Text_red = configfile.getInt32( "menu_Head_Text_red", 100 );
+	g_settings.menu_Head_Text_green = configfile.getInt32( "menu_Head_Text_green", 100 );
+	g_settings.menu_Head_Text_blue = configfile.getInt32( "menu_Head_Text_blue", 100 );
+	g_settings.menu_Content_alpha = configfile.getInt32( "menu_Content_alpha", 20 );
+	g_settings.menu_Content_red = configfile.getInt32( "menu_Content_red", 50 );
+	g_settings.menu_Content_green = configfile.getInt32( "menu_Content_green", 50 );
+	g_settings.menu_Content_blue = configfile.getInt32( "menu_Content_blue", 50 );
+	g_settings.menu_Content_Text_alpha = configfile.getInt32( "menu_Content_Text_alpha", 0 );
+	g_settings.menu_Content_Text_red = configfile.getInt32( "menu_Content_Text_red", 100 );
+	g_settings.menu_Content_Text_green = configfile.getInt32( "menu_Content_Text_green", 100 );
+	g_settings.menu_Content_Text_blue = configfile.getInt32( "menu_Content_Text_blue", 100 );
+	g_settings.menu_Content_Selected_alpha = configfile.getInt32( "menu_Content_Selected_alpha", 20 );
+	g_settings.menu_Content_Selected_red = configfile.getInt32( "menu_Content_Selected_red", 1 );
+	g_settings.menu_Content_Selected_green = configfile.getInt32( "menu_Content_Selected_green", 25 );
+	g_settings.menu_Content_Selected_blue = configfile.getInt32( "menu_Content_Selected_blue", 80 );
+	g_settings.menu_Content_Selected_Text_alpha = configfile.getInt32( "menu_Content_Selected_Text_alpha", 0 );
+	g_settings.menu_Content_Selected_Text_red = configfile.getInt32( "menu_Content_Selected_Text_red", 100 );
+	g_settings.menu_Content_Selected_Text_green = configfile.getInt32( "menu_Content_Selected_Text_green", 100 );
+	g_settings.menu_Content_Selected_Text_blue = configfile.getInt32( "menu_Content_Selected_Text_blue", 100 );
+	g_settings.menu_Content_inactive_alpha = configfile.getInt32( "menu_Content_inactive_alpha", 20 );
+	g_settings.menu_Content_inactive_red = configfile.getInt32( "menu_Content_inactive_red", 50 );
+	g_settings.menu_Content_inactive_green = configfile.getInt32( "menu_Content_inactive_green", 50 );
+	g_settings.menu_Content_inactive_blue = configfile.getInt32( "menu_Content_inactive_blue", 50 );
+	g_settings.menu_Content_inactive_Text_alpha = configfile.getInt32( "menu_Content_inactive_Text_alpha", 0 );
+	g_settings.menu_Content_inactive_Text_red = configfile.getInt32( "menu_Content_inactive_Text_red", 80 );
+	g_settings.menu_Content_inactive_Text_green = configfile.getInt32( "menu_Content_inactive_Text_green", 80 );
+	g_settings.menu_Content_inactive_Text_blue = configfile.getInt32( "menu_Content_inactive_Text_blue", 80 );
+	g_settings.infobar_alpha = configfile.getInt32( "infobar_alpha", 20 );
+	g_settings.infobar_red = configfile.getInt32( "infobar_red", 5 );
+	g_settings.infobar_green = configfile.getInt32( "infobar_green", 10 );
+	g_settings.infobar_blue = configfile.getInt32( "infobar_blue", 60 );
+	g_settings.infobar_Text_alpha = configfile.getInt32( "infobar_Text_alpha", 0 );
+	g_settings.infobar_Text_red = configfile.getInt32( "infobar_Text_red", 100 );
+	g_settings.infobar_Text_green = configfile.getInt32( "infobar_Text_green", 100 );
+	g_settings.infobar_Text_blue = configfile.getInt32( "infobar_Text_blue", 100 );
 		
 	g_settings.infobar_colored_events_alpha = configfile.getInt32( "infobar_colored_events_alpha", 0x00 );
 	g_settings.infobar_colored_events_red = configfile.getInt32( "infobar_colored_events_red", 95 );
@@ -685,7 +685,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.menu_Foot_Text_green = configfile.getInt32( "menu_Foot_Text_green", 50 );
 	g_settings.menu_Foot_Text_blue = configfile.getInt32( "menu_Foot_Text_blue", 50 );
 
-	strcpy( g_settings.font_file, configfile.getString( "font_file", FONTDIR"/neutrino.ttf" ).c_str() );
+	strcpy( g_settings.font_file, configfile.getString( "font_file", FONTDIR "/micron.ttf" ).c_str() );
 
 	// menue timing
 	for (int i = 0; i < TIMING_SETTING_COUNT; i++)
@@ -973,7 +973,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.glcd_percent_time = configfile.getInt32("glcd_percent_time", 22);
 	g_settings.glcd_mirror_osd = configfile.getInt32("glcd_mirror_osd", 0);
 	g_settings.glcd_time_in_standby = configfile.getInt32("glcd_time_in_standby", 0);
-	g_settings.glcd_font = configfile.getString("glcd_font", FONTDIR "/neutrino.ttf");
+	g_settings.glcd_font = configfile.getString("glcd_font", FONTDIR "/micron.ttf");
 #endif	
 	
 	//set OSD resolution
@@ -1782,14 +1782,14 @@ void CNeutrinoApp::SetupFonts()
 
 	if(access(g_settings.font_file, F_OK)) 
 	{
-		if(!access(FONTDIR"/neutrino.ttf", F_OK))
+		if(!access(FONTDIR "/micron.ttf", F_OK))
 		{
-			font.filename = strdup(FONTDIR"/neutrino.ttf");
+			font.filename = strdup(FONTDIR "/micron.ttf");
 			strcpy(g_settings.font_file, font.filename);
 		}
 		else
 		{
-			  fprintf( stderr,"CNeutrinoApp::SetupFonts: font file [%s] not found\n neutrino exit\n", FONTDIR"/neutrino.ttf");
+			  fprintf( stderr,"CNeutrinoApp::SetupFonts: font file [%s] not found\n neutrino exit\n", FONTDIR "/micron.ttf");
 			  _exit(0);
 		}
 	}
@@ -1797,19 +1797,19 @@ void CNeutrinoApp::SetupFonts()
 	{
 		font.filename = strdup(g_settings.font_file);
 		
-		// check??? (use only true type fonts or fallback to neutrino.ttf
+		// check??? (use only true type fonts or fallback to micron.ttf
 		if( !strstr(font.filename, ".ttf") )
 		{
-			dprintf(DEBUG_NORMAL, "CNeutrinoApp::SetupFonts: font file %s not ok falling back to neutrino.ttf\n", g_settings.font_file);
+			dprintf(DEBUG_NORMAL, "CNeutrinoApp::SetupFonts: font file %s not ok falling back to micron.ttf\n", g_settings.font_file);
 			
-			if(!access(FONTDIR"/neutrino.ttf", F_OK))
+			if(!access(FONTDIR "/micron.ttf", F_OK))
 			{
-				font.filename = strdup(FONTDIR"/neutrino.ttf");
+				font.filename = strdup(FONTDIR "/micron.ttf");
 				strcpy(g_settings.font_file, font.filename);
 			}
 			else
 			{
-				  fprintf( stderr,"CNeutrinoApp::SetupFonts: font file [%s] not found\n neutrino exit\n", FONTDIR"/neutrino.ttf");
+				  fprintf( stderr,"CNeutrinoApp::SetupFonts: font file [%s] not found\n neutrino exit\n", FONTDIR "/micron.ttf");
 				  _exit(0);
 			}
 		}
@@ -3408,7 +3408,7 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 			else 
 			{
 				if ( msg == CRCInput::RC_home )
-				{
+				{ 
   					CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 				}
 
