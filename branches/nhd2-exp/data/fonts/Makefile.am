@@ -2,10 +2,8 @@ installdir = $(FONTDIR)
 
 install_DATA = \
 	tuxtxt.ttf \
-	tuxtxt.otb
-
-
-install_DATA += \
+	tuxtxt.otb \
+	neutrino.ttf \
 	micron.ttf \
 	pakenham.ttf \
 	md_khmurabi_10.ttf \
