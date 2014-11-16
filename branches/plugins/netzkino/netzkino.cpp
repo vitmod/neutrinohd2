@@ -155,7 +155,7 @@ void CNetzKinoBrowser::initGlobalSettings(void)
 	// netzkino
 	m_settings.nkmode = cNKFeedParser::CATEGORY;
 	m_settings.nkcategory = 1;
-	m_settings.nkcategoryname = "Actionkino";
+	m_settings.nkcategoryname = "Neu bei Netzkino";
 }
 
 void CNetzKinoBrowser::initFrames(void)

@@ -16,7 +16,7 @@ noinst_LTLIBRARIES = nglcd.la
 
 nglcd_la_SOURCES = nglcd.cpp glcdsetup.cpp
 	 
-nglcd_la_LDFLAGS = -rpath $(PLUGINDIR) -module
+nglcd_la_LDFLAGS = -rpath $(PLUGINDIR) -lglcddrivers -lglcdgraphics -lusb -module
 
 nglcd_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
