@@ -22,7 +22,20 @@
 
 #include <glcdsetup.h>
 
-#define __USE_FILE_OFFSET64 1
+
+// config
+int		glcd_enable;
+uint32_t	glcd_color_fg;
+uint32_t	glcd_color_bg;
+uint32_t	glcd_color_bar;
+std::string	glcd_font;
+int		glcd_percent_channel;
+int		glcd_percent_epg;
+int		glcd_percent_bar;
+int		glcd_percent_time;
+int		glcd_mirror_osd;
+int		glcd_time_in_standby;
+//
 
 #define KEY_GLCD_BLACK			0
 #define KEY_GLCD_WHITE			1
@@ -238,19 +251,19 @@ bool GLCD_Menu_Notifier::changeNotify(const neutrino_locale_t OptionName, void *
 	switch(OptionName) 
 	{
 		case LOCALE_GLCD_SELECT_FG:
-			GLCD_Menu::glcd_color_fg = GLCD_Menu::index2color(*((int *) Data));
+			glcd_color_fg = GLCD_Menu::index2color(*((int *) Data));
 			break;
 			
 		case LOCALE_GLCD_SELECT_BG:
-			GLCD_Menu::glcd_color_bg = GLCD_Menu::index2color(*((int *) Data));
+			glcd_color_bg = GLCD_Menu::index2color(*((int *) Data));
 			break;
 			
 		case LOCALE_GLCD_SELECT_BAR:
-			GLCD_Menu::glcd_color_bar = GLCD_Menu::index2color(*((int *) Data));
+			glcd_color_bar = GLCD_Menu::index2color(*((int *) Data));
 			break;
 			
 		case LOCALE_GLCD_ENABLE:
-			if (GLCD_Menu::glcd_enable)
+			if (glcd_enable)
 				nglcd->Resume();
 			else
 				nglcd->Suspend();
@@ -258,7 +271,7 @@ bool GLCD_Menu_Notifier::changeNotify(const neutrino_locale_t OptionName, void *
 			break;
 			
 		case LOCALE_GLCD_MIRROR_OSD:
-			nglcd->doMirrorOSD = GLCD_Menu::glcd_mirror_osd;
+			nglcd->doMirrorOSD = glcd_mirror_osd;
 			break;
 			
 		case LOCALE_GLCD_TIME_IN_STANDBY:
@@ -331,34 +344,34 @@ void GLCD_Menu::ReadSettings()
 	configfile->clear();
 	configfile->loadConfig(CONFIG_FILE);
 	
-	glcd_enable = configfile.getInt32("glcd_enable", 0);
-	glcd_color_fg = configfile.getInt32("glcd_color_fg", GLCD::cColor::White);
-	glcd_color_bg = configfile.getInt32("glcd_color_bg", GLCD::cColor::Blue);
-	glcd_color_bar = configfile.getInt32("glcd_color_bar", GLCD::cColor::Red);
-	glcd_percent_channel = configfile.getInt32("glcd_percent_channel", 18);
-	glcd_percent_epg = configfile.getInt32("glcd_percent_epg", 8);
-	glcd_percent_bar = configfile.getInt32("glcd_percent_bar", 6);
-	glcd_percent_time = configfile.getInt32("glcd_percent_time", 22);
-	glcd_mirror_osd = configfile.getInt32("glcd_mirror_osd", 0);
-	glcd_time_in_standby = configfile.getInt32("glcd_time_in_standby", 0);
-	glcd_font = configfile.getString("glcd_font", FONTDIR "/micron.ttf");
+	glcd_enable = configfile->getInt32("glcd_enable", 0);
+	glcd_color_fg = configfile->getInt32("glcd_color_fg", GLCD::cColor::White);
+	glcd_color_bg = configfile->getInt32("glcd_color_bg", GLCD::cColor::Blue);
+	glcd_color_bar = configfile->getInt32("glcd_color_bar", GLCD::cColor::Red);
+	glcd_percent_channel = configfile->getInt32("glcd_percent_channel", 18);
+	glcd_percent_epg = configfile->getInt32("glcd_percent_epg", 8);
+	glcd_percent_bar = configfile->getInt32("glcd_percent_bar", 6);
+	glcd_percent_time = configfile->getInt32("glcd_percent_time", 22);
+	glcd_mirror_osd = configfile->getInt32("glcd_mirror_osd", 0);
+	glcd_time_in_standby = configfile->getInt32("glcd_time_in_standby", 0);
+	glcd_font = configfile->getString("glcd_font", FONTDIR "/micron.ttf");
 }
 
 bool GLCD_Menu::SaveSettings() 
 {
 	CConfigFile *configfile = new CConfigFile(',');
 	
-	configfile.setInt32("glcd_enable", glcd_enable);
-	configfile.setInt32("glcd_color_fg", glcd_color_fg);
-	configfile.setInt32("glcd_color_bg", glcd_color_bg);
-	configfile.setInt32("glcd_color_bar", glcd_color_bar);
-	configfile.setInt32("glcd_percent_channel", glcd_percent_channel);
-	configfile.setInt32("glcd_percent_epg", glcd_percent_epg);
-	configfile.setInt32("glcd_percent_bar", glcd_percent_bar);
-	configfile.setInt32("glcd_percent_time", glcd_percent_time);
-	configfile.setInt32("glcd_mirror_osd", glcd_mirror_osd);
-	configfile.setInt32("glcd_time_in_standby", glcd_time_in_standby);
-	configfile.setString("glcd_font", glcd_font);
+	configfile->setInt32("glcd_enable", glcd_enable);
+	configfile->setInt32("glcd_color_fg", glcd_color_fg);
+	configfile->setInt32("glcd_color_bg", glcd_color_bg);
+	configfile->setInt32("glcd_color_bar", glcd_color_bar);
+	configfile->setInt32("glcd_percent_channel", glcd_percent_channel);
+	configfile->setInt32("glcd_percent_epg", glcd_percent_epg);
+	configfile->setInt32("glcd_percent_bar", glcd_percent_bar);
+	configfile->setInt32("glcd_percent_time", glcd_percent_time);
+	configfile->setInt32("glcd_mirror_osd", glcd_mirror_osd);
+	configfile->setInt32("glcd_time_in_standby", glcd_time_in_standby);
+	configfile->setString("glcd_font", glcd_font);
 	
 	configfile->saveConfig(CONFIG_FILE);
 	
@@ -382,3 +395,4 @@ void plugin_exec(void)
 	delete glcdMenu;
 	//nGLCD::Exit();
 }
+

@@ -46,20 +46,6 @@ class GLCD_Menu_Notifier : public CChangeObserver
 
 class GLCD_Menu : public CMenuTarget
 {
-	public:
-		// config
-		int		glcd_enable;
-		uint32_t	glcd_color_fg;
-		uint32_t	glcd_color_bg;
-		uint32_t	glcd_color_bar;
-		std::string	glcd_font;
-		int		glcd_percent_channel;
-		int		glcd_percent_epg;
-		int		glcd_percent_bar;
-		int		glcd_percent_time;
-		int		glcd_mirror_osd;
-		int		glcd_time_in_standby;
-		//
 	private:
 		int width;
 		int selected;

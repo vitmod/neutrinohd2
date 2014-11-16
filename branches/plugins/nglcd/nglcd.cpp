@@ -47,6 +47,19 @@ static nGLCD *nglcd = NULL;
 void sectionsd_getEventsServiceKey(t_channel_id serviceUniqueKey, CChannelEventList &eList, char search = 0, std::string search_text = "");
 void sectionsd_getCurrentNextServiceKey(t_channel_id uniqueServiceKey, CSectionsdClient::responseGetCurrentNextInfoChannelID& current_next );
 
+// config
+extern int		glcd_enable;
+extern uint32_t	glcd_color_fg;
+extern uint32_t	glcd_color_bg;
+extern uint32_t	glcd_color_bar;
+extern std::string	glcd_font;
+extern int		glcd_percent_channel;
+extern int		glcd_percent_epg;
+extern int		glcd_percent_bar;
+extern int		glcd_percent_time;
+extern int		glcd_mirror_osd;
+extern int		glcd_time_in_standby;
+
 nGLCD::nGLCD() 
 {
 	lcd = NULL;
@@ -89,7 +102,7 @@ nGLCD::nGLCD()
 
 	nglcd = this;
 
-	if (!g_settings.glcd_enable)
+	if (!glcd_enable)
 		doSuspend = true;
 
 	if (pthread_create (&thrGLCD, 0, nGLCD::Run, NULL) != 0 )
@@ -132,12 +145,12 @@ void nGLCD::Exec()
 	if (!lcd)
 		return;
 
-	bitmap->Clear(g_settings.glcd_color_bg);
+	bitmap->Clear(glcd_color_bg);
 
 	if (CNeutrinoApp::getInstance()->recordingstatus) 
 	{
-		bitmap->DrawRectangle(0, 0, bitmap->Width() - 1, bitmap->Height() - 1, g_settings.glcd_color_bar, false);
-		bitmap->DrawRectangle(1, 1, bitmap->Width() - 2, bitmap->Height() - 2, g_settings.glcd_color_bar, false);
+		bitmap->DrawRectangle(0, 0, bitmap->Width() - 1, bitmap->Height() - 1, glcd_color_bar, false);
+		bitmap->DrawRectangle(1, 1, bitmap->Width() - 2, bitmap->Height() - 2, glcd_color_bar, false);
 	}
 
 	int off = 0;
@@ -213,7 +226,7 @@ void nGLCD::Exec()
 			off += percent_space;
 			int fw = font_channel.Width(scrollChannel);
 			if (fw && !doStandbyTime)
-				bitmap->DrawText(max(0,(bitmap->Width() - 4 - fw)/2), off * bitmap->Height()/100, bitmap->Width() - 4, scrollChannel, &font_channel, g_settings.glcd_color_fg, GLCD::cColor::Transparent);
+				bitmap->DrawText(max(0,(bitmap->Width() - 4 - fw)/2), off * bitmap->Height()/100, bitmap->Width() - 4, scrollChannel, &font_channel, glcd_color_fg, GLCD::cColor::Transparent);
 			off += percent_channel;
 			off += percent_space;
 			if (scrollChannel.length() > Channel.length())
@@ -228,7 +241,7 @@ void nGLCD::Exec()
 		off += percent_space;
 		int fw = font_epg.Width(scrollEpg);
 		if (fw && !doStandbyTime)
-			bitmap->DrawText(max(0,(bitmap->Width() - 4 - fw)/2), off * bitmap->Height()/100, bitmap->Width() - 4, scrollEpg, &font_epg, g_settings.glcd_color_fg, GLCD::cColor::Transparent);
+			bitmap->DrawText(max(0,(bitmap->Width() - 4 - fw)/2), off * bitmap->Height()/100, bitmap->Width() - 4, scrollEpg, &font_epg, glcd_color_fg, GLCD::cColor::Transparent);
 		off += percent_epg;
 		off += percent_space;
 		if (scrollEpg.length() > Epg.length())
@@ -245,10 +258,10 @@ void nGLCD::Exec()
 		int bar_bottom = off * bitmap->Height()/100;
 		if (!doStandbyTime) 
 		{
-			bitmap->DrawHLine(0, bar_top, bitmap->Width(), g_settings.glcd_color_fg);
-			bitmap->DrawHLine(0, bar_bottom, bitmap->Width(), g_settings.glcd_color_fg);
+			bitmap->DrawHLine(0, bar_top, bitmap->Width(), glcd_color_fg);
+			bitmap->DrawHLine(0, bar_bottom, bitmap->Width(), glcd_color_fg);
 			if (Scale)
-				bitmap->DrawRectangle(0, bar_top + 1, Scale * (bitmap->Width() - 1)/100, bar_bottom - 1, g_settings.glcd_color_bar, true);
+				bitmap->DrawRectangle(0, bar_top + 1, Scale * (bitmap->Width() - 1)/100, bar_bottom - 1, glcd_color_bar, true);
 		}
 		off += percent_space;
 	}
@@ -261,7 +274,7 @@ void nGLCD::Exec()
 
 		std::string Time = std::string(timebuf);
 
-		bitmap->DrawText(max(0,(bitmap->Width() - 4 - font_time.Width(Time))/2), off * bitmap->Height()/100, bitmap->Width() - 1, Time, &font_time, g_settings.glcd_color_fg, GLCD::cColor::Transparent);
+		bitmap->DrawText(max(0,(bitmap->Width() - 4 - font_time.Width(Time))/2), off * bitmap->Height()/100, bitmap->Width() - 1, Time, &font_time, glcd_color_fg, GLCD::cColor::Transparent);
 	}
 
 	lcd->SetScreen(bitmap->Data(), bitmap->Width(), bitmap->Height());
@@ -276,16 +289,16 @@ static bool sortByDateTime (const CChannelEvent& a, const CChannelEvent& b)
 void nGLCD::updateFonts() 
 {
 	bool changed = false;
-	int percent = g_settings.glcd_percent_channel + g_settings.glcd_percent_epg + g_settings.glcd_percent_bar + g_settings.glcd_percent_time;
+	int percent = glcd_percent_channel + glcd_percent_epg + glcd_percent_bar + glcd_percent_time;
 
 	if (percent < 100)
 		percent = 100;
 
 	// normalize values
-	percent_channel = g_settings.glcd_percent_channel * 100 / percent;
-	percent_epg = g_settings.glcd_percent_epg * 100 / percent;
-	percent_bar = g_settings.glcd_percent_bar * 100 / percent;
-	percent_time = g_settings.glcd_percent_time * 100 / percent;
+	percent_channel = glcd_percent_channel * 100 / percent;
+	percent_epg = glcd_percent_epg * 100 / percent;
+	percent_bar = glcd_percent_bar * 100 / percent;
+	percent_time = glcd_percent_time * 100 / percent;
 
 	// calculate height
 	int fontsize_channel_new = percent_channel * nglcd->lcd->Height() / 100;
@@ -295,30 +308,30 @@ void nGLCD::updateFonts()
 	if (!fonts_initialized || (fontsize_channel_new != fontsize_channel)) 
 	{
 		fontsize_channel = fontsize_channel_new;
-		if (!font_channel.LoadFT2(g_settings.glcd_font, "UTF-8", fontsize_channel)) 
+		if (!font_channel.LoadFT2(glcd_font, "UTF-8", fontsize_channel)) 
 		{
-			g_settings.glcd_font = FONTDIR "/neutrino.ttf";
-			font_channel.LoadFT2(g_settings.glcd_font, "UTF-8", fontsize_channel);
+			glcd_font = FONTDIR "/neutrino.ttf";
+			font_channel.LoadFT2(glcd_font, "UTF-8", fontsize_channel);
 		}
 		changed = true;
 	}
 	if (!fonts_initialized || (fontsize_epg_new != fontsize_epg)) 
 	{
 		fontsize_epg = fontsize_epg_new;
-		if (!font_epg.LoadFT2(g_settings.glcd_font, "UTF-8", fontsize_epg)) 
+		if (!font_epg.LoadFT2(glcd_font, "UTF-8", fontsize_epg)) 
 		{
-			g_settings.glcd_font = FONTDIR "/neutrino.ttf";
-			font_epg.LoadFT2(g_settings.glcd_font, "UTF-8", fontsize_epg);
+			glcd_font = FONTDIR "/neutrino.ttf";
+			font_epg.LoadFT2(glcd_font, "UTF-8", fontsize_epg);
 		}
 		changed = true;
 	}
 	if (!fonts_initialized || (fontsize_time_new != fontsize_time)) 
 	{
 		fontsize_time = fontsize_time_new;
-		if (!font_time.LoadFT2(g_settings.glcd_font, "UTF-8", fontsize_time)) 
+		if (!font_time.LoadFT2(glcd_font, "UTF-8", fontsize_time)) 
 		{
-			g_settings.glcd_font = FONTDIR "/neutrino.ttf";
-			font_time.LoadFT2(g_settings.glcd_font, "UTF-8", fontsize_time);
+			glcd_font = FONTDIR "/neutrino.ttf";
+			font_time.LoadFT2(glcd_font, "UTF-8", fontsize_time);
 		}
 		changed = true;
 	}
@@ -379,10 +392,10 @@ void* nGLCD::Run(void *)
 			broken = false;
 			if (nglcd->doExit)
 				break;
-			if (!g_settings.glcd_enable)
+			if (!glcd_enable)
 				continue;
 		} else
-				while ((nglcd->doSuspend || nglcd->doStandby || !g_settings.glcd_enable) && !nglcd->doExit)
+				while ((nglcd->doSuspend || nglcd->doStandby || !glcd_enable) && !nglcd->doExit)
 					sem_wait(&nglcd->sem);
 
 		if (nglcd->doExit)
@@ -416,13 +429,13 @@ void* nGLCD::Run(void *)
 #endif
 
 		if (!nglcd->bitmap)
-			nglcd->bitmap = new GLCD::cBitmap(nglcd->lcd->Width(), nglcd->lcd->Height(), g_settings.glcd_color_bg);
+			nglcd->bitmap = new GLCD::cBitmap(nglcd->lcd->Width(), nglcd->lcd->Height(), glcd_color_bg);
 
 		nglcd->Update();
 
 		nglcd->doMirrorOSD = false;
 
-		while ((!nglcd->doSuspend && !nglcd->doStandby) && !nglcd->doExit && g_settings.glcd_enable) 
+		while ((!nglcd->doSuspend && !nglcd->doStandby) && !nglcd->doExit && glcd_enable) 
 		{
 			if (nglcd->doMirrorOSD) 
 			{
@@ -701,7 +714,7 @@ void* nGLCD::Run(void *)
 			}
 		}
 
-		if(!g_settings.glcd_enable || nglcd->doSuspend || nglcd->doStandby || nglcd->doExit) 
+		if(!glcd_enable || nglcd->doSuspend || nglcd->doStandby || nglcd->doExit) 
 		{
 			// for restart, don't blacken screen
 			nglcd->bitmap->Clear(GLCD::cColor::Black);
@@ -731,7 +744,7 @@ void nGLCD::StandbyMode(bool b)
 {
 	if (nglcd) 
 	{
-		if (g_settings.glcd_time_in_standby)
+		if (glcd_time_in_standby)
 			nglcd->doStandbyTime = b;
 		else
 		    nglcd->doStandby = b;
@@ -751,7 +764,7 @@ void nGLCD::ShowVolume(bool b)
 
 void nGLCD::MirrorOSD(bool b) 
 {
-	if (nglcd && g_settings.glcd_mirror_osd) 
+	if (nglcd && glcd_mirror_osd) 
 	{
 		nglcd->doMirrorOSD = b;
 		nglcd->Update();
