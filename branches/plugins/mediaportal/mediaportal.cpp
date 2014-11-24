@@ -24,8 +24,8 @@
 
 #include <mediaportal.h>	// plugin.h
 
-#include <netzkino.h>
-#include <youtube.h>
+//#include <netzkino.h>
+//#include <youtube.h>
 
 
 #define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
@@ -899,6 +899,7 @@ void CMPBrowser::addFilmon3(void)
 	mp_ItemInfo.push_back(file);
 }
 
+/*
 void CMPBrowser::addNetzKino(void)
 {
 	//
@@ -926,6 +927,7 @@ void CMPBrowser::addYouTube(void)
 		
 	mp_ItemInfo.push_back(file);
 }
+*/
 
 void CMPBrowser::loadItems(void)
 {
@@ -943,8 +945,8 @@ void CMPBrowser::loadItems(void)
 	addFilmon1();
 	addFilmon2();
 	addFilmon3();
-	addNetzKino();
-	addYouTube();
+	//addNetzKino();
+	//addYouTube();
 
 	refreshBrowserList();	
 	refreshItemInfo();	// is done by refreshBrowserList if needed
@@ -1004,6 +1006,7 @@ BROWSER:
 		{
 			dprintf(DEBUG_NORMAL, "CMPBrowser::exec_plugin: %s\n", file->Name.c_str());
 			
+			/*
 			if( file->Name == "netzkino" )
 			{
 				CNetzKinoBrowser * nkbrowser;
@@ -1065,6 +1068,7 @@ BROWSER:
 				delete ytbrowser;
 			}
 			else
+			*/
 			{
 				moviePlayerGui->filename = file->Url.c_str();
 				

@@ -13,7 +13,6 @@ SUBDIRS = \
 	dvdplayer \
 	mediaplayer \
 	tuxcal \
-	mediaportal \
-	nglcd
+	mediaportal
 
 

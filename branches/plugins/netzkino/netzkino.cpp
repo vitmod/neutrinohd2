@@ -154,8 +154,8 @@ void CNetzKinoBrowser::initGlobalSettings(void)
 	
 	// netzkino
 	m_settings.nkmode = cNKFeedParser::CATEGORY;
-	m_settings.nkcategory = 1;
-	m_settings.nkcategoryname = "Neu bei Netzkino";
+	m_settings.nkcategory = 8;	//neu bei netzkino
+	m_settings.nkcategoryname = "Highlights";
 }
 
 void CNetzKinoBrowser::initFrames(void)
@@ -995,6 +995,8 @@ bool CNetzKinoBrowser::getMovieInfoItem(MI_MOVIE_INFO& movie_info, NKB_INFO_ITEM
 //netzkino
 void CNetzKinoBrowser::loadNKTitles(int mode, std::string search, int id, unsigned int start, unsigned int end)
 {
+	//nkparser.GetCategoryList();
+	
 	//
 	if (nkparser.ParseFeed((cNKFeedParser::nk_feed_mode_t)mode, search, id)) 
 	{
@@ -1109,21 +1111,6 @@ bool CNetzKinoBrowser::showNKMenu()
 
 	mainMenu.addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, selector, to_string(cNKFeedParser::SEARCH).c_str(), CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 
-	/*
-	CYTHistory nkHistory(m_settings, search, true);
-	if (m_settings.nksearch_history_size > 0)
-		mainMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_YT_HISTORY, true, NULL, &nkHistory, "", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
-	*/
-
-	//mainMenu.addItem(GenericMenuSeparatorLine);
-	//mainMenu.addItem(new CMenuOptionNumberChooser(LOCALE_MOVIEBROWSER_YT_MAX_RESULTS, &m_settings.nkresults, true, 1, 500, NULL));
-	
-	//mainMenu.addItem(new CMenuOptionNumberChooser(LOCALE_MOVIEBROWSER_YT_MAX_HISTORY, &m_settings.nksearch_history_max, true, 10, 50, NULL));
-	//mainMenu.addItem(new CMenuOptionNumberChooser(LOCALE_MOVIEBROWSER_YT_CONCURRENT_CONNECTIONS, &m_settings.nkconcconn, true, 1, 8));
-	
-	// rtmp
-	//mainMenu.addItem(new CMenuOptionChooser(LOCALE_MOVIEBROWSER_NK_RTMP, (int *)&m_settings.nkrtmp, MOVIEBROWSER_NKPROTOKOLL_OPTIONS, MOVIEBROWSER_NKPROTOKOLL_OPTIONS_COUNT, true));
-
 	int oldcat = m_settings.nkcategory;
 	int oldmode = m_settings.nkmode;
 	//int oldresults = m_settings.nkresults;
@@ -1146,22 +1133,6 @@ bool CNetzKinoBrowser::showNKMenu()
 			reload = true;
 			m_settings.nksearch = search;
 			m_settings.nkmode = cNKFeedParser::SEARCH;
-			
-			/*
-			m_settings.nksearch_history.push_front(search);
-			std::list<std::string>::iterator it = m_settings.nksearch_history.begin();
-			it++;
-			while (it != m_settings.nksearch_history.end()) 
-			{
-				if (*it == search)
-					it = m_settings.nksearch_history.erase(it);
-				else
-					++it;
-			}
-			m_settings.nksearch_history_size = m_settings.nksearch_history.size();
-			if (m_settings.nksearch_history_size > m_settings.nksearch_history_max)
-			m_settings.nksearch_history_size = m_settings.nksearch_history_max;
-			*/
 		}
 	}
 	else if (oldmode != m_settings.nkmode || oldcat != m_settings.nkcategory /*|| oldresults != m_settings.nkresults*/) 
