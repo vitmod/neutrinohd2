@@ -899,36 +899,6 @@ void CMPBrowser::addFilmon3(void)
 	mp_ItemInfo.push_back(file);
 }
 
-/*
-void CMPBrowser::addNetzKino(void)
-{
-	//
-	CFile file;
-		
-	file.Title = "NetzKino";
-	file.Info1 = "netzkino Browser";
-	file.Info2 = "Film Archiv";
-	file.thumbnail = PLUGINDIR "/mediaportal/netzkino.png";
-	file.Name = "netzkino";
-		
-	mp_ItemInfo.push_back(file);
-}
-
-void CMPBrowser::addYouTube(void)
-{
-	//
-	CFile file;
-		
-	file.Title = "YouTube";
-	file.Info1 = "youtube Browser";
-	file.Info2 = "youtube";
-	file.thumbnail = PLUGINDIR "/mediaportal/youtube.png";
-	file.Name = "youtube";
-		
-	mp_ItemInfo.push_back(file);
-}
-*/
-
 void CMPBrowser::loadItems(void)
 {
 	dprintf(DEBUG_NORMAL, "CMPBrowser::loadItems:\n");
@@ -945,8 +915,6 @@ void CMPBrowser::loadItems(void)
 	addFilmon1();
 	addFilmon2();
 	addFilmon3();
-	//addNetzKino();
-	//addYouTube();
 
 	refreshBrowserList();	
 	refreshItemInfo();	// is done by refreshBrowserList if needed
@@ -1006,80 +974,15 @@ BROWSER:
 		{
 			dprintf(DEBUG_NORMAL, "CMPBrowser::exec_plugin: %s\n", file->Name.c_str());
 			
-			/*
-			if( file->Name == "netzkino" )
-			{
-				CNetzKinoBrowser * nkbrowser;
-				MI_MOVIE_INFO * nk_movie_info;
+			moviePlayerGui->filename = file->Url.c_str();
 				
-				nkbrowser = new CNetzKinoBrowser();
+			// movieinfos
+			moviePlayerGui->Title = file->Title;
+			moviePlayerGui->Info1 = file->Info1;
+			moviePlayerGui->Info2 = file->Info2;
 				
-				if (nkbrowser->exec()) 
-				{
-					// get the current file name
-					CFile * nkfile;
-
-					if ((nkfile = nkbrowser->getSelectedFile()) != NULL) 
-					{
-						moviePlayerGui->filename = nkfile->Url.c_str();
-						
-						// movieinfos
-						nk_movie_info = nkbrowser->getCurrentMovieInfo();
-						
-						moviePlayerGui->Title = nk_movie_info->epgTitle;
-						moviePlayerGui->Info1 = nk_movie_info->epgInfo1;
-						moviePlayerGui->Info2 = nk_movie_info->epgInfo2;
-						
-						// play
-						moviePlayerGui->exec(NULL, "urlplayback");
-					}
-				}
-				
-				delete nkbrowser;
-			}
-			else if( file->Name == "youtube" )
-			{
-				CYTBrowser * ytbrowser;
-				MI_MOVIE_INFO * yt_movie_info;
-				
-				ytbrowser = new CYTBrowser();
-				
-				if (ytbrowser->exec()) 
-				{
-					// get the current file name
-					CFile * ytfile;
-
-					if ((ytfile = ytbrowser->getSelectedFile()) != NULL) 
-					{
-						moviePlayerGui->filename = ytfile->Url.c_str();
-						
-						// movieinfos
-						yt_movie_info = ytbrowser->getCurrentMovieInfo();
-						
-						moviePlayerGui->Title = yt_movie_info->epgTitle;
-						moviePlayerGui->Info1 = yt_movie_info->epgInfo1;
-						moviePlayerGui->Info2 = yt_movie_info->epgInfo2;
-						
-						// play
-						moviePlayerGui->exec(NULL, "urlplayback");
-					}
-				}
-				
-				delete ytbrowser;
-			}
-			else
-			*/
-			{
-				moviePlayerGui->filename = file->Url.c_str();
-				
-				// movieinfos
-				moviePlayerGui->Title = file->Title;
-				moviePlayerGui->Info1 = file->Info1;
-				moviePlayerGui->Info2 = file->Info2;
-				
-				// play
-				moviePlayerGui->exec(NULL, "urlplayback");
-			}
+			// play
+			moviePlayerGui->exec(NULL, "urlplayback");
 		}
 		
 		neutrino_msg_t msg;

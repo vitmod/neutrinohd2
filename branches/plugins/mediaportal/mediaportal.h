@@ -149,8 +149,7 @@ class CMPBrowser : public CMenuTarget
 		void addFilmon1(void);
 		void addFilmon2(void);
 		void addFilmon3(void);
-		void addNetzKino(void);
-		void addYouTube(void);
+		
 		void loadItems(void);
 		
 		// misc
