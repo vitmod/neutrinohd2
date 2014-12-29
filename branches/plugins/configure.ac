@@ -20,6 +20,7 @@ TUXBOX_APPS_LIB_PKGCONFIG(PNG,libpng)
 AC_OUTPUT([
 Makefile
 test/Makefile
+netzkino/jsoncpp/Makefile
 netzkino/Makefile
 fbcallmonitor/Makefile
 youtube/Makefile

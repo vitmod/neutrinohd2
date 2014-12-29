@@ -1,3 +1,5 @@
+SUBDIRS = jsoncpp
+
 AM_CPPFLAGS =  \
 	-I$(top_srcdir)/../nhd2-exp/src \
 	-I$(top_srcdir)/../nhd2-exp/src/zapit/include/zapit \
@@ -9,7 +11,6 @@ AM_CPPFLAGS =  \
 	-I$(top_srcdir)/../nhd2-exp/lib/libxmltree \
 	-I$(top_srcdir)/../nhd2-exp/lib/libmd5sum \
 	-I$(top_srcdir)/../nhd2-exp/lib/libdvbapi \
-	-I$(top_srcdir)/../nhd2-exp/lib/jsoncpp/include \
 	@FREETYPE_CFLAGS@ 
 
 noinst_LTLIBRARIES = netzkino.la
