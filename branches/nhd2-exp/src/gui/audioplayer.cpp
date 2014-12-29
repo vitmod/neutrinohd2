@@ -381,11 +381,11 @@ int CAudioPlayerGui::show()
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
-	int _selected = 0;
-	CFileList filelist;
+	//int _selected = 0;
+	//CFileList filelist;
 	
-	if(!filelist.empty())
-		filelist.clear();
+	//if(!filelist.empty())
+	//	filelist.clear();
 
 	int ret = -1;
 
@@ -445,6 +445,7 @@ int CAudioPlayerGui::show()
 
 			if(msg == NeutrinoMessages::EVT_TIMER && data == stimer) 
 			{
+				/*
 				if(m_screensaver == SHOW_PIC) 
 				{
 					struct dirent **namelist;
@@ -518,15 +519,16 @@ int CAudioPlayerGui::show()
 						} 
 					}
 				} 
-				else if(m_screensaver == HIDE_PLAYLIST)
+				else*/
+				if(m_screensaver == HIDE_PLAYLIST)
 				{
 					hide();
 					
 					// paint infos
 					paintInfo();
 				}
-				else
-					_selected = 0;
+				//else
+				//	_selected = 0;
 			}
 
 		}
@@ -1009,8 +1011,8 @@ int CAudioPlayerGui::show()
 	if(m_state != CAudioPlayerGui::STOP)
 		stop();	
 	
-	if(!filelist.empty())
-		filelist.clear();
+	//if(!filelist.empty())
+	//	filelist.clear();
 
 	return ret;
 }
@@ -2584,7 +2586,7 @@ void CAudioPlayerGui::screensaver(int type)
 	const char *SCREENSAVER_TYPE[] = {
 		"NONE",
 		"HIDE_PLAYLIST",
-		"SHOW_PIC"
+		//"SHOW_PIC"
 	};
 	
 	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::screensaver: screensaver type %s (%d)\n", SCREENSAVER_TYPE[type], type);

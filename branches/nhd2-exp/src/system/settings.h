@@ -374,6 +374,7 @@ struct SNeutrinoSettings
 	int   audioplayer_repeat_on;
 	int   audioplayer_screensaver_type;
 	int   audioplayer_enable_sc_metadata;
+	//std::string audioplayer_screensaver_dir;
 	
 	//shoutcast
 	std::string shoutcast_dev_id;
@@ -400,7 +401,6 @@ struct SNeutrinoSettings
 	std::string logos_dir;
 	int epgplus_show_logo;
 	int show_channelname;
-	std::string audioplayer_screensaver_dir;
 
 	// channellist
 	int zap_cycle;
