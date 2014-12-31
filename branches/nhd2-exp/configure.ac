@@ -129,16 +129,6 @@ if test "$enable_fribidi" = "yes"; then
 AC_DEFINE(ENABLE_FRIBIDI,1,[include fribidi support])
 fi
 
-# shading and spotlighting for testing
-AC_ARG_ENABLE(shading,
-	AS_HELP_STRING(--enable-shading,include shading and spotlighting support),
-	,[enable_shading=no])
-AM_CONDITIONAL(ENABLE_SHADING,test "$enable_shading" = "yes")
-
-if test "$enable_shading" = "yes"; then
-AC_DEFINE(ENABLE_SHADING,1,[include shading and spotlighting support])
-fi
-
 # function keys
 AC_ARG_ENABLE(functionkeys,
 	AS_HELP_STRING(--enable-functionkeys,include RC functions keys support),
@@ -147,6 +137,16 @@ AM_CONDITIONAL(ENABLE_FUNCTIONKEYS,test "$enable_functionkeys" = "yes")
 
 if test "$enable_functionkeys" = "yes"; then
 AC_DEFINE(ENABLE_FUNCTIONKEYS,1,[include RC function keys support])
+fi
+
+# shading and spotlighting for testing
+AC_ARG_ENABLE(shading,
+	AS_HELP_STRING(--enable-shading,include shading and spotlighting support),
+	,[enable_shading=no])
+AM_CONDITIONAL(ENABLE_SHADING,test "$enable_shading" = "yes")
+
+if test "$enable_shading" = "yes"; then
+AC_DEFINE(ENABLE_SHADING,1,[include shading and spotlighting support])
 fi
 
 AC_OUTPUT([
