@@ -20,6 +20,8 @@ netzkino_la_SOURCES = nkparser.cpp netzkino.cpp
 	 
 netzkino_la_LDFLAGS = -rpath $(PLUGINDIR) -module
 
+netzkino_la_LIBADD = $(top_srcdir)/netzkino/jsoncpp/libjsoncpp.a
+
 netzkino_la_CXXFLAGS = -fno-rtti -fno-exceptions
 
 install-exec-local:
