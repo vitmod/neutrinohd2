@@ -173,11 +173,13 @@ int CBouquetList::showChannelList( int nBouquet)
 		nBouquet = selected;
 
 	int nNewChannel = Bouquets[nBouquet]->channelList->exec();
+	
 	if (nNewChannel > -1) 
 	{
 		selected = nBouquet;
 		nNewChannel = -2;
 	}
+	
 	return nNewChannel;
 }
 

@@ -45,12 +45,14 @@
 class CWebTV
 {
 	private:
+		/*
 		enum {
 			WEBTV,
 			USER,
 			IPTV,
 			DIVERS = 255
 		};
+		*/
 		
 		struct webtv_channels {
 			std::string title;
@@ -58,11 +60,20 @@ class CWebTV
 			std::string description;
 			bool locked;		// for parentallock
 		};
+		
+		struct webtv_bouquets {
+			std::string Name;
+			bool Blocked;
+		};
 
 		xmlDocPtr parser;
 		
+		// channels
 		std::vector<webtv_channels *> channels;
 		CZapProtection * 	zapProtection;
+		
+		// bouquets
+		std::vector<webtv_bouquets *> bouquets;
 		
 		// gui
 		CFrameBuffer * frameBuffer;
@@ -83,8 +94,10 @@ class CWebTV
 		unsigned int   	selected;
 		unsigned int oldselected;
 		int tuned;
-		int count;
-		int n_count;
+		
+		// bouquets
+		//int count;
+		//int n_count;
 		//char userBouquet[255];
 		std::string userBouquet;
 		std::string title;
@@ -95,7 +108,7 @@ class CWebTV
 		unsigned int	numwidth;
 		int 		info_height;
 		
-		unsigned int mode;
+		//unsigned int mode;
 		
 		unsigned int position;
 		unsigned int duration;
@@ -154,6 +167,9 @@ class CWebTV
 		void openFilebrowser(void);
 		
 		unsigned int hasChannels() { return channels.size();};
+		
+		void loadBouquets(void);
+		void ClearBouquets(void);
 };
 
 class CWebTVAPIDSelectExec : public CMenuTarget

@@ -63,7 +63,7 @@
 
 extern cPlayback *playback;
 
-#define DEFAULT_WEBTV_XMLFILE 		CONFIGDIR "/webtv.xml"
+#define DEFAULT_WEBTV_FILE 		CONFIGDIR "/webtv/webtv.xml"
 
 extern cVideo * videoDecoder;
 extern CPictureViewer * g_PicViewer;
@@ -169,11 +169,13 @@ CWebTV::CWebTV()
 	selected = 0;
 	liststart = 0;
 	tuned = -1;
-	count = g_settings.user_bouquet_count;
-	n_count = 1;
+	
+	//count = g_settings.user_bouquet_count;
+	//n_count = 1;
 	
 	parser = NULL;
-	mode = WEBTV;
+	//mode = WEBTV;
+	userBouquet = DEFAULT_WEBTV_FILE;
 	
 	position = 0;
 	duration = 0;
@@ -188,7 +190,7 @@ CWebTV::CWebTV()
 CWebTV::~CWebTV()
 {
 	ClearChannels();
-	g_settings.user_bouquet_count = count;
+	//g_settings.user_bouquet_count = count;
 }
 
 void CWebTV::ClearChannels(void)
@@ -203,7 +205,18 @@ void CWebTV::ClearChannels(void)
 	{
 		delete channels[j];
 	}
+	
 	channels.clear();
+}
+
+void CWebTV::ClearBouquets(void)
+{
+	for(unsigned int j = 0; j < bouquets.size(); j++)
+	{
+		delete bouquets[j];
+	}
+	
+	bouquets.clear();
 }
 
 int CWebTV::exec(bool rezap)
@@ -222,12 +235,13 @@ int CWebTV::exec(bool rezap)
 
 void CWebTV::loadChannels(void)
 {
+	#if 0
 	// load streams channels list
 	switch(mode)
 	{
 		case WEBTV:
 		{
-			readChannellist(DEFAULT_WEBTV_XMLFILE);
+			readChannellist(DEFAULT_WEBTV_FILE);
 			title = g_Locale->getText(LOCALE_WEBTV_HEAD);
 		}
 		break;
@@ -244,6 +258,14 @@ void CWebTV::loadChannels(void)
 			
 		default: break;	
 	}
+	#endif
+	readChannellist(userBouquet);
+	
+	title = std::string(rindex(userBouquet.c_str(), '/') + 1);
+	strReplace(title, ".xml", "");
+	strReplace(title, ".tv", "");
+	strReplace(title, "userbouquet.", "");
+	selected = 0;
 }
 
 // readxml file
@@ -370,6 +392,7 @@ bool CWebTV::readChannellist(std::string filename)
 
 void CWebTV::showUserBouquet(void)
 {
+  #if 0
 	static int old_select = 0;
 	char cnt[5];
 	CMenuWidget InputSelector(LOCALE_WEBTV_HEAD, NEUTRINO_ICON_WEBTV_SMALL);
@@ -406,7 +429,7 @@ void CWebTV::showUserBouquet(void)
 		if(select == WEBTV)
 		{
 			mode = WEBTV;
-			readChannellist(DEFAULT_WEBTV_XMLFILE);
+			readChannellist(DEFAULT_WEBTV_FILE);
 			selected = 0;
 			title = g_Locale->getText(LOCALE_WEBTV_HEAD);
 		}
@@ -422,6 +445,7 @@ void CWebTV::showUserBouquet(void)
 			strReplace(title, "userbouquet.", "");
 		}
 	}
+ #endif
 }
 
 void CWebTV::showAudioDialog(void)
@@ -819,7 +843,7 @@ showList:
 		else if (msg == CRCInput::RC_red) 
 		{
 			openFilebrowser();
-			g_settings.user_bouquet_count = count;
+			//g_settings.user_bouquet_count = count;
 			res = -1;
 			
 			goto showList;
@@ -1132,23 +1156,30 @@ void CWebTV::openFilebrowser(void)
 	//filebrowser.Dirs_Selectable = true;
 	filebrowser.Filter = &fileFilter;
 
-	if (filebrowser.exec(CONFIGDIR))
+	if (filebrowser.exec(CONFIGDIR "/webtv"))
 	{
+		userBouquet.clear();
 		// select file
-		strcpy(g_settings.webtv_user_bouquet[count], filebrowser.getSelectedFile()->Name.c_str());
+		//strcpy(g_settings.webtv_user_bouquet[count], filebrowser.getSelectedFile()->Name.c_str());
+		//strcpy((char *)userBouquet.c_str(), filebrowser.getSelectedFile()->Name.c_str());
+		userBouquet = filebrowser.getSelectedFile()->Name.c_str();
 		
-		printf("[webtv] webtv settings file %s\n", filebrowser.getSelectedFile()->Name.c_str());
+		printf("[webtv] webtv settings file %s\n", userBouquet.c_str());
 		
 		// load channels
-		mode = USER;
+		//mode = USER;
 		
+		#if 0
 		readChannellist(g_settings.webtv_user_bouquet[count]);
 		title = std::string(rindex(g_settings.webtv_user_bouquet[count], '/') + 1);
 		strReplace(title, ".xml", "");
 		strReplace(title, ".tv", "");
 		strReplace(title, "userbouquet.", "");
 		selected = 0;
-		++count;
+		//++count;
+		#endif
+		
+		loadChannels();
 	}
 }
 

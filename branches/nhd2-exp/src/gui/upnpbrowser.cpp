@@ -462,6 +462,7 @@ void CUpnpBrowserGui::selectDevice()
 
 			m_devices = m_socket->Discover("urn:schemas-upnp-org:service:ContentDirectory:1");
 			scanBox->hide();
+			
 			if (!m_devices.size())
 			{
 				ShowLocalizedMessage(LOCALE_MESSAGEBOX_INFO, LOCALE_UPNPBROWSER_NOSERVERS, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_UPDATE);
