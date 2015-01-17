@@ -265,7 +265,6 @@ void CWebTV::loadChannels(void)
 	strReplace(title, ".xml", "");
 	strReplace(title, ".tv", "");
 	strReplace(title, "userbouquet.", "");
-	selected = 0;
 }
 
 // readxml file
@@ -1180,6 +1179,7 @@ void CWebTV::openFilebrowser(void)
 		#endif
 		
 		loadChannels();
+		selected = 0;
 	}
 }
 
