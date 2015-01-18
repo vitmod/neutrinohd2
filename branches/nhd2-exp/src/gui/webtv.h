@@ -42,28 +42,16 @@
 #include <xmlinterface.h>
 
 
+#define DEFAULT_WEBTV_FILE 		CONFIGDIR "/webtv/webtv.xml"
+
 class CWebTV
 {
 	private:
-		/*
-		enum {
-			WEBTV,
-			USER,
-			IPTV,
-			DIVERS = 255
-		};
-		*/
-		
 		struct webtv_channels {
 			std::string title;
 			std::string url;
 			std::string description;
 			bool locked;		// for parentallock
-		};
-		
-		struct webtv_bouquets {
-			std::string Name;
-			bool Blocked;
 		};
 
 		xmlDocPtr parser;
@@ -73,7 +61,7 @@ class CWebTV
 		CZapProtection * 	zapProtection;
 		
 		// bouquets
-		std::vector<webtv_bouquets *> bouquets;
+		std::string title;
 		
 		// gui
 		CFrameBuffer * frameBuffer;
@@ -95,20 +83,11 @@ class CWebTV
 		unsigned int oldselected;
 		int tuned;
 		
-		// bouquets
-		//int count;
-		//int n_count;
-		//char userBouquet[255];
-		std::string userBouquet;
-		std::string title;
-		
 		unsigned int   	liststart;
 		int		buttonHeight;
 		unsigned int	listmaxshow;
 		unsigned int	numwidth;
 		int 		info_height;
-		
-		//unsigned int mode;
 		
 		unsigned int position;
 		unsigned int duration;
@@ -167,9 +146,6 @@ class CWebTV
 		void openFilebrowser(void);
 		
 		unsigned int hasChannels() { return channels.size();};
-		
-		void loadBouquets(void);
-		void ClearBouquets(void);
 };
 
 class CWebTVAPIDSelectExec : public CMenuTarget

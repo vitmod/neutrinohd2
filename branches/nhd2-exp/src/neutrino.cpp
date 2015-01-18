@@ -767,12 +767,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.mb_truncate = configfile.getInt32( "mb_truncate", CRCInput::RC_nokey );
 	
 	// webtv
-	for(int i = 0; i < WEBTV_USER_BOUQUET_NR_OF_ENTRIES; i++) 
-	{
-		sprintf(cfg_key, "webtv_user_bouquet_%d", i);
-		strcpy( g_settings.webtv_user_bouquet[i], configfile.getString( cfg_key, "" ).c_str() );
-	}
-	g_settings.user_bouquet_count = configfile.getInt32( "user_bouquet_count", 0 );
+	g_settings.userBouquet = configfile.getString("userBouquet", DEFAULT_WEBTV_FILE);
 	
         // USERMENU -> in system/settings.h
         //-------------------------------------------
@@ -840,7 +835,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.audioplayer_enable_sc_metadata = configfile.getInt32("audioplayer_enable_sc_metadata", 1);
 	
 	// shoutcast --- not in GUI
-	g_settings.shoutcast_dev_id = configfile.getString("shoutcast_dev_id","XXXXXXXXXXXXXXXX");
+	g_settings.shoutcast_dev_id = configfile.getString("shoutcast_dev_id", "XXXXXXXXXXXXXXXX");
 	// audioplayer screensaver_dir
 	//g_settings.audioplayer_screensaver_dir = configfile.getString("audioplayer_screensaver_dir", DATADIR "/neutrino/icons");
 	// end audioplayer
@@ -1239,12 +1234,7 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32( "mb_truncate", g_settings.mb_truncate );
 	
 	// webtv
-	for(int i = 0 ; i < WEBTV_USER_BOUQUET_NR_OF_ENTRIES ; i++) 
-	{
-		sprintf(cfg_key, "webtv_user_bouquet_%d", i);
-		configfile.setString( cfg_key, g_settings.webtv_user_bouquet[i] );
-	}
-	configfile.setInt32( "user_bouquet_count", g_settings.user_bouquet_count );
+	configfile.setString( "userBouquet", g_settings.userBouquet);
 	
         // USERMENU
         char txt1[81];

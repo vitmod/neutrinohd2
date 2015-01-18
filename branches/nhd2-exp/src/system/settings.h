@@ -318,9 +318,7 @@ struct SNeutrinoSettings
 	// END KEYBINDING
 	
 	// webtv
-#define WEBTV_USER_BOUQUET_NR_OF_ENTRIES 20
-	char webtv_user_bouquet[WEBTV_USER_BOUQUET_NR_OF_ENTRIES][255];
-	int user_bouquet_count;
+	std::string userBouquet;
 
 	// USERMENU
         typedef enum
