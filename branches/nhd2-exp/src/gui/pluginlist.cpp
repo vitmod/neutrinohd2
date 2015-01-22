@@ -351,7 +351,7 @@ void CPluginList::paintHead()
 	frameBuffer->paintBoxRel(x, y + theight, width, height - theight, COL_MENUCONTENT_PLUS_0);
 	
 	// foot
-	frameBuffer->paintBoxRel(x, y + height, width + sb_width, theight, COL_MENUFOOT_PLUS_0, RADIUS_MID, (g_settings.rounded_corners == ONLY_TOP) ? 0x0 : CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, y + height, width + sb_width, theight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 	
 	// foot bottons
 	int icon_w, icon_h;

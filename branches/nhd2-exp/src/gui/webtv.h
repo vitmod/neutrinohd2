@@ -143,7 +143,7 @@ class CWebTV
 		void ClearChannels(void);
 		
 		bool readChannellist(std::string filename);
-		void openFilebrowser(void);
+		void addUserBouquet(void);
 		
 		unsigned int hasChannels() { return channels.size();};
 };

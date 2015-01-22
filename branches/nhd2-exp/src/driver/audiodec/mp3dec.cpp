@@ -524,7 +524,7 @@ long CMP3Dec::scanHeader( FILE* input, struct mad_header* const header,
  */
 bool CMP3Dec::GetMP3Info( FILE* input, const bool nice, CAudioMetaData* const meta )
 {
-	dprintf(DEBUG_NORMAL, "CMP3Dec::GetMP3Info\n");
+	dprintf(DEBUG_INFO, "CMP3Dec::GetMP3Info\n");
 	
 	struct mad_header header;
 	struct tag ftag;
@@ -597,7 +597,7 @@ bool CMP3Dec::GetMP3Info( FILE* input, const bool nice, CAudioMetaData* const me
 
 void CMP3Dec::GetID3(FILE* in, CAudioMetaData * const m)
 {
-	dprintf(DEBUG_NORMAL, "CMP3Dec::GetID3\n");
+	dprintf(DEBUG_INFO, "CMP3Dec::GetID3\n");
 	
 	unsigned int i;
 	struct id3_frame const *frame;
@@ -768,14 +768,14 @@ void CMP3Dec::GetID3(FILE* in, CAudioMetaData * const m)
 	
 	if(0)
 	{
-		fail:
-			dprintf(DEBUG_NORMAL, "id3: not enough memory to display tag\n");
+fail:
+		dprintf(DEBUG_INFO, "id3: not enough memory to display tag\n");
 	}
 }
 
 bool CMP3Dec::SaveCover(FILE * in, CAudioMetaData * const m)
 {
-	dprintf(DEBUG_NORMAL, "CMP3Dec::SaveCover\n");
+	dprintf(DEBUG_INFO, "CMP3Dec::SaveCover\n");
 	
 	struct id3_frame const *frame;
 	const char * coverfile = "/tmp/cover.jpg";
@@ -807,7 +807,7 @@ bool CMP3Dec::SaveCover(FILE * in, CAudioMetaData * const m)
 							data = id3_field_getbinarydata(field, &size);
 							if ( data )
 							{
-								dprintf(DEBUG_NORMAL, "CMP3Dec::SaveCover: Cover found\n");
+								dprintf(DEBUG_INFO, "CMP3Dec::SaveCover: Cover found\n");
 								
 								m->cover = coverfile;
 								FILE * pFile;
@@ -831,7 +831,7 @@ bool CMP3Dec::SaveCover(FILE * in, CAudioMetaData * const m)
 		}
 		else
 		{
-			dprintf(DEBUG_NORMAL, "CMP3Dec::SaveCover: error open id3 tag\n");
+			dprintf(DEBUG_INFO, "CMP3Dec::SaveCover: error open id3 tag\n");
 			return false;
 		}
 
@@ -840,7 +840,7 @@ bool CMP3Dec::SaveCover(FILE * in, CAudioMetaData * const m)
     
 	if(0)
 	{
-		dprintf(DEBUG_NORMAL, "CMP3Dec::SaveCover:id3: not enough memory to display tag\n");
+		dprintf(DEBUG_INFO, "CMP3Dec::SaveCover:id3: not enough memory to display tag\n");
 		return false;
 	}
 	

@@ -348,60 +348,7 @@ bool CWebTV::readChannellist(std::string filename)
 
 void CWebTV::showUserBouquet(void)
 {
-#if 0
-	static int old_select = 0;
-	char cnt[5];
-	CMenuWidget InputSelector(LOCALE_WEBTV_HEAD, NEUTRINO_ICON_WEBTV_SMALL);
-	//int count = 0;
-	int select = -1;
-					
-	CMenuSelectorTarget *WebTVInputChanger = new CMenuSelectorTarget(&select);
-			
-	// webtv
-	sprintf(cnt, "%d", 0);
-	InputSelector.addItem(new CMenuForwarder(LOCALE_WEBTV_HEAD, true, NULL, WebTVInputChanger, cnt, NULL), old_select == 0);
-	
-	// divers
-	for (int i = 0; i < count; i++)
-	{
-		sprintf(cnt, "%d", i + 1);
-		userBouquet = std::string(rindex(g_settings.webtv_user_bouquet[i], '/') + 1);
-		strReplace(userBouquet, ".xml", "");
-		strReplace(userBouquet, ".tv", "");
-		strReplace(userBouquet, "userbouquet.", "");
-		InputSelector.addItem(new CMenuForwarderNonLocalized(userBouquet.c_str(), true, NULL, WebTVInputChanger, cnt, NULL), old_select == i + 1);
-	}
-	
-	hide();
-	InputSelector.exec(NULL, "");
-	delete WebTVInputChanger;
-	
-	printf("webtv: select:%d\n", select);
-					
-	if(select >= 0)
-	{
-		old_select = select;
-		
-		if(select == WEBTV)
-		{
-			mode = WEBTV;
-			readChannellist(DEFAULT_WEBTV_FILE);
-			selected = 0;
-			title = g_Locale->getText(LOCALE_WEBTV_HEAD);
-		}
-		else
-		{
-			mode = USER;
-			readChannellist(g_settings.webtv_user_bouquet[select - 1]);
-			selected = 0;
-			n_count = select - 1;
-			title = std::string(rindex(g_settings.webtv_user_bouquet[select - 1], '/') + 1);
-			strReplace(title, ".xml", "");
-			strReplace(title, ".tv", "");
-			strReplace(title, "userbouquet.", "");
-		}
-	}
-#endif
+	addUserBouquet();
 }
 
 void CWebTV::showAudioDialog(void)
@@ -798,7 +745,7 @@ showList:
 		}
 		else if (msg == CRCInput::RC_red) 
 		{
-			openFilebrowser();
+			addUserBouquet();
 			res = -1;
 			
 			goto showList;
@@ -1099,7 +1046,7 @@ void CWebTV::showFileInfoWebTV(int pos)
 		ShowMsg2UTF(channels[pos]->title.c_str(), channels[pos]->description.c_str(), CMsgBox::mbrBack, CMsgBox::mbBack);
 }
 
-void CWebTV::openFilebrowser(void)
+void CWebTV::addUserBouquet(void)
 {
 	CFileBrowser filebrowser;
 	CFileFilter fileFilter;
