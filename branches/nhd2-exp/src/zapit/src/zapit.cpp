@@ -3335,6 +3335,113 @@ int startPlayBack(CZapitChannel * thisChannel)
 		
 		if ( audioDemux->Start() < 0 )
 			return -1;
+		
+#if 1
+		//audio codec
+		const char *audioStr = "UNKNOWN";
+		
+		if(audioDecoder)
+		{
+			switch (thisChannel->getAudioChannel()->audioChannelType) 
+			{
+				case CZapitAudioChannel::AC3:
+					audioStr = "AC3";
+#if defined (__sh__)
+					audioDecoder->SetEncoding(AUDIO_ENCODING_AC3);
+#elif defined (PLATFORM_COOLSTREAM)
+					audioDecoder->SetStreamType(AUDIO_FMT_DOLBY_DIGITAL);
+#else
+					audioDecoder->SetStreamType(AUDIO_STREAMTYPE_AC3);
+#endif
+					break;
+					
+				case CZapitAudioChannel::MPEG:
+					audioStr = "MPEG2";
+#if defined (__sh__)
+					audioDecoder->SetEncoding(AUDIO_ENCODING_MPEG2);
+#elif defined (PLATFORM_COOLSTREAM)
+					audioDecoder->SetStreamType(AUDIO_FMT_MPEG);
+#else
+					audioDecoder->SetStreamType(AUDIO_STREAMTYPE_MPEG);
+#endif
+					break;
+					
+				case CZapitAudioChannel::AAC:
+					audioStr = "AAC";
+#if defined (__sh__)
+					audioDecoder->SetEncoding(AUDIO_ENCODING_AAC);
+#elif defined (PLATFORM_COOLSTREAM)
+					audioDecoder->SetStreamType(AUDIO_FMT_AAC);
+#else
+					audioDecoder->SetStreamType(AUDIO_STREAMTYPE_AAC);
+#endif					
+					break;
+					
+				case CZapitAudioChannel::AACPLUS:
+					audioStr = "AAC-PLUS";
+#if defined (PLATFORM_COOLSTREAM)
+					audioDecoder->SetStreamType(AUDIO_FMT_AAC);
+#elif !defined (__sh__)
+					audioDecoder->SetStreamType(AUDIO_STREAMTYPE_AACPLUS);
+#endif
+					break;
+					
+				case CZapitAudioChannel::DTS:
+					audioStr = "DTS";
+#if defined (__sh__)
+					audioDecoder->SetEncoding(AUDIO_ENCODING_DTS);
+#elif defined (PLATFORM_COOLSTREAM)
+					audioDecoder->SetStreamType(AUDIO_FMT_DTS);
+#else
+					audioDecoder->SetStreamType(AUDIO_STREAMTYPE_DTS);
+#endif
+					break;
+					
+				case CZapitAudioChannel::DTSHD:
+					audioStr = "DTSHD";
+#if !defined (__sh__) && !defined (PLATFORM_COOLSTREAM)
+					audioDecoder->SetStreamType(AUDIO_STREAMTYPE_DTSHD);
+#endif
+					break;
+					
+				case CZapitAudioChannel::EAC3:
+					audioStr = "EAC3";
+#if defined (__sh__)
+				audioDecoder->SetEncoding(AUDIO_ENCODING_AC3);
+#elif defined (PLATFORM_COOLSTREAM)
+				audioDecoder->SetStreamType(AUDIO_FMT_DD_PLUS);
+#else
+				audioDecoder->SetStreamType(AUDIO_STREAMTYPE_EAC3);
+#endif
+					break;
+					
+				case CZapitAudioChannel::LPCM:
+					audioStr = "LPCM";
+#if defined (__sh__)			  
+					audioDecoder->SetEncoding(AUDIO_ENCODING_LPCM);
+#elif !defined (PLATFORM_COOLSTREAM)
+					audioDecoder->SetStreamType(AUDIO_STREAMTYPE_LPCMDVD);
+#endif
+					break;
+					
+				default:
+					dprintf(DEBUG_INFO, "[zapit] unknown audio live_channel type 0x%x\n", thisChannel->getAudioChannel()->audioChannelType);
+					break;
+			}
+		}
+		
+		dprintf(DEBUG_NORMAL, "[zapit] starting %s audio Pid: 0x%X\n", audioStr, thisChannel->getAudioPid());		
+		
+		// start Audio Deocder
+		if(audioDecoder)
+		{			
+#if !defined (__sh__)			
+			audioDecoder->Resume();
+			audioDecoder->Stop();
+#endif				  
+			audioDecoder->Start();
+		}
+#endif
 	}
 	
 	// video pid
@@ -3342,6 +3449,36 @@ int startPlayBack(CZapitChannel * thisChannel)
 	{
 		if( !videoDemux )
 			videoDemux = new cDemux(); 
+		
+#if 1
+		const char *videoStr = "UNKNOWN";
+		
+		if(videoDecoder)
+		{
+			if(thisChannel->type == 0)
+			{
+				videoStr = "MPEG2";
+#if defined (__sh__)
+				videoDecoder->SetEncoding(VIDEO_ENCODING_MPEG2);
+#elif defined (PLATFORM_COOLSTREAM)
+				videoDecoder->SetStreamType(VIDEO_FORMAT_MPEG2);
+#else
+				videoDecoder->SetStreamType(VIDEO_STREAMTYPE_MPEG2);
+#endif
+			}
+			else if(thisChannel->type == 1)
+			{
+				videoStr = "H.264/MPEG-4 AVC";
+#if defined (__sh__)
+				videoDecoder->SetEncoding(VIDEO_ENCODING_H264);
+#elif defined (PLATFORM_COOLSTREAM)
+				videoDecoder->SetStreamType(VIDEO_FORMAT_MPEG4);
+#else
+				videoDecoder->SetStreamType(VIDEO_STREAMTYPE_MPEG4_H264);
+#endif				
+			}
+		}
+#endif
 		
 		// open Video Demux
 #if defined (PLATFORM_COOLSTREAM)
@@ -3357,8 +3494,28 @@ int startPlayBack(CZapitChannel * thisChannel)
 		
 		if ( videoDemux->Start() < 0 )
 			return -1;
+		
+#if 1
+		dprintf(DEBUG_NORMAL, "[zapit] starting %s video Pid: 0x%x\n", videoStr, thisChannel->getVideoPid());	
+		
+		// start Video Decoder
+		if(videoDecoder)
+		{
+#if !defined (__sh__)
+			videoDecoder->Resume();
+			videoDecoder->Stop();
+#endif
+							  
+#if defined (PLATFORM_COOLSTREAM)
+			videoDecoder->Start(0, thisChannel->getPcrPid(), thisChannel->getVideoPid());
+#else			
+			videoDecoder->Start();
+#endif	
+		}
+#endif
 	}
 	
+#if 0	
 	// select audio output and start audio
 	if (have_audio) 
 	{	
@@ -3467,7 +3624,9 @@ int startPlayBack(CZapitChannel * thisChannel)
 			audioDecoder->Start();
 		}
 	}
+#endif	
 
+#if 0
 	// start video
 	if (have_video) 
 	{		
@@ -3516,6 +3675,7 @@ int startPlayBack(CZapitChannel * thisChannel)
 #endif	
 		}
 	}
+#endif	
 
 	playing = true;
 	
@@ -3544,6 +3704,16 @@ int stopPlayBack(bool sendPmt)
 		videoDemux = NULL;
 	}
 	
+#if 1
+	if(videoDecoder)
+		videoDecoder->Stop();	
+#endif
+	
+#if 1
+	if(audioDecoder)
+		// audio decoder stop
+		audioDecoder->Stop();
+#endif
 	if (audioDemux)
 	{
 		// stop
@@ -3561,10 +3731,10 @@ int stopPlayBack(bool sendPmt)
 	}
 		
 	// audio decoder stop
-	audioDecoder->Stop();
+	//audioDecoder->Stop();
 	
 	// video decoder stop (blanking)
-	videoDecoder->Stop();	
+	//videoDecoder->Stop();	
 
 	playing = false;
 	
