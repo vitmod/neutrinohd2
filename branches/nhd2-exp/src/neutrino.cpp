@@ -4878,6 +4878,8 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 		{
 			if(webtv)
 				webtv->startPlayBack(webtv->getTunedChannel());
+			
+			mode = mode_iptv;
 		}
 		else
 		{
@@ -4895,16 +4897,18 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 
 		if( lastMode == mode_radio ) 
 		{
-			radioMode( false );
+			radioMode(false);
 		} 
 		else if(lastMode == mode_tv)
 		{
-			tvMode( false );
+			tvMode(false);
 		}
+		/*
 		else if(lastMode == mode_iptv)
 		{
-			webtvMode();
+			webtvMode(false);
 		}
+		*/
 
 		// set vol (saved)
 		AudioMute(current_muted, false );
@@ -4979,7 +4983,9 @@ void CNeutrinoApp::webtvMode( bool rezap)
 #endif		
 	}
 	else if(mode == mode_iptv)
+	{
 		return;
+	}
 
 	if(autoshift) 
 	{
@@ -5501,6 +5507,9 @@ void stop_daemons()
 // stop subtitle
 void CNeutrinoApp::StopSubtitles()
 {
+	if(mode == mode_iptv)
+		return;
+	
 	printf("[neutrino] %s\n", __FUNCTION__);
 	
 	int ttx, ttxpid, ttxpage;
@@ -5529,6 +5538,9 @@ void CNeutrinoApp::StopSubtitles()
 // start subtitle
 void CNeutrinoApp::StartSubtitles(bool show)
 {
+	if(mode == mode_iptv)
+		return;
+	
 	printf("%s: %s\n", __FUNCTION__, show ? "Show" : "Not show");
 	
 	if(!show)
