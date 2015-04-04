@@ -62,7 +62,6 @@ CBEBouquetWidget::CBEBouquetWidget()
 	frameBuffer = CFrameBuffer::getInstance();
 
 	// foot
-	//ButtonHeight = 25;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_foot_w, &icon_foot_h);
 	ButtonHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), icon_foot_h) + 6;
 

@@ -4901,6 +4901,10 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 		{
 			tvMode( false );
 		}
+		else if(lastMode == mode_iptv)
+		{
+			webtvMode();
+		}
 
 		// set vol (saved)
 		AudioMute(current_muted, false );

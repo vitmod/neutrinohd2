@@ -128,6 +128,7 @@ void GLThreadObj::run()
 			glutDisplayFunc(GLThreadObj::rendercb);
 			glutKeyboardFunc(GLThreadObj::keyboardcb);
 			glutSpecialFunc(GLThreadObj::specialcb);
+			glutReshapeFunc(GLThreadObj::resizecb);
 			setupGLObjects(); /* needs GLEW prototypes */
 			glutSetOption(GLUT_ACTION_ON_WINDOW_CLOSE, GLUT_ACTION_CONTINUE_EXECUTION);
 			glutMainLoop();
@@ -248,10 +249,12 @@ void GLThreadObj::specialcb(int key, int /*x*/, int /*y*/)
 int sleep_us = 30000;
 void GLThreadObj::render() 
 {
+	#if 0
 	if(!mReInit)
 	{   	/* for example if window is resized */
 		checkReinit();
 	}
+	#endif
 
 	if(mShutDown)
 	{
@@ -278,12 +281,13 @@ void GLThreadObj::render()
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 	
-	//
-	bltDisplayBuffer();
-	//glutPostOverlayRedisplay();
+	glutPostOverlayRedisplay();
 	
 	if(mX != glutGet(GLUT_WINDOW_WIDTH) && mY != glutGet(GLUT_WINDOW_HEIGHT))
 		glutReshapeWindow(mX, mY);
+	
+	// video display
+	bltDisplayBuffer();
 
 	// OSD
 	if (mState.blit) 
@@ -320,10 +324,15 @@ void GLThreadObj::render()
 	glutPostRedisplay();
 }
 
-void GLThreadObj::checkReinit()
+void GLThreadObj::resizecb(int w, int h)
 {
-	int x = glutGet(GLUT_WINDOW_WIDTH);
-	int y = glutGet(GLUT_WINDOW_HEIGHT);
+	gThiz->checkReinit(w, h);
+}
+
+void GLThreadObj::checkReinit(int x, int y)
+{
+	/*int*/ x = glutGet(GLUT_WINDOW_WIDTH);
+	/*int*/ y = glutGet(GLUT_WINDOW_HEIGHT);
 	
 	if( x != mX || y != mY )
 	{

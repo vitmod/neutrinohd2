@@ -65,7 +65,8 @@ class GLThreadObj : public OpenThreads::Thread
 		std::map<unsigned char, neutrino_msg_t> mKeyMap;
 		std::map<int, neutrino_msg_t> mSpecialMap;
 
-		void checkReinit();		/* e.g. in case window was resized */
+		static void resizecb(int w, int h);
+		void checkReinit(int x, int y);		/* e.g. in case window was resized */
 		static void rendercb();		/* callback for GLUT */
 		void render();			/* actual render function */
 		static void keyboardcb(unsigned char key, int x, int y);
