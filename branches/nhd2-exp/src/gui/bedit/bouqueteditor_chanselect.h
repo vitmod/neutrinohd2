@@ -62,6 +62,7 @@ class CBEChannelSelectWidget : public CListBox
 		
 		int fheight;
 		int info_height;
+		int ButtonHeight;
 		
 		int icon_w_hd;
 		int icon_h_hd;
@@ -74,6 +75,7 @@ class CBEChannelSelectWidget : public CListBox
 				
 		void paintDetails(int index);
 		void paintItem2DetailsLine(int pos, int ch_index);
+		void clearItem2DetailsLine();
 
 	public:
 		ZapitChannelList Channels;

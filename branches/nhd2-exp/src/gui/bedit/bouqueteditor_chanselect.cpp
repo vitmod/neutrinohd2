@@ -185,8 +185,8 @@ int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actio
 	width  = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
 	height = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
 	
-	listmaxshow = (height - theight)/fheight;
-	height = theight + listmaxshow*fheight; // recalc height
+	listmaxshow = (height - theight - ButtonHeight)/fheight;
+	height = theight + ButtonHeight + listmaxshow*fheight; // recalc height
 	
 	x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - width) / 2;
 	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height - ButtonHeight - 2 - info_height) / 2;
@@ -216,13 +216,13 @@ int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actio
 void CBEChannelSelectWidget::paintFoot()
 {
 	int ButtonWidth = width / 3;
-	frameBuffer->paintBoxRel(x, y + height, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + width - 3*ButtonWidth + 8, y + height + (ButtonHeight - icon_foot_h)/2);
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - 3*ButtonWidth + 38, y + height + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), width, g_Locale->getText(LOCALE_BOUQUETEDITOR_SWITCH), COL_INFOBAR, 0, true); // UTF-8
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + width - 3*ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_foot_h)/2);
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - 3*ButtonWidth + icon_foot_w + BORDER_LEFT + 5, y + height - ButtonHeight + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), width, g_Locale->getText(LOCALE_BOUQUETEDITOR_SWITCH), COL_INFOBAR, 0, true); // UTF-8
 
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HOME, x + width - ButtonWidth + 8, y + height + (ButtonHeight - icon_foot_h)/2);
-	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - ButtonWidth + 38, y + height + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), width, g_Locale->getText(LOCALE_BOUQUETEDITOR_RETURN), COL_INFOBAR, 0, true); // UTF-8	
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HOME, x + width - ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_foot_h)/2);
+	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - ButtonWidth + icon_foot_w + BORDER_LEFT + 5, y + height - ButtonHeight + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), width, g_Locale->getText(LOCALE_BOUQUETEDITOR_RETURN), COL_INFOBAR, 0, true); // UTF-8	
 }
 
 //
@@ -237,7 +237,7 @@ void CBEChannelSelectWidget::paintDetails(int index)
 	int len = snprintf(buf, sizeof(buf), "%d ", Channels[index]->getFreqId());
 	
 	// infobox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + ButtonHeight + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
+	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
 
 	// satname
 	sat_iterator_t sit = satellitePositions.find(Channels[index]->getSatellitePosition());
@@ -248,16 +248,16 @@ void CBEChannelSelectWidget::paintDetails(int index)
 		snprintf(&buf[len], sizeof(buf) - len, "(%s)\n", sit->second.name.c_str());
 	}
 	
-	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 10, y + height + ButtonHeight + 5 + fheight, width - 30, buf, COL_MENUCONTENTDARK, 0, true);
+	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 10, y + height + 5 + fheight, width - 30, buf, COL_MENUCONTENTDARK, 0, true);
 }
 
 void CBEChannelSelectWidget::paintItem2DetailsLine(int pos, int /*ch_index*/)
 {
 #define ConnectLineBox_Width	16
-
+	
 	int xpos  = x - ConnectLineBox_Width;
 	int ypos1 = y + theight + pos*fheight;
-	int ypos2 = y + height + ButtonHeight;
+	int ypos2 = y + height;
 	int ypos1a = ypos1 + (fheight/2) - 2;
 	int ypos2a = ypos2 + (info_height/2) - 2;
 	fb_pixel_t col1 = COL_MENUCONTENT_PLUS_6;
@@ -266,6 +266,7 @@ void CBEChannelSelectWidget::paintItem2DetailsLine(int pos, int /*ch_index*/)
 	// Clear
 	frameBuffer->paintBackgroundBoxRel(xpos, y, ConnectLineBox_Width, height + info_height);
 
+	// blit
 	frameBuffer->blit();
 
 	// paint Line if detail info (and not valid list pos)
@@ -276,8 +277,8 @@ void CBEChannelSelectWidget::paintItem2DetailsLine(int pos, int /*ch_index*/)
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1 + 5, 4, fh, col1);
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1 + 5, 1, fh, col2);			
 
-		frameBuffer->paintBoxRel(xpos+ConnectLineBox_Width - 4, ypos2 + 7, 4, info_height - 14, col1);
-		frameBuffer->paintBoxRel(xpos+ConnectLineBox_Width - 4, ypos2 + 7, 1, info_height - 14, col2);			
+		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos2 + 7, 4, info_height - 14, col1);
+		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos2 + 7, 1, info_height - 14, col2);			
 
 		// vertical line
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 4, ypos2a - ypos1a, col1);
@@ -292,11 +293,13 @@ void CBEChannelSelectWidget::paintItem2DetailsLine(int pos, int /*ch_index*/)
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 12, ypos2a, 8, 1, col2);
 
 		// untere info box lines
-		frameBuffer->paintBoxRel(x, ypos2, width, info_height, col1);
-		
-		// FIXME: bad hack just to overload the color
-		frameBuffer->paintBoxRel(x + 2, ypos2 + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
+		frameBuffer->paintBoxRel(x, ypos2, width, info_height, col1, true);
 	}
+}
+
+void CBEChannelSelectWidget::clearItem2DetailsLine()
+{  
+	  paintItem2DetailsLine(-1, 0);  
 }
 //
 

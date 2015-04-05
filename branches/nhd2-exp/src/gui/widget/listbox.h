@@ -64,6 +64,7 @@ class CListBox : public CMenuWidget
 		virtual void hide();
 		virtual void paintDetails(int index);
 		virtual void paintItem2DetailsLine(int pos, int ch_index);
+		virtual void clearItem2DetailsLine();
 		
 
 		
