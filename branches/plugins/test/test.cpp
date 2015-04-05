@@ -27,120 +27,112 @@
 
 extern "C" void plugin_exec(void);
 
-class CTestMenu : public CMenuTarget
-{
-        public:
-                int exec(CMenuTarget* parent,  const std::string &actionkey);
-};
-
-int CTestMenu::exec(CMenuTarget* parent, const std::string &actionKey)
-{
-	if(parent)
-		parent->hide();
-
-	printf("CTestMenu::exec: %s\n", actionKey.c_str());
-
-	return menu_return::RETURN_REPAINT;
-}
-
 void plugin_exec(void)
 {
-	printf("Plugins: starting testMenu\n");
+	dprintf(DEBUG_NORMAL, "Plugins: starting testMenu\n");
 	
+	// menue.cpp
 	/*
+	CMenuWidget * TestMenu = new CMenuWidget("menue.cpp",NEUTRINO_ICON_BUTTON_SETUP);
 	
-	CMenuWidget * TestMenu = new CMenuWidget("Test menu",NEUTRINO_ICON_BUTTON_SETUP);
-	CTestMenu * testHandler = new CTestMenu();
-	
-	TestMenu->addItem(new CMenuForwarderNonLocalized("VFD", true, NULL, testHandler, "vfd"));
-	TestMenu->addItem(new CMenuForwarderNonLocalized("Network", true, NULL, testHandler, "network"));
-	TestMenu->addItem(new CMenuForwarderNonLocalized("Smartcard", true, NULL, testHandler, "card"));
-	TestMenu->addItem(new CMenuForwarderNonLocalized("HDD", true, NULL, testHandler, "hdd"));
-	TestMenu->addItem(new CMenuForwarderNonLocalized("Buttons", true, NULL, testHandler, "buttons"));
-	//TestMenu->addItem(new CMenuForwarderNonLocalized("Scan 12538000", true, NULL, testHandler, "scan"));
-	//TestMenu->addItem(new CMenuForwarderNonLocalized("22 Khz ON", true, NULL, testHandler, "22kon"));
-	//TestMenu->addItem(new CMenuForwarderNonLocalized("22 Khz OFF", true, NULL, testHandler, "22koff"));
+	TestMenu->addItem(new CMenuForwarderNonLocalized("VFD", true, NULL, NULL, "vfd"));
+	TestMenu->addItem(new CMenuForwarderNonLocalized("Network", true, NULL, NULL, "network"));
+	TestMenu->addItem(new CMenuForwarderNonLocalized("Smartcard", true, NULL, NULL, "card"));
+	TestMenu->addItem(new CMenuForwarderNonLocalized("HDD", true, NULL, NULL, "hdd"));
+	TestMenu->addItem(new CMenuForwarderNonLocalized("Buttons", true, NULL, NULL, "buttons"));
+	TestMenu->addItem(new CMenuForwarderNonLocalized("Scan 12538000", true, NULL, NULL, "scan"));
+	TestMenu->addItem(new CMenuForwarderNonLocalized("22 Khz ON", true, NULL, NULL, "22kon"));
+	TestMenu->addItem(new CMenuForwarderNonLocalized("22 Khz OFF", true, NULL, NULL, "22koff"));
 	
 	TestMenu->exec(NULL, "");
 	TestMenu->hide();
-	
-	delete testHandler;
 	delete TestMenu;
 	*/
 	
-	// test color map
-	//CFrameBuffer::getInstance()->paintBackground();;
-
-	
-	int w = 50;
-	int h = 50;
-	
+	// CStringInput
 	/*
-	for (uint8_t i = 0; i < 15; i++)
-	{
-		CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*i, g_settings.screen_StartY, w, h, CFrameBuffer::getInstance()->realcolor[i]);
-	}
+	std::string value;
+	CStringInput * testMenu = new CStringInput("CStringInput", (char *)value.c_str());
 	
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0x0]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*1, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0x1]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*2, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0x2]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*3, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0x3]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*4, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0x4]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*5, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0x5]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*6, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0x6]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*7, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0x7]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*8, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0x8]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*9, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0x9]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*10, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0x10]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*11, g_settings.screen_StartY  + h, w, h, CFrameBuffer::getInstance()->realcolor[0x11]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*12, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0xA]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*13, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0xB]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*14, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0xC]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*15, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0xE]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*16, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0xD]);
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10 + w*17, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[0xFF]);
-	
-	
-	CFrameBuffer::getInstance()->blit();
+	testMenu->exec(NULL, "");
+	testMenu->hide();
+	delete testMenu;
 	*/
 	
-	neutrino_msg_t msg;
-	neutrino_msg_data_t data;
+	// CStringinputSMS
+	/*
+	std::string value;
+	CStringInputSMS * testMenu = new CStringInputSMS("CStringInputSMS", (char *)value.c_str());
 	
-	uint8_t index = 0;
-	bool loop = true;
+	testMenu->exec(NULL, "");
+	testMenu->hide();
+	delete testMenu;
+	*/
 	
-	CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10, g_settings.screen_StartY + h, w, h, CFrameBuffer::getInstance()->realcolor[index]);
-	CFrameBuffer::getInstance()->blit();
-		
-	while (loop)
-	{
-		g_RCInput->getMsg_ms(&msg, &data, 100);
-		
-		if(msg == CRCInput::RC_up)
-		{
-			index += 1;
-			dprintf(DEBUG_NORMAL, "CTest: index:%d\n", index);
-		}
-		else if (msg == CRCInput::RC_down)
-		{
-			index -= 1;
-			dprintf(DEBUG_NORMAL, "CTest: index:%d\n", index);
-		}
-		else if (msg == CRCInput::RC_home)
-		{
-			loop = false;
-		}
-		else if (CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all)
-		{
-			dprintf(DEBUG_NORMAL, "CTest: forward events to neutrino\n");
-				
-			loop = false;
-		}
-		
-		CFrameBuffer::getInstance()->paintBoxRel(g_settings.screen_StartX + 10, g_settings.screen_StartY + 10, w, h, CFrameBuffer::getInstance()->realcolor[index]);
-		CFrameBuffer::getInstance()->blit();	
-	}
+	// CPINInput
+	/*
+	std::string value;
+	CPINInput * testMenu = new CPINInput("CPINInput", (char *)value.c_str());
+	
+	testMenu->exec(NULL, "");
+	testMenu->hide();
+	delete testMenu;
+	*/
+	
+	// msgbox.cpp
+	/*
+	CMsgBox * testMenu = new CMsgBox("CMsgBox");
+	
+	testMenu->exec(5, true);
+	testMenu->hide();
+	delete testMenu;
+	*/
+	//ShowMsg2UTF("ShowMsg2UTF", "msgbox.cpp", CMsgBox::mbrBack, CMsgBox::mbBack);	// UTF-8
+	
+	// messagebox.cpp
+	/*
+	CMessageBox * testMenu = new CMessageBox(LOCALE_MESSAGEBOX_ERROR, "CMessagebox.cpp");
+	
+	testMenu->exec(5);
+	testMenu->hide();
+	delete testMenu;
+	*/
+	
+	// infomsg
+	//DisplayInfoMessage("InfoMessage");
+	
+	// errormsg
+	//DisplayErrorMessage("ErrorMessage");
+	
+	// hintbox.cpp
+	/*
+	CHintBox * testMenu = new CHintBox(LOCALE_MESSAGEBOX_INFO, "HintBox");
+	
+	testMenu->paint();
+	sleep(5);
+	testMenu->hide();
+	delete testMenu;
+	*/
+	
+	// helpbox.cpp
+	/*
+	Helpbox testMenu;
+	testMenu.addLine(NEUTRINO_ICON_BUTTON_RED, "helpBox");
+	testMenu.addLine("HELPBOX");
+	testMenu.addLine("");
+	testMenu.addPagebreak();
+	testMenu.show(LOCALE_MESSAGEBOX_INFO);
+	*/
+	
+	// lisbox.cpp
+	CListBox * testMenu = new CListBox("listBox)");
+	
+	testMenu->exec(NULL, "");
+	delete testMenu;
+	
+	// textbox.cpp
+	
+	// listframe.cpp
 }
 
 
