@@ -56,7 +56,8 @@ CListBox::CListBox(const char * const Caption, int _width, int _height)
 	info_height = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
 
 	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width) / 2);
-	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) / 2);
+	//y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) / 2);
+	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height - ButtonHeight - 2 - info_height) / 2;
 }
 
 void CListBox::setModified(void)
@@ -94,7 +95,7 @@ void CListBox::paintFoot()
 {
 	int ButtonWidth = width / 4;
 	
-	frameBuffer->paintBoxRel(x,y+height, width,ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
+	frameBuffer->paintBoxRel(x,y+height, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 	frameBuffer->paintHLine(x, x+width,  y, COL_INFOBAR_SHADOW_PLUS_0);
 
 	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x+width- 4* ButtonWidth+ 8, y+height+1);
@@ -112,7 +113,13 @@ void CListBox::paintFoot()
 
 void CListBox::paintItem(int pos)
 {
-	paintItem(liststart + pos, pos, (liststart+pos==selected) );
+	paintItem(liststart + pos, pos, (liststart + pos == selected) );
+	
+	// itemlines	
+	paintItem2DetailsLine(pos, pos);		
+		
+	// details
+	paintDetails(pos);
 }
 
 void CListBox::hide()
@@ -264,3 +271,59 @@ int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 	
 	return res;
 }
+
+void CListBox::paintDetails(int index)
+{
+	// infobox refresh
+	frameBuffer->paintBoxRel(x + 2, y + height + ButtonHeight + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
+}
+
+void CListBox::paintItem2DetailsLine(int pos, int /*ch_index*/)
+{
+#define ConnectLineBox_Width	16
+
+	int xpos  = x - ConnectLineBox_Width;
+	int ypos1 = y + theight + pos*fheight;
+	int ypos2 = y + height + ButtonHeight;
+	int ypos1a = ypos1 + (fheight/2) - 2;
+	int ypos2a = ypos2 + (info_height/2) - 2;
+	fb_pixel_t col1 = COL_MENUCONTENT_PLUS_6;
+	fb_pixel_t col2 = COL_MENUCONTENT_PLUS_1;
+
+	// Clear
+	frameBuffer->paintBackgroundBoxRel(xpos, y, ConnectLineBox_Width, height + info_height);
+
+	frameBuffer->blit();
+
+	// paint Line if detail info (and not valid list pos)
+	if (pos >= 0) 
+	{ 
+		int fh = fheight > 10 ? fheight - 10 : 5;
+			
+		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1 + 5, 4, fh, col1);
+		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1 + 5, 1, fh, col2);			
+
+		frameBuffer->paintBoxRel(xpos+ConnectLineBox_Width - 4, ypos2 + 7, 4, info_height - 14, col1);
+		frameBuffer->paintBoxRel(xpos+ConnectLineBox_Width - 4, ypos2 + 7, 1, info_height - 14, col2);			
+
+		// vertical line
+		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 4, ypos2a - ypos1a, col1);
+		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 1, ypos2a - ypos1a + 4, col2);		
+
+		// Hline Oben
+		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos1a, 12,4, col1);
+		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 12,1, col2);
+		
+		// Hline Unten
+		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos2a, 12, 4, col1);
+		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 12, ypos2a, 8, 1, col2);
+
+		// untere info box lines
+		frameBuffer->paintBoxRel(x, ypos2, width, info_height, col1);
+		
+		// FIXME: bad hack just to overload the color
+		frameBuffer->paintBoxRel(x + 2, ypos2 + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
+	}
+}
+//
+
