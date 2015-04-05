@@ -31,108 +31,97 @@ void plugin_exec(void)
 {
 	dprintf(DEBUG_NORMAL, "Plugins: starting testMenu\n");
 	
-	// menue.cpp
-	/*
-	CMenuWidget * TestMenu = new CMenuWidget("menue.cpp",NEUTRINO_ICON_BUTTON_SETUP);
-	
-	TestMenu->addItem(new CMenuForwarderNonLocalized("VFD", true, NULL, NULL, "vfd"));
-	TestMenu->addItem(new CMenuForwarderNonLocalized("Network", true, NULL, NULL, "network"));
-	TestMenu->addItem(new CMenuForwarderNonLocalized("Smartcard", true, NULL, NULL, "card"));
-	TestMenu->addItem(new CMenuForwarderNonLocalized("HDD", true, NULL, NULL, "hdd"));
-	TestMenu->addItem(new CMenuForwarderNonLocalized("Buttons", true, NULL, NULL, "buttons"));
-	TestMenu->addItem(new CMenuForwarderNonLocalized("Scan 12538000", true, NULL, NULL, "scan"));
-	TestMenu->addItem(new CMenuForwarderNonLocalized("22 Khz ON", true, NULL, NULL, "22kon"));
-	TestMenu->addItem(new CMenuForwarderNonLocalized("22 Khz OFF", true, NULL, NULL, "22koff"));
-	
-	TestMenu->exec(NULL, "");
-	TestMenu->hide();
-	delete TestMenu;
-	*/
-	
 	// CStringInput
-	/*
 	std::string value;
-	CStringInput * testMenu = new CStringInput("CStringInput", (char *)value.c_str());
+	CStringInput * stringInput = new CStringInput("CStringInput", (char *)value.c_str());
 	
-	testMenu->exec(NULL, "");
-	testMenu->hide();
-	delete testMenu;
-	*/
+	//stringInput->exec(NULL, "");
+	//strinInput->hide();
+	//delete stringInput;
 	
 	// CStringinputSMS
-	/*
-	std::string value;
-	CStringInputSMS * testMenu = new CStringInputSMS("CStringInputSMS", (char *)value.c_str());
+	//std::string value;
+	CStringInputSMS * stringInputSMS = new CStringInputSMS("CStringInputSMS", (char *)value.c_str());
 	
-	testMenu->exec(NULL, "");
-	testMenu->hide();
-	delete testMenu;
-	*/
+	//stringInputSMS->exec(NULL, "");
+	//stringInputSMS->hide();
+	//delete stringInputSMS;
 	
 	// CPINInput
-	/*
-	std::string value;
-	CPINInput * testMenu = new CPINInput("CPINInput", (char *)value.c_str());
+	//std::string value;
+	CPINInput * pinInput = new CPINInput("CPINInput", (char *)value.c_str());
 	
-	testMenu->exec(NULL, "");
-	testMenu->hide();
-	delete testMenu;
-	*/
+	//pinInput->exec(NULL, "");
+	//pinInput->hide();
+	//delete pinInput;
 	
 	// msgbox.cpp
-	/*
-	CMsgBox * testMenu = new CMsgBox("CMsgBox");
+	CMsgBox * msgBox = new CMsgBox("CMsgBox");
 	
-	testMenu->exec(5, true);
-	testMenu->hide();
-	delete testMenu;
-	*/
-	//ShowMsg2UTF("ShowMsg2UTF", "msgbox.cpp", CMsgBox::mbrBack, CMsgBox::mbBack);	// UTF-8
+	msgBox->exec(5, true);
+	msgBox->hide();
+	delete msgBox;
+	
+	ShowMsg2UTF("ShowMsg2UTF", "msgbox.cpp", CMsgBox::mbrBack, CMsgBox::mbBack);	// UTF-8
 	
 	// messagebox.cpp
-	/*
-	CMessageBox * testMenu = new CMessageBox(LOCALE_MESSAGEBOX_ERROR, "CMessagebox.cpp");
+	CMessageBox * messageBox = new CMessageBox(LOCALE_MESSAGEBOX_ERROR, "CMessagebox.cpp");
 	
-	testMenu->exec(5);
-	testMenu->hide();
-	delete testMenu;
-	*/
-	
+	messageBox->exec(5);
+	messageBox->hide();
+	delete messageBox;
 	// infomsg
-	//DisplayInfoMessage("InfoMessage");
-	
+	DisplayInfoMessage("InfoMessage");
 	// errormsg
-	//DisplayErrorMessage("ErrorMessage");
+	DisplayErrorMessage("ErrorMessage");
 	
 	// hintbox.cpp
-	/*
-	CHintBox * testMenu = new CHintBox(LOCALE_MESSAGEBOX_INFO, "HintBox");
+	CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, "HintBox");
 	
-	testMenu->paint();
+	hintBox->paint();
 	sleep(5);
-	testMenu->hide();
-	delete testMenu;
-	*/
+	hintBox->hide();
+	delete hintBox;
 	
 	// helpbox.cpp
-	/*
-	Helpbox testMenu;
-	testMenu.addLine(NEUTRINO_ICON_BUTTON_RED, "helpBox");
-	testMenu.addLine("HELPBOX");
-	testMenu.addLine("");
-	testMenu.addPagebreak();
-	testMenu.show(LOCALE_MESSAGEBOX_INFO);
-	*/
+	
+	Helpbox * helpBox = new Helpbox();
+	
+	helpBox->addLine(NEUTRINO_ICON_BUTTON_RED, "helpBox");
+	helpBox->addLine("HELPBOX");
+	helpBox->addLine("");
+	helpBox->addPagebreak();
+	helpBox->show(LOCALE_MESSAGEBOX_INFO);
+	
+	delete helpBox;
 	
 	// lisbox.cpp
-	CListBox * testMenu = new CListBox("listBox)");
+	CListBox * listBox = new CListBox("listBox)");
 	
-	testMenu->exec(NULL, "");
-	delete testMenu;
+	//listBox->exec(NULL, "");
+	//delete listBox;
 	
 	// textbox.cpp
 	
 	// listframe.cpp
+	
+	// testmenu
+	CMenuWidget * testMenu = new CMenuWidget("testMenu",NEUTRINO_ICON_BUTTON_SETUP);
+	
+	testMenu->addItem(new CMenuForwarderNonLocalized("stringInput", true, NULL, stringInput, NULL));
+	testMenu->addItem(new CMenuForwarderNonLocalized("stringInputSMS", true, NULL, stringInputSMS, NULL));
+	testMenu->addItem(new CMenuForwarderNonLocalized("PINInput", true, NULL, pinInput, NULL));
+	testMenu->addItem(new CMenuForwarderNonLocalized("listBox", true, NULL, listBox, NULL));
+	
+	testMenu->exec(NULL, "");
+	testMenu->hide();
+	
+	delete stringInput;
+	delete stringInputSMS;
+	delete pinInput;
+	delete listBox;
+	
+	delete testMenu;
 }
 
 
