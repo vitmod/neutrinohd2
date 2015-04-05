@@ -983,8 +983,8 @@ int EpgPlus::exec (CChannelList * _channelList, int selectedChannelIndex, CBouqu
 				CMenuWidget menuWidgetOptions (LOCALE_EPGPLUS_OPTIONS, NEUTRINO_ICON_FEATURES, 500);
 				menuWidgetOptions.enableSaveScreen(true);
 				
-				menuWidgetOptions.addItem (new MenuOptionChooserSwitchSwapMode (this));
-				menuWidgetOptions.addItem (new MenuOptionChooserSwitchViewMode (this));
+				menuWidgetOptions.addItem(new MenuOptionChooserSwitchSwapMode (this));
+				menuWidgetOptions.addItem(new MenuOptionChooserSwitchViewMode (this));
 
 				menuWidgetOptions.exec (NULL, "");
 	  		} 

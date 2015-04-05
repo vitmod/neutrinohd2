@@ -17,14 +17,19 @@ endif
 noinst_LIBRARIES = libneutrino_gui_widget.a libneutrino_gui_widget2.a 
 
 libneutrino_gui_widget_a_SOURCES = \
+	drawable.cpp \
 	buttons.cpp \
-	colorchooser.cpp keychooser.cpp \
-	menue.cpp stringinput.cpp stringinput_ext.cpp \
-	messagebox.cpp hintbox.cpp listbox.cpp listbox_legacy.cpp \
-	drawable.cpp hintboxext.cpp helpbox.cpp mountchooser.cpp \
-	listframe.cpp msgbox.cpp textbox.cpp vfdcontroler.cpp
+	menue.cpp \
+	stringinput.cpp stringinput_ext.cpp \
+	msgbox.cpp messagebox.cpp \
+	hintbox.cpp hintboxext.cpp \
+	helpbox.cpp \
+	listbox.cpp \
+	textbox.cpp \
+	listframe.cpp
 
 libneutrino_gui_widget2_a_SOURCES = \
+	colorchooser.cpp keychooser.cpp mountchooser.cpp vfdcontroler.cpp \
 	progresswindow.cpp progressbar.cpp
 
 

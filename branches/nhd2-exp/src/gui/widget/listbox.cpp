@@ -112,7 +112,7 @@ void CListBox::paintFoot()
 
 void CListBox::paintItem(int pos)
 {
-	paintItem(liststart+pos, pos, (liststart+pos==selected) );
+	paintItem(liststart + pos, pos, (liststart+pos==selected) );
 }
 
 void CListBox::hide()

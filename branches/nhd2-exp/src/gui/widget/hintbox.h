@@ -82,5 +82,4 @@ class CHintBox
 int ShowHintUTF(const neutrino_locale_t Caption, const char * const Text, const int Width = MENU_WIDTH - 50, int timeout = -1, const char * const Icon = NEUTRINO_ICON_INFO);
 int ShowLocalizedHint(const neutrino_locale_t Caption, const neutrino_locale_t Text, const int Width = MENU_WIDTH - 50, int timeout = -1, const char * const Icon = NEUTRINO_ICON_INFO);
 
-
 #endif

@@ -47,13 +47,13 @@ class Helpbox
 		Helpbox();
 		~Helpbox();
 
-		void show(const neutrino_locale_t Caption, const int Width = MENU_WIDTH - 50, int timeout = -1);
-
 		void addLine(std::string& text);
 		void addLine(const char *text);
 		void addLine(std::string& icon, std::string& text);
 		void addLine(const char *icon, const char *text);
 		void addPagebreak();
+		
+		void show(const neutrino_locale_t Caption, const int Width = MENU_WIDTH - 50, int timeout = -1);
 		
 	protected:
 		

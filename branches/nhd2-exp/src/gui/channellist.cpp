@@ -384,7 +384,7 @@ int CChannelList::doChannelMenu(void)
 	int i = 0;
 	int select = -1;
 	static int old_selected = 0;
-	int ret = menu_return::RETURN_NONE;
+	//int ret = menu_return::RETURN_NONE;
 	signed int bouquet_id, old_bouquet_id, new_bouquet_id;
 	int result;
 	char cnt[5];
@@ -410,19 +410,21 @@ int CChannelList::doChannelMenu(void)
 	sprintf(cnt, "%d", i);
 	menu->addItem(new CMenuForwarder(LOCALE_FAVORITES_MENUEADD, true, NULL, selector, cnt, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE), old_selected == i++);
 
-	ret = menu->exec(NULL, "");
+	/*ret =*/ menu->exec(NULL, "");
 	delete menu;
 	delete selector;
 
 	if(select >= 0) 
 	{
+		hide();
+		
 		old_selected = select;
 		channel_id = chanlist[selected]->channel_id;
 		
 		switch(select) 
 		{
 			case 0: //delete
-				hide();
+				//hide();
 				result = ShowMsgUTF ( LOCALE_BOUQUETEDITOR_DELETE, "Delete channel from bouquet?", CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo );
 
 				if(result == CMessageBox::mbrYes) 
@@ -655,6 +657,7 @@ int CChannelList::show()
 			else 
 			{
 				old_b_id = -1;
+
 				paintHead();
 				paint();
 			}
@@ -1651,7 +1654,7 @@ void CChannelList::clearItem2DetailsLine ()
 	  paintItem2DetailsLine(-1, 0);  
 }
 
-void CChannelList::paintItem2DetailsLine(int pos, int /*ch_index*/)
+void CChannelList::paintItem2DetailsLine(int pos, int ch_index)
 {
 #define ConnectLineBox_Width	16
 
