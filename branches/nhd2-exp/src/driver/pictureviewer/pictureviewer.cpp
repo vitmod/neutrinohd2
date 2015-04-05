@@ -471,7 +471,7 @@ void CPictureViewer::Cleanup()
 // display image
 bool CPictureViewer::DisplayImage(const std::string & name, int posx, int posy, int width, int height)
 {
-	dprintf(DEBUG_INFO, "CPictureViewer::DisplayImage\n");
+	dprintf(DEBUG_NORMAL, "CPictureViewer::DisplayImage %s\n", name.c_str());
 	
 	bool isPNG = false;
 	
