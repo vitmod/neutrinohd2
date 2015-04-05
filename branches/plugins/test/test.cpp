@@ -56,9 +56,13 @@ void plugin_exec(void)
 	//delete pinInput;
 	
 	// msgbox.cpp
-	CMsgBox * msgBox = new CMsgBox("CMsgBox");
+	int mode =  CMsgBox::SCROLL | CMsgBox::TITLE | CMsgBox::FOOT | CMsgBox::BORDER;// | //CMsgBox::NO_AUTO_LINEBREAK | //CMsgBox::CENTER | //CMsgBox::AUTO_WIDTH | //CMsgBox::AUTO_HIGH;
+	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	msgBox->exec(5, true);
+	CMsgBox * msgBox = new CMsgBox("ShowMsg2UTF", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, "msgbox.cpp", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+	//CMsgBox * msgBox = new CMsgBox("CMsgBox");
+	
+	msgBox->exec(3, true);
 	msgBox->hide();
 	delete msgBox;
 	
@@ -67,7 +71,7 @@ void plugin_exec(void)
 	// messagebox.cpp
 	CMessageBox * messageBox = new CMessageBox(LOCALE_MESSAGEBOX_ERROR, "CMessagebox.cpp");
 	
-	messageBox->exec(5);
+	messageBox->exec(3);
 	messageBox->hide();
 	delete messageBox;
 	// infomsg
@@ -79,7 +83,7 @@ void plugin_exec(void)
 	CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, "HintBox");
 	
 	hintBox->paint();
-	sleep(5);
+	sleep(3);
 	hintBox->hide();
 	delete hintBox;
 	
@@ -102,8 +106,65 @@ void plugin_exec(void)
 	//delete listBox;
 	
 	// textbox.cpp
+	CBox Box;
+	
+	Box.iX = g_settings.screen_StartX + 10;
+	Box.iY = g_settings.screen_StartY + 10;
+	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 20;
+	Box.iHeight = g_settings.screen_EndY - g_settings.screen_StartY - 20;
+	
+	CTextBox * textBox = new CTextBox(" ", NULL, CTextBox::SCROLL, &Box);
+	
+	std::string text = "qqqqqqqqqqqqqqqqwwwwwwwww";
+	
+	/*
+	textBox->setText(&text);
+	
+	textBox->paint();
+	
+	sleep(3);
+	delete textBox;
+	textBox = NULL;
+	*/
+	
+	bool logo_ok = false;
+		
+	int pich, picw, lx, ly;
+		
+	std::string fname;
+
+	fname = DATADIR "/neutrino/icons/pictureviewer.png";
+		
+	logo_ok = !access(fname.c_str(), F_OK);
+		
+	// display screenshot if exists
+	if(logo_ok) 
+	{
+		pich = Box.iHeight - 10;
+		picw = pich * (4.0 / 3);		// 4/3 format pics
+		lx = Box.iX + Box.iWidth - picw - 10;
+		ly = Box.iY + (Box.iHeight - pich)/2;
+	}
+	
+	textBox->setText(&text, Box.iWidth - picw - 20, fname, lx, ly, picw, pich);
+	
+	textBox->paint();
+	
+	sleep(3);
+	
+	delete textBox;
+	textBox = NULL;
 	
 	// listframe.cpp
+	/*
+	LF_LINES listFrameLines;
+	CListFrame * listFrame = new CListFrame(&listFrameLines, NULL, CListFrame::SCROLL | CListFrame::HEADER_LINE, &Box);
+	
+	listFrame->paint();
+	sleep(3);
+	delete listFrame;
+	listFrame = NULL;
+	*/
 	
 	// testmenu
 	CMenuWidget * testMenu = new CMenuWidget("testMenu",NEUTRINO_ICON_BUTTON_SETUP);
