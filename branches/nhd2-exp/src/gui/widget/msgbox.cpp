@@ -208,7 +208,6 @@ CMsgBox::~CMsgBox()
 //////////////////////////////////////////////////////////////////////
 void CMsgBox::initVar(void)
 {
-	//TRACE("->CMsgBox::InitVar\r\n");
 	m_cTitle = "";
 	m_cIcon = "";
 	m_nMode = SCROLL | TITLE | BORDER ;
@@ -235,8 +234,6 @@ void CMsgBox::initVar(void)
 	m_cBoxFrame.iHeight	= MIN_WINDOW_HEIGHT;
 
 	m_pcWindow = NULL;
-
-	//TRACE_1(" m_nWindowFrameBorderWidth: \t%d\r\n",m_nWindowFrameBorderWidth);
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -249,7 +246,6 @@ void CMsgBox::initVar(void)
 //////////////////////////////////////////////////////////////////////
 void CMsgBox::initFramesRel(void)
 {
-	//TRACE("->CMsgBox::InitFramesRel\r\n");
 	// init the title frame
 	if(m_nMode & TITLE)
 	{
@@ -310,7 +306,8 @@ void CMsgBox::refreshFoot(void)
 								m_cBoxFrameFootRel.iY + m_cBoxFrame.iY, 
 								m_cBoxFrameFootRel.iWidth, 
 								m_cBoxFrameFootRel.iHeight,  
-								COL_MENUHEAD_PLUS_0);
+								COL_MENUHEAD_PLUS_0,
+								RADIUS_MID, CORNER_BOTTOM);
 
 	int MaxButtonTextWidth = m_pcFontFoot->getRenderWidth(g_Locale->getText(LOCALE_MESSAGEBOX_CANCEL), true); // UTF-8
 	int ButtonWidth = 20 + 33 + MaxButtonTextWidth;
@@ -394,7 +391,12 @@ void CMsgBox::refreshTitle(void)
 		return;
 
 	// draw the background
-	m_pcWindow->paintBoxRel(m_cBoxFrameTitleRel.iX + m_cBoxFrame.iX, m_cBoxFrameTitleRel.iY+m_cBoxFrame.iY, m_cBoxFrameTitleRel.iWidth, m_cBoxFrameTitleRel.iHeight, COL_MENUHEAD_PLUS_0);
+	m_pcWindow->paintBoxRel(m_cBoxFrameTitleRel.iX + m_cBoxFrame.iX, 
+					m_cBoxFrameTitleRel.iY+m_cBoxFrame.iY, 
+					m_cBoxFrameTitleRel.iWidth, 
+					m_cBoxFrameTitleRel.iHeight, 
+					COL_MENUHEAD_PLUS_0, 
+					RADIUS_MID, CORNER_TOP);
 
 	if (!m_cIcon.empty())
 	{
@@ -424,10 +426,23 @@ void CMsgBox::refreshBorder(void)
 		return;
 
 	//draw bottom shadow
-	m_pcWindow->paintBoxRel(m_nWindowFrameBorderWidth+m_cBoxFrame.iX, m_cBoxFrame.iHeight - m_nWindowFrameBorderWidth+m_cBoxFrame.iY, m_cBoxFrame.iWidth - m_nWindowFrameBorderWidth, m_nWindowFrameBorderWidth, COL_INFOBAR_SHADOW_PLUS_0);
+	/*
+	m_pcWindow->paintBoxRel(m_nWindowFrameBorderWidth + m_cBoxFrame.iX, 
+					m_cBoxFrame.iHeight - m_nWindowFrameBorderWidth + m_cBoxFrame.iY, 
+					m_cBoxFrame.iWidth - m_nWindowFrameBorderWidth, 
+					m_nWindowFrameBorderWidth, 
+					COL_INFOBAR_SHADOW_PLUS_0, 
+					RADIUS_MID, CORNER_BOTTOM);
+					*/
 
 	//draw right shadow
-	m_pcWindow->paintBoxRel(m_cBoxFrame.iWidth - m_nWindowFrameBorderWidth+m_cBoxFrame.iX, m_nWindowFrameBorderWidth+m_cBoxFrame.iY, m_nWindowFrameBorderWidth, m_cBoxFrame.iHeight - m_nWindowFrameBorderWidth, COL_INFOBAR_SHADOW_PLUS_0);
+	/*
+	m_pcWindow->paintBoxRel(m_cBoxFrame.iWidth - m_nWindowFrameBorderWidth+m_cBoxFrame.iX, 
+					m_nWindowFrameBorderWidth + m_cBoxFrame.iY, m_nWindowFrameBorderWidth, 
+					m_cBoxFrame.iHeight - m_nWindowFrameBorderWidth, 
+					COL_INFOBAR_SHADOW_PLUS_0,
+					RADIUS_MID, CORNER_TOP);
+					*/
 }
 
 //////////////////////////////////////////////////////////////////////

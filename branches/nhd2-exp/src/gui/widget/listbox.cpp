@@ -57,7 +57,7 @@ CListBox::CListBox(const char * const Caption, int _width, int _height)
 	info_height = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
 
 	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width) / 2);
-	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height - ButtonHeight - 2 - info_height) / 2;
+	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - (height + info_height)) / 2;
 }
 
 void CListBox::setModified(void)
