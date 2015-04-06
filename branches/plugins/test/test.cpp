@@ -111,14 +111,13 @@ void plugin_exec(void)
 	*/
 	
 	// lisbox.cpp
-	/*
 	CListBox * listBox = new CListBox("listBox)");
 	
 	listBox->exec(NULL, "");
 	delete listBox;
-	*/
 	
 	// textbox.cpp
+	/*
 	CBox Box;
 	
 	Box.iX = g_settings.screen_StartX + 10;
@@ -143,7 +142,7 @@ void plugin_exec(void)
 	// display screenshot if exists
 	if(logo_ok) 
 	{
-		pich = /*Box.iHeight - 10*/320;
+		pich = 320;
 		picw = pich * (4.0 / 3);		// 4/3 format pics
 		lx = Box.iX + Box.iWidth - picw - 10;
 		ly = Box.iY + (Box.iHeight - pich)/2;
@@ -157,6 +156,7 @@ void plugin_exec(void)
 	
 	delete textBox;
 	textBox = NULL;
+	*/
 	
 	// listframe.cpp
 	/*
