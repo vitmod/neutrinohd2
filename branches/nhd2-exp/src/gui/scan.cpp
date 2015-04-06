@@ -105,13 +105,19 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 	CZapitClient::commandSetScanSatelliteList sat;
 
 	// window size
-	hheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	mheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	int _iw, _ih;
+	frameBuffer->getIconSize(NEUTRINO_ICON_SETTINGS, &_iw, &_ih);
+	hheight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), _ih) + 6;
 	
-	width       = w_max(MENU_WIDTH + 100, 0);
-	height      = h_max(hheight + (10 * mheight), 0); //9 lines
+	//
+	mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	
+	width = w_max(MENU_WIDTH + 100, 0);
+	height = h_max(hheight + (10 * mheight), 0); //9 lines
+	
 	x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - width) / 2;
 	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height) / 2;
+	
 	xpos_radar = x + width - 90;
 	ypos_radar = y + hheight + (mheight >> 1);
 	xpos1 = x + BORDER_LEFT;
@@ -235,9 +241,7 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 	
 	paint(test);
 	
-#if !defined USE_OPENGL
-	frameBuffer->blit();
-#endif	
+	frameBuffer->blit();	
 
 	// go
 	if(test) 
@@ -312,9 +316,7 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 		
 		showSNR(); // FIXME commented until scan slowdown will be solved
 		
-#if !defined USE_OPENGL
-		frameBuffer->blit();
-#endif		
+		frameBuffer->blit();	
 	}
 	
 	/* to join scan thread */
@@ -335,21 +337,17 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 		frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
 		
 		// exit icon
-		int icon_hm_w, icon_hm_h;
-		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &icon_hm_w, &icon_hm_h);
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HOME, x + width - BORDER_RIGHT - icon_hm_w, y + 5);
+		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &_iw, &_ih);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HOME, x + width - (BORDER_RIGHT + _iw), y + (hheight - _ih)/2);
 		
 		// setup icon
-		int icon_s_w, icon_s_h;
-		frameBuffer->getIconSize(NEUTRINO_ICON_SETTINGS, &icon_s_w, &icon_s_h);
-		frameBuffer->paintIcon(NEUTRINO_ICON_SETTINGS,x + BORDER_LEFT, y + 8);
+		frameBuffer->getIconSize(NEUTRINO_ICON_SETTINGS, &_iw, &_ih);
+		frameBuffer->paintIcon(NEUTRINO_ICON_SETTINGS, x + BORDER_LEFT, y + (hheight - _ih)/2);
 		
 		// title
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(xpos1 + 5 + icon_s_w, y + hheight, width - BORDER_RIGHT - BORDER_LEFT - icon_hm_w - icon_s_w, text, COL_MENUHEAD, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(xpos1 + _iw + 5, y + hheight - (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2, width - BORDER_RIGHT - BORDER_LEFT - 2*_iw, text, COL_MENUHEAD, 0, true); // UTF-8
 			
-#if !defined USE_OPENGL
-		frameBuffer->blit();
-#endif		
+		frameBuffer->blit();		
 	
 		unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(0xFFFF);
 
@@ -497,9 +495,7 @@ void CScanTs::hide()
 {
 	frameBuffer->paintBackground();
 
-#if !defined USE_OPENGL
 	frameBuffer->blit();
-#endif
 
 	freqready = 0;
 }
@@ -522,22 +518,25 @@ void CScanTs::paintLine(int _x, int _y, int w, const char * const txt)
 void CScanTs::paint(bool fortest)
 {
 	int ypos;
+	int iw, ih;
 
 	ypos = y;
 	
-	/* head */
+	// head 
 	frameBuffer->paintBoxRel(x, ypos, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
 	
-	/* icon */
-	frameBuffer->paintIcon(NEUTRINO_ICON_SETTINGS,x + 8, ypos + 8);
+	// icon
+	frameBuffer->getIconSize(NEUTRINO_ICON_SETTINGS, &iw, &ih);
+	frameBuffer->paintIcon(NEUTRINO_ICON_SETTINGS, x + BORDER_LEFT, ypos + (hheight - ih)/2);
 	
-	/* head title */
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(xpos1 + 38, ypos + hheight, width, fortest ? g_Locale->getText(LOCALE_SCANTS_TEST) : g_Locale->getText(LOCALE_SCANTS_HEAD), COL_MENUHEAD, 0, true); // UTF-8
+	// head title
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(xpos1 + iw + 5, ypos + hheight - (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2, width, fortest ? g_Locale->getText(LOCALE_SCANTS_TEST) : g_Locale->getText(LOCALE_SCANTS_HEAD), COL_MENUHEAD, 0, true); // UTF-8
 	
-	/* exit icon */
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HOME, x+ width- 30, ypos + 5);
+	// exit icon
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HOME, x + width - (BORDER_RIGHT + iw), ypos + (hheight - ih)/2);
 	
-	/* main box */
+	// main box
 	frameBuffer->paintBoxRel(x, ypos + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 	
 	// radar
