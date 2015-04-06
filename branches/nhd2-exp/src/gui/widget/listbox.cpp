@@ -49,8 +49,8 @@ CListBox::CListBox(const char * const Caption, int _width, int _height)
 	
 	modified = false;
 	
-	theight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	fheight     = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
+	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
 	listmaxshow = (height - theight - ButtonHeight)/fheight;
 	height = theight + ButtonHeight + listmaxshow*fheight; // recalc height
 	
@@ -76,11 +76,11 @@ void CListBox::paint()
 
 	int ypos = y + theight;
 	int sb = fheight*listmaxshow;
-	frameBuffer->paintBoxRel(x + width - 15, ypos, 15, sb,  COL_MENUCONTENT_PLUS_1);
+	frameBuffer->paintBoxRel(x + width - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb,  COL_MENUCONTENT_PLUS_1);
 
-	int sbc= ((getItemCount() - 1)/ listmaxshow) + 1;
-	float sbh= (sb- 4)/ sbc;
-	int sbs= (selected/listmaxshow);
+	int sbc = ((getItemCount() - 1)/ listmaxshow) + 1;
+	float sbh = (sb - 4)/ sbc;
+	int sbs = (selected/listmaxshow);
 
 	frameBuffer->paintBoxRel(x + width - 13, ypos + 2 + int(sbs* sbh), 11, int(sbh),  COL_MENUCONTENT_PLUS_3);
 }
@@ -88,7 +88,7 @@ void CListBox::paint()
 void CListBox::paintHead()
 {
 	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);//round
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 10, y + theight, width, caption.c_str() , COL_MENUHEAD, 0, true);
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + theight, width, caption.c_str() , COL_MENUHEAD, 0, true);
 }
 
 void CListBox::paintFoot()
@@ -96,18 +96,21 @@ void CListBox::paintFoot()
 	int ButtonWidth = width / 4;
 	
 	frameBuffer->paintBoxRel(x, y + height - ButtonHeight, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
-	//frameBuffer->paintHLine(x, x + width, y, COL_INFOBAR_SHADOW_PLUS_0);
 
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + width- 4*ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_bf_h)/2);
+	// button red
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, x + width- 4*ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_bf_h)/2);
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - 4*ButtonWidth + icon_bf_w + BORDER_LEFT + 5, y + height - ButtonHeight + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), width, "edit", COL_INFOBAR);
 
+	// button green
 	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, x + width - 3*ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_bf_h)/2);
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width- 3*ButtonWidth + icon_bf_w + BORDER_LEFT + 5, y + height - ButtonHeight + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), width, "add", COL_INFOBAR);
 
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, x + width - 2*ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_bf_h)/2);
+	// button yellow
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, x + width - 2*ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_bf_h)/2);
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width- 2*ButtonWidth + icon_bf_w + BORDER_LEFT + 5, y + height - ButtonHeight + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), width, "remove", COL_INFOBAR);
 
-	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HOME, x + width - ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_bf_h)/2);
+	// button blue
+	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, x + width - ButtonWidth + BORDER_LEFT, y + height - ButtonHeight + (ButtonHeight - icon_bf_h)/2);
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - ButtonWidth + icon_bf_w + BORDER_LEFT + 5, y + height - ButtonHeight + (ButtonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), width, "ready", COL_INFOBAR);
 }
 
@@ -119,6 +122,7 @@ void CListBox::paintItem(int pos)
 void CListBox::hide()
 {
 	frameBuffer->paintBackgroundBoxRel(x, y, width + 5, height + ButtonHeight + 5 + info_height);
+	
 	clearItem2DetailsLine();
 	
 	frameBuffer->blit();
@@ -159,7 +163,7 @@ void CListBox::paintItem(unsigned int itemNr, int paintNr, bool _selected)
 	}
 
 	frameBuffer->paintBoxRel(x, ypos, width - 15, getItemHeight(), bgcolor);
-	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 10, ypos + fheight, width - 20, "demo", color);
+	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, ypos + fheight, width - (BORDER_LEFT + BORDER_RIGHT), "demo", color);
 }
 
 int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
@@ -282,7 +286,7 @@ void CListBox::paintDetails(int index)
 void CListBox::paintItem2DetailsLine(int pos, int /*ch_index*/)
 {
 #define ConnectLineBox_Width	16
-	
+
 	int xpos  = x - ConnectLineBox_Width;
 	int ypos1 = y + theight + pos*fheight;
 	int ypos2 = y + height;
@@ -301,7 +305,7 @@ void CListBox::paintItem2DetailsLine(int pos, int /*ch_index*/)
 	if (pos >= 0) 
 	{ 
 		int fh = fheight > 10 ? fheight - 10 : 5;
-			
+				
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1 + 5, 4, fh, col1);
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1 + 5, 1, fh, col2);			
 
@@ -315,7 +319,7 @@ void CListBox::paintItem2DetailsLine(int pos, int /*ch_index*/)
 		// Hline Oben
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos1a, 12,4, col1);
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 12,1, col2);
-		
+			
 		// Hline Unten
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos2a, 12, 4, col1);
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 12, ypos2a, 8, 1, col2);

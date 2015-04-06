@@ -71,22 +71,23 @@ CPluginList::CPluginList(const neutrino_locale_t Name, const uint32_t listtype)
 	selected = 0;
 	width = MENU_WIDTH;
 	if(width > (g_settings.screen_EndX - g_settings.screen_StartX))
-		width=(g_settings.screen_EndX - g_settings.screen_StartX);
+		width = (g_settings.screen_EndX - g_settings.screen_StartX);
 	
 	height = 526;
 	if((height + 50) > (g_settings.screen_EndY-g_settings.screen_StartY))
 		height = (g_settings.screen_EndY-g_settings.screen_StartY) - 50; // 2*25 pixel frei
 		
 	theight  = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	//
-	fheight1 = g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMLARGE]->getHeight();
-	fheight2 = g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMSMALL]->getHeight();
-	fheight = fheight1 + fheight2 + 2;
-	//
-	listmaxshow = (height-theight-0)/fheight;
-	height = theight + listmaxshow*fheight; // recalc height
-	x = (((g_settings.screen_EndX- g_settings.screen_StartX)-width) / 2) + g_settings.screen_StartX;
-	y = (((g_settings.screen_EndY- g_settings.screen_StartY)-height) / 2) + g_settings.screen_StartY;
+	fheight1 = g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMLARGE]->getHeight(); // name
+	fheight2 = g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMSMALL]->getHeight(); // desc
+	fheight = fheight1 + fheight2 + 2; // name + desc + border
+	
+	listmaxshow = (height - 2*theight)/fheight;
+	height = 2*theight + listmaxshow*fheight; // recalc height
+	
+	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width) / 2);
+	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height) / 2;
+	
 	liststart = 0;
 }
 
@@ -255,7 +256,7 @@ reload:
 
 void CPluginList::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width + SCROLLBAR_WIDTH, height + theight);	//15:sb
+	frameBuffer->paintBackgroundBoxRel(x, y, width + SCROLLBAR_WIDTH, height);	//15:sb
 
 	frameBuffer->blit();	
 }
@@ -322,10 +323,10 @@ void CPluginList::paintItem(int pos)
 		}
 		
 		// name
-		g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMLARGE]->RenderString(x + 10 + icon_w, ypos+fheight1+3, width-20, actplugin->name, color, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMLARGE]->RenderString(x + 2*BORDER_LEFT + icon_w, ypos + fheight1 + 3, width - (BORDER_LEFT + BORDER_RIGHT), actplugin->name, color, 0, true); // UTF-8
 		
 		// desc
-		g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMSMALL]->RenderString(x + 20 + icon_w, ypos+fheight,    width-20, actplugin->desc, color, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMSMALL]->RenderString(x + 2*BORDER_LEFT + icon_w, ypos + fheight, width - (BORDER_LEFT + BORDER_RIGHT), actplugin->desc, color, 0, true); // UTF-8
 	}
 }
 
@@ -348,16 +349,16 @@ void CPluginList::paintHead()
 	frameBuffer->paintBoxRel(x, y, width + sb_width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
 	
 	// body
-	frameBuffer->paintBoxRel(x, y + theight, width, height - theight, COL_MENUCONTENT_PLUS_0);
+	frameBuffer->paintBoxRel(x, y + theight, width, height - 2*theight, COL_MENUCONTENT_PLUS_0);
 	
 	// foot
-	frameBuffer->paintBoxRel(x, y + height, width + sb_width, theight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, y + height - theight, width + sb_width, theight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 	
 	// foot bottons
 	int icon_w, icon_h;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	int ButtonWidth = (width - 20) / 4;
-	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height + (theight - icon_h)/2, ButtonWidth, NUM_LIST_BUTTONS, CPluginListButtons);
+	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - theight + (theight - icon_h)/2, ButtonWidth, NUM_LIST_BUTTONS, CPluginListButtons);
 
 	// title + icon
 	if(pluginlisttype == CPlugins::P_TYPE_GAME)
@@ -381,17 +382,6 @@ void CPluginList::paintHead()
 void CPluginList::paint()
 {
 	hide();
-	width = MENU_WIDTH;
-	if(width>(g_settings.screen_EndX-g_settings.screen_StartX))
-		width=(g_settings.screen_EndX-g_settings.screen_StartX);
-	height = 526;
-	if((height + 50) > (g_settings.screen_EndY-g_settings.screen_StartY))
-		height = (g_settings.screen_EndY-g_settings.screen_StartY) - 50; // 2*25 pixel frei
-	listmaxshow = (height-theight-0)/fheight;
-	height = theight + listmaxshow*fheight; // recalc height
-	
-	x = (((g_settings.screen_EndX- g_settings.screen_StartX)-width) / 2) + g_settings.screen_StartX;
-	y = (((g_settings.screen_EndY- g_settings.screen_StartY)-height) / 2) + g_settings.screen_StartY;
 	
 	liststart = (selected/listmaxshow)*listmaxshow;
 
@@ -409,8 +399,9 @@ void CPluginList::paintItems()
 		// Scrollbar
 		int nrOfPages = ((pluginlist.size() - 1) / listmaxshow) + 1; 
 		int currPage  = (liststart/listmaxshow) + 1;
-		frameBuffer->paintBoxRel(x + width, y + theight, SCROLLBAR_WIDTH, height - theight,  COL_MENUCONTENT_PLUS_1);
-		frameBuffer->paintBoxRel(x + width + 2, y + theight + 2 + (currPage - 1)*(height - theight - 4)/nrOfPages, 11, (height - theight - 4)/nrOfPages, COL_MENUCONTENT_PLUS_3 );
+		
+		frameBuffer->paintBoxRel(x + width, y + theight, SCROLLBAR_WIDTH, height - 2*theight,  COL_MENUCONTENT_PLUS_1);
+		frameBuffer->paintBoxRel(x + width + 2, y + theight + 2 + (currPage - 1)*(height - theight - 4)/nrOfPages, 11, (height - 2*theight - 4)/nrOfPages, COL_MENUCONTENT_PLUS_3 );
 	}
 	
 	for(unsigned int count = 0; count < listmaxshow; count++)
