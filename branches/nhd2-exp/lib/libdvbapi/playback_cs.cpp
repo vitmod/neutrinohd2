@@ -250,13 +250,14 @@ GstBusSyncReply Gst_bus_call(GstBus * /*bus*/, GstMessage * msg, gpointer /*user
 			}
 			break;
 		}
-#if defined (USE_OPENGL) //FIXME: ???		
+#if defined (USE_OPENGL) //FIXME: ???	
 		case GST_MESSAGE_ELEMENT:
 		{
 			if( gst_structure_has_name(gst_message_get_structure(msg), "prepare-xwindow-id") || gst_structure_has_name(gst_message_get_structure(msg), "have-xwindow-id") ) 
 			{
 				// set window id
-				gst_x_overlay_set_xwindow_id(GST_X_OVERLAY(GST_MESSAGE_SRC (msg)), GLWinID);
+				//NOTE: comment out if you want to overlay video window on osd window
+				//gst_x_overlay_set_xwindow_id(GST_X_OVERLAY(GST_MESSAGE_SRC (msg)), GLWinID);
 				
 				// not needed gst overlay shall render video into full osd window
 				//gst_x_overlay_set_render_rectangle(GST_X_OVERLAY(GST_MESSAGE_SRC (msg)), /*GLxStart*/0, /*GLyStart*/0, GLWidth, GLHeight);
