@@ -793,7 +793,7 @@ bool CVCRControl::Screenshot(const t_channel_id channel_id, char * fname, bool m
 	} 
 	else
 	{
-		//from tsbrowser(MP)
+		//from tsbrowser
 		strcpy(filename, fname);
 
 		std::string file_name = fname; // UTF-8

@@ -342,8 +342,10 @@ struct button_label CPluginListButtons[NUM_LIST_BUTTONS] =
 void CPluginList::paintHead()
 {
 	int sb_width = 0;
-	if(listmaxshow <= pluginlist.size()+1)
-		sb_width = 15;
+	if(listmaxshow <= pluginlist.size() + 1)
+		sb_width = SCROLLBAR_WIDTH;
+	
+	int iw, ih;
 	
 	// head
 	frameBuffer->paintBoxRel(x, y, width + sb_width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
@@ -363,7 +365,8 @@ void CPluginList::paintHead()
 	// title + icon
 	if(pluginlisttype == CPlugins::P_TYPE_GAME)
 	{
-		frameBuffer->paintIcon(NEUTRINO_ICON_GAMES, x + 8, y + 5);
+		frameBuffer->getIconSize(NEUTRINO_ICON_GAMES, &iw, &ih);
+		frameBuffer->paintIcon(NEUTRINO_ICON_GAMES, x + BORDER_LEFT, y + (theight - ih)/2);
 
 		int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(g_Locale->getText(name), true); // UTF-8
 		int stringstartposX = x + (width >> 1) - (neededWidth >> 1);
@@ -371,7 +374,8 @@ void CPluginList::paintHead()
 	} 
 	else
 	{
-		frameBuffer->paintIcon(NEUTRINO_ICON_SHELL, x + 8, y + 5);
+		frameBuffer->getIconSize(NEUTRINO_ICON_SHELL, &iw, &ih);
+		frameBuffer->paintIcon(NEUTRINO_ICON_SHELL, x + BORDER_LEFT, y + (theight - ih)/2);
 
 		int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(g_Locale->getText(name), true); // UTF-8
 		int stringstartposX = x +(width >> 1) - (neededWidth >> 1);
@@ -401,7 +405,7 @@ void CPluginList::paintItems()
 		int currPage  = (liststart/listmaxshow) + 1;
 		
 		frameBuffer->paintBoxRel(x + width, y + theight, SCROLLBAR_WIDTH, height - 2*theight,  COL_MENUCONTENT_PLUS_1);
-		frameBuffer->paintBoxRel(x + width + 2, y + theight + 2 + (currPage - 1)*(height - theight - 4)/nrOfPages, 11, (height - 2*theight - 4)/nrOfPages, COL_MENUCONTENT_PLUS_3 );
+		frameBuffer->paintBoxRel(x + width + 2, y + theight + 2 + (currPage - 1)*(height - 2*theight - 4)/nrOfPages, 11, (height - 2*theight - 4)/nrOfPages, COL_MENUCONTENT_PLUS_3 );
 	}
 	
 	for(unsigned int count = 0; count < listmaxshow; count++)
