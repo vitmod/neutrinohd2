@@ -88,14 +88,12 @@ void plugin_exec(void)
 	//DisplayErrorMessage("ErrorMessage");
 	
 	// hintbox.cpp
-	/*
 	CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, "HintBox");
 	
 	hintBox->paint();
 	sleep(3);
 	hintBox->hide();
 	delete hintBox;
-	*/
 	
 	// helpbox.cpp
 	/*
@@ -111,10 +109,12 @@ void plugin_exec(void)
 	*/
 	
 	// lisbox.cpp
+	/*
 	CListBox * listBox = new CListBox("listBox)");
 	
 	listBox->exec(NULL, "");
 	delete listBox;
+	*/
 	
 	// textbox.cpp
 	/*

@@ -420,32 +420,26 @@ void CNetzKinoBrowser::refreshMovieInfo(void)
 	}
 	else
 	{
-		bool logo_ok = false;
+		int pich = 0;
+		int picw = 0;
+		int lx = 0;
+		int ly = 0;
 		
-		int pich = m_cBoxFrameInfo.iHeight - 10;
-		int picw = pich * (4.0 / 3);		// 4/3 format pics
+		std::string fname = m_movieSelectionHandler->tfile;
 		
-		// netzkino
-		picw /= 2;
-		
-		int lx, ly;
-		
-		std::string fname;
-
-		fname = m_movieSelectionHandler->tfile;
-		
-		logo_ok = !access(fname.c_str(), F_OK);
-		
-		// display screenshot if exists
-		if(logo_ok) 
+		if(!access(fname.c_str(), F_OK))
 		{
+			pich = m_cBoxFrameInfo.iHeight - 10;
+			picw = pich * (4.0 / 3);		// 4/3 format pics
+		
+			// netzkino
+			picw /= 2;
+			
 			lx = m_cBoxFrameInfo.iX + m_cBoxFrameInfo.iWidth - picw - 10;
 			ly = m_cBoxFrameInfo.iY + (m_cBoxFrameInfo.iHeight - pich)/2;
-			
-			m_pcInfo->setText(&m_movieSelectionHandler->epgInfo2, m_cBoxFrameInfo.iWidth - picw - 20, fname, lx, ly, picw, pich);
 		}
-		else
-			m_pcInfo->setText(&m_movieSelectionHandler->epgInfo2);
+		
+		m_pcInfo->setText(&m_movieSelectionHandler->epgInfo2, m_cBoxFrameInfo.iWidth - picw - 20, fname, lx, ly, picw, pich);
 	}
 	
 	m_pcWindow->blit();
