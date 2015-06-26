@@ -393,8 +393,6 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
-	printf("Plugins: starting nglcd\n");
-	
 	nGLCD::getInstance();
 	
 	GLCD_Menu * glcdMenu = new GLCD_Menu();;

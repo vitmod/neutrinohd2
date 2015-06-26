@@ -39,22 +39,6 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
-	dprintf(DEBUG_INFO, "Plugins: starting DVDPlayer\n");
-	/*
-	CMenuWidget * dvdPlayerMenu = new CMenuWidget("DVD/Blueray Player", NEUTRINO_ICON_STREAMING);
-	
-	// dvd
-	dvdPlayerMenu->addItem(new CMenuForwarderNonLocalized("DVD player", true, NULL, moviePlayerGui, "dvdplayback", CRCInput::convertDigitToKey(1)));
-	
-	// blueray
-	dvdPlayerMenu->addItem(new CMenuForwarderNonLocalized("Blueray Player", true, NULL, moviePlayerGui, "bluerayplayback", CRCInput::convertDigitToKey(2)));	
-	
-	dvdPlayerMenu->exec(NULL, "");
-	dvdPlayerMenu->hide();
-	
-	delete dvdPlayerMenu;
-	*/
-	
 	CFileBrowser fileBrowser;
 	CFileFilter fileFilter;
 	

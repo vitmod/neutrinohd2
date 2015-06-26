@@ -992,8 +992,6 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
-	printf("Plugins: starting Media Portal\n");
-	
 	CMPBrowser * mpHandler = new CMPBrowser();
 	
 BROWSER:
@@ -1021,7 +1019,7 @@ BROWSER:
 		neutrino_msg_t msg;
 		neutrino_msg_data_t data;
 
-		g_RCInput->getMsg_ms(&msg, &data, 40);
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
 		if (msg != CRCInput::RC_home) 
 		{

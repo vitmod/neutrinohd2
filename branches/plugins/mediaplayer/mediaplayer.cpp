@@ -39,8 +39,6 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
-	printf("Plugins: starting mediaplayer\n");
-	
 	CFileBrowser * fileBrowser;
 	
 	fileBrowser = new CFileBrowser();

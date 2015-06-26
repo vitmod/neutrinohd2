@@ -17,8 +17,6 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
-	printf("Plugins: starting restart enigma\n");
-	
 	system("rm -f /etc/.nhd2");
 	system("touch /etc/.e2");
 	

@@ -469,9 +469,7 @@ void plugin_del(void)
 }
 
 void plugin_exec(void)
-{
-	printf("Plugins: starting VLCPlayer\n");
-	
+{	
 	CVLCPlayer * VLCPlayer = new CVLCPlayer();
 	
 	//moviePlayerGui->filename = NULL;

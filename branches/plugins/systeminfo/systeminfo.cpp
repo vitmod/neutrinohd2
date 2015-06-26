@@ -585,8 +585,6 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
-	printf("Plugins: starting systeminfo\n");
-	
 	CSysInfoWidget * SysInfoWidget = new CSysInfoWidget();
 	
 	SysInfoWidget->exec(NULL, "");

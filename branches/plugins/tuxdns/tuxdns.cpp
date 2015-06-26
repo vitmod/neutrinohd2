@@ -174,8 +174,6 @@ void plugin_del(void)
 
 void plugin_exec(void)
 {
-	printf("Plugins: starting tuxdns\n");
-	
 	CTuxdnsConf * TuxdnsConf = new CTuxdnsConf();
 	
 	TuxdnsConf->exec(NULL, "");
