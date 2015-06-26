@@ -63,10 +63,18 @@
 #include "system/debug.h"
 #include <system/helpers.h>
 
+#include <driver/audioplay.h>
+#include <pictureviewer.h>
+#include <movieplayer.h>
+
 #include <gui/hdd_menu.h>
 
 #include <blkid/blkid.h>
 #include <mntent.h>
+
+
+extern CPictureViewer * g_PicViewer;
+extern CMoviePlayerGui * moviePlayerGui;
 
 
 #define HDD_NOISE_OPTION_COUNT 4
@@ -531,7 +539,74 @@ int CHDDBrowser::exec(CMenuTarget * parent, const std::string& actionKey)
 	filebrowser.use_filter = false;	
 	
 	if(dst != NULL)
-		filebrowser.exec(dst);
+	{
+REPEAT:	  
+		if( filebrowser.exec(dst))
+		{
+			dst = filebrowser.getCurrentDir().c_str(); // remark path
+			neutrino_msg_t msg;
+			neutrino_msg_data_t data;
+			
+			// get the current file name
+			CFile * file;
+
+			if ((file = filebrowser.getSelectedFile()) != NULL) 
+			{
+				// parse file extension
+				if(file->getType() == CFile::FILE_PICTURE)
+				{
+					bool loop = true;
+					
+					g_PicViewer->SetScaling((CFrameBuffer::ScalingMode)g_settings.picviewer_scaling);
+					g_PicViewer->SetVisible(g_settings.screen_StartX, g_settings.screen_EndX, g_settings.screen_StartY, g_settings.screen_EndY);
+
+					if(g_settings.video_Ratio == 1)
+						g_PicViewer->SetAspectRatio(16.0/9);
+					else
+						g_PicViewer->SetAspectRatio(4.0/3);
+
+
+					g_PicViewer->ShowImage(file->Name);
+					
+					while (loop)
+					{
+						g_RCInput->getMsg(&msg, &data, 10); // 1 sec
+
+						if( msg == CRCInput::RC_home)
+							loop = false;
+					}
+						
+					CFrameBuffer::getInstance()->ClearFrameBuffer();
+					CFrameBuffer::getInstance()->blit();	
+				}
+				/*
+				else if( file->getType() == CFile::FILE_CDR || file->getType() == CFile::FILE_WAV || file->getType() == CFile::FILE_OGG || file->getType() == CFile::FILE_FLAC || file->getType() == CFile::FILE_MP3)
+				{
+					CAudiofile mp3(file->Name, CFile::FILE_MP3);
+					CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
+				}
+				*/
+				else if(file->getType() != CFile::FILE_TEXT && file->getType() != CFile::FILE_XML && file->getType() != CFile::FILE_PLAYLIST)
+				{
+					moviePlayerGui->filename = file->Name.c_str();
+				
+					moviePlayerGui->Title = file->Title;
+					moviePlayerGui->Info1 = file->Info1;
+					moviePlayerGui->Info2 = file->Info2;
+				
+					// play
+					moviePlayerGui->exec(NULL, "urlplayback");
+				}
+			}
+			
+			g_RCInput->getMsg_ms(&msg, &data, 10);
+			
+			if (msg != CRCInput::RC_home) 
+			{
+				goto REPEAT;
+			}
+		}
+	}
 	else
 	{
 		hintbox = new CHintBox(LOCALE_HDD_MOUNT, g_Locale->getText(LOCALE_HDD_UMOUNTED));

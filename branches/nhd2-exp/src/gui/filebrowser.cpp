@@ -383,8 +383,10 @@ void CFileBrowser::commonInit()
 
 CFileBrowser::~CFileBrowser()
 {
-	selected_filelist.clear();
-	filelist.clear();
+	if(!selected_filelist.empty())
+		selected_filelist.clear();
+	if(!filelist.empty())
+		filelist.clear();
 }
 
 CFile * CFileBrowser::getSelectedFile()
