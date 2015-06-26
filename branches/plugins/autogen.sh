@@ -1,6 +1,6 @@
 #!/bin/sh
 
-package="tuxbox-apps-misc-plugins"
+package="neutrinoHD2-plugins"
 
 srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.

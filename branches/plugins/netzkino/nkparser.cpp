@@ -85,15 +85,15 @@ bool cNKFeedParser::getUrl(std::string &url, std::string &answer, CURL *_curl_ha
 	char cerror[CURL_ERROR_SIZE];
 	curl_easy_setopt(_curl_handle, CURLOPT_ERRORBUFFER, cerror);
 
-	dprintf(DEBUG_INFO, "try to get [%s] ...\n", url.c_str());
+	dprintf(DEBUG_INFO, "cNKFeedParser::getUrl: try to get %s\n", url.c_str());
 	
 	CURLcode httpres = curl_easy_perform(_curl_handle);
 
-	dprintf(DEBUG_INFO, "http: res %d size %d\n", httpres, (int)answer.size());
+	dprintf(DEBUG_INFO, "cNKFeedParser::getUrl: http: res %d size %d\n", httpres, (int)answer.size());
 
 	if (httpres != 0 || answer.empty()) 
 	{
-		dprintf(DEBUG_INFO, "error: %s\n", cerror);
+		dprintf(DEBUG_INFO, "cNKFeedParser::getUrl: error: %s\n", cerror);
 		return false;
 	}
 	
@@ -121,18 +121,18 @@ bool cNKFeedParser::DownloadUrl(std::string &url, std::string &file, CURL *_curl
 	char cerror[CURL_ERROR_SIZE];
 	curl_easy_setopt(_curl_handle, CURLOPT_ERRORBUFFER, cerror);
 
-	dprintf(DEBUG_INFO, "try to get [%s] ...\n", url.c_str());
+	dprintf(DEBUG_INFO, "cNKFeedParser::DownloadUrl: try to get %s\n", url.c_str());
 	CURLcode httpres = curl_easy_perform(_curl_handle);
 
 	double dsize;
 	curl_easy_getinfo(_curl_handle, CURLINFO_SIZE_DOWNLOAD, &dsize);
 	fclose(fp);
 
-	dprintf(DEBUG_INFO, "http: res %d size %g.\n", httpres, dsize);
+	dprintf(DEBUG_INFO, "cNKFeedParser::DownloadUrl: http: res %d size %g.\n", httpres, dsize);
 
 	if (httpres != 0) 
 	{
-		dprintf(DEBUG_INFO, "curl error: %s\n", cerror);
+		dprintf(DEBUG_INFO, "cNKFeedParser::DownloadUrl: curl error: %s\n", cerror);
 		unlink(file.c_str());
 		return false;
 	}

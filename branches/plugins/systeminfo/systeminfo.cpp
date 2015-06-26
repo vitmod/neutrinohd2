@@ -26,6 +26,9 @@
 
 
 extern "C" void plugin_exec(void);
+extern "C" void plugin_init(void);
+extern "C" void plugin_del(void);
+
 
 sfileline sinbuffer[3*MAXLINES];
 sreadline sysbuffer[(3*MAXLINES)];
@@ -139,15 +142,15 @@ void CSysInfoWidget::paintHead()
 		sprintf((char *) buf, "%s", "Prozess-Liste:");
 	
 	// title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 5, y + theight, width, buf, COL_MENUHEAD);
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 5, y + theight, width, buf, COL_MENUHEAD, 0, true);
 }
 
 // paint foot
 void CSysInfoWidget::paintFoot()
 {
 	int ButtonWidth = (width - 28) / 4;
+	
 	frameBuffer->paintBoxRel(x, y + height, width, ButtonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
-	frameBuffer->paintHLine(x, x + width, y, COL_INFOBAR_SHADOW_PLUS_0);
 
 	// sysinfo (red)
 	frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, x + width - 4*ButtonWidth - icon_foot_w - 5, y + height + (ButtonHeight - icon_foot_h)/2);
@@ -569,6 +572,15 @@ int CSysInfoWidget::readList(struct sfileline *sinbuffer)
 		selected = slinecount - 1;
 	
 	return(0);
+}
+
+//
+void plugin_init(void)
+{
+}
+
+void plugin_del(void)
+{
 }
 
 void plugin_exec(void)

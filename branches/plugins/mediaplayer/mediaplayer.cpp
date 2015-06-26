@@ -26,38 +26,26 @@
 
 
 extern "C" void plugin_exec(void);
+extern "C" void plugin_init(void);
+extern "C" void plugin_del(void);
 
-#if defined (__USE_FILE_OFFSET64) || defined (_DARWIN_USE_64_BIT_INODE)
-typedef struct dirent64 dirent_struct;
-#define my_alphasort alphasort64
-#define my_scandir scandir64
-typedef struct stat64 stat_struct;
-#define my_stat stat64
-#define my_lstat lstat64
-#else
-typedef struct dirent dirent_struct;
-#define my_alphasort alphasort
-#define my_scandir scandir
-typedef struct stat stat_struct;
-#define my_stat stat
-#define my_lstat lstat
-#error not using 64 bit file offsets
-#endif
+void plugin_init(void)
+{
+}
+
+void plugin_del(void)
+{
+}
 
 void plugin_exec(void)
 {
 	printf("Plugins: starting mediaplayer\n");
-	
-	//moviePlayerGui->exec(NULL, "fileplayback");
 	
 	CFileBrowser * fileBrowser;
 	
 	fileBrowser = new CFileBrowser();
 	
 	CFileFilter fileFilter;
-	CFileList filelist;
-	
-	int selected = 0;
 	
 	fileFilter.addFilter("ts");
 	fileFilter.addFilter("mpg");
@@ -85,74 +73,22 @@ void plugin_exec(void)
 	fileFilter.addFilter("wma");
 	fileFilter.addFilter("ogg");
 
-	//fileBrowser->Multi_Select    = true;
-	//fileBrowser->Dirs_Selectable = true;
+	fileBrowser->Multi_Select    = true;
+	fileBrowser->Dirs_Selectable = false;
 	fileBrowser->Filter = &fileFilter;
 	
-	#if 0
-	CFileList _filelist;
-	
-	stat_struct statbuf;
-	dirent_struct **namelist;
-	int n;
-	std::string dirname;
-	
-	dirname = g_settings.network_nfs_moviedir;
-
-	n = my_scandir(dirname.c_str(), &namelist, 0, my_alphasort);
-	if (n < 0)
-	{
-		//perror(("mediaplayer scandir: " + dirname).c_str());
-		//return false;
-	}
-	
-	for(int i = 0; i < n;i++)
-	{
-		CFile file;
-		if(strcmp(namelist[i]->d_name, ".") != 0)
-		{
-			file.Name = dirname + namelist[i]->d_name;
-
-			if(my_stat((file.Name).c_str(),&statbuf) != 0)
-				perror("stat error");
-			else
-			{
-				file.Mode = statbuf.st_mode;
-				file.Size = statbuf.st_size;
-				file.Time = statbuf.st_mtime;
-				_filelist.push_back(file);
-			}
-		}
-		free(namelist[i]);
-	}
-
-	free(namelist);
-	
-	fileBrowser->filelist = _filelist;
-	#endif
+	std::string Path_local = g_settings.network_nfs_moviedir;
 
 BROWSER:
-	if (fileBrowser->exec(g_settings.network_nfs_moviedir))
+	if (fileBrowser->exec(Path_local.c_str()))
 	{
-		filelist = fileBrowser->getSelectedFiles();
+		Path_local = fileBrowser->getCurrentDir();
 		
-		CFile *file = fileBrowser->getSelectedFile();
-		filelist.clear();
-		filelist.push_back(*file);
+		// filelist player
+		moviePlayerGui->filelist = fileBrowser->getSelectedFiles();;
 		
-		if(!filelist.empty())
-		{
-			moviePlayerGui->filename = filelist[selected].Name.c_str();	
-			moviePlayerGui->Title = filelist[selected].getFileName();
-			moviePlayerGui->Info1 = filelist[selected].getFileName();
-			moviePlayerGui->Info2 = filelist[selected].getFileName();
-			
-			//moviePlayerGui->was_file = true;
-			//moviePlayerGui->filelist = filelist;
-
-			// play
+		if(!moviePlayerGui->filelist.empty())
 			moviePlayerGui->exec(NULL, "urlplayback");
-		}
 		
 		neutrino_msg_t msg;
 		neutrino_msg_data_t data;

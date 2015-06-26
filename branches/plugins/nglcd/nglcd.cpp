@@ -49,9 +49,9 @@ void sectionsd_getCurrentNextServiceKey(t_channel_id uniqueServiceKey, CSections
 
 // config
 extern int		glcd_enable;
-extern uint32_t	glcd_color_fg;
-extern uint32_t	glcd_color_bg;
-extern uint32_t	glcd_color_bar;
+extern uint32_t		glcd_color_fg;
+extern uint32_t		glcd_color_bg;
+extern uint32_t		glcd_color_bar;
 extern std::string	glcd_font;
 extern int		glcd_percent_channel;
 extern int		glcd_percent_epg;

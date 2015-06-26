@@ -24,6 +24,9 @@
 
 #include <netzkino.h>
 
+extern "C" void plugin_exec(void);
+extern "C" void plugin_init(void);
+extern "C" void plugin_del(void);
  
 #define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
 #define MAX_WINDOW_HEIGHT 		(g_settings.screen_EndY - g_settings.screen_StartY - 40)	
@@ -181,9 +184,9 @@ void CNetzKinoBrowser::initFrames(void)
 	m_cBoxFrameBrowserList.iHeight = 	m_settings.browserFrameHeight;
 
 	m_cBoxFrameFootRel.iX = 		0;
-	m_cBoxFrameFootRel.iY = 		m_cBoxFrame.iHeight - m_pcFontFoot->getHeight();
+	m_cBoxFrameFootRel.iY = 		m_cBoxFrame.iHeight - m_pcFontFoot->getHeight()*2; //FIXME
 	m_cBoxFrameFootRel.iWidth = 		m_cBoxFrameBrowserList.iWidth;
-	m_cBoxFrameFootRel.iHeight = 		m_pcFontFoot->getHeight();
+	m_cBoxFrameFootRel.iHeight = 		m_pcFontFoot->getHeight()*2; //FIXME
 	
 	m_cBoxFrameInfo.iX = 			m_cBoxFrameBrowserList.iX;
 	m_cBoxFrameInfo.iY = 			m_cBoxFrameBrowserList.iY + m_cBoxFrameBrowserList.iHeight + INTER_FRAME_SPACE;
@@ -383,8 +386,10 @@ void CNetzKinoBrowser::refresh(void)
 		 m_pcBrowser->refresh();
 	
 	if (m_pcInfo != NULL && m_showMovieInfo == true) 
+	{
 		refreshMovieInfo();
-		//m_pcInfo->refresh();
+		m_pcInfo->refresh();
+	}
 		
 	refreshFoot();
 	refreshLCD();
@@ -425,21 +430,19 @@ void CNetzKinoBrowser::refreshMovieInfo(void)
 		int lx = 0;
 		int ly = 0;
 		
-		std::string fname = m_movieSelectionHandler->tfile;
-		
-		if(!access(fname.c_str(), F_OK))
+		if(!access(m_movieSelectionHandler->tfile.c_str(), F_OK))
 		{
-			pich = m_cBoxFrameInfo.iHeight - 10;
+			pich = m_cBoxFrameInfo.iHeight - 20;
 			picw = pich * (4.0 / 3);		// 4/3 format pics
 		
 			// netzkino
 			picw /= 2;
 			
-			lx = m_cBoxFrameInfo.iX + m_cBoxFrameInfo.iWidth - picw - 10;
-			ly = m_cBoxFrameInfo.iY + (m_cBoxFrameInfo.iHeight - pich)/2;
+			lx = m_cBoxFrameInfo.iX + m_cBoxFrameInfo.iWidth - (picw + 20);
+			ly = m_cBoxFrameInfo.iY + 20;
 		}
 		
-		m_pcInfo->setText(&m_movieSelectionHandler->epgInfo2, m_cBoxFrameInfo.iWidth - picw - 20, fname, lx, ly, picw, pich);
+		m_pcInfo->setText(&m_movieSelectionHandler->epgInfo2, m_movieSelectionHandler->tfile, lx, ly, picw, pich);
 	}
 	
 	m_pcWindow->blit();
@@ -534,7 +537,7 @@ void CNetzKinoBrowser::refreshTitle(void)
 	if (m_settings.nkmode == cNKFeedParser::SEARCH) 
 	{
 		title += ": ";
-		title += g_Locale->getText(LOCALE_MOVIEBROWSER_YT_SEARCH);
+		title += g_Locale->getText(LOCALE_YT_SEARCH);
 		title += " \"" + m_settings.nksearch + "\"";
 	} 
 	else if (m_settings.nkmode == cNKFeedParser::CATEGORY) 
@@ -598,13 +601,13 @@ void CNetzKinoBrowser::refreshFoot(void)
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_RED, m_cBoxFrame.iX + xpos1, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_PREV_RESULTS), color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + 5 + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + m_pcFontFoot->getHeight())/2, width-30, g_Locale->getText(LOCALE_YT_PREV_RESULTS), color, 0, true); // UTF-8
 
 	// green
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_w, &icon_h);
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, m_cBoxFrame.iX + xpos2, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width -30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_NEXT_RESULTS), color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + m_pcFontFoot->getHeight())/2, width -30, g_Locale->getText(LOCALE_YT_NEXT_RESULTS), color, 0, true); // UTF-8
 
 	// yellow
 	next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
@@ -612,13 +615,13 @@ void CNetzKinoBrowser::refreshFoot(void)
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, m_cBoxFrame.iX + xpos3, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2);
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos3 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, next_text.c_str(), color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos3 + 5 + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + m_pcFontFoot->getHeight())/2, width-30, next_text.c_str(), color, 0, true); // UTF-8
 
 	// blue
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, m_cBoxFrame.iX+xpos4, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + (ADD_FOOT_HEIGHT>>1));
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, m_cBoxFrame.iX + xpos4, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2);
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES), color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + 5 + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + m_pcFontFoot->getHeight())/2, width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES), color, 0, true); // UTF-8
 }
 
 bool CNetzKinoBrowser::onButtonPress(neutrino_msg_t msg)
@@ -989,8 +992,6 @@ bool CNetzKinoBrowser::getMovieInfoItem(MI_MOVIE_INFO& movie_info, NKB_INFO_ITEM
 //netzkino
 void CNetzKinoBrowser::loadNKTitles(int mode, std::string search, int id, unsigned int start, unsigned int end)
 {
-	//nkparser.GetCategoryList();
-	
 	//
 	if (nkparser.ParseFeed((cNKFeedParser::nk_feed_mode_t)mode, search, id)) 
 	{
@@ -999,7 +1000,7 @@ void CNetzKinoBrowser::loadNKTitles(int mode, std::string search, int id, unsign
 	else 
 	{
 		//FIXME show error
-		DisplayErrorMessage(g_Locale->getText(LOCALE_MOVIEBROWSER_NK_ERROR));
+		DisplayErrorMessage(g_Locale->getText(LOCALE_NK_ERROR));
 		m_reload_movies = true;
 		return;
 	}
@@ -1074,7 +1075,7 @@ int CNKCategoriesMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 	if(parent)
 		parent->hide();
 
-	CMenuWidget m(LOCALE_MOVIEBROWSER_NK_CATEGORIES, NEUTRINO_ICON_NETZKINO_SMALL);
+	CMenuWidget m(LOCALE_NK_CATEGORIES, NEUTRINO_ICON_NETZKINO_SMALL);
 
 	for (unsigned i = 0; i < cats.size(); i++)
 	{
@@ -1096,12 +1097,12 @@ bool CNetzKinoBrowser::showNKMenu()
 	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
 
 	CNKCategoriesMenu nkCategoriesMenu(m_settings.nkmode, m_settings.nkcategory, m_settings.nkcategoryname, nkparser);
-	mainMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_NK_CATEGORIES, true, m_settings.nkcategoryname, &nkCategoriesMenu));
+	mainMenu.addItem(new CMenuForwarder(LOCALE_NK_CATEGORIES, true, m_settings.nkcategoryname, &nkCategoriesMenu));
 	mainMenu.addItem(GenericMenuSeparatorLine);
 
 	std::string search = m_settings.nksearch;
-	CStringInputSMS stringInput(LOCALE_MOVIEBROWSER_YT_SEARCH, &search);
-	mainMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_YT_SEARCH, true, search, &stringInput, NULL, CRCInput::RC_nokey, ""));
+	CStringInputSMS stringInput(LOCALE_YT_SEARCH, &search);
+	mainMenu.addItem(new CMenuForwarder(LOCALE_YT_SEARCH, true, search, &stringInput, NULL, CRCInput::RC_nokey, ""));
 
 	mainMenu.addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, selector, to_string(cNKFeedParser::SEARCH).c_str(), CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 
@@ -1152,8 +1153,14 @@ bool CNetzKinoBrowser::showNKMenu()
 
 
 
-// plugin part
-extern "C" void plugin_exec(void);
+// plugin API
+void plugin_init(void)
+{
+}
+
+void plugin_del(void)
+{
+}
 
 void plugin_exec(void)
 {
@@ -1184,6 +1191,7 @@ BROWSER:
 			moviePlayerGui->Title = p_movie_info->epgTitle;
 			moviePlayerGui->Info1 = p_movie_info->epgInfo1;
 			moviePlayerGui->Info2 = p_movie_info->epgInfo2;
+			moviePlayerGui->thumbnail = p_movie_info->tfile;
 			
 			// play
 			moviePlayerGui->exec(NULL, "urlplayback");

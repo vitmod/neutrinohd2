@@ -22,6 +22,10 @@
 
 #include <glcdsetup.h>
 
+extern "C" void plugin_exec(void);
+extern "C" void plugin_init(void);
+extern "C" void plugin_del(void);
+
 
 // config
 int		glcd_enable;
@@ -379,7 +383,13 @@ bool GLCD_Menu::SaveSettings()
 }
 
 // plugin API
-extern "C" void plugin_exec(void);
+void plugin_init(void)
+{
+}
+
+void plugin_del(void)
+{
+}
 
 void plugin_exec(void)
 {

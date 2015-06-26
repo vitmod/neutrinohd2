@@ -28,6 +28,9 @@
 #include <tuxcom.h>
 
 extern "C" void plugin_exec(void);
+extern "C" void plugin_init(void);
+extern "C" void plugin_del(void);
+
 
 //
 //
@@ -3784,8 +3787,14 @@ void WriteSettings()
 }
 
 //
-// plugin_exec                                                                
-//
+void plugin_init(void)
+{
+}
+
+void plugin_del(void)
+{
+}
+                                                             
 void plugin_exec(void)
 {
 	//show versioninfo

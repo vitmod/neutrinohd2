@@ -22,6 +22,9 @@
 #include <tuxcal.h>
 
 extern "C" void plugin_exec(void);
+extern "C" void plugin_init(void);
+extern "C" void plugin_del(void);
+
 
 //
 // ReadConf
@@ -1483,14 +1486,27 @@ void PaintGrid(int last, int start, int end, int akt, int sel, int infolines, in
 	
 	if (infolines)
 	{
-		RenderSObject(4,MAXSCREEN_Y-GRIDLINE_SMALL+4,RED,OBJ_CIRCLE);	
-		RenderString(infohelp[0][osdidx],25,MAXSCREEN_Y-4,MAXSCREEN_X/4,LEFT,SMALL,BLACK);	
-		RenderSObject(4+MAXSCREEN_X/4,MAXSCREEN_Y-GRIDLINE_SMALL+4,GREEN,OBJ_CIRCLE);
-		RenderString(infohelp[1][osdidx],25+MAXSCREEN_X/4,MAXSCREEN_Y-4,MAXSCREEN_X/4,LEFT,SMALL,BLACK);	
-		RenderSObject(4+MAXSCREEN_X/2,MAXSCREEN_Y-GRIDLINE_SMALL+4,YELLOW,OBJ_CIRCLE);	
-		RenderString(infohelp[2][osdidx],25+MAXSCREEN_X/2,MAXSCREEN_Y-4,MAXSCREEN_X/4,LEFT,SMALL,BLACK);	
-		RenderSObject(4+3*MAXSCREEN_X/4,MAXSCREEN_Y-GRIDLINE_SMALL+4,BLUE,OBJ_CIRCLE);	
-		RenderString(infohelp[3][osdidx],25+3*MAXSCREEN_X/4,MAXSCREEN_Y-4,MAXSCREEN_X/4,LEFT,SMALL,BLACK);	
+		int iw, ih;
+		CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RED, &iw, &ih);
+		// red
+		//RenderSObject(4,MAXSCREEN_Y-GRIDLINE_SMALL+4,RED,OBJ_CIRCLE);	
+		CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_RED, startx, starty + MAXSCREEN_Y - ih);
+		RenderString(infohelp[0][osdidx], 25, MAXSCREEN_Y - 4, MAXSCREEN_X/4, LEFT, SMALL,BLACK);
+		
+		// green
+		//RenderSObject(4+MAXSCREEN_X/4,MAXSCREEN_Y-GRIDLINE_SMALL+4,GREEN,OBJ_CIRCLE);
+		CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, startx + MAXSCREEN_X/4, starty + MAXSCREEN_Y - ih);
+		RenderString(infohelp[1][osdidx], 25 + MAXSCREEN_X/4, MAXSCREEN_Y - 4, MAXSCREEN_X/4, LEFT, SMALL, BLACK);
+		
+		// yellow
+		//RenderSObject(4+MAXSCREEN_X/2,MAXSCREEN_Y-GRIDLINE_SMALL+4,YELLOW,OBJ_CIRCLE);	
+		CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, startx + MAXSCREEN_X/2, starty + MAXSCREEN_Y - ih);
+		RenderString(infohelp[2][osdidx],25 + MAXSCREEN_X/2,MAXSCREEN_Y-4,MAXSCREEN_X/4,LEFT,SMALL,BLACK);
+		
+		// blue
+		//RenderSObject(4+3*MAXSCREEN_X/4,MAXSCREEN_Y-GRIDLINE_SMALL+4,BLUE,OBJ_CIRCLE);	
+		CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, startx + 3*MAXSCREEN_X/4, starty + MAXSCREEN_Y - ih);
+		RenderString(infohelp[3][osdidx],25 + 3*MAXSCREEN_X/4,MAXSCREEN_Y - 4,MAXSCREEN_X/4, LEFT, SMALL, BLACK);	
 	}
 	else
 	{
@@ -2198,12 +2214,14 @@ void SaveDatabase(void)
 }
 
 //
-// plugin_exec
-//
-/*!
- * start the plugin
+void plugin_init(void)
+{
+}
 
-*/
+void plugin_del(void)
+{
+}
+
 void plugin_exec()
 {
 	char cvs_revision[] = "$Revision: 1.10 $";

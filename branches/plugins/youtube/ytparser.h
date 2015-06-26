@@ -57,8 +57,8 @@ class cYTVideoInfo
 		std::string published;
 		int duration;
 		yt_urlmap_t formats;
+		bool ret;
 
-		void Dump();
 		std::string GetUrl(int fmt = 0);
 		
 };
@@ -72,12 +72,14 @@ class cYTFeedParser
 		std::string thumbnail_dir;
 		std::string curfeed;
 		std::string curfeedfile;
-		std::string tquality; 	// thumbnail size
-		std::string region; 	// more results
-		std::string next; 	// next results
-		std::string prev; 	// prev results
-		std::string start; 	// start index
-		std::string total; 	// total results
+		std::string tquality; 		// thumbnail size
+		std::string region; 		// more results
+		std::string next; 		// next results
+		std::string prev; 		// prev results
+		std::string start; 		// start index
+		std::string total; 		// total results
+		std::string nextprevurl; 	// url for next/prev
+		std::string key; 		// youtube dev id
 
 		int feedmode;
 		int max_results;
@@ -96,22 +98,16 @@ class cYTFeedParser
 		static bool saveToFile(const char * name, std::string str);
 		bool getUrl(std::string &url, std::string &answer);
 		bool DownloadUrl(std::string &url, std::string &file);
-		bool parseFeedXml(std::string &answer);
+		bool parseFeedJSON(std::string &answer);
+		bool parseFeedDetailsJSON(cYTVideoInfo* vinfo);
 		bool decodeVideoInfo(std::string &answer, cYTVideoInfo &vinfo);
 		bool supportedFormat(int fmt);
 		bool ParseFeed(std::string &url);
 	public:
 		enum yt_feed_mode_t
 		{
-			TOP_RATED,
-			TOP_FAVORITES,
-			MOST_SHARED,
 			MOST_POPULAR,
-			MOST_RESENT,
-			MOST_DISCUSSED,
-			MOST_RESPONDED,
-			RECENTLY_FEATURED,
-			ON_THE_WEB,
+			MOST_POPULAR_ALL_TIME,
 			FEED_LAST,
 			NEXT,
 			PREV,
@@ -135,7 +131,6 @@ class cYTFeedParser
 		bool ParseVideoInfo(cYTVideoInfo &vinfo);
 		bool GetVideoUrls();
 		bool DownloadThumbnails();
-		void Dump();
 		void Cleanup(bool delete_thumbnails = true);
 
 		yt_video_list_t &GetVideoList() { return videos; }

@@ -26,6 +26,9 @@
 
 
 extern "C" void plugin_exec(void);
+extern "C" void plugin_init(void);
+extern "C" void plugin_del(void);
+
 
 #define TuxdnsCFG PLUGINDIR "/tuxdns/tuxdns.conf"
 
@@ -158,6 +161,15 @@ void CTuxdnsConf::TuxdnsSettings()
 	settingsselector->exec(NULL, "");
 	settingsselector->hide();
 	delete settingsselector;
+}
+
+//
+void plugin_init(void)
+{
+}
+
+void plugin_del(void)
+{
 }
 
 void plugin_exec(void)

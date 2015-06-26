@@ -1,8 +1,19 @@
 #include <plugin.h>
 
  
-// plugins api
 extern "C" void plugin_exec(void);
+extern "C" void plugin_init(void);
+extern "C" void plugin_del(void);
+
+
+//
+void plugin_init(void)
+{
+}
+
+void plugin_del(void)
+{
+}
 
 void plugin_exec(void)
 {

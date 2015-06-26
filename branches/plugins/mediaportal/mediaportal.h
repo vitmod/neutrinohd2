@@ -107,7 +107,7 @@ class CMPBrowser : public CMenuTarget
 		static CFont * mp_FontTitle;
 		
 		MPB_SETTINGS mp_settings;
-		
+			
         public:
 		CMPBrowser();
 		~CMPBrowser();
@@ -155,6 +155,8 @@ class CMPBrowser : public CMenuTarget
 		// misc
 		void updateItemSelection(void);
 		bool getItemInfoItem(CFile &item_info, MPB_INFO_ITEM item, std::string* item_string);
+		
+		void showFileInfo();
 };
 
 #endif //__MP__

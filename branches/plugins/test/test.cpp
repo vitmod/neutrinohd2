@@ -26,77 +26,91 @@
 
 
 extern "C" void plugin_exec(void);
+extern "C" void plugin_init(void);
+extern "C" void plugin_del(void);
+
+void plugin_init(void)
+{
+	dprintf(DEBUG_NORMAL, "test: plugin_init\n");
+}
+
+void plugin_del(void)
+{
+	dprintf(DEBUG_NORMAL, "test: plugin_del\n");
+}
 
 void plugin_exec(void)
 {
-	// CStringInput
-	/*
+	/// CStringInput
 	std::string value;
 	CStringInput * stringInput = new CStringInput("CStringInput", (char *)value.c_str());
 	
+	/*
 	stringInput->exec(NULL, "");
 	strinInput->hide();
 	delete stringInput;
 	*/
+	///
 	
-	// CStringinputSMS
-	/*
-	std::string value;
+	/// CStringinputSMS
+	//std::string value;
 	CStringInputSMS * stringInputSMS = new CStringInputSMS("CStringInputSMS", (char *)value.c_str());
 	
+	/*
 	stringInputSMS->exec(NULL, "");
 	stringInputSMS->hide();
 	delete stringInputSMS;
 	*/
+	///
 	
-	// CPINInput
-	/*
-	std::string value;
+	/// CPINInput
+	//std::string value;
 	CPINInput * pinInput = new CPINInput("CPINInput", (char *)value.c_str());
 	
+	/*
 	pinInput->exec(NULL, "");
 	pinInput->hide();
 	delete pinInput;
 	*/
+	///
 	
-	// msgbox.cpp
-	/*
+	/// msgbox.cpp
 	int mode =  CMsgBox::SCROLL | CMsgBox::TITLE | CMsgBox::FOOT | CMsgBox::BORDER;// | //CMsgBox::NO_AUTO_LINEBREAK | //CMsgBox::CENTER | //CMsgBox::AUTO_WIDTH | //CMsgBox::AUTO_HIGH;
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
 	CMsgBox * msgBox = new CMsgBox("ShowMsg2UTF", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, "msgbox.cpp", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
-	//CMsgBox * msgBox = new CMsgBox("CMsgBox");
 	
 	msgBox->exec(3, true);
 	msgBox->hide();
 	delete msgBox;
-	*/
 	
-	//ShowMsg2UTF("ShowMsg2UTF", "msgbox.cpp", CMsgBox::mbrBack, CMsgBox::mbBack);	// UTF-8
+	//
+	ShowMsg2UTF("ShowMsg2UTF", "msgbox.cpp", CMsgBox::mbrBack, CMsgBox::mbBack);	// UTF-8
+	///
 	
-	// messagebox.cpp
-	/*
+	/// messagebox.cpp
 	CMessageBox * messageBox = new CMessageBox(LOCALE_MESSAGEBOX_ERROR, "CMessagebox.cpp");
 	
 	messageBox->exec(3);
 	messageBox->hide();
 	delete messageBox;
-	*/
-	// infomsg
-	//DisplayInfoMessage("InfoMessage");
-	// errormsg
-	//DisplayErrorMessage("ErrorMessage");
 	
-	// hintbox.cpp
+	// infomsg
+	DisplayInfoMessage("InfoMessage");
+	// errormsg
+	DisplayErrorMessage("ErrorMessage");
+	///
+	
+	/// hintbox.cpp
 	CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, "HintBox");
 	
 	hintBox->paint();
 	sleep(3);
 	hintBox->hide();
 	delete hintBox;
+	///
 	
-	// helpbox.cpp
-	/*
+	/// helpbox.cpp
 	Helpbox * helpBox = new Helpbox();
 	
 	helpBox->addLine(NEUTRINO_ICON_BUTTON_RED, "helpBox");
@@ -106,18 +120,18 @@ void plugin_exec(void)
 	helpBox->show(LOCALE_MESSAGEBOX_INFO);
 	
 	delete helpBox;
-	*/
+	///
 	
-	// lisbox.cpp
-	/*
+	/// lisbox.cpp
 	CListBox * listBox = new CListBox("listBox)");
 	
+	/*
 	listBox->exec(NULL, "");
 	delete listBox;
 	*/
+	///
 	
-	// textbox.cpp
-	/*
+	/// textbox.cpp
 	CBox Box;
 	
 	Box.iX = g_settings.screen_StartX + 10;
@@ -148,7 +162,7 @@ void plugin_exec(void)
 		ly = Box.iY + (Box.iHeight - pich)/2;
 	}
 	
-	textBox->setText(&text, Box.iWidth - picw - 20, fname, lx, ly, picw, pich);
+	textBox->setText(&text, fname, lx, ly, picw, pich);
 	
 	textBox->paint();
 	
@@ -156,10 +170,9 @@ void plugin_exec(void)
 	
 	delete textBox;
 	textBox = NULL;
-	*/
+	///
 	
-	// listframe.cpp
-	/*
+	/// listframe.cpp
 	LF_LINES listFrameLines;
 	CListFrame * listFrame = new CListFrame(&listFrameLines, NULL, CListFrame::SCROLL | CListFrame::HEADER_LINE, &Box);
 	
@@ -167,21 +180,24 @@ void plugin_exec(void)
 	sleep(3);
 	delete listFrame;
 	listFrame = NULL;
-	*/
+	///
 	
-	// menue.cpp
-	/*
+	/// menue.cpp
 	CMenuWidget * testMenu = new CMenuWidget("testMenu",NEUTRINO_ICON_BUTTON_SETUP);
 	
-	testMenu->addItem(new CMenuForwarderNonLocalized("CMenuForwarderNonLocalized", true, NULL, NULL, NULL));
-	testMenu->addItem(new CMenuForwarderNonLocalized("CMenuForwarderNonLocalized", true, NULL, NULL, NULL));
-	testMenu->addItem(new CMenuForwarderNonLocalized("CMenuForwarderNonLocalized", true, NULL, NULL, NULL));
-	testMenu->addItem(new CMenuForwarderNonLocalized("CMenuForwarderNonLocalized", true, NULL, NULL, NULL));
+	testMenu->addItem(new CMenuForwarderNonLocalized("CStringInput", true, value, stringInput, NULL));
+	testMenu->addItem(new CMenuForwarderNonLocalized("CStrinInputSMS", true, value, stringInputSMS, NULL));
+	testMenu->addItem(new CMenuForwarderNonLocalized("CPINInput", true, value, pinInput, NULL));
+	testMenu->addItem(new CMenuForwarderNonLocalized("listBox", true, NULL, listBox, NULL));
 	
 	testMenu->exec(NULL, "");
 	testMenu->hide();
+	delete stringInput;
+	delete stringInputSMS;
+	delete pinInput;
+	delete listBox;
 	delete testMenu;
-	*/
+	///
 }
 
 

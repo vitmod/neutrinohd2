@@ -9,6 +9,7 @@ AM_CPPFLAGS =  \
 	-I$(top_srcdir)/../nhd2-exp/lib/libxmltree \
 	-I$(top_srcdir)/../nhd2-exp/lib/libmd5sum \
 	-I$(top_srcdir)/../nhd2-exp/lib/libdvbapi \
+	-I$(top_srcdir)/../nhd2-exp/lib/jsoncpp/include \
 	@FREETYPE_CFLAGS@ 
 
 noinst_LTLIBRARIES = youtube.la
@@ -16,6 +17,7 @@ noinst_LTLIBRARIES = youtube.la
 youtube_la_SOURCES = ytparser.cpp youtube.cpp
 	 
 youtube_la_LDFLAGS = -rpath $(PLUGINDIR) -module
+youtube_la_LIBADD = $(top_srcdir)/../nhd2-exp/lib/jsoncpp/libjsoncpp.a
 
 youtube_la_CXXFLAGS = -fno-rtti -fno-exceptions
 

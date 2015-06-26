@@ -26,6 +26,9 @@
 
 
 extern "C" void plugin_exec(void);
+extern "C" void plugin_init(void);
+extern "C" void plugin_del(void);
+
 
 static int skt = -1;
 
@@ -454,6 +457,15 @@ vlc_is_sending:
 	dprintf(DEBUG_NORMAL, "[movieplayer.cpp] Now VLC is sending. Read sockets created\n");
 	
 	return true;
+}
+
+//
+void plugin_init(void)
+{
+}
+
+void plugin_del(void)
+{
 }
 
 void plugin_exec(void)

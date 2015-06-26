@@ -24,8 +24,9 @@
 
 #include <mediaportal.h>	// plugin.h
 
-//#include <netzkino.h>
-//#include <youtube.h>
+extern "C" void plugin_exec(void);
+extern "C" void plugin_init(void);
+extern "C" void plugin_del(void);
 
 
 #define MAX_WINDOW_WIDTH  		(g_settings.screen_EndX - g_settings.screen_StartX - 40)
@@ -407,30 +408,25 @@ void CMPBrowser::refreshItemInfo(void)
 	}
 	else
 	{
-		bool logo_ok = false;
+		int pich = 0;
+		int picw = 0;
+		int lx = 0;
+		int ly = 0;
 		
-		int pich = mp_BoxFrameInfo.iHeight - 10;
-		int picw = pich * (4.0 / 3);		// 4/3 format pics
-		
-		int lx, ly;
-		
-		// youtube
 		std::string fname;
 
 		fname = mp_itemSelectionHandler->thumbnail;
 		
-		logo_ok = !access(fname.c_str(), F_OK);
-		
 		// display screenshot if exists
-		if(logo_ok) 
+		if( !access(fname.c_str(), F_OK) )
 		{
-			lx = mp_BoxFrameInfo.iX + mp_BoxFrameInfo.iWidth - picw - 10;
-			ly = mp_BoxFrameInfo.iY + (mp_BoxFrameInfo.iHeight - pich)/2;
-			
-			mp_Info->setText(&mp_itemSelectionHandler->Info2, mp_BoxFrameInfo.iWidth - picw - 20, fname, lx, ly, picw, pich);
+			pich = mp_BoxFrameInfo.iHeight - 20;
+			picw = pich * (4.0 / 3);
+			lx = mp_BoxFrameInfo.iX + mp_BoxFrameInfo.iWidth - (picw + 20);
+			ly = mp_BoxFrameInfo.iY + 10;
 		}
-		else
-			mp_Info->setText(&mp_itemSelectionHandler->Info2);
+		
+		mp_Info->setText(&mp_itemSelectionHandler->Info2, fname, lx, ly, picw, pich);
 	}
 	
 	mp_Window->blit();
@@ -569,13 +565,13 @@ void CMPBrowser::refreshFoot(void)
 	mp_Window->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	mp_Window->paintIcon(NEUTRINO_ICON_BUTTON_RED, mp_BoxFrame.iX + xpos1, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY + (mp_BoxFrameFootRel.iHeight - icon_h)/2 );
 
-	mp_FontFoot->RenderString(mp_BoxFrame.iX + xpos1 + 5 + icon_w, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY + (mp_BoxFrameFootRel.iHeight + mp_FontFoot->getHeight())/2, width - 30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_PREV_RESULTS), color, 0, true); // UTF-8
+	mp_FontFoot->RenderString(mp_BoxFrame.iX + xpos1 + 5 + icon_w, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY + (mp_BoxFrameFootRel.iHeight + mp_FontFoot->getHeight())/2, width - 30, g_Locale->getText(LOCALE_YT_PREV_RESULTS), color, 0, true); // UTF-8
 
 	// green
 	mp_Window->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_w, &icon_h);
 	mp_Window->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, mp_BoxFrame.iX + xpos2, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY + (mp_BoxFrameFootRel.iHeight - icon_h)/2 );
 
-	mp_FontFoot->RenderString(mp_BoxFrame.iX + xpos2 + 5 + icon_w, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY + (mp_BoxFrameFootRel.iHeight + mp_FontFoot->getHeight())/2, width -30, g_Locale->getText(LOCALE_MOVIEBROWSER_YT_NEXT_RESULTS), color, 0, true); // UTF-8
+	mp_FontFoot->RenderString(mp_BoxFrame.iX + xpos2 + 5 + icon_w, mp_BoxFrame.iY + mp_BoxFrameFootRel.iY + (mp_BoxFrameFootRel.iHeight + mp_FontFoot->getHeight())/2, width -30, g_Locale->getText(LOCALE_YT_NEXT_RESULTS), color, 0, true); // UTF-8
 
 	// yellow
 	next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
@@ -656,6 +652,7 @@ bool CMPBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 			mp_Window->blit();
 	  
 			//mp_ItemInfo.showItemInfo(*mp_itemSelectionHandler);
+			showFileInfo();
 			
 			refresh();
 		}
@@ -955,8 +952,43 @@ bool CMPBrowser::getItemInfoItem(CFile &item_info, MPB_INFO_ITEM item, std::stri
 	return(result);
 }
 
+void CMPBrowser::showFileInfo()
+{
+	std::string buffer;
+	
+	// prepare print buffer  
+	buffer = mp_itemSelectionHandler->Info1;
+	buffer += "\n";
+	buffer += mp_itemSelectionHandler->Info2;
+	buffer += "\n";
+
+	// thumbnail
+	int pich = 246;	//FIXME
+	int picw = 162; 	//FIXME
+	int lx = g_settings.screen_StartX + 50 + g_settings.screen_EndX - g_settings.screen_StartX - 100 - (picw + 20);
+	int ly = g_settings.screen_StartY + 50 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 20;
+	
+	std::string thumbnail = "";
+	if(!access(mp_itemSelectionHandler->thumbnail.c_str(), F_OK))
+		thumbnail = mp_itemSelectionHandler->thumbnail;
+	
+	int mode =  CMsgBox::SCROLL | CMsgBox::TITLE | CMsgBox::FOOT | CMsgBox::BORDER;// | //CMsgBox::NO_AUTO_LINEBREAK | //CMsgBox::CENTER | //CMsgBox::AUTO_WIDTH | //CMsgBox::AUTO_HIGH;
+	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+	
+	CMsgBox * msgBox = new CMsgBox(mp_itemSelectionHandler->Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, mp_itemSelectionHandler->Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+	msgBox->setText(&buffer, thumbnail, lx, ly, picw, pich);
+	msgBox->exec();
+	delete msgBox;
+}
+
 //plugin API
-extern "C" void plugin_exec(void);
+void plugin_init(void)
+{
+}
+
+void plugin_del(void)
+{
+}
 
 void plugin_exec(void)
 {
@@ -980,6 +1012,7 @@ BROWSER:
 			moviePlayerGui->Title = file->Title;
 			moviePlayerGui->Info1 = file->Info1;
 			moviePlayerGui->Info2 = file->Info2;
+			moviePlayerGui->thumbnail = file->thumbnail;
 				
 			// play
 			moviePlayerGui->exec(NULL, "urlplayback");

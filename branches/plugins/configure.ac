@@ -1,5 +1,5 @@
-AC_INIT(tuxbox-apps-misc-tools,0.0.1,,tuxbox-misc-tools)
-AM_INIT_AUTOMAKE(tuxbox-misc-tools,0.0.1)
+AC_INIT(neutrinoHD2-plugins,0.0.1,,neutrinoHD2-plugins)
+AM_INIT_AUTOMAKE(neutrinoHD2-plugins,0.0.1)
 
 TUXBOX_APPS
 TUXBOX_APPS_DIRECTORY

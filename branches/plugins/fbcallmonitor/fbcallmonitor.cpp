@@ -27,6 +27,9 @@
 
 
 extern "C" void plugin_exec(void);
+extern "C" void plugin_init(void);
+extern "C" void plugin_del(void);
+
 
 // option off0_on1
 #define OPTIONS_OFF0_ON1_OPTION_COUNT 2
@@ -170,6 +173,18 @@ void CFBCallMonitor::doMenu()
 	FritzBoxCallSettingsMenu->hide();
 	
 	delete FritzBoxCallSettingsMenu;
+}
+
+void plugin_init(void)
+{
+	std::string cmd = PLUGINDIR "/fbcallmonitor/fb.sh start";
+	my_system(cmd.c_str());
+}
+
+void plugin_del(void)
+{
+	std::string cmd = PLUGINDIR "/fbcallmonitor/fb.sh stop";
+	my_system(cmd.c_str());
 }
 
 void plugin_exec(void)
