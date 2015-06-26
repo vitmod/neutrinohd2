@@ -833,7 +833,7 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 						
 						while (_loop)
 						{
-							g_RCInput->getMsg(&msg, &data, 10); // 1 sec timeout to update play/stop state display
+							g_RCInput->getMsg(&msg, &data, 10); // 1 sec
 
 							if( msg == CRCInput::RC_home)
 								_loop = false;

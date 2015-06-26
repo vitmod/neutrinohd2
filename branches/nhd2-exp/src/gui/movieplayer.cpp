@@ -220,15 +220,15 @@ CMoviePlayerGui::CMoviePlayerGui()
 	playback = new cPlayback();
 	
 	// filebrowser
-	if (g_settings.filebrowser_denydirectoryleave)
-		filebrowser = new CFileBrowser(Path_local.c_str());
-	else
-		filebrowser = new CFileBrowser();
+	//if (g_settings.filebrowser_denydirectoryleave)
+	//	filebrowser = new CFileBrowser(Path_local.c_str());
+	//else
+	//	filebrowser = new CFileBrowser();
 	
-	filebrowser->Dirs_Selectable = false;
+	//filebrowser->Dirs_Selectable = false;
 
 	// moviebrowser
-	moviebrowser = new CMovieBrowser();
+	//moviebrowser = new CMovieBrowser();
 
 	// tsfilefilter
 #if defined (ENABLE_LIBEPLAYER3) || defined (ENABLE_GSTREAMER)
@@ -265,11 +265,11 @@ CMoviePlayerGui::~CMoviePlayerGui()
 	if (playback)
 		delete playback;
 	
-	if (filebrowser)
-		delete filebrowser;
+	//if (filebrowser)
+	//	delete filebrowser;
 	
-	if (moviebrowser)
-		delete moviebrowser;
+	//if (moviebrowser)
+	//	delete moviebrowser;
 }
 
 void CMoviePlayerGui::cutNeutrino()
@@ -415,10 +415,10 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	}
 	
 	// filebrowser multi select
-	if (g_settings.movieplayer_allow_multiselect)
-		filebrowser->Multi_Select = true;
-	else 
-		filebrowser->Multi_Select = false;
+	//if (g_settings.movieplayer_allow_multiselect)
+	//	filebrowser->Multi_Select = true;
+	//else 
+	//	filebrowser->Multi_Select = false;
 	
 	//
 	position = 0;
@@ -473,6 +473,8 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 		timeshift = NO_TIMESHIFT;
 		isURL = false;
 		
+		// moviebrowser
+		moviebrowser = new CMovieBrowser();
 		moviebrowser->setMode(MB_SHOW_RECORDS);
 	}
 	else if (actionKey == "moviebrowser") 
@@ -482,6 +484,8 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 		timeshift = NO_TIMESHIFT;
 		isURL = false;
 		
+		// moviebrowser
+		moviebrowser = new CMovieBrowser();
 		moviebrowser->setMode(MB_SHOW_FILES);
 	}
 	else if (actionKey == "fileplayback") 
@@ -490,6 +494,20 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 		isMovieBrowser = false;
 		timeshift = NO_TIMESHIFT;
 		isURL = false;
+		
+		// filebrowser
+		if (g_settings.filebrowser_denydirectoryleave)
+			filebrowser = new CFileBrowser(Path_local.c_str());
+		else
+			filebrowser = new CFileBrowser();
+		
+		filebrowser->Dirs_Selectable = false;
+		
+		// filebrowser multi select
+		if (g_settings.movieplayer_allow_multiselect)
+			filebrowser->Multi_Select = true;
+		else 
+			filebrowser->Multi_Select = false;
 	}
 	else if (actionKey == "timeshift") 
 	{
@@ -538,6 +556,18 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 		timeshift = NO_TIMESHIFT;
 		return menu_return::RETURN_EXIT_ALL;
 	}
+	
+	if (filebrowser != NULL)
+	{
+		delete filebrowser;
+		filebrowser = NULL;
+	}
+	
+	if (moviebrowser)
+	{
+		delete moviebrowser;
+		moviebrowser = NULL;
+	}
 
 	return menu_return::RETURN_REPAINT;
 }
@@ -585,10 +615,10 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			printf("URL: filename: %s\n", filename);
 		}
-		else
+		else if(filename != NULL)
 		{
-			//
-			sel_filename = std::string(rindex(filename, '/') + 1);
+			//sel_filename = std::string(rindex(filename, '/') + 1);
+			sel_filename = filename;
 			
 			if(Title.empty())
 				Title = sel_filename;

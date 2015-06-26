@@ -50,7 +50,6 @@
 #include <driver/encoding.h>
 #include <driver/fontrenderer.h>
 #include <driver/rcinput.h>
-#include <driver/audioplay.h>
 #include <driver/audiometadata.h>
 
 #include <daemonc/remotecontrol.h>
@@ -407,7 +406,7 @@ int CAudioPlayerGui::show()
 		
 		if ((m_state != CAudioPlayerGui::STOP) && (CAudioPlayer::getInstance()->getState() == CBaseDec::STOP) && (!m_playlist.empty()))
 		{
-			if(m_curr_audiofile.FileType != CFile::STREAM_AUDIO)
+			if(m_curr_audiofile.FileType != CFile::FILE_URL)
 				playNext();
 		}
 
@@ -629,7 +628,7 @@ int CAudioPlayerGui::show()
 			}
 			else if (m_key_level == 1)
 			{
-				if(m_curr_audiofile.FileType != CFile::STREAM_AUDIO)
+				if(m_curr_audiofile.FileType != CFile::FILE_URL)
 					rev();
 			} 
 			else 
@@ -765,7 +764,7 @@ int CAudioPlayerGui::show()
 			}
 			else if (m_key_level == 1)
 			{
-				if(m_curr_audiofile.FileType != CFile::STREAM_AUDIO)
+				if(m_curr_audiofile.FileType != CFile::FILE_URL)
 					ff();
 			} 
 			else // key_level == 2
@@ -801,7 +800,7 @@ int CAudioPlayerGui::show()
 			{
 				// jumping in streams not supported
 				if (m_key_level == 2 &&
-						m_curr_audiofile.FileType == CFile::STREAM_AUDIO)
+						m_curr_audiofile.FileType == CFile::FILE_URL)
 				{
 					m_key_level = 0;
 				}
@@ -1012,7 +1011,7 @@ bool CAudioPlayerGui::shufflePlaylist(void)
 
 void CAudioPlayerGui::addUrl2Playlist(const char *url, const char *name, const time_t bitrate) 
 {
-	CAudiofileExt mp3( url, CFile::STREAM_AUDIO );
+	CAudiofileExt mp3( url, CFile::FILE_URL );
 	
 	//tmp = tmp.substr(0,tmp.length()-4);	//remove .url
 	//printf("[addUrl2Playlist], name = %s, url = %s\n", name, url);
@@ -1528,7 +1527,7 @@ bool CAudioPlayerGui::openFilebrowser(void)
 				addToPlaylist(audiofile);
 			}
 			
-			if(files->getType() == CFile::STREAM_AUDIO)
+			if(files->getType() == CFile::FILE_URL)
 			{
 				std::string filename = files->Name;
 				FILE *fd = fopen(filename.c_str(), "r");
@@ -1735,8 +1734,7 @@ void CAudioPlayerGui::paintItem(int pos)
 
 	if ((pos + m_liststart) < m_playlist.size())
 	{
-		if (m_playlist[pos + m_liststart].FileType != CFile::STREAM_AUDIO &&
-				!m_playlist[pos + m_liststart].MetaData.bitrate)
+		if (m_playlist[pos + m_liststart].FileType != CFile::FILE_URL && !m_playlist[pos + m_liststart].MetaData.bitrate)
 		{
 			// id3tag noch nicht geholt
 			GetMetaData(m_playlist[pos + m_liststart]);
@@ -1894,7 +1892,7 @@ void CAudioPlayerGui::paintFoot()
 	}
 	else if (m_key_level == 1)
 	{
-		if (m_curr_audiofile.FileType != CFile::STREAM_AUDIO)
+		if (m_curr_audiofile.FileType != CFile::FILE_URL)
 		{
 			::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top + (m_buttonHeight - icon_foot_h)/2, ButtonWidth, 4, AudioPlayerButtons[0]);
 		}
@@ -1967,7 +1965,7 @@ void CAudioPlayerGui::paintInfo()
 		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(m_x + xstart, m_y + 4 + 1*m_fheight, m_width - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8
 
 		// second line (Artist/Title...)
-		if (m_curr_audiofile.FileType != CFile::STREAM_AUDIO) //FIXME: need to relaod id3tag
+		if (m_curr_audiofile.FileType != CFile::FILE_URL) //FIXME: need to relaod id3tag
 		{
 			GetMetaData(m_curr_audiofile);
 		}
@@ -2240,7 +2238,7 @@ void CAudioPlayerGui::play(unsigned int pos)
 	}
 
 	// metadata
-	if (m_playlist[pos].FileType != CFile::STREAM_AUDIO && !m_playlist[pos].MetaData.bitrate)
+	if (m_playlist[pos].FileType != CFile::FILE_URL && !m_playlist[pos].MetaData.bitrate)
 	{
 		// id3tag noch nicht geholt
 		//printf("play: need getMetaData\n");
@@ -2454,7 +2452,7 @@ void CAudioPlayerGui::paintLCD()
 				CVFD::getInstance()->showAudioTrack(m_curr_audiofile.MetaData.artist, m_curr_audiofile.MetaData.title, m_curr_audiofile.MetaData.album);			
 					
 #if ENABLE_LCD
-			if(m_curr_audiofile.FileType != CFile::STREAM_AUDIO && m_time_total != 0)
+			if(m_curr_audiofile.FileType != CFile::FILE_URL && m_time_total != 0)
 				CVFD::getInstance()->showAudioProgress(100 * m_time_played / m_time_total, current_muted);
 #endif
 
@@ -2540,7 +2538,7 @@ void CAudioPlayerGui::GetMetaData(CAudiofileExt &File)
 	
 	bool ret = 1;
 
-	if (CFile::STREAM_AUDIO != File.FileType)
+	if (CFile::FILE_URL != File.FileType)
 		ret = CAudioPlayer::getInstance()->readMetaData(&File, m_state != CAudioPlayerGui::STOP && !g_settings.audioplayer_highprio);
 
 	if (!ret || (File.MetaData.artist.empty() && File.MetaData.title.empty() ))

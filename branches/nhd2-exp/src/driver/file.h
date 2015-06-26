@@ -67,12 +67,27 @@ class CFile
 			FILE_FLAC,
 			FILE_XML,
 			FILE_PLAYLIST,
-			STREAM_AUDIO,
+			//STREAM_AUDIO,
 			FILE_PICTURE,
 			STREAM_PICTURE,
 			FILE_VOB,
 			FILE_MPG,
-			FILE_TS
+			FILE_TS,
+			FILE_AAC,
+			FILE_DTS,
+			FILE_DIVX,
+			FILE_AIFF,
+			FILE_M2P,
+			FILE_MPV,
+			FILE_M2TS,
+			FILE_MOV,
+			FILE_DAT,
+			FILE_TRP,
+			FILE_VDR,
+			FILE_MTS,
+			FILE_WMV,
+			FILE_URL,
+			FILE_IMU
 		};
 
 		FileType	getType(void) const;

@@ -412,9 +412,7 @@ void CPictureViewer::showBusy(int sx, int sy, int width, char r, char g, char b)
 	m_busy_cpp = cpp;
 	free (fb_buffer);
 
-#if !defined USE_OPENGL
 	CFrameBuffer::getInstance()->blit();
-#endif
 }
 
 void CPictureViewer::hideBusy()
@@ -439,9 +437,7 @@ void CPictureViewer::hideBusy()
 		m_busy_buffer = NULL;
 	}
 	
-#if !defined USE_OPENGL
 	CFrameBuffer::getInstance()->blit();	
-#endif
 }
 
 void CPictureViewer::Cleanup()

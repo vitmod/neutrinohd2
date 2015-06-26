@@ -150,7 +150,7 @@ void * CAudioPlayer::PlayThread( void * /*dummy*/ )
 	}
 	
 	// shoutcast
-	if( getInstance()->m_Audiofile.FileType == CFile::STREAM_AUDIO )
+	if( getInstance()->m_Audiofile.FileType == CFile::FILE_URL )
 	{
 		if ( fstatus( fp, ShoutcastCallback ) < 0 )
 		{
