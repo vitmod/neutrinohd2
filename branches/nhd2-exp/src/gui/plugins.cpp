@@ -437,14 +437,13 @@ void CPlugins::removePlugin(int number)
 	}
 	
 	// remove plugin
-	unlink(plugin_list[number].pluginfile.c_str());
+	std::string pluginPath;
+	pluginPath += PLUGINDIR;
+	pluginPath += "/";
+	pluginPath += plugin_list[number].filename.c_str();
 	
-	// remove plugin config file
-	unlink(plugin_list[number].cfgfile.c_str());
+	CFileHelpers::getInstance()->removeDir(pluginPath.c_str());
 	
-	// remove plugin icon
-	//if(!plugin_list[number].icon.empty())
-	//	unlink(plugin_list[number].icon.c_str());
 	
 	//erase from pluginlist
 	plugin_list.erase(plugin_list.begin() + number);

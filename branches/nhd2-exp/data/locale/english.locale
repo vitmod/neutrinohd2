@@ -1120,9 +1120,10 @@ ping.socket is unreachable (socket error)
 ping.unreachable is unreachable
 pinprotection.head Enter PIN code
 pinprotection.wrongcode PIN-Code was wrong! Try again.
+plugins.notinstalled is not installed please install again.
 plugins.result plugin output
-pluginlist.remove_plugin remove plugin
-pluginlist.start_plugin start plugin
+pluginlist.remove_plugin remove
+pluginlist.start_plugin start
 rclock.lockmsg Your box remote control will be locked.\n To unlock it, press <RED> \n and <MENU> on your remote control.
 rclock.menueadd Lock RC
 rclock.title Lock Remote Control
@@ -1566,39 +1567,6 @@ scansetup.tunermode_connected direct connected
 scansetup.tunermode_loop loop
 scansetup.tunermode_notconnected not connected
 
-glcd.color.black Black
-glcd.color.blue Blue
-glcd.color.cyan Blue-Green
-glcd.color.green Green
-glcd.color.magenta Magenta
-glcd.color.red Red
-glcd.color.white White
-glcd.color.yellow Yellow
-glcd.color.orange Orange
-glcd.color.light_gray Light Gray
-glcd.color.gray Gray
-glcd.color.dark_gray Dark Gray
-glcd.color.dark_red Dark Red
-glcd.color.dark_green Dark Green
-glcd.color.dark_blue Dark Blue
-glcd.color.purple Purple
-glcd.color.mint Mint
-glcd.color.golden Golden
-glcd.enable GraphLCD enabled
-glcd.font Font
-glcd.head GraphLCD
-glcd.mirror_osd Show OSD menue on GraphLCD
-glcd.restart Rescan
-glcd.select.bar Progress bar color
-glcd.select.bg Background color
-glcd.select.fg Foreground color
-glcd.size_bar Progress bar height
-glcd.size_channel Channel height
-glcd.size_epg EPG height
-glcd.size_time Time height
-glcd.time_in_standby Display time in standby
-glcd.volume Volume
-
 miscsettings.backup Settings backup
 miscsettings.backupfailed Backup failed
 miscsettings.restore Settings restore
@@ -1630,9 +1598,8 @@ webtv.user User bouquet
 webtv.bouquets Favorites
 webtv.add_bouquets add User bouquet
 
-menu.hint_ytplay Play selected youtube feeds
+youtube.youtube Youtube Player
 youtube.yt_error Failed to load youtube feed
-youtube.yt_max_results Max results to fetch
 youtube.yt_most_popular Most popular
 youtube.yt_most_popular_all_time Most resent
 youtube.yt_next_results Next results
@@ -1640,20 +1607,46 @@ youtube.yt_prev_results Previous results
 youtube.yt_region Region
 youtube.yt_related Related videos
 youtube.yt_search Search keyword
-movieplayer.ytplayback Youtube player
 youtube.yt_orderby Order by
 youtube.yt_orderby.published publishing date
 youtube.yt_orderby.rating rating
 youtube.yt_orderby.relevance relevance
 youtube.yt_orderby.viewcount view count
-youtube.yt_concurrent_connections Concurrent connections
 
-movieplayer.netzkino Netzkino
+netzkino.netzkino Netzkino
 netzkino.nk_error Failed to load Netzkino categories
 netzkino.nk_categories Select category
-netzkino.nk_rtmp netzKino URL Protokoll
-netzkino.nk_rtmp_http HTTP (mp4)
-netzkino.nk_rtmp_rtmp RTMP
 
-plugins.notinstalled is not installed please install again.
+glcd.color.black Black
+glcd.color.blue Blue
+glcd.color.cyan Blue-Green
+glcd.color.green Green
+glcd.color.magenta Magenta
+glcd.color.red Red
+glcd.color.white White
+glcd.color.yellow Yellow
+glcd.color.orange Orange
+glcd.color.light_gray Light Gray
+glcd.color.gray Gray
+glcd.color.dark_gray Dark Gray
+glcd.color.dark_red Dark Red
+glcd.color.dark_green Dark Green
+glcd.color.dark_blue Dark Blue
+glcd.color.purple Purple
+glcd.color.mint Mint
+glcd.color.golden Golden
+glcd.enable GraphLCD enabled
+glcd.font Font
+glcd.head GraphLCD
+glcd.mirror_osd Show OSD menue on GraphLCD
+glcd.restart Rescan
+glcd.select.bar Progress bar color
+glcd.select.bg Background color
+glcd.select.fg Foreground color
+glcd.size_bar Progress bar height
+glcd.size_channel Channel height
+glcd.size_epg EPG height
+glcd.size_time Time height
+glcd.time_in_standby Display time in standby
+glcd.volume Volumebar
 
