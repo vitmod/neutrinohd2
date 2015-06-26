@@ -85,12 +85,15 @@ BROWSER:
 				CFrameBuffer::getInstance()->ClearFrameBuffer();
 				CFrameBuffer::getInstance()->blit();	
 			}
+			/*
 			else if( file->getType() == CFile::FILE_CDR || file->getType() == CFile::FILE_WAV || file->getType() == CFile::FILE_OGG || file->getType() == CFile::FILE_FLAC || file->getType() == CFile::FILE_MP3)
 			{
+				//FIXME: need to stop playback first
 				CAudiofile mp3(file->Name, CFile::FILE_MP3);
 				CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
 			}
-			else
+			*/
+			else if(file->getType() != CFile::FILE_TEXT && file->getType() != CFile::FILE_XML && file->getType() != CFile::FILE_PLAYLIST)
 			{
 				moviePlayerGui->filename = file->Name.c_str();
 			

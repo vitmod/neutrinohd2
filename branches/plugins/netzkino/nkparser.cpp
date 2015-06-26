@@ -81,6 +81,20 @@ bool cNKFeedParser::getUrl(std::string &url, std::string &answer, CURL *_curl_ha
 	curl_easy_setopt(_curl_handle, CURLOPT_FAILONERROR, 1);
 	curl_easy_setopt(_curl_handle, CURLOPT_TIMEOUT, URL_TIMEOUT);
 	curl_easy_setopt(_curl_handle, CURLOPT_NOSIGNAL, (long)1);
+	
+	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
+	{
+		curl_easy_setopt(_curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
+		
+		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
+		{
+			char tmp[200];
+			strcpy(tmp, g_settings.softupdate_proxyusername);
+			strcat(tmp, ":");
+			strcat(tmp, g_settings.softupdate_proxypassword);
+			curl_easy_setopt(_curl_handle, CURLOPT_PROXYUSERPWD, tmp);
+		}
+	}
 
 	char cerror[CURL_ERROR_SIZE];
 	curl_easy_setopt(_curl_handle, CURLOPT_ERRORBUFFER, cerror);
@@ -117,6 +131,20 @@ bool cNKFeedParser::DownloadUrl(std::string &url, std::string &file, CURL *_curl
 	curl_easy_setopt(_curl_handle, CURLOPT_FAILONERROR, 1);
 	curl_easy_setopt(_curl_handle, CURLOPT_TIMEOUT, download? DOWNLOAD_TIMEOUT : URL_TIMEOUT);
 	curl_easy_setopt(_curl_handle, CURLOPT_NOSIGNAL, (long)1);
+	
+	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
+	{
+		curl_easy_setopt(_curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
+		
+		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
+		{
+			char tmp[200];
+			strcpy(tmp, g_settings.softupdate_proxyusername);
+			strcat(tmp, ":");
+			strcat(tmp, g_settings.softupdate_proxypassword);
+			curl_easy_setopt(_curl_handle, CURLOPT_PROXYUSERPWD, tmp);
+		}
+	}
 
 	char cerror[CURL_ERROR_SIZE];
 	curl_easy_setopt(_curl_handle, CURLOPT_ERRORBUFFER, cerror);

@@ -36,6 +36,7 @@
 
 #include <ytparser.h>
 #include <system/debug.h>
+#include <plugin.h>
 
 
 #define URL_TIMEOUT 		60
@@ -101,6 +102,20 @@ bool cYTFeedParser::getUrl(std::string &url, std::string &answer)
 	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, URL_TIMEOUT);
 	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
 	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, false);
+	
+	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
+	{
+		curl_easy_setopt(curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
+		
+		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
+		{
+			char tmp[200];
+			strcpy(tmp, g_settings.softupdate_proxyusername);
+			strcat(tmp, ":");
+			strcat(tmp, g_settings.softupdate_proxypassword);
+			curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, tmp);
+		}
+	}
 
 	char cerror[CURL_ERROR_SIZE];
 	curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, cerror);
@@ -138,6 +153,20 @@ bool cYTFeedParser::DownloadUrl(std::string &url, std::string &file)
 	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, URL_TIMEOUT);
 	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
 	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, false);
+	
+	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
+	{
+		curl_easy_setopt(curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
+		
+		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
+		{
+			char tmp[200];
+			strcpy(tmp, g_settings.softupdate_proxyusername);
+			strcat(tmp, ":");
+			strcat(tmp, g_settings.softupdate_proxypassword);
+			curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, tmp);
+		}
+	}
 
 	char cerror[CURL_ERROR_SIZE];
 	curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, cerror);
@@ -486,6 +515,7 @@ bool cYTFeedParser::ParseFeed(yt_feed_mode_t mode, std::string search, std::stri
 	{
 		if (search.empty())
 			return false;
+		
 		encodeUrl(search);
 	
 		url = "https://www.googleapis.com/youtube/v3/search?q=";
