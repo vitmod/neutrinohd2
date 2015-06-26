@@ -107,7 +107,7 @@ void CYTBrowser::init(void)
 	
 	m_windowFocus = YTB_FOCUS_BROWSER;
 	
-	m_textTitle = g_Locale->getText(LOCALE_MOVIEPLAYER_NETZKINO);
+	m_textTitle = g_Locale->getText(LOCALE_YOUTUBE);
 	
 	m_movieSelectionHandler = NULL;
 	m_currentBrowserSelection = 0;
@@ -221,7 +221,7 @@ int CYTBrowser::exec()
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
-	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_MOVIEPLAYER_NETZKINO));
+	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_YOUTUBE));
 	
 	initGlobalSettings();
 	
@@ -353,7 +353,7 @@ int CYTBrowser::paint(void)
 {
 	dprintf(DEBUG_NORMAL, "CYTBrowser::paint\n");
 
-	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_MOVIEPLAYER_NETZKINO));	
+	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_YOUTUBE));	
 
 	m_pcBrowser = new CListFrame(&m_browserListLines, NULL, CListFrame::SCROLL | CListFrame::HEADER_LINE, &m_cBoxFrameBrowserList);
 	m_pcInfo = new CTextBox(" ", NULL, CTextBox::SCROLL, &m_cBoxFrameInfo);	
@@ -530,7 +530,7 @@ void CYTBrowser::refreshTitle(void)
 	std::string title;
 	std::string mb_icon;
 	
-	title = g_Locale->getText(LOCALE_MOVIEPLAYER_YTPLAYBACK);
+	title = g_Locale->getText(LOCALE_YOUTUBE);
 	title += " : ";
 		
 	neutrino_locale_t loc = getFeedLocale();
@@ -670,7 +670,7 @@ bool CYTBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 			m_pcWindow->paintBackground();
 				
 			//
-			CHintBox loadBox(LOCALE_MOVIEPLAYER_YTPLAYBACK, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+			CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 			loadBox.paint();
 				
 			// yt clean up
@@ -699,7 +699,7 @@ bool CYTBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 				m_settings.ytvid = m_movieSelectionHandler->ytid;
 			
 				m_pcWindow->paintBackground();
-				CHintBox loadBox(LOCALE_MOVIEPLAYER_YTPLAYBACK, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+				CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 				loadBox.paint();
 				ytparser.Cleanup();
 				loadYTitles(cYTFeedParser::RELATED, m_settings.ytsearch, m_settings.ytvid);
@@ -717,7 +717,7 @@ bool CYTBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 			m_pcWindow->paintBackground();
 				
 			//
-			CHintBox loadBox(LOCALE_MOVIEPLAYER_YTPLAYBACK, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+			CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 			loadBox.paint();
 				
 			// yt clean up
@@ -937,7 +937,7 @@ void CYTBrowser::loadMovies(void)
 	m_pcWindow->paintBackground();
 	m_pcWindow->blit();	
 
-	CHintBox loadBox(LOCALE_MOVIEPLAYER_YTPLAYBACK, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	
 	loadBox.paint();
 
@@ -1085,7 +1085,7 @@ bool CYTBrowser::showYTMenu()
 	m_pcWindow->paintBackground();
 	m_pcWindow->blit();
 
-	CMenuWidget mainMenu(LOCALE_MOVIEPLAYER_YTPLAYBACK, NEUTRINO_ICON_YT_SMALL);
+	CMenuWidget mainMenu(LOCALE_YOUTUBE, NEUTRINO_ICON_YT_SMALL);
 
 	int select = -1;
 	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
@@ -1184,7 +1184,7 @@ bool CYTBrowser::showYTMenu()
 	
 	if (reload) 
 	{
-		CHintBox loadBox(LOCALE_MOVIEPLAYER_YTPLAYBACK, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+		CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 		loadBox.paint();
 		ytparser.Cleanup();
 		loadYTitles(newmode, m_settings.ytsearch, m_settings.ytvid);

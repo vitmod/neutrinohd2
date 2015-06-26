@@ -106,7 +106,7 @@ void CNetzKinoBrowser::init(void)
 	
 	m_windowFocus = NKB_FOCUS_BROWSER;
 	
-	m_textTitle = g_Locale->getText(LOCALE_MOVIEPLAYER_NETZKINO);
+	m_textTitle = g_Locale->getText(LOCALE_NETZKINO);
 	
 	m_movieSelectionHandler = NULL;
 	m_currentBrowserSelection = 0;
@@ -220,7 +220,7 @@ int CNetzKinoBrowser::exec()
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 
-	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_MOVIEPLAYER_NETZKINO));
+	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_NETZKINO));
 	
 	initGlobalSettings();
 	
@@ -351,7 +351,7 @@ int CNetzKinoBrowser::paint(void)
 {
 	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::paint\n");
 
-	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_MOVIEPLAYER_NETZKINO));	
+	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_NETZKINO));	
 
 	m_pcBrowser = new CListFrame(&m_browserListLines, NULL, CListFrame::SCROLL | CListFrame::HEADER_LINE, &m_cBoxFrameBrowserList);
 	m_pcInfo = new CTextBox(" ", NULL, CTextBox::SCROLL, &m_cBoxFrameInfo);	
@@ -533,7 +533,7 @@ void CNetzKinoBrowser::refreshTitle(void)
 	std::string title;
 	std::string mb_icon;
 	
-	title = g_Locale->getText(LOCALE_MOVIEPLAYER_NETZKINO);
+	title = g_Locale->getText(LOCALE_NETZKINO);
 	if (m_settings.nkmode == cNKFeedParser::SEARCH) 
 	{
 		title += ": ";
@@ -674,7 +674,7 @@ bool CNetzKinoBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 			m_pcWindow->paintBackground();
 					
 			//
-			CHintBox loadBox(LOCALE_MOVIEPLAYER_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+			CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 			loadBox.paint();
 				
 			nkparser.Cleanup();
@@ -712,7 +712,7 @@ bool CNetzKinoBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 			m_pcWindow->paintBackground();
 					
 			//
-			CHintBox loadBox(LOCALE_MOVIEPLAYER_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+			CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 			loadBox.paint();
 				
 			nkparser.Cleanup();
@@ -930,7 +930,7 @@ void CNetzKinoBrowser::loadMovies(void)
 	m_pcWindow->paintBackground();
 	m_pcWindow->blit();	
 
-	CHintBox loadBox(LOCALE_MOVIEPLAYER_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+	CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	
 	loadBox.paint();
 
@@ -1091,7 +1091,7 @@ bool CNetzKinoBrowser::showNKMenu()
 {
 	m_pcWindow->paintBackground();
 
-	CMenuWidget mainMenu(LOCALE_MOVIEPLAYER_NETZKINO, NEUTRINO_ICON_NETZKINO_SMALL);
+	CMenuWidget mainMenu(LOCALE_NETZKINO, NEUTRINO_ICON_NETZKINO_SMALL);
 
 	int select = -1;
 	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
@@ -1137,7 +1137,7 @@ bool CNetzKinoBrowser::showNKMenu()
 	
 	if (reload) 
 	{
-		CHintBox loadBox(LOCALE_MOVIEPLAYER_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+		CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 		loadBox.paint();
 		nkparser.Cleanup();
 		loadNKTitles(m_settings.nkmode, m_settings.nksearch, m_settings.nkcategory, 0, m_pcBrowser->getLinesPerPage());
