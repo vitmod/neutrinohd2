@@ -57,6 +57,8 @@
 #include <config.h>
 #endif
 
+#include <unistd.h>
+
 #include "textbox.h"
 #include <gui/widget/icons.h>
 
@@ -82,7 +84,6 @@ CTextBox::CTextBox(const char * text, CFont * font_text, const int _mode, const 
 	initVar();
 
 	frameBuffer = NULL;
-	max_width = 0;
 
  	if(text != NULL)
 		m_cText = text;
@@ -182,11 +183,14 @@ void CTextBox::initVar(void)
 	m_textBackgroundColor = COL_MENUCONTENT_PLUS_0;
 
 	m_cLineArray.clear();
+	
+	lx = ly = tw = th = 0;
+	thumbnail = "";
 }
 
 void CTextBox::reSizeMainFrameWidth(int textWidth)
 {
-	dprintf(DEBUG_DEBUG, "[CTextBox]->ReSizeMainFrameWidth: %d, current: %d\r\n",textWidth,m_cFrameTextRel.iWidth);
+	dprintf(DEBUG_DEBUG, "[CTextBox]->ReSizeMainFrameWidth: %d, current: %d\r\n", textWidth, m_cFrameTextRel.iWidth);
 
 	int iNewWindowWidth = textWidth + m_cFrameScrollRel.iWidth + 2*TEXT_BORDER_WIDTH;
 
@@ -260,8 +264,8 @@ void CTextBox::refreshTextLineArray(void)
 
 	m_nNrOfNewLine = 0;
 
-	std::string	aktLine = "";
-	std::string	aktWord = "";
+	std::string aktLine = "";
+	std::string aktWord = "";
 
 	/* clear current line vector */
 	m_cLineArray.clear();
@@ -278,10 +282,8 @@ void CTextBox::refreshTextLineArray(void)
 		lineBreakWidth = m_cFrameTextRel.iWidth - 2*TEXT_BORDER_WIDTH;
 	}
 	
-	if(max_width)
-		lineBreakWidth = max_width;
-	
-	//printf("TextBox: lineBreakWidth %d\n", lineBreakWidth);
+	if( !access(thumbnail.c_str(), F_OK) && m_nCurrentPage == 0)
+		lineBreakWidth = m_cFrameTextRel.iWidth - (2*TEXT_BORDER_WIDTH + tw + 20);
 	
 	int TextChars = m_cText.size();
 	
@@ -301,7 +303,7 @@ void CTextBox::refreshTextLineArray(void)
 
 			if(pos == -1)
 			{
-				pos = TextChars+1;
+				pos = TextChars + 1;
 				loop = false; // note, this is not 100% correct. if the last characters does not fit in one line, the characters after are cut
 			}
 
@@ -321,7 +323,8 @@ void CTextBox::refreshTextLineArray(void)
 					aktLine = "";
 					aktWidth = 0;
 
-					if(pos_prev >= TextChars) loop = false;
+					if(pos_prev >= TextChars) 
+						loop = false;
 				}
 
 				aktLine  += aktWord;
@@ -339,11 +342,27 @@ void CTextBox::refreshTextLineArray(void)
 					aktLine = "";
 					aktWidth = 0;
 					m_nNrOfNewLine++;
-					if(pos_prev >= TextChars) loop = false;
+					
+					if(pos_prev >= TextChars) 
+						loop = false;
+				}
+				
+				//recalculate breaklinewidth for other pages or where pic dont exists
+				if( (m_nNrOfLines > th / m_nFontTextHeight ) || (m_nNrOfLines > ((m_cFrameTextRel.iHeight - (2*TEXT_BORDER_WIDTH)) / m_nFontTextHeight)) )
+				{
+					if( m_nMode & AUTO_WIDTH)
+					{
+						/* In case of autowidth, we calculate the max allowed width of the textbox */
+						lineBreakWidth = MAX_WINDOW_WIDTH - m_cFrameScrollRel.iWidth - 2*TEXT_BORDER_WIDTH;
+					}
+					else
+					{
+						/* If not autowidth, we just take the actuall textframe width */
+						lineBreakWidth = m_cFrameTextRel.iWidth - 2*TEXT_BORDER_WIDTH;
+					}
 				}
 			}
 		}
-
 
 		/* check if we have to recalculate the window frame size, due to auto width and auto height */
 		if( m_nMode & AUTO_WIDTH)
@@ -392,7 +411,7 @@ void CTextBox::refreshScroll(void)
 	}
 	else
 	{
-		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX+m_cFrame.iX, m_cFrameScrollRel.iY+m_cFrame.iY, m_cFrameScrollRel.iWidth, m_cFrameScrollRel.iHeight, m_textBackgroundColor);
+		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + m_cFrame.iX, m_cFrameScrollRel.iY+m_cFrame.iY, m_cFrameScrollRel.iWidth, m_cFrameScrollRel.iHeight, m_textBackgroundColor);
 	}
 }
 
@@ -407,6 +426,21 @@ void CTextBox::refreshText(void)
 	if( m_nNrOfLines <= 0) 
 		return;
 	
+	// settumbnail (paint picture only on first page)
+	if(m_nCurrentPage == 0 && !access(thumbnail.c_str(), F_OK) )
+	{
+		if(frameBuffer != NULL) 
+		{
+			frameBuffer->paintVLineRel(lx, ly, th, COL_WHITE);
+			frameBuffer->paintVLineRel(lx + tw, ly, th, COL_WHITE);
+			frameBuffer->paintHLineRel(lx, tw, ly, COL_WHITE);
+			frameBuffer->paintHLineRel(lx, tw, ly + th, COL_WHITE);
+		}
+		
+		// display screenshot
+		g_PicViewer->DisplayImage(thumbnail.c_str(), lx + 3, ly + 3, tw - 3, th - 3);
+	}
+	
 	int y = m_cFrameTextRel.iY + TEXT_BORDER_WIDTH;
 	int i;
 	int x_center = 0;
@@ -419,8 +453,14 @@ void CTextBox::refreshText(void)
 		{
 			x_center = (m_cFrameTextRel.iWidth - m_pcFontText->getRenderWidth(m_cLineArray[i], true))>>1;
 		}
+		
+		//FIXME
+		if( !access(thumbnail.c_str(), F_OK) && (m_nCurrentPage == 0) && (lx < (m_cFrameTextRel.iX + m_cFrameTextRel.iWidth - tw - 10) && /*y <= (ly + th)*/(m_nNrOfLines <= (th / m_nFontTextHeight) )) )
+		{
+			x_center = tw + TEXT_BORDER_WIDTH;
+		}
 
-		m_pcFontText->RenderString(m_cFrameTextRel.iX + TEXT_BORDER_WIDTH + x_center+m_cFrame.iX, y + m_cFrame.iY, m_cFrameTextRel.iWidth, m_cLineArray[i].c_str(), COL_MENUCONTENT, 0, true); // UTF-8
+		m_pcFontText->RenderString(m_cFrameTextRel.iX + TEXT_BORDER_WIDTH + x_center + m_cFrame.iX, y + m_cFrame.iY, m_cFrameTextRel.iWidth, m_cLineArray[i].c_str(), COL_MENUCONTENT, 0, true); // UTF-8
 	}
 }
 
@@ -428,6 +468,7 @@ void CTextBox::scrollPageDown(const int pages)
 {
 	if( !(m_nMode & SCROLL)) 
 		return;
+	
 	if( m_nNrOfLines <= 0) 
 		return;
 	
@@ -441,6 +482,7 @@ void CTextBox::scrollPageDown(const int pages)
 	{
 		m_nCurrentPage = m_nNrOfPages - 1;
 	}
+	
 	m_nCurrentLine = m_nCurrentPage * m_nLinesPerPage; 
 	refresh();
 }
@@ -477,33 +519,31 @@ void CTextBox::refresh(void)
 
 	//Paint text
 	refreshScroll();
-	refreshText();
-	
-	if (!thumbnail.empty())
-	{
-		if(frameBuffer != NULL) 
-		{
-			frameBuffer->paintVLineRel(lx, ly, th, COL_WHITE);
-			frameBuffer->paintVLineRel(lx + tw, ly, th, COL_WHITE);
-			frameBuffer->paintHLineRel(lx, tw, ly, COL_WHITE);
-			frameBuffer->paintHLineRel(lx, tw, ly + th, COL_WHITE);
-		}
-			
-		// display screenshot
-		g_PicViewer->DisplayImage(thumbnail.c_str(), lx + 3, ly + 3, tw - 3, th - 3);
-	}
+	refreshText();	
 }
 
-bool CTextBox::setText(const std::string* newText, int _max_width, std::string _thumbnail, int _lx, int _ly, int _tw, int _th)
+bool CTextBox::setText(const std::string* newText, std::string _thumbnail, int _lx, int _ly, int _tw, int _th)
 {
-	bool result = false;
-	max_width = _max_width;
+	// thumbnail
+	thumbnail = "";
 	
-	thumbnail = _thumbnail;
-	lx = _lx;
-	ly = _ly;
-	tw = _tw;
-	th = _th;
+	if(!_thumbnail.empty() && !access(_thumbnail.c_str(), F_OK))
+	{
+		thumbnail = _thumbnail;
+		lx = _lx;
+		ly = _ly;
+		tw = _tw;
+		th = _th;
+	}
+	
+	// text
+	m_nNrOfPages = 0;
+	m_nNrOfLines = 0;
+	m_nCurrentPage = 0;
+	m_nCurrentLine = 0;
+	m_nLinesPerPage = 1;
+		
+	bool result = false;
 	
 	if (newText != NULL)
 	{
@@ -516,7 +556,7 @@ bool CTextBox::setText(const std::string* newText, int _max_width, std::string _
 	}
 	
 	return(result);
-};
+}
 
 void CTextBox::paint (void)
 {

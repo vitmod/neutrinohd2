@@ -1028,10 +1028,6 @@ void CNeutrinoApp::InitAudioplayerSettings(CMenuWidget &audioplayerSettings)
 	// sc metadata
 	audioplayerSettings.addItem(new CMenuOptionChooser(LOCALE_AUDIOPLAYER_ENABLE_SC_METADATA, &g_settings.audioplayer_enable_sc_metadata, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutAudioPlayer++) ));
 	
-	// sc dev id
-	CStringInputSMS * shoutCastDevID = new CStringInputSMS(LOCALE_AUDIOPLAYER_ENABLE_SC_ID, &g_settings.shoutcast_dev_id);
-	audioplayerSettings.addItem(new CMenuForwarder(LOCALE_AUDIOPLAYER_ENABLE_SC_ID, true, g_settings.shoutcast_dev_id, shoutCastDevID));
-	
 	// audioplayer screensaver dir
 	//audioplayerSettings.addItem( new CMenuForwarder(LOCALE_AUDIOPLAYER_SCREENSAVER_DIR, true, g_settings.audioplayer_screensaver_dir, this, "audioplayer_screensaver_dir" ) );
 }

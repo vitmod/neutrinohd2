@@ -33,8 +33,10 @@
 #include <poll.h>
 #include <unistd.h>
 #include <algorithm>
+#include <cstdio>
 
 #include "upnpclient.h"
+#include <system/debug.h>
 
 
 struct ToLower
@@ -152,27 +154,34 @@ CUPnPDevice::CUPnPDevice(std::string url)
 	pos = result.find("\r\n\r\n");
 
 	if (pos == std::string::npos)
-		throw std::runtime_error(std::string("no desc body"));
+		//throw std::runtime_error(std::string("no desc body"));
+		dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: no desc body\n");
 
 	head = result.substr(0,pos);
 	body = result.substr(pos+4);
 
 	if (body == "")
-		throw std::runtime_error(std::string("desc body empty"));
+		//throw std::runtime_error(std::string("desc body empty"));
+		printf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: desc body empty\n");
 
 	if (!check_response(head, charset, rcode))
-		throw std::runtime_error(std::string("protocol error"));
+		//throw std::runtime_error(std::string("protocol error"));
+		dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: protocol error\n");
 
 	if (rcode != "200")
-		throw std::runtime_error(std::string("description url returned ") + rcode);
+		//throw std::runtime_error(std::string("description url returned ") + rcode);
+		printf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: description url error\n");
+	
 	XMLTreeParser parser(charset.c_str());
 	parser.Parse(body.c_str(), body.size(), 1);
 	root = parser.RootNode();
 	if (!root)
-		throw std::runtime_error(std::string("XML: no root node"));
+		//throw std::runtime_error(std::string("XML: no root node"));
+		dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: no root node\n");
 
 	if (strcmp(root->GetType(),"root"))
-		throw std::runtime_error(std::string("XML: no root"));
+		//throw std::runtime_error(std::string("XML: no root"));
+		dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: no root\n");
 
 	for (node = root->GetChild(); node; node=node->GetNext())
 	{
@@ -187,13 +196,15 @@ CUPnPDevice::CUPnPDevice(std::string url)
 
 	node = root->GetChild();
 	if (!node)
-		throw std::runtime_error(std::string("XML: no root child"));
+		//throw std::runtime_error(std::string("XML: no root child"));
+		dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: no root child\n");
 
 	while (strcmp(node->GetType(),"device"))
 	{
 		node = node->GetNext();
 		if (!node)
-			throw std::runtime_error(std::string("XML: no device"));
+			//throw std::runtime_error(std::string("XML: no device"));
+			dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: no device\n");
 	}
 	device = node;
 
@@ -243,7 +254,9 @@ CUPnPDevice::CUPnPDevice(std::string url)
 				bool foundu = false;
 
 				if (strcmp(icon->GetType(),"icon"))
-					throw std::runtime_error(std::string("XML: no icon"));
+					//throw std::runtime_error(std::string("XML: no icon"));
+					dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: no icon\n");
+				
 				for (snode=icon->GetChild(); snode; snode=snode->GetNext())
 				{
 					if (!strcmp(snode->GetType(),"mimetype"))
@@ -273,16 +286,22 @@ CUPnPDevice::CUPnPDevice(std::string url)
 					}
 				}
 				if (!foundm)
-					throw std::runtime_error(std::string("XML: icon without mime"));
+					//throw std::runtime_error(std::string("XML: icon without mime"));
+					dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: icon without mime\n");
 				if (!foundw)
-					throw std::runtime_error(std::string("XML: icon without width"));
+					//throw std::runtime_error(std::string("XML: icon without width"));
+					dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: icon without width\n");
 				if (!foundh)
-					throw std::runtime_error(std::string("XML: icon without height"));
+					//throw std::runtime_error(std::string("XML: icon without height"));
+					dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: icon without height\n");
 				if (!foundd)
-					throw std::runtime_error(std::string("XML: icon without depth"));
+					//throw std::runtime_error(std::string("XML: icon without depth"));
+					dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: icon without depth\n");
 				if (!foundu)
-					throw std::runtime_error(std::string("XML: icon without url"));
-				UPnPIcon e={mimetype, url, width, height, depth};
+					//throw std::runtime_error(std::string("XML: icon without url"));
+					dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: icon without url\n");
+				
+				UPnPIcon e = {mimetype, url, width, height, depth};
 				icons.push_back(e);
 			}
 		}
@@ -296,7 +315,9 @@ CUPnPDevice::CUPnPDevice(std::string url)
 				bool foundn = false;
 
 				if (strcmp(service->GetType(),"service"))
-					throw std::runtime_error(std::string("XML: no service"));
+					//throw std::runtime_error(std::string("XML: no service"));
+					dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: no service\n");
+				
 				for (snode=service->GetChild(); snode; snode=snode->GetNext())
 				{
 					if (!strcmp(snode->GetType(),"serviceType"))
@@ -330,15 +351,19 @@ CUPnPDevice::CUPnPDevice(std::string url)
 					}
 				}
 				if (!foundn)
-					throw std::runtime_error(std::string("XML: no service type"));
+					//throw std::runtime_error(std::string("XML: no service type"));
+					dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: no service type\n");
 				if (!founde)
-					throw std::runtime_error(std::string("XML: no event url"));
+					//throw std::runtime_error(std::string("XML: no event url"));
+					dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: no service url\n");
 				if (!foundc)
-					throw std::runtime_error(std::string("XML: no control url"));
+					//throw std::runtime_error(std::string("XML: no control url"));
+					dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: no control url\n");
 				//try
 				{
 					services.push_back(CUPnPService(this, curl, eurl, name));
 				}
+				
 				//catch (std::runtime_error error)
 				//{
 				//	std::cout << "error " << error.what() << "\n";
@@ -347,7 +372,8 @@ CUPnPDevice::CUPnPDevice(std::string url)
 		}
 	}
 	if (!servicefound)
-		throw std::runtime_error(std::string("XML: no service list"));
+		//throw std::runtime_error(std::string("XML: no service list"));
+		dprintf(DEBUG_NORMAL, "CUPnPDevice::CUPnPDevice: no service list\n");
 }
 
 CUPnPDevice::~CUPnPDevice()
@@ -416,11 +442,13 @@ std::string CUPnPDevice::HTTP(std::string url, std::string post, std::string act
 
 	t_socket = socket(PF_INET, SOCK_STREAM, 0);
 	if (!t_socket)
-		throw std::runtime_error(std::string("create TCP socket"));
+		//throw std::runtime_error(std::string("create TCP socket"));
+		dprintf(DEBUG_NORMAL, "CUPnPDevice::HTTP: create TCP socket\n");
 
 	hp = gethostbyname(hostname.c_str());
 	if (!hp)
-		throw std::runtime_error(std::string("resolve name"));
+		//throw std::runtime_error(std::string("resolve name"));
+		dprintf(DEBUG_NORMAL, "CUPnPDevice::HTTP: resolve name\n");
 
 	memset(&socktcp, 0, sizeof(struct sockaddr_in));
 	socktcp.sin_family = AF_INET;
@@ -430,7 +458,8 @@ std::string CUPnPDevice::HTTP(std::string url, std::string post, std::string act
 	if (connect(t_socket, (struct sockaddr*) &socktcp, sizeof(struct sockaddr_in)))
 	{
 		close(t_socket);
-		throw std::runtime_error(std::string("connect"));
+		//throw std::runtime_error(std::string("connect"));
+		dprintf(DEBUG_NORMAL, "CUPnPDevice::HTTP: connect\n");
 	}
 
 	commandstr = command.str();

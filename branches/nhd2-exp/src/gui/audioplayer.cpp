@@ -95,11 +95,6 @@ extern CWebTV * webtv;
 #include <video_cs.h>
 extern cVideo * videoDecoder;
 
-#ifdef ConnectLineBox_Width
-#undef ConnectLineBox_Width
-#endif
-#define ConnectLineBox_Width	16
-
 #define AUDIOPLAYERGUI_SMSKEY_TIMEOUT 1000
 #define SHOW_FILE_LOAD_LIMIT 50
 
@@ -108,6 +103,8 @@ extern cVideo * videoDecoder;
 #define AUDIOPLAYER_START_SCRIPT 			CONFIGDIR "/audioplayer.start"
 #define AUDIOPLAYER_END_SCRIPT 				CONFIGDIR "/audioplayer.end"
 #define DEFAULT_RADIOSTATIONS_XMLFILE 			CONFIGDIR "/radio-stations.xml"
+
+#define SHOUTCAST_DEV_ID 		"AIzaSyAoQ49OQRzRSuTORv3IMPFsa5LaoNyMfD8"
 
 const long int GET_PLAYLIST_TIMEOUT = 10;
 const char RADIO_STATION_XML_FILE[] = {DEFAULT_RADIOSTATIONS_XMLFILE};
@@ -746,7 +743,6 @@ int CAudioPlayerGui::show()
 							break;
 						
 						case SHOUTCAST:	
-							//openSCbrowser();
 							readDir_sc();
 							break;
 							
@@ -1212,13 +1208,14 @@ and add to neutrino playlist
 */
 
 	//shoutcast
-	const std::string sc_get_top500 = "/legacy/Top500?k=" + g_settings.shoutcast_dev_id;
-	const std::string sc_get_genre = "/legacy/stationsearch?k=" + g_settings.shoutcast_dev_id + "&search=";
+	shoutcast_dev_id = SHOUTCAST_DEV_ID;
+	const std::string sc_get_top500 = "/legacy/Top500?k=" + shoutcast_dev_id;
+	const std::string sc_get_genre = "/legacy/stationsearch?k=" + shoutcast_dev_id + "&search=";
 	const std::string sc_tune_in_base = "http://yp.shoutcast.com";
 
 	std::string answer = "";
 	std::string url = "http://api.shoutcast.com";
-	url += "/legacy/genrelist?k=" + g_settings.shoutcast_dev_id;
+	url += "/legacy/genrelist?k=" + shoutcast_dev_id;
 	
 	std::cout << "CAudioPlayerGui::readDir_sc: SC URL: " << url << std::endl;
 	
@@ -1283,7 +1280,7 @@ and add to neutrino playlist
 					CFile file2;
 					file2.Mode = S_IFDIR + 0777 ;
 					file2.Name = "..";
-					file2.Url = "/legacy/genrelist?k=" + g_settings.shoutcast_dev_id;;
+					file2.Url = "/legacy/genrelist?k=" + shoutcast_dev_id;
 					file2.Size = 0;
 					file2.Time = 0;
 					//flist->push_back(file2);
@@ -1322,7 +1319,7 @@ and add to neutrino playlist
 									file.Mode = S_IFREG + 0777 ;
 									file.Name = xmlGetAttribute(element, (char *) "name");
 									
-									file.Url = sc_tune_in_base + tunein_base + (std::string)"?id=" + xmlGetAttribute(element, "id") + (std::string)"&k=" + g_settings.shoutcast_dev_id;
+									file.Url = sc_tune_in_base + tunein_base + (std::string)"?id=" + xmlGetAttribute(element, "id") + (std::string)"&k=" + shoutcast_dev_id;
 									
 									//printf("adding %s (%s)\n", file.Name.c_str(), file.Url.c_str());
 									

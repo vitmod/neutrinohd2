@@ -608,9 +608,9 @@ void CMovieBrowser::initFrames(void)
 	m_cBoxFrameBrowserList.iHeight = 	m_settings.browserFrameHeight; //m_cBoxFrame.iHeight - (m_cBoxFrame.iHeight>>1) - (INTER_FRAME_SPACE>>1);
 
 	m_cBoxFrameFootRel.iX = 		0;
-	m_cBoxFrameFootRel.iY = 		m_cBoxFrame.iHeight - m_pcFontFoot->getHeight();
+	m_cBoxFrameFootRel.iY = 		m_cBoxFrame.iHeight - m_pcFontFoot->getHeight()*2;//FIXME
 	m_cBoxFrameFootRel.iWidth = 		m_cBoxFrameBrowserList.iWidth;
-	m_cBoxFrameFootRel.iHeight = 		m_pcFontFoot->getHeight();
+	m_cBoxFrameFootRel.iHeight = 		m_pcFontFoot->getHeight()*2;//FIXME
 
 	m_cBoxFrameLastPlayList.iX = 		m_cBoxFrameBrowserList.iX;
 	m_cBoxFrameLastPlayList.iY = 		m_cBoxFrameBrowserList.iY ;
@@ -1309,11 +1309,9 @@ void CMovieBrowser::refreshMovieInfo(void)
 		int lx = 0;
 		int ly = 0;
 		
-		std::string fname = m_movieSelectionHandler->file.Name;
+		std::string fname = m_movieSelectionHandler->tfile;
 		
-		changeFileNameExt(fname, ".jpg");
-		
-		if(!access(fname.c_str(), F_OK) && m_settings.gui != MB_GUI_FILTER)
+		if( (!fname.empty() && !access(fname.c_str(), F_OK)) && m_settings.gui != MB_GUI_FILTER )
 		{
 			pich = m_cBoxFrameInfo.iHeight - 10;
 			picw = pich * (4.0 / 3);		// 4/3 format pics
@@ -1322,7 +1320,7 @@ void CMovieBrowser::refreshMovieInfo(void)
 			ly = m_cBoxFrameInfo.iY + (m_cBoxFrameInfo.iHeight - pich)/2;
 		}
 		
-		m_pcInfo->setText(&m_movieSelectionHandler->epgInfo2, m_cBoxFrameInfo.iWidth - picw - 20, fname, lx, ly, picw, pich);
+		m_pcInfo->setText(&m_movieSelectionHandler->epgInfo2, fname, lx, ly, picw, pich);
 	}
 	
 	m_pcWindow->blit();
@@ -1701,7 +1699,7 @@ void CMovieBrowser::refreshFoot(void)
 		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_RED, m_cBoxFrame.iX + xpos1, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
 
 		//1
-		m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, sort_text.c_str(), color, 0, true); // UTF-8
+		m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + 5 + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + m_pcFontFoot->getHeight())/2, width-30, sort_text.c_str(), color, 0, true); // UTF-8
 	}
 
 	// green
@@ -1711,7 +1709,7 @@ void CMovieBrowser::refreshFoot(void)
 		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, m_cBoxFrame.iX + xpos2, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
 
 		//2
-		m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width -30, filter_text.c_str(), color, 0, true); // UTF-8
+		m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + m_pcFontFoot->getHeight())/2, width -30, filter_text.c_str(), color, 0, true); // UTF-8
 	}
 
 	// yellow
@@ -1728,13 +1726,13 @@ void CMovieBrowser::refreshFoot(void)
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, m_cBoxFrame.iX + xpos3, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2);
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos3 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, next_text.c_str(), color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos3 + 5 + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + m_pcFontFoot->getHeight())/2, width-30, next_text.c_str(), color, 0, true); // UTF-8
 
 	// blue
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, m_cBoxFrame.iX+xpos4, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + (ADD_FOOT_HEIGHT>>1));
+	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, m_cBoxFrame.iX + xpos4, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2);
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + 5 + icon_w, m_cBoxFrame.iY+m_cBoxFrameFootRel.iY + m_cBoxFrameFootRel.iHeight + 4 , width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES), color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + 5 + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + m_pcFontFoot->getHeight())/2, width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES), color, 0, true); // UTF-8
 }
 
 bool CMovieBrowser::onButtonPress(neutrino_msg_t msg)
@@ -2703,6 +2701,16 @@ bool CMovieBrowser::loadTsFileNamesFromDir(const std::string & dirname)
 					}
 					
 					movieInfo.dirItNr = m_dirNames.size()-1;
+					
+					//thumbnail
+					std::string fname = "";
+					fname = movieInfo.file.Name;
+					changeFileNameExt(fname, ".jpg");
+					
+					if(!access(fname.c_str(), F_OK) )
+						movieInfo.tfile = fname.c_str();
+					
+					// 
 					m_vMovieInfo.push_back(movieInfo);
 				}
 			}
@@ -2712,6 +2720,10 @@ bool CMovieBrowser::loadTsFileNamesFromDir(const std::string & dirname)
 	}	
  	
 	recursive_counter--;
+	
+	if(result == false)
+		m_file_info_stale = true;
+	
 	return (result);
 }
 

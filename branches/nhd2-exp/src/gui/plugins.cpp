@@ -91,6 +91,10 @@ bool CPlugins::pluginfile_exists(const std::string & filename)
 
 void CPlugins::addPlugin(const char * dir)
 {
+	PluginInit initPlugin;
+	void *handle = NULL;
+	char *error;
+	
 	struct dirent **namelist;
 	std::string fname;
 
@@ -132,15 +136,33 @@ void CPlugins::addPlugin(const char * dir)
 				else if (new_plugin.type == CPlugins::P_TYPE_NEUTRINO)
 				{
 					new_plugin.pluginfile.append(".so");
+					
+					// initPlugin
+					handle = dlopen ( new_plugin.pluginfile.c_str(), RTLD_NOW);
+					if (!handle)
+					{
+						fputs (dlerror(), stderr);
+					} 
+					else
+					{
+						initPlugin = (PluginInit) dlsym(handle, "plugin_init");
+						if ((error = dlerror()) != NULL)
+						{
+							fputs(error, stderr);
+							dlclose(handle);
+						} 
+						else 
+						{
+							dprintf(DEBUG_DEBUG, "[CPlugins] try init...\n");				
+								
+							initPlugin();
+							dlclose(handle);
+							dprintf(DEBUG_DEBUG, "[CPlugins] init done...\n");
+						}
+					}
 				}
-				// We do not check if new_plugin.pluginfile exists since .cfg in
-				// PLUGINDIR_VAR can overwrite settings in read only dir
-				// PLUGINDIR. This needs PLUGINDIR_VAR to be scanned at
-				// first -> .cfg in PLUGINDIR will be skipped since plugin
-				// already exists in the list.
-				// This behavior is used to make sure plugins can be disabled
-				// by creating a .cfg in PLUGINDIR_VAR (PLUGINDIR often is read only).
-
+				
+				//
 				if (!plugin_exists(new_plugin.filename))
 				{
 					plugin_list.push_back(new_plugin);
@@ -179,8 +201,7 @@ void CPlugins::loadPlugins()
 			pluginPath += namelist[i]->d_name;
 			
 			addPlugin(pluginPath.c_str());
-			
-			pluginPath.clear();
+			pluginPath.clear();			
 		}
 		free(namelist[i]);
 	}
@@ -258,7 +279,7 @@ void CPlugins::startPlugin(const char * const name)
 		startPlugin(pluginnr);
 	else
 	{
-		printf("[CPlugins] could not find %s\n", name);
+		dprintf(DEBUG_NORMAL, "[CPlugins] could not find %s\n", name);
 		
 		std::string hint = name;
 		hint += " ";
@@ -273,27 +294,27 @@ void CPlugins::startScriptPlugin(int number)
 {
 	const char * script = plugin_list[number].pluginfile.c_str();
 	
-	printf("[CPlugins] executing script %s\n", script);
+	dprintf(DEBUG_NORMAL, "[CPlugins] executing script %s\n", script);
 	
 	if (!pluginfile_exists(plugin_list[number].pluginfile))
 	{
-		printf("[CPlugins] could not find %s,\nperhaps wrong plugin type in %s\n", script, plugin_list[number].cfgfile.c_str());
+		dprintf(DEBUG_NORMAL, "[CPlugins] could not find %s,\nperhaps wrong plugin type in %s\n", script, plugin_list[number].cfgfile.c_str());
 		return;
 	}
 	
 	if( !safe_system(script) )
 	{
-		printf("CPlugins::startScriptPlugin: script %s successfull started\n", script);
+		dprintf(DEBUG_NORMAL, "CPlugins::startScriptPlugin: script %s successfull started\n", script);
 	} 
 	else 
 	{	
-		printf("[CPlugins] can't execute %s\n",script);
+		dprintf(DEBUG_NORMAL, "[CPlugins] can't execute %s\n",script);
 	}
 }
 
 void CPlugins::startPlugin(int number)
 {
-	printf("CPlugins::startPlugin: %s type:%d\n", plugin_list[number].pluginfile.c_str(), plugin_list[number].type);
+	dprintf(DEBUG_NORMAL, "CPlugins::startPlugin: %s type:%d\n", plugin_list[number].pluginfile.c_str(), plugin_list[number].type);
 	
 	/* export neutrino settings to the environment */
 	char tmp[32];
@@ -366,7 +387,7 @@ void CPlugins::startPlugin(int number)
 			} 
 			else 
 			{
-				printf("[CPlugins] try exec...\n");
+				dprintf(DEBUG_NORMAL, "[CPlugins] try exec...\n");
 				
 				frameBuffer->paintBackground();
 
@@ -374,7 +395,7 @@ void CPlugins::startPlugin(int number)
 					
 				execPlugin();
 				dlclose(handle);
-				printf("[CPlugins] exec done...\n");
+				dprintf(DEBUG_NORMAL, "[CPlugins] exec done...\n");
 			}
 		}
 			
@@ -384,7 +405,36 @@ void CPlugins::startPlugin(int number)
 
 void CPlugins::removePlugin(int number)
 {
-	printf("CPlugins::removePlugin: %s type:%d\n", plugin_list[number].pluginfile.c_str(), plugin_list[number].type);
+	PluginDel delPlugin;
+	void *handle = NULL;
+	char *error;
+	
+	dprintf(DEBUG_NORMAL, "CPlugins::removePlugin: %s type:%d\n", plugin_list[number].pluginfile.c_str(), plugin_list[number].type);
+	
+	// unload plugin
+	// load
+	handle = dlopen ( plugin_list[number].pluginfile.c_str(), RTLD_NOW);
+	if (!handle)
+	{
+		fputs (dlerror(), stderr);
+	} 
+	else 
+	{
+		delPlugin = (PluginDel) dlsym(handle, "plugin_del");
+		if ((error = dlerror()) != NULL)
+		{
+			fputs(error, stderr);
+			dlclose(handle);
+		} 
+		else 
+		{
+			dprintf(DEBUG_NORMAL, "[CPlugins] try del...\n");			
+					
+			delPlugin();
+			dlclose(handle);
+			dprintf(DEBUG_NORMAL, "[CPlugins] del done...\n");
+		}
+	}
 	
 	// remove plugin
 	unlink(plugin_list[number].pluginfile.c_str());
@@ -395,11 +445,14 @@ void CPlugins::removePlugin(int number)
 	// remove plugin icon
 	//if(!plugin_list[number].icon.empty())
 	//	unlink(plugin_list[number].icon.c_str());
+	
+	//erase from pluginlist
+	plugin_list.erase(plugin_list.begin() + number);
 }
 
 bool CPlugins::hasPlugin(CPlugins::p_type_t type)
 {
-	for (std::vector<plugin>::iterator it=plugin_list.begin(); it!=plugin_list.end(); it++)
+	for (std::vector<plugin>::iterator it = plugin_list.begin(); it!=plugin_list.end(); it++)
 	{
 		if (it->type == type)
 			return true;

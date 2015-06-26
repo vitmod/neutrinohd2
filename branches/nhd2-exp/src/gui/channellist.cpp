@@ -1656,8 +1656,6 @@ void CChannelList::clearItem2DetailsLine ()
 
 void CChannelList::paintItem2DetailsLine(int pos, int ch_index)
 {
-#define ConnectLineBox_Width	16
-
 	int xpos  = x - ConnectLineBox_Width;
 	int ypos1 = y + theight + pos*iheight;
 	int ypos2 = y + height;

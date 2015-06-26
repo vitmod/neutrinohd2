@@ -66,6 +66,7 @@
 #include <gui/widget/stringinput_ext.h>
 
 #include <system/settings.h>
+#include <system/debug.h>
 #include <gui/pictureviewer.h>
 #include <gui/movieplayer.h>
 #include <gui/webtv.h>
@@ -100,7 +101,6 @@ CUpnpBrowserGui::~CUpnpBrowserGui()
 
 int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string & /*actionKey*/)
 {
-
 	CAudioPlayer::getInstance()->init();
 
 	if(parent)
@@ -208,7 +208,8 @@ void CUpnpBrowserGui::splitProtocol(std::string &protocol, std::string &prot, st
 			}
 		}
 	}
-	//printf("%s -> %s - %s - %s - %s\n", protocol.c_str(), prot.c_str(), network.c_str(), mime.c_str(), additional.c_str());
+	
+	dprintf(DEBUG_DEBUG, "%s -> %s - %s - %s - %s\n", protocol.c_str(), prot.c_str(), network.c_str(), mime.c_str(), additional.c_str());
 }
 
 std::vector<UPnPEntry> *CUpnpBrowserGui::decodeResult(std::string result)
@@ -220,7 +221,9 @@ std::vector<UPnPEntry> *CUpnpBrowserGui::decodeResult(std::string result)
 	parser = new XMLTreeParser("UTF-8");
 	parser->Parse(result.c_str(), result.size(), 1);
 	root=parser->RootNode();
-	if (!root){
+	
+	if (!root)
+	{
 		delete parser;
 		return NULL;
 	}
@@ -241,26 +244,27 @@ std::vector<UPnPEntry> *CUpnpBrowserGui::decodeResult(std::string result)
 				type=snode->GetType();
 				p = strchr(type,':');
 				if (p)
-					type=p+1;
+					type = p + 1;
+				
 				if (!strcmp(type,"title"))
 				{
-					p=snode->GetData();
+					p = snode->GetData();
 					if (!p)
-						p=(char *) "";
-					title=std::string(p);
+						p = (char *) "";
+					title = std::string(p);
 				}
 			}
 			p = node->GetAttributeValue((char *) "id");
 			if (!p)
-				p=(char *) "";
-			id=std::string(p);
+				p = (char *) "";
+			id = std::string(p);
 
 			p = node->GetAttributeValue((char *) "childCount");
 			if (!p)
-				p=(char *) "";
-			children=std::string(p);
+				p = (char *) "";
+			children = std::string(p);
 
-			UPnPEntry entry={id, isdir, title, artist, album, children, resources, -1};
+			UPnPEntry entry = {id, isdir, title, artist, album, children, resources, -1};
 			entries->push_back(entry);
 		}
 		
@@ -269,59 +273,59 @@ std::vector<UPnPEntry> *CUpnpBrowserGui::decodeResult(std::string result)
 			std::vector<UPnPResource> resources;
 			int preferred = -1;
 			std::string protocol, prot, network, mime, additional;
-			isdir=false;
-			for (snode=node->GetChild(); snode; snode=snode->GetNext())
+			isdir = false;
+			for (snode = node->GetChild(); snode; snode = snode->GetNext())
 			{
 				std::string duration, url, size;
 				unsigned int i;
-				type=snode->GetType();
+				type = snode->GetType();
 				p = strchr(type,':');
 				if (p)
-					type=p+1;
+					type = p + 1;
 
 				if (!strcmp(type,"title"))
 				{
-					p=snode->GetData();
+					p = snode->GetData();
 					if (!p)
-						p=(char *) "";
-					title=std::string(p);
+						p = (char *) "";
+					title = std::string(p);
 				}
 				else if (!strcmp(type,"artist"))
 				{
-					p=snode->GetData();
+					p = snode->GetData();
 					if (!p)
-						p=(char *) "";
-					artist=std::string(p);
+						p = (char *) "";
+					artist = std::string(p);
 				}
 				else if (!strcmp(type,"album"))
 				{
-					p=snode->GetData();
+					p = snode->GetData();
 					if (!p)
-						p=(char *) "";
-					album=std::string(p);
+						p = (char *) "";
+					album = std::string(p);
 				}
 				else if (!strcmp(type,"res"))
 				{
 					p = snode->GetData();
 					if (!p)
-						p=(char *) "";
-					url=std::string(p);
+						p = (char *) "";
+					url = std::string(p);
 					p = snode->GetAttributeValue((char *) "size");
 					if (!p)
-						p=(char *) "0";
-					size=std::string(p);
+						p = (char *) "0";
+					size = std::string(p);
 					p = snode->GetAttributeValue((char *) "duration");
 					if (!p)
-						p=(char *) "";
-					duration=std::string(p);
+						p = (char *) "";
+					duration = std::string(p);
 					p = snode->GetAttributeValue((char *) "protocolInfo");
 					if (!p)
-						p=(char *) "";
-					protocol=std::string(p);
+						p = (char *) "";
+					protocol = std::string(p);
 					UPnPResource resource = {url, protocol, size, duration};
 					resources.push_back(resource);
 				}
-				int pref=0;
+				int pref = 0;
 				preferred = -1;
 				
 				for (i = 0; i < resources.size(); i++)
@@ -355,7 +359,7 @@ std::vector<UPnPEntry> *CUpnpBrowserGui::decodeResult(std::string result)
 					}
 					
 					//
-					if (mime.substr(0,6) == "video/" && pref < 5)
+					if (mime.substr(0, 6) == "video/" && pref < 5)
 					{
 						preferred = i;
 						pref = 5;
@@ -363,13 +367,13 @@ std::vector<UPnPEntry> *CUpnpBrowserGui::decodeResult(std::string result)
 					
 					if (mime == "video/x-flv" && pref < 6)
 					{
-						preferred=i;
+						preferred = i;
 						pref = 6;
 					}
 					
 					if (mime == "video/mp4" && pref < 7)
 					{
-						preferred=i;
+						preferred = i;
 						pref = 7;
 					}
 					//
@@ -377,15 +381,15 @@ std::vector<UPnPEntry> *CUpnpBrowserGui::decodeResult(std::string result)
 			}
 			p = node->GetAttributeValue((char *) "id");
 			if (!p)
-				p=(char *) "";
-			id=std::string(p);
+				p = (char *) "";
+			id = std::string(p);
 
 			p = node->GetAttributeValue((char *) "childCount");
 			if (!p)
 				p=(char *) "";
-			children=std::string(p);
+			children = std::string(p);
 
-			UPnPEntry entry={id, isdir, title, artist, album, children, resources, preferred};
+			UPnPEntry entry = {id, isdir, title, artist, album, children, resources, preferred};
 
 			entries->push_back(entry);
 		}
@@ -956,9 +960,9 @@ void CUpnpBrowserGui::paintItemPos(std::vector<UPnPEntry> *entry, unsigned int p
 		bgcolor = COL_MENUCONTENT_PLUS_2;
 		paintDetails(entry, pos);
 		if ((*entry)[pos].isdir)
-			paintItem2DetailsLine (-1, pos); // clear it
+			paintItem2DetailsLine(-1, pos); // clear it
 		else
-			paintItem2DetailsLine (pos, pos);
+			paintItem2DetailsLine(pos, pos);
 	}
 	else
 	{
@@ -1190,11 +1194,11 @@ void CUpnpBrowserGui::paintItem(std::vector<UPnPEntry> *entry, unsigned int sele
 void CUpnpBrowserGui::paintDetails(std::vector<UPnPEntry> *entry, unsigned int index, bool use_playing)
 {
 	// Foot info
-	int top = m_y + (m_height - m_info_height - 1*m_buttonHeight) + 2;
+	int top = m_y + m_height - (m_info_height + m_buttonHeight);
 
 	if ((!use_playing) && ((*entry)[index].isdir))
 	{
-		m_frameBuffer->paintBackgroundBoxRel(m_x + 2, top + 2, m_width - 4, 2*m_buttonHeight);
+		m_frameBuffer->paintBackgroundBoxRel(m_x + 2, top, m_width - 4, 2*m_buttonHeight - 4);
 	}
 	else
 	{
@@ -1202,10 +1206,10 @@ void CUpnpBrowserGui::paintDetails(std::vector<UPnPEntry> *entry, unsigned int i
 		{
 			if (!m_playing_entry_is_shown) 
 			{
-				m_frameBuffer->paintBoxRel(m_x + 2, top + 2, m_width - 4, 2*m_buttonHeight, COL_MENUCONTENTDARK_PLUS_0);
+				m_frameBuffer->paintBoxRel(m_x + 2, top + 4, m_width - 4, 2*m_buttonHeight - 8, COL_MENUCONTENTDARK_PLUS_0);
 				m_playing_entry_is_shown = true;
 				g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + 2 + (m_buttonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, m_playing_entry.title + " - " + m_playing_entry.artist, COL_INFOBAR, 0, true); // UTF-8
-				g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + 2 + m_buttonHeight + (m_buttonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, m_playing_entry.album, COL_INFOBAR, 0, true); // UTF-8
+				g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + m_buttonHeight + (m_buttonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, m_playing_entry.album, COL_INFOBAR, 0, true); // UTF-8
 			}
 		} 
 		else 
@@ -1213,7 +1217,7 @@ void CUpnpBrowserGui::paintDetails(std::vector<UPnPEntry> *entry, unsigned int i
 			if (entry == NULL) 
 				return;
 			
-			m_frameBuffer->paintBoxRel(m_x + 2, top + 2, m_width - 4, 2*m_buttonHeight, COL_MENUCONTENTDARK_PLUS_0);
+			m_frameBuffer->paintBoxRel(m_x + 2, top, m_width - 4, 2*m_buttonHeight - 4, COL_MENUCONTENTDARK_PLUS_0);
 			m_playing_entry_is_shown = false;
 			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + 2 + (m_buttonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, (*entry)[index].title + " - " + (*entry)[index].artist, COL_INFOBAR, 0, true); // UTF-8
 			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + m_buttonHeight + (m_buttonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, (*entry)[index].album, COL_INFOBAR, 0, true); // UTF-8
@@ -1221,10 +1225,6 @@ void CUpnpBrowserGui::paintDetails(std::vector<UPnPEntry> *entry, unsigned int i
 	}
 }
 
-//
-// -- Decoreline to connect ChannelDisplayLine with ChannelDetail display
-// -- 2002-03-17 rasc
-//
 void CUpnpBrowserGui::clearItem2DetailsLine()
 {
 	paintItem2DetailsLine (-1, 0);
@@ -1234,7 +1234,7 @@ void CUpnpBrowserGui::paintItem2DetailsLine(int pos, unsigned int /*ch_index*/)
 {
 	int xpos  = m_x - ConnectLineBox_Width;
 	int ypos1 = m_y + m_title_height + m_theight + pos*m_fheight;
-	int ypos2 = m_y + (m_height - m_info_height - 1 * m_buttonHeight) + 2;
+	int ypos2 = m_y + m_height - (m_info_height + m_buttonHeight);
 
 	int ypos1a = ypos1 + (m_fheight/2)-2;
 	int ypos2a = ypos2 + (m_info_height/2) - 2;
@@ -1246,7 +1246,7 @@ void CUpnpBrowserGui::paintItem2DetailsLine(int pos, unsigned int /*ch_index*/)
 	
 	if (pos < 0) 
 	{
-		m_frameBuffer->paintBackgroundBoxRel(m_x, m_y + (m_height - m_info_height - 1* m_buttonHeight) + 2, m_width, m_info_height);
+		m_frameBuffer->paintBackgroundBoxRel(m_x, ypos2, m_width, 2*m_buttonHeight);
 	}
 	
 	// paint Line if detail info (and not valid list pos)
@@ -1272,7 +1272,7 @@ void CUpnpBrowserGui::paintItem2DetailsLine(int pos, unsigned int /*ch_index*/)
 
 		// -- small Frame around infobox
 		m_frameBuffer->paintBoxRel(m_x, ypos2, 2, m_info_height, col1);
-		m_frameBuffer->paintBoxRel(m_x+m_width-2, ypos2, 2, m_info_height, col1);
+		m_frameBuffer->paintBoxRel(m_x + m_width - 2, ypos2, 2, m_info_height, col1);
 		m_frameBuffer->paintBoxRel(m_x, ypos2, m_width - 2, 2, col1);
 		m_frameBuffer->paintBoxRel(m_x , ypos2 + m_info_height - 2, m_width - 2, 2, col1);
 	}
@@ -1300,9 +1300,9 @@ void CUpnpBrowserGui::updateTimes(const bool force)
 		if (updatePlayed)
 		{
 			paintDetails(NULL, 0, true);
-			top = m_y + (m_height - m_info_height - 1 * m_buttonHeight) + m_buttonHeight + 4;
-			m_frameBuffer->paintBoxRel(m_x + m_width - w - 15, top + 1, w + 4, m_buttonHeight, COL_MENUCONTENTDARK_PLUS_0);
-			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + m_width - w - 11, top + 1 + m_buttonHeight, w, play_time, COL_MENUHEAD);			
+			top = m_y + m_height - (m_info_height + m_buttonHeight) + m_buttonHeight - 8;
+			m_frameBuffer->paintBoxRel(m_x + m_width - w - 15, top + 1, w + 4, m_buttonHeight - 4, COL_MENUCONTENTDARK_PLUS_0);
+			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + m_width - w - 11, top + m_buttonHeight, w, play_time, COL_MENUHEAD);			
 		}
 	}
 }

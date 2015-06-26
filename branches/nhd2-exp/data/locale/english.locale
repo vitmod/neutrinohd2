@@ -1631,37 +1631,29 @@ webtv.bouquets Favorites
 webtv.add_bouquets add User bouquet
 
 menu.hint_ytplay Play selected youtube feeds
-moviebrowser.yt_error Failed to load youtube feed
-moviebrowser.yt_max_results Max results to fetch
-moviebrowser.yt_most_discussed Most discussed
-moviebrowser.yt_most_popular Most popular
-moviebrowser.yt_most_resent Most resent
-moviebrowser.yt_most_responded Most responded
-moviebrowser.yt_most_shared Most shared
-moviebrowser.yt_next_results Next results
-moviebrowser.yt_on_the_web Trending videos
-moviebrowser.yt_prev_results Previous results
-moviebrowser.yt_recently_featured Recently featured
-moviebrowser.yt_region Region
-moviebrowser.yt_related Related videos
-moviebrowser.yt_search Search keyword
-moviebrowser.yt_top_favorites Top favorites
-moviebrowser.yt_top_rated Top rated
+youtube.yt_error Failed to load youtube feed
+youtube.yt_max_results Max results to fetch
+youtube.yt_most_popular Most popular
+youtube.yt_most_popular_all_time Most resent
+youtube.yt_next_results Next results
+youtube.yt_prev_results Previous results
+youtube.yt_region Region
+youtube.yt_related Related videos
+youtube.yt_search Search keyword
 movieplayer.ytplayback Youtube player
-moviebrowser.yt_orderby Order by
-moviebrowser.yt_orderby.published publishing date
-moviebrowser.yt_orderby.rating rating
-moviebrowser.yt_orderby.relevance relevance
-moviebrowser.yt_orderby.viewcount view count
-moviebrowser.yt_concurrent_connections Concurrent connections
+youtube.yt_orderby Order by
+youtube.yt_orderby.published publishing date
+youtube.yt_orderby.rating rating
+youtube.yt_orderby.relevance relevance
+youtube.yt_orderby.viewcount view count
+youtube.yt_concurrent_connections Concurrent connections
 
 movieplayer.netzkino Netzkino
-moviebrowser.netzkino_error Failed to load Netzkino categories
-moviebrowser.nk_categories Select category
-moviebrowser.nk_error Failed to load Netzkino feed
-moviebrowser.nk_rtmp netzKino URL Protokoll
-moviebrowser.nk_rtmp_http HTTP (mp4)
-moviebrowser.nk_rtmp_rtmp RTMP
+netzkino.nk_error Failed to load Netzkino categories
+netzkino.nk_categories Select category
+netzkino.nk_rtmp netzKino URL Protokoll
+netzkino.nk_rtmp_http HTTP (mp4)
+netzkino.nk_rtmp_rtmp RTMP
 
 plugins.notinstalled is not installed please install again.
 

@@ -957,8 +957,6 @@ void CWebTV::clearItem2DetailsLine()
 
 void CWebTV::paintItem2DetailsLine(int pos, int /*ch_index*/)
 {
-#define ConnectLineBox_Width	16
-
 	int xpos  = x - ConnectLineBox_Width;
 	int ypos1 = y + theight + pos*iheight;
 	int ypos2 = y + height;
@@ -980,7 +978,6 @@ void CWebTV::paintItem2DetailsLine(int pos, int /*ch_index*/)
 			
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1 + 5, 4, fh, col1);
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1 + 5, 1, fh, col2);			
-
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos2 + 7, 4, info_height - 14, col1);
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos2 + 7, 1, info_height - 14, col2);			
 
@@ -989,8 +986,8 @@ void CWebTV::paintItem2DetailsLine(int pos, int /*ch_index*/)
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 1, ypos2a - ypos1a + 4, col2);		
 
 		// Hline Oben
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos1a, 12,4, col1);
-		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 12,1, col2);
+		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos1a, 12, 4, col1);
+		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 12, 1, col2);
 		
 		// Hline Unten
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos2a, 12, 4, col1);

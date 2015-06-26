@@ -373,9 +373,6 @@ struct SNeutrinoSettings
 	int   audioplayer_screensaver_type;
 	int   audioplayer_enable_sc_metadata;
 	//std::string audioplayer_screensaver_dir;
-	
-	//shoutcast
-	std::string shoutcast_dev_id;
 	// END AUDIOPLAYER
 
 	// PICVIEWER
@@ -520,6 +517,7 @@ extern const neutrino_locale_t timing_setting_name[TIMING_SETTING_COUNT];
 #define BORDER_LEFT			10
 #define BORDER_RIGHT			10
 #define SCROLLBAR_WIDTH			15
+#define ConnectLineBox_Width    	16
 
 // parentallock
 const int PARENTALLOCK_PROMPT_NEVER          = 0;

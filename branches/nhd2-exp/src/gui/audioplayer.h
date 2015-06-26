@@ -161,6 +161,7 @@ class CAudioPlayerGui : public CMenuTarget
 		bool 		info_visible;
 
 		SMSKeyInput    m_SMSKeyInput;
+		std::string shoutcast_dev_id;
 
 		void paintItem(int pos);
 		void paint();

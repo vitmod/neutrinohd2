@@ -833,9 +833,6 @@ int CNeutrinoApp::loadSetup(const char * fname)
 	g_settings.audioplayer_repeat_on = configfile.getInt32("audioplayer_repeat_on",0);
 	g_settings.audioplayer_screensaver_type = configfile.getInt32("audioplayer_screensaver_type", CAudioPlayerGui::NONE);
 	g_settings.audioplayer_enable_sc_metadata = configfile.getInt32("audioplayer_enable_sc_metadata", 1);
-	
-	// shoutcast --- not in GUI
-	g_settings.shoutcast_dev_id = configfile.getString("shoutcast_dev_id", "XXXXXXXXXXXXXXXX");
 	// audioplayer screensaver_dir
 	//g_settings.audioplayer_screensaver_dir = configfile.getString("audioplayer_screensaver_dir", DATADIR "/neutrino/icons");
 	// end audioplayer
@@ -1272,9 +1269,6 @@ void CNeutrinoApp::saveSetup(const char * fname)
 	configfile.setInt32( "audioplayer_repeat_on", g_settings.audioplayer_repeat_on );
 	configfile.setInt32( "audioplayer_screensaver_type", g_settings.audioplayer_screensaver_type );
 	configfile.setInt32( "audioplayer_enable_sc_metadata", g_settings.audioplayer_enable_sc_metadata );
-	
-	//shoutcast
-	configfile.setString( "shoutcast_dev_id", g_settings.shoutcast_dev_id );
 	// audioplayer_screensaver_dir
 	//configfile.setString("audioplayer_screensaver_dir", g_settings.audioplayer_screensaver_dir);
 	// END AUDIOPLAYER

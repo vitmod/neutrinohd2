@@ -317,22 +317,6 @@ inline bool waitForTimeset(void)
 	return true;
 }
 
-/*
-static int64_t last_profile_call;
-
-void showProfiling( std::string text )
-{
-	struct timeval tv;
-
-	gettimeofday( &tv, NULL );
-	int64_t now = (int64_t) tv.tv_usec + (int64_t)((int64_t) tv.tv_sec * (int64_t) 1000000);
-
-	int64_t tmp = now - last_profile_call;
-	dprintf(DEBUG_DEBUG, "--> '%s' %lld.%03lld\n", text.c_str(), tmp / 1000LL, tmp % 1000LL);
-	last_profile_call = now;
-}
-*/
-
 static const SIevent nullEvt; // Null-Event
 
 //------------------------------------------------------------
@@ -5353,26 +5337,30 @@ void sectionsd_getEventsServiceKey(t_channel_id serviceUniqueKey, CChannelEventL
 
 				bool copy = true;
 				if(search == 0); // nothing to do here
-				else if(search == 1) {
+				else if(search == 1) 
+				{
 					std::string eName = (*e)->getName();
 					std::transform(eName.begin(), eName.end(), eName.begin(), tolower);
 					if(eName.find(search_text) == std::string::npos)
 						copy = false;
 				}
-				else if(search == 2) {
+				else if(search == 2) 
+				{
 					std::string eText = (*e)->getText();
 					std::transform(eText.begin(), eText.end(), eText.begin(), tolower);
 					if(eText.find(search_text) == std::string::npos)
 						copy = false;
 				}
-				else if(search == 3) {
+				else if(search == 3) 
+				{
 					std::string eExtendedText = (*e)->getExtendedText();
 					std::transform(eExtendedText.begin(), eExtendedText.end(), eExtendedText.begin(), tolower);
 					if(eExtendedText.find(search_text) == std::string::npos)
 						copy = false;
 				}
 
-				if(copy) {
+				if(copy) 
+				{
 					for (SItimes::iterator t = (*e)->times.begin(); t != (*e)->times.end(); ++t)
 					{
 						CChannelEvent aEvent;
@@ -5412,23 +5400,31 @@ void sectionsd_getCurrentNextServiceKey(t_channel_id uniqueServiceKey, CSections
 
 	readLockEvents();
 	/* if the currently running program is requested... */
-	if (uniqueServiceKey == messaging_current_servicekey) {
+	if (uniqueServiceKey == messaging_current_servicekey) 
+	{
 		/* ...check for myCurrentEvent and myNextEvent */
-		if (!myCurrentEvent) {
+		if (!myCurrentEvent) 
+		{
 			dprintf(DEBUG_DEBUG, "!myCurrentEvent \n");
 			change = true;
 			flag |= CSectionsdClient::epgflags::not_broadcast;
-		} else {
+		} 
+		else 
+		{
 			currentEvt = *myCurrentEvent;
 			flag |= CSectionsdClient::epgflags::has_current; // aktuelles event da...
 			flag |= CSectionsdClient::epgflags::has_anything;
 		}
-		if (!myNextEvent) {
+		if (!myNextEvent) 
+		{
 			dprintf(DEBUG_DEBUG, "!myNextEvent \n");
 			change = true;
-		} else {
+		} 
+		else 
+		{
 			nextEvt = *myNextEvent;
-			if (flag & CSectionsdClient::epgflags::not_broadcast) {
+			if (flag & CSectionsdClient::epgflags::not_broadcast) 
+			{
 				dprintf(DEBUG_DEBUG, "CSectionsdClient::epgflags::has_no_current\n");
 				flag = CSectionsdClient::epgflags::has_no_current;
 			}
@@ -5632,7 +5628,8 @@ bool sectionsd_getEPGidShort(event_id_t epgID, CShortEPGData * epgdata)
 		epgdata->info1 = e.getText();
 		epgdata->info2 = e.getExtendedText();
 		ret = true;
-	} else
+	} 
+	else
 		dprintf(DEBUG_DEBUG, "EPG not found!\n");
 	unlockEvents();
 	
@@ -5651,7 +5648,8 @@ bool sectionsd_getEPGid(const event_id_t epgID, const time_t startzeit, CEPGData
 	epgdata->items.clear();
 
 	readLockEvents();
-	if (evt.service_id != 0) { // Event found
+	if (evt.service_id != 0) 
+	{ // Event found
 		SItimes::iterator t = evt.times.begin();
 
 		for (; t != evt.times.end(); ++t)
@@ -5700,15 +5698,20 @@ bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGD
 	dprintf(DEBUG_DEBUG, "[commandActualEPGchannelID] Request of current EPG for " PRINTF_CHANNEL_ID_TYPE "\n", uniqueServiceKey);
 
 	readLockEvents();
-	if (uniqueServiceKey == messaging_current_servicekey) {
-		if (myCurrentEvent) {
+	if (uniqueServiceKey == messaging_current_servicekey) 
+	{
+		if (myCurrentEvent) 
+		{
 			evt = *myCurrentEvent;
 			zeit.startzeit = evt.times.begin()->startzeit;
 			zeit.dauer = evt.times.begin()->dauer;
-			if (evt.times.size() > 1) {
+			if (evt.times.size() > 1) 
+			{
 				time_t now = time(NULL);
-				for (SItimes::iterator t = evt.times.begin(); t != evt.times.end(); ++t) {
-					if ((long)now < (long)(t->startzeit + t->dauer) && (long)now > (long)t->startzeit) {
+				for (SItimes::iterator t = evt.times.begin(); t != evt.times.end(); ++t) 
+				{
+					if ((long)now < (long)(t->startzeit + t->dauer) && (long)now > (long)t->startzeit) 
+					{
 						zeit.startzeit = t->startzeit;
 						zeit.dauer = t->dauer;
 						break;
@@ -5742,8 +5745,6 @@ bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGD
 
 		ret = true;
 	} 
-	//else
-	//	dprintf("EPG not found!\n");
 	
 	unlockEvents();
 	return ret;
@@ -5760,10 +5761,13 @@ void sectionsd_getChannelEvents(CChannelEventList &eList, const bool tv_mode = t
 	bool found_already = false;
 	time_t azeit = time(NULL);
 
-	if(tv_mode) {
+	if(tv_mode) 
+	{
 		serviceTyp1 = 0x01;
 		serviceTyp2 = 0x04;
-	} else {
+	} 
+	else 
+	{
 		serviceTyp1 = 0x02;
 		serviceTyp2 = 0x00;
 	}
@@ -5929,13 +5933,6 @@ bool sectionsd_getNVODTimesServiceKey(const t_channel_id uniqueServiceKey, CSect
 	unlockServices();
 	return ret;
 }
-
-/*
-void sectionsd_setPrivatePid(unsigned short pid)
-{
-
-}
-*/
 
 void sectionsd_set_languages(const std::vector<std::string>& newLanguages)
 {

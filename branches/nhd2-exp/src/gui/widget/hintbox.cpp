@@ -184,7 +184,6 @@ void CHintBox::refresh(void)
 	{
 		int iw, ih;
 		CFrameBuffer::getInstance()->getIconSize(iconfile.c_str(), &iw, &ih);
-		printf("theight:%d ih:%d\n", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), ih);
 		window->paintIcon(iconfile.c_str(), BORDER_LEFT, theight/2);
 	}
 	

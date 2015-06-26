@@ -994,7 +994,7 @@ bool CFrameBuffer::paintIcon(const std::string & filename, const int x, const in
 		
 		if(!data) 
 		{
-			dprintf(DEBUG_NORMAL, "paintIcon: error while loading icon: %s\n", newname.c_str());
+			dprintf(DEBUG_DEBUG, "paintIcon: error while loading icon: %s\n", newname.c_str());
 			
 			//data = getIcon(filename, &width, &height);
 			if(width == 0 || height == 0)	
@@ -1021,7 +1021,7 @@ bool CFrameBuffer::paintIcon(const std::string & filename, const int x, const in
 		}
 		else
 		{
-			dprintf(DEBUG_NORMAL, "paintIcon: error while loading icon: %s\n", filename.c_str());
+			dprintf(DEBUG_DEBUG, "paintIcon: error while loading icon: %s\n", filename.c_str());
 			return false;
 		}
 	} 
@@ -1649,7 +1649,7 @@ fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int heig
 		
 		if (buffer == NULL) 
 		{
-		  	dprintf(DEBUG_INFO, "CFrameBuffer::getImage: Error: malloc\n");
+		  	dprintf(DEBUG_DEBUG, "CFrameBuffer::getImage: Error: malloc\n");
 		  	return false;
 		}
 		
@@ -1689,14 +1689,14 @@ fb_pixel_t * CFrameBuffer::getImage(const std::string &name, int width, int heig
 		} 
 		else 
 		{
-	  		dprintf(DEBUG_INFO, "CFrameBuffer::getImage: Error decoding file %s\n", name.c_str ());
+	  		dprintf(DEBUG_DEBUG, "CFrameBuffer::getImage: Error decoding file %s\n", name.c_str ());
 	  		free (buffer);
 	  		buffer = NULL;
 		}
   	} 
 	else
 	{
-		dprintf(DEBUG_INFO, "CFrameBuffer::getImage: Error open file %s\n", name.c_str ());
+		dprintf(DEBUG_DEBUG, "CFrameBuffer::getImage: Error open file %s\n", name.c_str ());
 	}
 
 	return ret;

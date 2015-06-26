@@ -122,7 +122,6 @@ class CTextBox
 		fb_pixel_t m_textBackgroundColor;
 
 		CFrameBuffer * frameBuffer;
-		int max_width;
 		
 		std::string thumbnail;
 		int lx; 
@@ -145,12 +144,12 @@ class CTextBox
 		void    refresh(void);
 		void    scrollPageDown(const int pages);
 		void    scrollPageUp(const int pages);				
-		bool	setText(const std::string* newText, int _max_width = 0, std::string _thumbnail = "", int _lx = 0, int _ly = 0, int _tw = 0, int _th = 0);
+		bool	setText(const std::string* newText, std::string _thumbnail = "", int _lx = 0, int _ly = 0, int _tw = 0, int _th = 0);
 		
-		inline	bool 	isPainted(void){if( frameBuffer == NULL) return (false); else return (true);};
+		inline	bool isPainted(void){if( frameBuffer == NULL) return (false); else return (true);};
 
 		inline	CBox	getWindowsPos(void)			{return(m_cFrame);};
-		inline	int	getMaxLineWidth(void)		{return(m_nMaxLineWidth);};
+		inline	int	getMaxLineWidth(void)			{return(m_nMaxLineWidth);};
 		inline  int     getLines(void)				{return(m_nNrOfLines);};
 		inline  int     getPages(void)				{return(m_nNrOfPages);};
 		inline	void	movePosition(int x, int y){m_cFrame.iX = x; m_cFrame.iY = y;};

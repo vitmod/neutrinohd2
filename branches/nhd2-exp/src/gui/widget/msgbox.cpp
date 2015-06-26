@@ -302,7 +302,7 @@ void CMsgBox::refreshFoot(void)
 		return;
 
 	// draw the background first
-	m_pcWindow->paintBoxRel(m_cBoxFrameFootRel.iX+m_cBoxFrame.iX, 
+	m_pcWindow->paintBoxRel(m_cBoxFrameFootRel.iX + m_cBoxFrame.iX, 
 								m_cBoxFrameFootRel.iY + m_cBoxFrame.iY, 
 								m_cBoxFrameFootRel.iWidth, 
 								m_cBoxFrameFootRel.iHeight,  
@@ -449,7 +449,7 @@ void CMsgBox::refreshTitle(void)
 		// draw icon and title text
 		m_pcWindow->paintIcon(m_cIcon.c_str(), m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + BORDER_LEFT, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iY - ih)/2);
 		
-		m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + /*TITLE_ICON_WIDTH*/iw + TEXT_BORDER_WIDTH, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - /*TITLE_ICON_WIDTH */iw+ TEXT_BORDER_WIDTH, m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+		m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + iw + TEXT_BORDER_WIDTH, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - iw + TEXT_BORDER_WIDTH, m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 	}
 	else
 	{
@@ -471,24 +471,23 @@ void CMsgBox::refreshBorder(void)
 	if(!(m_nMode & BORDER && m_nWindowFrameBorderWidth > 0))
 		return;
 
-	//draw bottom shadow
 	/*
+	//draw bottom shadow
 	m_pcWindow->paintBoxRel(m_nWindowFrameBorderWidth + m_cBoxFrame.iX, 
 					m_cBoxFrame.iHeight - m_nWindowFrameBorderWidth + m_cBoxFrame.iY, 
 					m_cBoxFrame.iWidth - m_nWindowFrameBorderWidth, 
 					m_nWindowFrameBorderWidth, 
 					COL_INFOBAR_SHADOW_PLUS_0, 
 					RADIUS_MID, CORNER_BOTTOM);
-					*/
 
-	//draw right shadow
-	/*
+	//draw top shadow
 	m_pcWindow->paintBoxRel(m_cBoxFrame.iWidth - m_nWindowFrameBorderWidth+m_cBoxFrame.iX, 
-					m_nWindowFrameBorderWidth + m_cBoxFrame.iY, m_nWindowFrameBorderWidth, 
+					m_nWindowFrameBorderWidth + m_cBoxFrame.iY, 
+					m_nWindowFrameBorderWidth, 
 					m_cBoxFrame.iHeight - m_nWindowFrameBorderWidth, 
 					COL_INFOBAR_SHADOW_PLUS_0,
 					RADIUS_MID, CORNER_TOP);
-					*/
+	*/
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -747,14 +746,14 @@ int CMsgBox::exec( int timeout, int returnDefaultOnTimeout)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-bool CMsgBox::setText(const std::string* newText)
+bool CMsgBox::setText(const std::string* newText, std::string _thumbnail, int _lx, int _ly, int _tw, int _th)
 {
 	bool _result = false;
 	
 	// update text in textbox if there is one
 	if(m_pcTextBox != NULL && newText != NULL)
 	{
-		_result = m_pcTextBox->setText(newText);
+		_result = m_pcTextBox->setText(newText, _thumbnail, _lx, _ly, _tw, _th );
 		
 		if(m_nMode & AUTO_WIDTH || m_nMode & AUTO_HIGH)
 		{

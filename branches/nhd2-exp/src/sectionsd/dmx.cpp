@@ -278,7 +278,7 @@ int DMX::getSection(uint8_t *buf, const unsigned timeoutInMSeconds, int &timeout
 	unsigned short current_tsid = 0;
 
 	/* filter == 0 && maks == 0 => EIT dummy filter to slow down EIT thread startup */
-	if (pID == 0x12 && filters[filter_index].filter == 0 && filters[filter_index].mask == 0)
+	if ( (pID == 0x12 || pID == 0x39) && filters[filter_index].filter == 0 && filters[filter_index].mask == 0)
 	{
 		usleep(timeoutInMSeconds * 1000);
 		timeouts++;
@@ -356,14 +356,16 @@ int DMX::getSection(uint8_t *buf, const unsigned timeoutInMSeconds, int &timeout
 		// only current sections
 		if (extended_header->current_next_indicator != 0) {
 			// if ((initial_header.table_id >= 0x4e) && (initial_header.table_id <= 0x6f))
-			if (pID == 0x12) {
+			if (pID == 0x12 || pID == 0x39) 
+			{
 				eit_extended_header = (eit_extended_section_header *)(buf+8);
 				current_onid = 	eit_extended_header->original_network_id_hi * 256 +
 						eit_extended_header->original_network_id_lo;
 				current_tsid = 	eit_extended_header->transport_stream_id_hi * 256 +
 						eit_extended_header->transport_stream_id_lo;
 			}
-			else {
+			else 
+			{
 				current_onid = 0;
 				current_tsid = 0;
 			}
@@ -609,7 +611,7 @@ int DMX::change(const int new_filter_index, const int new_current_service)
 	}
 
 	// friendly debug output...
-	if(pID == 0x12 && filters[0].filter != 0x4e) 
+	if( (pID == 0x12 || pID == 0x39) && filters[0].filter != 0x4e) 
 	{ 
 		// Only EIT
 		//printdate_ms(stderr);

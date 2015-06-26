@@ -111,9 +111,6 @@ int CPluginList::exec(CMenuTarget * parent, const std::string &)
 		parent->hide();
 	
 reload:	
-	// load plugins
-	g_PluginList->loadPlugins();
-
 	// clear pluginlist
 	for(unsigned int count = 0; count < pluginlist.size(); count++)
 	{

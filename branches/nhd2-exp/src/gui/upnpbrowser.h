@@ -75,7 +75,6 @@ class CUpnpBrowserGui : public CMenuTarget
 		UPnPEntry      m_playing_entry;
 		CUPnPSocket  * m_socket;
 		CFrameBuffer * m_frameBuffer;
-		//bool           m_vol_ost;
 		int            m_LastMode;
 		int            m_width;
 		int            m_height;

@@ -253,8 +253,6 @@ void CBEChannelSelectWidget::paintDetails(int index)
 
 void CBEChannelSelectWidget::paintItem2DetailsLine(int pos, int /*ch_index*/)
 {
-#define ConnectLineBox_Width	16
-	
 	int xpos  = x - ConnectLineBox_Width;
 	int ypos1 = y + theight + pos*fheight;
 	int ypos2 = y + height;

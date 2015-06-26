@@ -65,10 +65,10 @@ class CPlugins
 			std::string filename;
 			std::string cfgfile;
 			std::string pluginfile;
-			std::string name;                // UTF-8 encoded
-			std::string description;         // UTF-8 encoded
+			std::string name;               // UTF-8 encoded
+			std::string description;        // UTF-8 encoded
 			CPlugins::p_type_t type;
-			std::string    icon;		// Icon
+			std::string icon;		// Icon
 			
 			bool operator< (const plugin& a) const
 			{

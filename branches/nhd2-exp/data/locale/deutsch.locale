@@ -1632,37 +1632,29 @@ webtv.bouquets Favoriten
 webtv.add_bouquets User Bouquet einfügen
 
 menu.hint_ytplay Wiedergabe von ausgewählten Youtube Feeds
-moviebrowser.yt_error Fehler beim laden des Youtube Feed
-moviebrowser.yt_max_results Max. Anzahl der zu holenden Feeds
-moviebrowser.yt_most_discussed Am meisten diskutiert
-moviebrowser.yt_most_popular Beliebteste Videos
-moviebrowser.yt_most_resent Unbeliebteste Videos
-moviebrowser.yt_most_responded Feeds mit den meisten Reaktionen
-moviebrowser.yt_most_shared Am häufigsten wiedergegebe Videos
-moviebrowser.yt_next_results Nächste Ergebnisse
-moviebrowser.yt_on_the_web Trendvideos
-moviebrowser.yt_prev_results Vorherige Ergebnisse
-moviebrowser.yt_recently_featured Vor kurzem empfohlen
-moviebrowser.yt_region Region
-moviebrowser.yt_related Passende Videos
-moviebrowser.yt_search Suche nach Stichwort
-moviebrowser.yt_top_favorites Top Favoriten
-moviebrowser.yt_top_rated Am besten bewertet
+youtube.yt_error Fehler beim laden des Youtube Feed
+youtube.yt_max_results Max. Anzahl der zu holenden Feeds
+youtube.yt_most_popular Beliebteste Videos
+youtube.yt_most_popular_all_time Unbeliebteste Videos
+youtube.yt_next_results Nächste Ergebnisse
+youtube.yt_prev_results Vorherige Ergebnisse
+youtube.yt_region Region
+youtube.yt_related Passende Videos
+youtube.yt_search Suche nach Stichwort
 movieplayer.ytplayback Youtube Player
-moviebrowser.yt_orderby Sortierung nach
-moviebrowser.yt_orderby.published Veröffentlichungszeitpunkt
-moviebrowser.yt_orderby.rating Bewertung
-moviebrowser.yt_orderby.relevance Relevanz
-moviebrowser.yt_orderby.viewcount Zahl der Views
-moviebrowser.yt_concurrent_connections Gleichzeitige Verbindungen 
+youtube.yt_orderby Sortierung nach
+youtube.yt_orderby.published Veröffentlichungszeitpunkt
+youtube.yt_orderby.rating Bewertung
+youtube.yt_orderby.relevance Relevanz
+youtube.yt_orderby.viewcount Zahl der Views
+youtube.yt_concurrent_connections Gleichzeitige Verbindungen 
 
 movieplayer.netzkino NetzKino
-moviebrowser.netzkino_error Fehler beim laden des Netzkino Kategorien
-moviebrowser.nk_categories Kategorie-Auswahl
-moviebrowser.nk_error Fehler beim Laden des Netzkino-Feeds
-moviebrowser.nk_rtmp netzKino URL Protokoll
-moviebrowser.nk_rtmp_http HTTP (mp4)
-moviebrowser.nk_rtmp_rtmp RTMP
+netzkino.nk_error Fehler beim laden des Netzkino Kategorien
+netzkino.nk_categories Kategorie-Auswahl
+netzkino.nk_rtmp netzKino URL Protokoll
+netzkino.nk_rtmp_http HTTP (mp4)
+netzkino.nk_rtmp_rtmp RTMP
 
 plugins.notinstalled ist nicht installiert bitte erneut installieren.
 

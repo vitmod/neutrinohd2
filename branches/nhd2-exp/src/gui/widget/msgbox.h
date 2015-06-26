@@ -145,13 +145,12 @@ class CMsgBox
 		/* Functions */
 		bool    paint(void);
 		bool    hide(void);
-		int     exec(int timeout, int returnDefaultOnTimeout = false);
+		int     exec(int timeout = -1, int returnDefaultOnTimeout = false);
 		void    refresh(void);
 		void    scrollPageDown(const int pages);
 		void    scrollPageUp(const int pages);
 		int	result(void);
-
-		bool	setText(const std::string* newText);
+		bool	setText(const std::string* newText, std::string _thumbnail = "", int _lx = 0, int _ly = 0, int _tw = 0, int _th = 0);
 };
 
 extern int ShowMsg2UTF(	const neutrino_locale_t Caption, 

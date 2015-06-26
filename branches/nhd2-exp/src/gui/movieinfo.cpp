@@ -65,9 +65,6 @@
 #include <system/helpers.h>
 
 
-#define VLC_URI "vlc://"
-
-
 CMovieInfo::CMovieInfo()
 {
 
@@ -297,6 +294,7 @@ bool CMovieInfo::saveMovieInfo(MI_MOVIE_INFO & movie_info, CFile * file)
 	{
 		dprintf(DEBUG_NORMAL, "[mi] saveXml: error\r\n");
 	}
+	
 	return (result);
 }
 
@@ -524,10 +522,10 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		}
 	}
 
-	print_buffer += "\n\n";
-	
+	// ytdate
 	if(movie_info.ytdate.empty())
 	{
+		print_buffer += "\n\n";
 		print_buffer += g_Locale->getText(LOCALE_MOVIEBROWSER_INFO_PREVPLAYDATE);
 		print_buffer += ": ";
 		date_tm = localtime(&movie_info.dateOfLastPlay);
@@ -562,8 +560,24 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 		print_buffer += movie_info.file.Name;
 		print_buffer += "\n";
 	}
-
-	ShowMsg2UTF(movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), print_buffer.c_str(), CMsgBox::mbrBack, CMsgBox::mbBack);	// UTF-8*/ 
+	
+	// thumbnail
+	// thumbnail
+	int pich = 246;	//FIXME
+	int picw = 162; 	//FIXME
+	int lx = g_settings.screen_StartX + 50 + g_settings.screen_EndX - g_settings.screen_StartX - 100 - (picw + 20);
+	int ly = g_settings.screen_StartY + 50 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 20;
+		
+	if(access(movie_info.tfile.c_str(), F_OK))
+		movie_info.tfile = "";
+	
+	int mode =  CMsgBox::SCROLL | CMsgBox::TITLE | CMsgBox::FOOT | CMsgBox::BORDER;// | //CMsgBox::NO_AUTO_LINEBREAK | //CMsgBox::CENTER | //CMsgBox::AUTO_WIDTH | //CMsgBox::AUTO_HIGH;
+	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+	
+	CMsgBox * msgBox = new CMsgBox(movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+	msgBox->setText(&print_buffer, movie_info.tfile, lx, ly, picw, pich);
+	msgBox->exec();
+	delete msgBox;
 }
 
 void CMovieInfo::printDebugMovieInfo(MI_MOVIE_INFO & movie_info)
@@ -668,7 +682,6 @@ bool CMovieInfo::parseXmlQuickFix(char *text, MI_MOVIE_INFO * movie_info)
 #ifndef XMLTREE_LIB
 	int bookmark_nr = 0;
 	movie_info->dateOfLastPlay = 0;	//100*366*24*60*60;              // (date, month, year)
-	//bool result = false;
 
 	int bytes = strlen(text);
 	/** search ****/
@@ -898,6 +911,7 @@ bool CMovieInfo::addNewBookmark(MI_MOVIE_INFO * movie_info, MI_BOOKMARK & new_bo
 			}
 		}
 	}
+	
 	return (result);
 }
 
@@ -943,6 +957,7 @@ void CMovieInfo::clearMovieInfo(MI_MOVIE_INFO * movie_info)
 	movie_info->bookmarks.end = 0;
 	movie_info->bookmarks.start = 0;
 	movie_info->bookmarks.lastPlayStop = 0;
+	
 	for (int i = 0; i < MI_MOVIE_BOOK_USER_MAX; i++) 
 	{
 		movie_info->bookmarks.user[i].pos = 0;
@@ -950,27 +965,12 @@ void CMovieInfo::clearMovieInfo(MI_MOVIE_INFO * movie_info)
 		movie_info->bookmarks.user[i].name = "";
 	}
 	
-	movie_info->tfile.clear();
-	movie_info->ytdate.clear();
-	movie_info->ytid.clear();	
+	movie_info->tfile = "";
+	movie_info->ytdate = "";
+	movie_info->ytid = "";	
 }
 
 bool CMovieInfo::loadFile(CFile & file, char *buffer, int buffer_size)
-{
-	bool result = false;
-	if (strncmp(file.getFileName().c_str(), VLC_URI, strlen(VLC_URI)) == 0) 
-	{
-		result = loadFile_vlc(file, buffer, buffer_size);
-	} 
-	else 
-	{
-		result = loadFile_std(file, buffer, buffer_size);
-	}
-	
-	return (result);
-}
-
-bool CMovieInfo::loadFile_std(CFile & file, char *buffer, int buffer_size)
 {
 	bool result = true;
 
@@ -980,7 +980,7 @@ bool CMovieInfo::loadFile_std(CFile & file, char *buffer, int buffer_size)
 		dprintf(DEBUG_NORMAL, "[mi] loadXml: cannot open (%s)\r\n", file.getFileName().c_str());
 		return false;
 	}
-	//dprintf(DEBUG_DEBUG, "show_ts_info: File found (%s)\r\n" ,filename->c_str());
+	
 	// read file content to buffer 
 	int bytes = read(fd, buffer, buffer_size - 1);
 	if (bytes <= 0)		// cannot read file into buffer, return!!!! 
@@ -994,28 +994,7 @@ bool CMovieInfo::loadFile_std(CFile & file, char *buffer, int buffer_size)
 	return (result);
 }
 
-bool CMovieInfo::loadFile_vlc(CFile &/*file*/, char */*buffer*/, int /*buffer_size*/)
-{
-	bool result = false;
-	return (result);
-}
-
 bool CMovieInfo::saveFile(const CFile & file, const char *text, const int text_size)
-{
-	bool result = false;
-	if (strncmp(file.getFileName().c_str(), VLC_URI, strlen(VLC_URI)) == 0) 
-	{
-		result = saveFile_vlc(file, text, text_size);
-	} 
-	else 
-	{
-		result = saveFile_std(file, text, text_size);
-	}
-	
-	return (result);
-}
-
-bool CMovieInfo::saveFile_std(const CFile & file, const char *text, const int text_size)
 {
 	bool result = false;
 	int fd;
@@ -1026,18 +1005,11 @@ bool CMovieInfo::saveFile_std(const CFile & file, const char *text, const int te
 		//fdatasync(fd);
 		close(fd);
 		result = true;
-		//dprintf(DEBUG_DEBUG, "[mi] saved (%d)\r\n",nr);
 	} 
 	else 
 	{
 		dprintf(DEBUG_NORMAL, "[mi] ERROR: cannot open\r\n");
 	}
-	return (result);
-}
-
-bool CMovieInfo::saveFile_vlc(const CFile &/*file*/, const char */*text*/, const int /*text_size*/)
-{
-	bool result = false;
 	return (result);
 }
 

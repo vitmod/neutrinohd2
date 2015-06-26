@@ -33,8 +33,10 @@
 #include <poll.h>
 #include <errno.h>
 #include <unistd.h>
+#include <cstdio>
 
 #include "upnpclient.h"
+#include <system/debug.h>
 
 
 CUPnPSocket::CUPnPSocket()
@@ -44,7 +46,8 @@ CUPnPSocket::CUPnPSocket()
 
 	m_socket = socket(PF_INET, SOCK_DGRAM, 0);
 	if (!m_socket)
-		throw std::runtime_error(std::string("create UDP socket"));
+		//throw std::runtime_error(std::string("create UDP socket"));
+		dprintf(DEBUG_NORMAL, "CUPnPSocket::CUPnPSocket: create UDP socket\n");
 
 	memset(&sockudp, 0, sizeof(struct sockaddr_in));
 	sockudp.sin_family = AF_INET;
@@ -53,13 +56,15 @@ CUPnPSocket::CUPnPSocket()
 	if (setsockopt(m_socket, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt)))
 	{
 		close(m_socket);
-		throw std::runtime_error(std::string("socket option"));
+		//throw std::runtime_error(std::string("socket option"));
+		dprintf(DEBUG_NORMAL, "CUPnPSocket::CUPnPSocket: socket option\n");
 	}
 
 	if (bind(m_socket, (struct sockaddr*) &sockudp, sizeof(struct sockaddr_in)))
 	{
 		close(m_socket);
-		throw std::runtime_error(std::string("bind"));
+		//throw std::runtime_error(std::string("bind"));
+		dprintf(DEBUG_NORMAL, "CUPnPSocket::CUPnPSocket: bind\n");
 	}
 }
 
@@ -74,7 +79,8 @@ void CUPnPSocket::SetTTL(int ttl)
 
 	result = setsockopt(m_socket, IPPROTO_IP, IP_TTL, (char *)&ttl, sizeof(ttl));
 	if (!result)
-		throw std::runtime_error(std::string("set ttl"));
+		//throw std::runtime_error(std::string("set ttl"));
+		dprintf(DEBUG_NORMAL, "CUPnPSocket::SetTTL: set ttl\n");
 }
 
 std::vector<CUPnPDevice> CUPnPSocket::Discover(std::string service)
@@ -103,10 +109,12 @@ std::vector<CUPnPDevice> CUPnPSocket::Discover(std::string service)
 	commandstr = command.str();
 	result = sendto(m_socket, commandstr.c_str(), commandstr.size(), 0, (struct sockaddr*) &sockudp, sizeof(struct sockaddr_in));
 
-	if (result < 0) {
-		throw std::runtime_error(std::string(strerror(errno)));
+	if (result < 0) 
+	{
+		//throw std::runtime_error(std::string(strerror(errno)));
+		dprintf(DEBUG_NORMAL, "CUPnPSocket::Discover: %d\n", errno);
 	}
-//	result = sendto(m_socket, commandstr.c_str(), commandstr.size(), 0, (struct sockaddr*) &sockudp, sizeof(struct sockaddr_in));
+	//result = sendto(m_socket, commandstr.c_str(), commandstr.size(), 0, (struct sockaddr*) &sockudp, sizeof(struct sockaddr_in));
 
 	fds[0].fd = m_socket;
 	fds[0].events = POLLIN;
@@ -115,15 +123,18 @@ std::vector<CUPnPDevice> CUPnPSocket::Discover(std::string service)
 	{
 		result = poll(fds, 1, 4000);
 		if (result < 0)
-			throw std::runtime_error(std::string("poll"));
+			//throw std::runtime_error(std::string("poll"));
+			dprintf(DEBUG_NORMAL, "CUPnPSocket::Discover: poll\n");
+		
 		if (result == 0)
 			return devices;
 
 		result = recv(m_socket, bufr, sizeof(bufr), 0);
 		if (result < 0)
-			throw std::runtime_error(std::string("recv"));
+			//throw std::runtime_error(std::string("recv"));
+			dprintf(DEBUG_NORMAL, "CUPnPSocket::Discover\n");
 
-		bufr[result]=0;
+		bufr[result] = 0;
 
 		reply.clear();
 		reply.str(std::string(bufr));
@@ -131,29 +142,32 @@ std::vector<CUPnPDevice> CUPnPSocket::Discover(std::string service)
 		while (!reply.eof())
 		{
 			getline(reply, line);
-			pos=line.find("\r", 0);
-			if (pos!=std::string::npos)
+			pos = line.find("\r", 0);
+			if (pos != std::string::npos)
 				line.erase(pos);
-			std::string location = line.substr(0,9);
+			std::string location = line.substr(0, 9);
+			
 			if (!strcasecmp(location.c_str(), "location:"))
 			{
 				line.erase(0, 9);
 				while ((line.length() > 0 )&& ((line[0] == ' ') || (line[0] == '\t')))
 					line.erase(0, 1);
+				
 				if (line.substr(0,7) == "http://")
 				{
 					std::vector<CUPnPDevice>::iterator i;
-					for (i=devices.begin(); i != devices.end(); ++i)
+					for (i = devices.begin(); i != devices.end(); ++i)
 						if (line == i->descurl)
 							goto found;
-					try
+					//try
 					{
 						devices.push_back(CUPnPDevice(line));
 					}
-					catch (std::runtime_error error)
-					{
-						std::cout << "error " << error.what() << "\n";
-					}
+					
+					//catch (std::runtime_error error)
+					//{
+					//	std::cout << "error " << error.what() << "\n";
+					//}
 				}
 				found: ;
 			}

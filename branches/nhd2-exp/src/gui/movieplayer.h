@@ -80,13 +80,6 @@ class CMoviePlayerGui : public CMenuTarget
 		
 		//
 		int playstate;
-		
-		bool isMovieBrowser;
-		bool isURL;
-		//bool isVlc;
-		//bool cdDvd;
-		//bool isDVD;
-		//bool isBlueRay;
 
 		int speed;
 		int slow;
@@ -113,40 +106,32 @@ class CMoviePlayerGui : public CMenuTarget
 
 		unsigned int ac3state;
 
+		bool showaudioselectdialog;
+		
+		// multi select
+		CFileList filelist;
+		unsigned int selected;
+		
+		const char *filename;
 		std::string Title;
 		std::string Info1;
 		std::string Info2;
-
-		bool showaudioselectdialog;
-		
-		const char *filename;
+		std::string thumbnail;
 		
 		// global flags
 		bool update_lcd;
-		bool open_filebrowser;	//always default true (true valeue is needed for file/moviebrowser)
+		bool open_filebrowser;
 		bool start_play;
 		bool exit;
 		bool was_file;
 		bool m_loop;
+		bool isMovieBrowser;
+		bool isURL;
 		
 		bool is_file_player;
 		
 		// timeosd
 		bool time_forced;
-		
-		// vlc
-		/*
-		std::string base_url;
-		CURLcode _httpres;
-		std::string pauseurl;
-		std::string unpauseurl;
-		std::string stopurl;
-		std::string _response;
-		*/
-		
-		// multi select
-		CFileList filelist;
-		unsigned int selected;
 		
 		// lcd
 		std::string sel_filename;
@@ -160,10 +145,6 @@ class CMoviePlayerGui : public CMenuTarget
 		bool		stopped;
 
 		std::string Path_local;
-		//std::string Path_vlc;
-		//std::string Path_vlc_settings;
-		//std::string Path_dvd;
-		//std::string Path_blueray;
 
 		CFileBrowser * filebrowser;
 		CMovieBrowser * moviebrowser;
@@ -177,7 +158,6 @@ class CMoviePlayerGui : public CMenuTarget
 		bool get_movie_info_apid_name(int apid, MI_MOVIE_INFO * movie_info, std::string * apidtitle);
 
 		CFileFilter tsfilefilter;
-		//CFileFilter vlcfilefilter;
 
 		void showHelpTS(void);
 		
@@ -186,19 +166,10 @@ class CMoviePlayerGui : public CMenuTarget
 		~CMoviePlayerGui();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
 		
-		// vlc
-		/*
-		static size_t CurlDummyWrite (void *ptr, size_t size, size_t nmemb, void *data);
-		CURLcode sendGetRequest (const std::string & url, std::string & response) ;
-		bool VlcRequestStream(char *_mrl, int  transcodeVideo, int transcodeAudio);
-		bool VlcReceiveStreamStart(void * mrl);
-		*/
-		
 		// lcd
 		void updateLcd(const std::string & sel_filename);
 		
 		// show infos
-		//void showFileInfoVLC(void);
 		void showFileInfo();
 };
 
