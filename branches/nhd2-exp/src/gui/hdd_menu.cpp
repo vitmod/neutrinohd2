@@ -583,6 +583,7 @@ REPEAT:
 				else if(file->getType() == CFile::FILE_TEXT || file->getType() == CFile::FILE_XML)
 				{
 					std::string buffer;
+					/*
 					FILE* pFile;
 					pFile = fopen(file->Name.c_str(), "r");
 					if(pFile)
@@ -590,6 +591,7 @@ REPEAT:
 						fgets((char *)buffer.c_str(), 256, pFile); 
 					}
 					fclose(pFile);
+					*/
 
 					int mode =  CMsgBox::SCROLL | CMsgBox::TITLE | CMsgBox::FOOT | CMsgBox::BORDER;// | //CMsgBox::NO_AUTO_LINEBREAK | //CMsgBox::CENTER | //CMsgBox::AUTO_WIDTH | //CMsgBox::AUTO_HIGH;
 					CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
@@ -598,6 +600,7 @@ REPEAT:
 					msgBox->setText(&buffer);
 					msgBox->exec();
 					delete msgBox;
+					buffer.clear();
 				}
 				else if(file->getType() == CFile::FILE_VIDEO || file->getType() == CFile::FILE_AUDIO)
 				{
