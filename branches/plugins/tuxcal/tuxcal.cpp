@@ -2216,10 +2216,14 @@ void SaveDatabase(void)
 //
 void plugin_init(void)
 {
+	std::string cmd = PLUGINDIR "/tuxcal/tuxcald";
+	my_system(cmd.c_str());
 }
 
 void plugin_del(void)
 {
+	std::string cmd = "killall -9 tuxcald";
+	my_system(cmd.c_str());
 }
 
 void plugin_exec()

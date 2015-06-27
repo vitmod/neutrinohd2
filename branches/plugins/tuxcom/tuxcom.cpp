@@ -3504,9 +3504,9 @@ void ShowFile(FILE* _pipe, char* szAction)
 	int row = 0;
 	while (fgets(line, 128, _pipe))
 	{
-		p=strchr(line,'\n');
+		p = strchr(line,'\n');
 		if ( p )
-			*p=0;
+			*p = 0;
 		row++;
 		RenderString(line,2*BORDERSIZE, 2*BORDERSIZE+FONTHEIGHT_BIG+row*FONTHEIGHT_SMALL -FONT_OFFSET, viewx-4*BORDERSIZE, LEFT, SMALL, WHITE);
 
