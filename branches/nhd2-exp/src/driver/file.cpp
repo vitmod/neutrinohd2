@@ -50,95 +50,172 @@ const char * const file_extension_list[] =
 	"aac",
 	"aiff",
 	"asf",   
-	"avi",  
+	"avi", 
+	
 	"bmp",  
 	"cdr",  
 	"crw",
 	"dat",
+	
 	"divx",
 	"dts",
 	"flac",
 	"flv",
+	
 	"gif",  
 	"imu",  
 	"jpeg", 
 	"jpg",
+	
 	"m2a",
 	"m2p",
 	"m2ts",
-	"m3u", 
+	"m3u",
+	
 	"m4a",
 	"mkv",
 	"mov",
-	"mp2",  
+	"mp2",
+	
 	"mp3",
 	"mp4",
 	"mpa",
 	"mpeg",
+	
 	"mpg",
 	"mpv",
 	"mts",
-	"ogg",  
+	"ogg", 
+	
 	"png",
 	"pls",
 	"sh",
-	"trp"
+	//"trp"
+	
 	"ts",
 	"txt",	
 	"url",
 	"vdr",
+	
 	"vob",  
 	"wav", 
 	"wmv",
 	"xml"
 };
 
-/* ATTENTION: the array file_extension_list MUST BE SORTED ASCENDING (cf. sort, man bsearch) - otherwise bsearch will not work correctly! */
+const CFile::FileExtension file_extension[] =
+{
+	CFile::EXTENSION_AAC,
+	CFile::EXTENSION_AIFF,
+	CFile::EXTENSION_ASF, 
+	CFile::EXTENSION_AVI,
+	
+	CFile::EXTENSION_BMP, 
+	CFile::EXTENSION_CDR,
+	CFile::EXTENSION_CRW,
+	CFile::EXTENSION_DAT,
+	
+	CFile::EXTENSION_DIVX,
+	CFile::EXTENSION_DTS,
+	CFile::EXTENSION_FLAC,
+	CFile::EXTENSION_FLV,
+	
+	CFile::EXTENSION_GIF, 
+	CFile::EXTENSION_IMU, 
+	CFile::EXTENSION_JPEG, 
+	CFile::EXTENSION_JPG, 
+	
+	CFile::EXTENSION_M2A, 
+	CFile::EXTENSION_M2P,
+	CFile::EXTENSION_M2TS,
+	CFile::EXTENSION_M3U, 
+	
+	CFile::EXTENSION_M4A,
+	CFile::EXTENSION_MKV,
+	CFile::EXTENSION_MOV,
+	CFile::EXTENSION_MP2,
+	
+	CFile::EXTENSION_MP3, 
+	CFile::EXTENSION_MP4, 
+	CFile::EXTENSION_MPA, 
+	CFile::EXTENSION_MPEG,
+	
+	CFile::EXTENSION_MPG,
+	CFile::EXTENSION_MPV,
+	CFile::EXTENSION_MTS,
+	CFile::EXTENSION_OGG,
+	
+	CFile::EXTENSION_PNG, 
+	CFile::EXTENSION_PLS,
+	CFile::EXTENSION_SH,
+	//CFile::EXTENSION_TRP,
+	
+	CFile::EXTENSION_TS,
+	CFile::EXTENSION_TEXT, 
+	CFile::EXTENSION_URL, 
+	CFile::EXTENSION_VDR,
+	
+	CFile::EXTENSION_VOB, 
+	CFile::EXTENSION_WAV, 
+	CFile::EXTENSION_WMV,
+	CFile::EXTENSION_XML
+};
+
 const CFile::FileType file_type_list[] =
 {
-	CFile::FILE_AAC,
-	CFile::FILE_AIFF,
-	CFile::FILE_ASF, 
-	CFile::FILE_AVI, 
+	CFile::FILE_AUDIO,
+	CFile::FILE_AUDIO,
+	CFile::FILE_AUDIO, 
+	CFile::FILE_VIDEO,
+	
 	CFile::FILE_PICTURE, 
-	CFile::FILE_CDR,
+	CFile::FILE_AUDIO,
 	CFile::FILE_PICTURE,
-	CFile::FILE_DAT,
-	CFile::FILE_DIVX,
-	CFile::FILE_DTS,
-	CFile::FILE_FLAC,
-	CFile::FILE_MPG,
+	CFile::FILE_VIDEO,
+	
+	CFile::FILE_VIDEO,
+	CFile::FILE_AUDIO,
+	CFile::FILE_AUDIO,
+	CFile::FILE_VIDEO,
+	
 	CFile::FILE_PICTURE, 
-	CFile::FILE_IMU, 
+	CFile::FILE_URL, 
 	CFile::FILE_PICTURE, 
-	CFile::FILE_PICTURE, 
-	CFile::FILE_MP3, 
-	CFile::FILE_M2P,
-	CFile::FILE_M2TS,
-	CFile::FILE_PLAYLIST, 
+	CFile::FILE_PICTURE,
+	
+	CFile::FILE_AUDIO, 
+	CFile::FILE_AUDIO,
+	CFile::FILE_VIDEO,
 	CFile::FILE_PLAYLIST,
-	CFile::FILE_MKV,
-	CFile::FILE_MOV,
-	CFile::FILE_MP3, 
-	CFile::FILE_MP3, 
-	CFile::FILE_MPG, 
-	CFile::FILE_MP3, 
-	CFile::FILE_MPG,
-	CFile::FILE_MPG,
-	CFile::FILE_MPV,
-	CFile::FILE_MTS,
-	CFile::FILE_OGG, 
+	
+	CFile::FILE_PLAYLIST,
+	CFile::FILE_VIDEO,
+	CFile::FILE_VIDEO,
+	CFile::FILE_AUDIO,
+	
+	CFile::FILE_AUDIO, 
+	CFile::FILE_VIDEO, 
+	CFile::FILE_AUDIO, 
+	CFile::FILE_VIDEO,
+	
+	CFile::FILE_VIDEO,
+	CFile::FILE_VIDEO,
+	CFile::FILE_VIDEO,
+	CFile::FILE_VIDEO, 
+	
 	CFile::FILE_PICTURE, 
 	CFile::FILE_PLAYLIST,
 	CFile::FILE_TEXT,
-	CFile::FILE_TRP,
-	CFile::FILE_TS,
+	//CFile::FILE_VIDEO,
+	
+	CFile::FILE_VIDEO,
 	CFile::FILE_TEXT, 
 	CFile::FILE_URL, 
-	CFile::FILE_VDR,
-	CFile::FILE_VOB, 
-	CFile::FILE_WAV, 
-	CFile::FILE_WMV,
+	CFile::FILE_VIDEO,
+	
+	CFile::FILE_VIDEO, 
+	CFile::FILE_AUDIO, 
+	CFile::FILE_VIDEO,
 	CFile::FILE_XML
 };
 
@@ -150,6 +227,26 @@ int mycasecmp(const void * a, const void * b)
 CFile::CFile()
   : Size( 0 ), Mode( 0 ), Marked( false ), Time( 0 )
 {
+}
+
+CFile::FileExtension CFile::getExtension(void) const
+{
+	if(S_ISDIR(Mode))
+		return EXTENSION_DIR;
+
+	std::string::size_type ext_pos = Name.rfind('.');
+
+	if (ext_pos != std::string::npos)
+	{
+		const char * key = &(Name.c_str()[ext_pos + 1]);
+
+		void * result = ::bsearch(&key, file_extension_list, sizeof(file_extension_list) / sizeof(const char *), sizeof(const char *), mycasecmp);
+		
+		if (result != NULL)
+			return file_extension[(const char * *)result - (const char * *)&file_extension_list];
+	}
+	
+	return EXTENSION_UNKNOWN;
 }
 
 CFile::FileType CFile::getType(void) const

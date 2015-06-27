@@ -564,15 +564,7 @@ void CUpnpBrowserGui::playnext(void)
 				{
 					m_playing_entry = (*entries)[0];
 					m_playing_entry_is_shown = false;
-					CAudiofile mp3((*entries)[0].resources[preferred].url, CFile::FILE_MP3);
-					CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
-					return;
-				}
-				else if (mime == "audio/x-vorbis+ogg")
-				{
-					m_playing_entry = (*entries)[0];
-					m_playing_entry_is_shown = false;
-					CAudiofile mp3((*entries)[0].resources[preferred].url, CFile::FILE_OGG);
+					CAudiofile mp3((*entries)[0].resources[preferred].url, CFile::EXTENSION_MP3);
 					CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
 					return;
 				}
@@ -803,12 +795,7 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 					
 					if (mime == "audio/mpeg")
 					{
-						CAudiofile mp3((*entries)[selected - index].resources[preferred].url, CFile::FILE_MP3);
-						CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
-					}
-					else if (mime == "audio/x-vorbis+ogg")
-					{
-						CAudiofile mp3((*entries)[selected - index].resources[preferred].url, CFile::FILE_OGG);
+						CAudiofile mp3((*entries)[selected - index].resources[preferred].url, CFile::EXTENSION_MP3);
 						CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
 					}
 					else if ((mime == "image/gif") || (mime == "image/jpeg"))

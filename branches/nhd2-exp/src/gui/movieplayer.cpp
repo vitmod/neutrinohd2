@@ -218,17 +218,6 @@ CMoviePlayerGui::CMoviePlayerGui()
 	
 	// playback
 	playback = new cPlayback();
-	
-	// filebrowser
-	//if (g_settings.filebrowser_denydirectoryleave)
-	//	filebrowser = new CFileBrowser(Path_local.c_str());
-	//else
-	//	filebrowser = new CFileBrowser();
-	
-	//filebrowser->Dirs_Selectable = false;
-
-	// moviebrowser
-	//moviebrowser = new CMovieBrowser();
 
 	// tsfilefilter
 #if defined (ENABLE_LIBEPLAYER3) || defined (ENABLE_GSTREAMER)
@@ -264,12 +253,6 @@ CMoviePlayerGui::~CMoviePlayerGui()
 {
 	if (playback)
 		delete playback;
-	
-	//if (filebrowser)
-	//	delete filebrowser;
-	
-	//if (moviebrowser)
-	//	delete moviebrowser;
 }
 
 void CMoviePlayerGui::cutNeutrino()
@@ -414,12 +397,6 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 		frameBuffer->blit();
 	}
 	
-	// filebrowser multi select
-	//if (g_settings.movieplayer_allow_multiselect)
-	//	filebrowser->Multi_Select = true;
-	//else 
-	//	filebrowser->Multi_Select = false;
-	
 	//
 	position = 0;
 	duration = 0;
@@ -508,6 +485,9 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 			filebrowser->Multi_Select = true;
 		else 
 			filebrowser->Multi_Select = false;
+		
+		filebrowser->Filter = &tsfilefilter;
+
 	}
 	else if (actionKey == "timeshift") 
 	{
@@ -532,6 +512,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	//
 	PlayFile();
 	
+	// quit
 	// Restore previous background
 	if (usedBackground) 
 	{
@@ -544,6 +525,42 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	// clear filelist
 	if(!filelist.empty())
 		filelist.clear();
+	
+	if(filename != NULL)
+		filename = NULL;
+	
+	if(!sel_filename.empty())
+		sel_filename.clear();
+	
+	if(!Title.empty())
+		Title.clear();
+	
+	if(!Info1.empty())
+		Info1.clear();
+	
+	if(!Info2.empty())
+		Info2.clear();
+	
+	if(!thumbnail.empty())
+		thumbnail.clear();
+	
+	if (actionKey == "fileplayback") 
+	{
+		if (filebrowser != NULL)
+		{
+			delete filebrowser;
+			filebrowser = NULL;
+		}
+	}
+	
+	if (actionKey == "tsmoviebrowser" || actionKey == "moviebrowser") 
+	{
+		if (moviebrowser != NULL)
+		{
+			delete moviebrowser;
+			moviebrowser = NULL;
+		}
+	}
 
 	// restore neutrino
 	restoreNeutrino();
@@ -555,18 +572,6 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	{
 		timeshift = NO_TIMESHIFT;
 		return menu_return::RETURN_EXIT_ALL;
-	}
-	
-	if (filebrowser != NULL)
-	{
-		delete filebrowser;
-		filebrowser = NULL;
-	}
-	
-	if (moviebrowser)
-	{
-		delete moviebrowser;
-		moviebrowser = NULL;
 	}
 
 	return menu_return::RETURN_REPAINT;
@@ -617,8 +622,7 @@ void CMoviePlayerGui::PlayFile(void)
 		}
 		else if(filename != NULL)
 		{
-			//sel_filename = std::string(rindex(filename, '/') + 1);
-			sel_filename = filename;
+			sel_filename = std::string(rindex(filename, '/') + 1);
 			
 			if(Title.empty())
 				Title = sel_filename;
@@ -932,7 +936,7 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 		}	
 
-		// setup all needed flags
+		// moviebrowser/filebrowser
 		if (open_filebrowser) 
 		{
 			open_filebrowser = false;
@@ -1033,8 +1037,6 @@ void CMoviePlayerGui::PlayFile(void)
 			} 
 			else  // filebrowser
 			{
-				filebrowser->Filter = &tsfilefilter;
-
 				if (filebrowser->exec(Path_local.c_str()) == true) 
 				{
 					Path_local = filebrowser->getCurrentDir();
@@ -1417,14 +1419,16 @@ void CMoviePlayerGui::PlayFile(void)
 				CVFD::getInstance()->ShowIcon(VFD_ICON_TIMESHIFT, false );
 			}
 
-			if (!was_file)
-				exit = true;
+			//if (!was_file)
+			//	exit = true;
 			
-			if(filelist.size() > 1)
-				was_file = false;
+			//if(filelist.size() > 1)
+			//	was_file = false;
 			
 			if(m_loop)
 				m_loop = false;
+			
+			exit = true;
 		} 
 		else if (msg == (neutrino_msg_t) g_settings.mpkey_play) 
 		{
@@ -1863,7 +1867,12 @@ void CMoviePlayerGui::PlayFile(void)
 		} 
 		else if ( msg == CRCInput::RC_repeat )
 		{
-			m_loop = true;
+			if(m_loop)
+				m_loop = false;
+			else
+				m_loop = true;
+			
+			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: Repeat Modus: [%s]\n", m_loop? "ON" : "OFF");
 		} 
 		else if (msg == CRCInput::RC_5) 
 		{	

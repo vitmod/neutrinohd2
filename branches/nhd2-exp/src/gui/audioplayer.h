@@ -58,7 +58,7 @@ class CAudiofileExt : public CAudiofile
 {
 	public:
 		CAudiofileExt();
-		CAudiofileExt(std::string name, CFile::FileType type);
+		CAudiofileExt(std::string name, CFile::FileExtension extension);
 		CAudiofileExt(const CAudiofileExt& src);
 		void operator=(const CAudiofileExt& src);
 

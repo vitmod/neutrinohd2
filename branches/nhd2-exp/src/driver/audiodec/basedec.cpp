@@ -58,7 +58,7 @@ bool CBaseDec::GetMetaDataBase(CAudiofile* const in, const bool nice)
 {
 	bool Status = true;
 
-	if ( in->FileType == CFile::FILE_MP3 || in->FileType == CFile::FILE_WAV || in->FileType == CFile::FILE_CDR || in->FileType == CFile::FILE_FLAC )
+	if ( in->FileExtension == CFile::EXTENSION_MP3 || in->FileExtension == CFile::EXTENSION_WAV || in->FileExtension == CFile::EXTENSION_CDR || in->FileExtension == CFile::EXTENSION_FLAC )
 	{
 		FILE * fp = fopen( in->Filename.c_str(), "r" );
 		if ( fp == NULL )
@@ -68,19 +68,19 @@ bool CBaseDec::GetMetaDataBase(CAudiofile* const in, const bool nice)
 		}
 		else
 		{
-			if(in->FileType == CFile::FILE_MP3)
+			if(in->FileExtension == CFile::EXTENSION_MP3)
 			{
 				Status = CMP3Dec::getInstance()->GetMetaData(fp, nice, &in->MetaData);
 			}
-			else if(in->FileType == CFile::FILE_WAV)
+			else if(in->FileExtension == CFile::EXTENSION_WAV)
 			{
 				Status = CWavDec::getInstance()->GetMetaData(fp, nice, &in->MetaData);
 			}
-			else if(in->FileType == CFile::FILE_CDR)
+			else if(in->FileExtension == CFile::EXTENSION_CDR)
 			{
 				Status = CCdrDec::getInstance()->GetMetaData(fp, nice, &in->MetaData);
 			}
-			else if(in->FileType == CFile::FILE_FLAC)
+			else if(in->FileExtension == CFile::EXTENSION_FLAC)
 			{
 				Status = CFlacDec::getInstance()->GetMetaData(fp, nice, &in->MetaData);
 			}

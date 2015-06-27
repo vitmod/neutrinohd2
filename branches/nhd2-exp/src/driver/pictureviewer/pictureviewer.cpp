@@ -146,7 +146,7 @@ bool CPictureViewer::DecodeImage(const std::string & name, bool showBusySign, bo
 				printf ("CPictureViewer::DecodeImage: Error: malloc\n");
 				return false;
 			}
-			memset (m_NextPic_Buffer, 0, 3);
+			memset(m_NextPic_Buffer, 0, 3);
 			m_NextPic_X = 1;
 			m_NextPic_Y = 1;
 			m_NextPic_XPos = 0;
@@ -171,7 +171,7 @@ bool CPictureViewer::DecodeImage(const std::string & name, bool showBusySign, bo
 			return false;
 		}
 
-		memset (m_NextPic_Buffer, 0, 3);
+		memset(m_NextPic_Buffer, 0, 3);
 		m_NextPic_X = 1;
 		m_NextPic_Y = 1;
 		m_NextPic_XPos = 0;

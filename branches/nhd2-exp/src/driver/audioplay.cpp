@@ -134,29 +134,37 @@ void ShoutcastCallback(void *arg)
 }
 
 void * CAudioPlayer::PlayThread( void * /*dummy*/ )
-{	
-	FILE * fp = fopen( getInstance()->m_Audiofile.Filename.c_str(), "r" );
+{
+	//
+	FILE * fp = fopen(getInstance()->m_Audiofile.Filename.c_str(), "r");
 	
 	if ( fp == NULL )
 	{
-		fprintf( stderr, "Error opening file %s for decoding.\n", getInstance()->m_Audiofile.Filename.c_str() );
+		dprintf(DEBUG_NORMAL, "Error opening file %s for decoding.\n", getInstance()->m_Audiofile.Filename.c_str() );
 		return NULL;
 	}
 	// jump to first audio frame; audio_start_pos is only set for FILE_MP3
-	else if ( getInstance()->m_Audiofile.MetaData.audio_start_pos && fseek( fp, getInstance()->m_Audiofile.MetaData.audio_start_pos, SEEK_SET ) == -1 )
+	else if (getInstance()->m_Audiofile.MetaData.audio_start_pos && fseek( fp, getInstance()->m_Audiofile.MetaData.audio_start_pos, SEEK_SET ) == -1 )
 	{
-		fprintf( stderr, "fseek() failed.\n" );
+		dprintf(DEBUG_NORMAL, "fseek() failed.\n" );
 		return NULL;
 	}
 	
 	// shoutcast
-	if( getInstance()->m_Audiofile.FileType == CFile::FILE_URL )
+	if(getInstance()->m_Audiofile.FileExtension == CFile::EXTENSION_URL)
 	{
-		if ( fstatus( fp, ShoutcastCallback ) < 0 )
+		if ( fstatus( fp, ShoutcastCallback) < 0 )
 		{
-			fprintf( stderr, "Error adding shoutcast callback: %s", err_txt );
+			dprintf(DEBUG_NORMAL, "Error adding shoutcast callback\n");
 		}
 	}
+
+	/*
+	if ( fclose( fp ) == EOF )
+	{
+		dprintf(DEBUG_NORMAL, "Could not close file %s.\n", getInstance()->m_Audiofile.Filename.c_str() );
+	}
+	*/
 	
 	//stop playing if already playing (multiselect)
 	if(playback->playing)
@@ -195,8 +203,12 @@ void * CAudioPlayer::PlayThread( void * /*dummy*/ )
 				
 			break;	
 		}
+		//state
+		if(playback->playing == true)
+			getInstance()->state = CBaseDec::PLAY;
+		else
+			getInstance()->state = CBaseDec::STOP;
 		getInstance()->m_played_time = position/1000;	// in sec
-		//dprintf(DEBUG_NORMAL, "[ap]  m_played_time: %d sec\r\n", getInstance()->m_played_time);
 	}while(getInstance()->state != CBaseDec::STOP_REQ);
 	
 	getInstance()->state = CBaseDec::STOP;
@@ -221,8 +233,6 @@ bool CAudioPlayer::play(const CAudiofile *file, const bool highPrio)
 	this assignment is important, otherwise the player would crash if the file currently played was deleted from the playlist
 	*/
 	m_Audiofile = *file;
-
-	state = CBaseDec::PLAY;
 
 	pthread_attr_t attr;
 	pthread_attr_init(&attr);
@@ -300,8 +310,6 @@ void CAudioPlayer::sc_callback(void *arg)
 	
 	m_sc_buffered = stat->buffered;
 	m_Audiofile.MetaData.changed = changed;
-	
-	//printf("Callback %s %s %s %d\n",stat->artist, stat->title, stat->station, stat->buffered);
 }
 
 void CAudioPlayer::clearFileData()

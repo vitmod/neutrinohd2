@@ -40,7 +40,6 @@ class CAudioPlayer
 	private:		
 		time_t m_played_time;	
 		int  m_sc_buffered;
-		FILE		*soundfd;
 		pthread_t	thrPlay;
 		FILE		*fp;
 		CBaseDec::State state;
@@ -52,7 +51,7 @@ class CAudioPlayer
 		CAudiofile m_Audiofile;
 		
 		static CAudioPlayer* getInstance();
-		bool play(const CAudiofile*, const bool highPrio=false);
+		bool play(const CAudiofile*, const bool highPrio = false);
 		void stop();
 		void pause();
 		void init();

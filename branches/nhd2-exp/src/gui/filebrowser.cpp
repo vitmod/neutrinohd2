@@ -360,7 +360,10 @@ void CFileBrowser::commonInit()
 	Hide_records = false;
 	
 	selected = 0;
+	
 	selections.clear();
+	selected_filelist.clear();
+	filelist.clear();
 
 	x = g_settings.screen_StartX + 20;
 	y = g_settings.screen_StartY + 20;
@@ -383,10 +386,16 @@ void CFileBrowser::commonInit()
 
 CFileBrowser::~CFileBrowser()
 {
+	/*
+	if(!selections.empty())
+		selections.clear();
+	
 	if(!selected_filelist.empty())
 		selected_filelist.clear();
+	
 	if(!filelist.empty())
 		filelist.clear();
+	*/
 }
 
 CFile * CFileBrowser::getSelectedFile()
@@ -937,11 +946,13 @@ void CFileBrowser::paintItem(unsigned int pos)
 
 			switch(actual_file->getType())
 			{
+				/*
 				case CFile::FILE_CDR:
 				case CFile::FILE_MP3:
-				case CFile::FILE_OGG:
 				case CFile::FILE_WAV:
 				case CFile::FILE_FLAC:
+				*/
+				case CFile::FILE_AUDIO:
 					fileicon = NEUTRINO_ICON_MP3;
 					break;
 
@@ -952,13 +963,16 @@ void CFileBrowser::paintItem(unsigned int pos)
 				case CFile::FILE_PICTURE:
 					fileicon = NEUTRINO_ICON_PICTURE;
 					break;
-					
+				
+				/*
 				case CFile::FILE_AVI:
 				case CFile::FILE_ASF:
 				case CFile::FILE_MKV:
 				case CFile::FILE_VOB:
 				case CFile::FILE_MPG:
 				case CFile::FILE_TS:
+				*/
+				case CFile::FILE_VIDEO:
 					fileicon = NEUTRINO_ICON_MOVIE;
 					break;
 					

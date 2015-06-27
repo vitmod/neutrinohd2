@@ -57,6 +57,7 @@
 #include "gui/widget/messagebox.h"
 #include "gui/widget/hintbox.h"
 #include "gui/widget/progresswindow.h"
+#include <gui/widget/msgbox.h>
 
 #include "system/setting_helpers.h"
 #include "system/settings.h"
@@ -579,14 +580,26 @@ REPEAT:
 					CFrameBuffer::getInstance()->ClearFrameBuffer();
 					CFrameBuffer::getInstance()->blit();	
 				}
-				/*
-				else if( file->getType() == CFile::FILE_CDR || file->getType() == CFile::FILE_WAV || file->getType() == CFile::FILE_OGG || file->getType() == CFile::FILE_FLAC || file->getType() == CFile::FILE_MP3)
+				else if(file->getType() == CFile::FILE_TEXT || file->getType() == CFile::FILE_XML)
 				{
-					CAudiofile mp3(file->Name, CFile::FILE_MP3);
-					CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
+					std::string buffer;
+					FILE* pFile;
+					pFile = fopen(file->Name.c_str(), "r");
+					if(pFile)
+					{
+						fgets((char *)buffer.c_str(), 256, pFile); 
+					}
+					fclose(pFile);
+
+					int mode =  CMsgBox::SCROLL | CMsgBox::TITLE | CMsgBox::FOOT | CMsgBox::BORDER;// | //CMsgBox::NO_AUTO_LINEBREAK | //CMsgBox::CENTER | //CMsgBox::AUTO_WIDTH | //CMsgBox::AUTO_HIGH;
+					CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+					
+					CMsgBox * msgBox = new CMsgBox(file->getFileName().c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, file->getFileName().c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+					msgBox->setText(&buffer);
+					msgBox->exec();
+					delete msgBox;
 				}
-				*/
-				else if(file->getType() != CFile::FILE_TEXT && file->getType() != CFile::FILE_XML && file->getType() != CFile::FILE_PLAYLIST)
+				else if(file->getType() == CFile::FILE_VIDEO || file->getType() == CFile::FILE_AUDIO)
 				{
 					moviePlayerGui->filename = file->Name.c_str();
 				

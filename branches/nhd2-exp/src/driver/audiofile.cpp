@@ -39,20 +39,20 @@
 
 /* default constructor */
 CAudiofile::CAudiofile()
-  : MetaData(), Filename(), FileType( CFile::FILE_UNKNOWN )
+  : MetaData(), Filename(), FileExtension( CFile::EXTENSION_UNKNOWN )
 {
 }
 
 /* constructor */
-CAudiofile::CAudiofile( std::string name, CFile::FileType type )
-	: MetaData(), Filename( name ), FileType( type )
+CAudiofile::CAudiofile( std::string name, CFile::FileExtension extension )
+	: MetaData(), Filename( name ), FileExtension( extension )
 {
 }
 
 /* copy constructor */
 CAudiofile::CAudiofile( const CAudiofile& src )
   : MetaData( src.MetaData ), Filename( src.Filename ),
-	FileType( src.FileType )
+	FileExtension( src.FileExtension )
 {
 }
 
@@ -61,12 +61,12 @@ void CAudiofile::operator=( const CAudiofile& src )
 {
 	MetaData = src.MetaData;
 	Filename = src.Filename;
-	FileType = src.FileType;
+	FileExtension = src.FileExtension;
 }
 
 void CAudiofile::clear()
 {
 	MetaData.clear();
 	Filename.clear();
-	FileType = CFile::FILE_UNKNOWN;
+	FileExtension = CFile::EXTENSION_UNKNOWN;
 }

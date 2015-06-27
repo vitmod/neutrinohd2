@@ -37,12 +37,13 @@
 #include "driver/audiometadata.h"
 #include "driver/file.h"
 
+
 class CAudiofile
 {
 	public:
 		/* constructors */
 		CAudiofile();
-		CAudiofile( std::string name, CFile::FileType type );
+		CAudiofile( std::string name, CFile::FileExtension extension );
 		CAudiofile( const CAudiofile& src );
 
 		void operator=( const CAudiofile& src );
@@ -50,7 +51,7 @@ class CAudiofile
 
 		CAudioMetaData MetaData;
 		std::string Filename;
-		CFile::FileType FileType;
+		CFile::FileExtension FileExtension;
 };
 
 typedef std::vector<CAudiofile> CPlayList;

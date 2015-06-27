@@ -78,6 +78,7 @@ void GLThreadObj::initKeys()
 	mSpecialMap[GLUT_KEY_F7] = CRCInput::RC_pause;
 	mSpecialMap[GLUT_KEY_F8] = CRCInput::RC_rewind;
 	mSpecialMap[GLUT_KEY_F9] = CRCInput::RC_forward;
+	mSpecialMap[GLUT_KEY_F10] = CRCInput::RC_Repeat;
 
 	mSpecialMap[GLUT_KEY_PAGE_UP]   = CRCInput::RC_page_up;
 	mSpecialMap[GLUT_KEY_PAGE_DOWN] = CRCInput::RC_page_down;

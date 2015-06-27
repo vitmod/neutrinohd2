@@ -117,6 +117,7 @@ class CMoviePlayerGui : public CMenuTarget
 		std::string Info1;
 		std::string Info2;
 		std::string thumbnail;
+		std::string sel_filename;
 		
 		// global flags
 		bool update_lcd;
@@ -132,9 +133,6 @@ class CMoviePlayerGui : public CMenuTarget
 		
 		// timeosd
 		bool time_forced;
-		
-		// lcd
-		std::string sel_filename;
 		
 		// timeosd
 		CTimeOSD FileTime;
