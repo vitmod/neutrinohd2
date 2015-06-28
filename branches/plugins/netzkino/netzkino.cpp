@@ -157,8 +157,8 @@ void CNetzKinoBrowser::initGlobalSettings(void)
 	
 	// netzkino
 	m_settings.nkmode = cNKFeedParser::CATEGORY;
-	m_settings.nkcategory = 8;	//neu bei netzkino
-	m_settings.nkcategoryname = "Highlights";
+	m_settings.nkcategory = 81;	//neu bei netzkino
+	m_settings.nkcategoryname = "Neu bei Netzkino";//"Highlights";
 }
 
 void CNetzKinoBrowser::initFrames(void)
@@ -1097,6 +1097,7 @@ bool CNetzKinoBrowser::showNKMenu()
 	CMenuSelectorTarget * selector = new CMenuSelectorTarget(&select);
 
 	CNKCategoriesMenu nkCategoriesMenu(m_settings.nkmode, m_settings.nkcategory, m_settings.nkcategoryname, nkparser);
+	
 	mainMenu.addItem(new CMenuForwarder(LOCALE_NK_CATEGORIES, true, m_settings.nkcategoryname, &nkCategoriesMenu));
 	mainMenu.addItem(GenericMenuSeparatorLine);
 
@@ -1108,11 +1109,9 @@ bool CNetzKinoBrowser::showNKMenu()
 
 	int oldcat = m_settings.nkcategory;
 	int oldmode = m_settings.nkmode;
-	//int oldresults = m_settings.nkresults;
 
 	mainMenu.exec(NULL, "");
 
-	//nkparser.SetConcurrentDownloads(m_settings.nkconcconn);
 	delete selector;
 
 	bool reload = false;
@@ -1130,7 +1129,7 @@ bool CNetzKinoBrowser::showNKMenu()
 			m_settings.nkmode = cNKFeedParser::SEARCH;
 		}
 	}
-	else if (oldmode != m_settings.nkmode || oldcat != m_settings.nkcategory /*|| oldresults != m_settings.nkresults*/) 
+	else if (oldmode != m_settings.nkmode || oldcat != m_settings.nkcategory) 
 	{
 		reload = true;
 	}

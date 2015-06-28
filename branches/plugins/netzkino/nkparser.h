@@ -56,14 +56,13 @@ class cNKFeedParser
 	private:
 
 		nk_category_list_t categories;
+		nk_video_list_t videos;
 
 		std::string thumbnail_dir;
 		std::string movie_dir;
 
 		int max_results;
 		bool parsed;
-
-		nk_video_list_t videos;
 
 		CURL *curl_handle;
 		static size_t CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data);

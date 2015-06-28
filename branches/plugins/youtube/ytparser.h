@@ -36,8 +36,6 @@ class cYTVideoUrl
 		std::string type;
 		std::string sig;
 		std::string url;
-
-		std::string GetUrl();
 };
 
 typedef std::map<int, cYTVideoUrl> yt_urlmap_t;
@@ -57,10 +55,8 @@ class cYTVideoInfo
 		std::string published;
 		int duration;
 		yt_urlmap_t formats;
-		bool ret;
 
 		std::string GetUrl(int fmt = 0);
-		
 };
 
 typedef std::vector<cYTVideoInfo> yt_video_list_t;
@@ -76,8 +72,6 @@ class cYTFeedParser
 		std::string region; 		// more results
 		std::string next; 		// next results
 		std::string prev; 		// prev results
-		std::string start; 		// start index
-		std::string total; 		// total results
 		std::string nextprevurl; 	// url for next/prev
 		std::string key; 		// youtube dev id
 
@@ -86,20 +80,16 @@ class cYTFeedParser
 		bool parsed;
 		yt_video_list_t videos;
 
-		std::string getXmlName(xmlNodePtr node);
-		std::string getXmlAttr(xmlNodePtr node, const char * attr);
-		std::string getXmlData(xmlNodePtr node);
-
 		static size_t CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data);
 		static void encodeUrl(std::string &txt);
 		static void decodeUrl(std::string &url);
 		static void splitString(std::string &str, std::string delim, std::vector<std::string> &strlist, int start = 0);
 		static void splitString(std::string &str, std::string delim, std::map<std::string,std::string> &strmap, int start = 0);
-		static bool saveToFile(const char * name, std::string str);
 		bool getUrl(std::string &url, std::string &answer);
 		bool DownloadUrl(std::string &url, std::string &file);
 		bool parseFeedJSON(std::string &answer);
-		bool parseFeedDetailsJSON(cYTVideoInfo* vinfo);
+		bool parseFeedDetailsJSON(cYTVideoInfo &vinfo);
+		bool ParseVideoInfo(cYTVideoInfo &vinfo);
 		bool decodeVideoInfo(std::string &answer, cYTVideoInfo &vinfo);
 		bool supportedFormat(int fmt);
 		bool ParseFeed(std::string &url);
@@ -128,8 +118,6 @@ class cYTFeedParser
 		~cYTFeedParser();
 
 		bool ParseFeed(yt_feed_mode_t mode = MOST_POPULAR, std::string search = "", std::string vid = "", yt_feed_orderby_t orderby = ORDERBY_PUBLISHED);
-		bool ParseVideoInfo(cYTVideoInfo &vinfo);
-		bool GetVideoUrls();
 		bool DownloadThumbnails();
 		void Cleanup(bool delete_thumbnails = true);
 
@@ -138,8 +126,6 @@ class cYTFeedParser
 		int GetFeedMode() { return feedmode; }
 		bool HaveNext(void) { return !next.empty(); }
 		bool HavePrev(void) { return !prev.empty(); }
-		std::string GetTotal(void) { return total; }
-		std::string GetError(void) { return error; }
 
 		void SetRegion(std::string reg) { region = reg; }
 		void SetMaxResults(int count) { max_results = count; }

@@ -40,8 +40,29 @@
 
 
 #define URL_TIMEOUT 		60
-#define YOUTUBE_DEV_ID 		"AIzaSyAoQ49OQRzRSuTORv3IMPFsa5LaoNyMfD8"
+#define YOUTUBE_DEV_ID 		"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" //add ur dev id key here
 
+
+std::string cYTVideoInfo::GetUrl(int fmt)
+{
+	yt_urlmap_iterator_t it;
+	
+	if (fmt) 
+	{
+		if ((it = formats.find(fmt)) != formats.end())
+			return it->second.url;
+		return "";
+	}
+	
+	if ((it = formats.find(37)) != formats.end())
+		return it->second.url;
+	if ((it = formats.find(22)) != formats.end())
+		return it->second.url;
+	if ((it = formats.find(18)) != formats.end())
+		return it->second.url;
+	
+	return "";
+}
 
 cYTFeedParser::cYTFeedParser()
 {
@@ -55,33 +76,6 @@ cYTFeedParser::cYTFeedParser()
 
 cYTFeedParser::~cYTFeedParser()
 {
-}
-
-std::string cYTVideoUrl::GetUrl()
-{
-	std::string fullurl = url;
-	
-	return fullurl;
-}
-
-std::string cYTVideoInfo::GetUrl(int fmt)
-{
-	yt_urlmap_iterator_t it;
-	
-	if (fmt) 
-	{
-		if ((it = formats.find(fmt)) != formats.end())
-			return it->second.GetUrl();
-		return "";
-	}
-	
-	if ((it = formats.find(37)) != formats.end())
-		return it->second.GetUrl();
-	if ((it = formats.find(22)) != formats.end())
-		return it->second.GetUrl();
-	if ((it = formats.find(18)) != formats.end())
-		return it->second.GetUrl();
-	return "";
 }
 
 size_t cYTFeedParser::CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data)
@@ -238,43 +232,34 @@ void cYTFeedParser::splitString(std::string &str, std::string delim, std::map<st
 	}
 }
 
-bool cYTFeedParser::saveToFile(const char * name, std::string str)
-{
-	FILE * fp = fopen(name, "w+");
-	if (fp) 
-	{
-		fprintf(fp, "%s", str.c_str());
-		fclose(fp);
-		return false;
-	}
-	
-	dprintf(DEBUG_NORMAL, "cYTFeedParser::saveToFile: failed to open %s\n", name);
-	
-	return false;
-}
-
 bool cYTFeedParser::parseFeedJSON(std::string &answer)
 {
+	dprintf(DEBUG_NORMAL, "cYTFeedParser::parseFeedJSON\n");
+	
 	Json::Value root;
 	Json::Reader reader;
 
 	std::ostringstream ss;
-	std::ifstream fh(curfeedfile.c_str(),std::ifstream::in);
+	std::ifstream fh(curfeedfile.c_str(), std::ifstream::in);
 	ss << fh.rdbuf();
 	std::string filedata = ss.str();
 
-	bool parsedSuccess = reader.parse(filedata,root,false);
+	bool parsedSuccess = reader.parse(filedata, root, false);
 
 	if(!parsedSuccess)
 	{
-		parsedSuccess = reader.parse(answer,root,false);
+		parsedSuccess = reader.parse(answer, root, false);
+	}
+	
+	if(!parsedSuccess)
+	{
+		printf("Failed to parse JSON\n");
+		printf("%s\n", reader.getFormattedErrorMessages().c_str());
 		return false;
 	}
 	
 	next.clear();
 	prev.clear();
-	total.clear();
-	start.clear();
 	
 	next = root.get("nextPageToken", "").asString();
 	prev = root.get("prevPageToken", "").asString();
@@ -301,38 +286,33 @@ bool cYTFeedParser::parseFeedJSON(std::string &answer)
 		vinfo.author            = elements[i]["snippet"].get("channelTitle", "unkown").asString();
 		vinfo.category          = "";
 		
-		parseFeedDetailsJSON(&vinfo);
 		
+		// duration/url
 		if (!vinfo.id.empty()) 
 		{
-			if (ParseVideoInfo(vinfo))
-			{
-				vinfo.ret = false;
+			// duration
+			parseFeedDetailsJSON(vinfo);
+		
+			// url/fill videos list
+			if(ParseVideoInfo(vinfo))
 				videos.push_back(vinfo);
-			}
 		}
 	}
-	
-	GetVideoUrls();
-	
-	std::vector<cYTVideoInfo>::iterator pos = videos.begin();
-	while (pos != videos.end())
-		if ((*pos).ret)
-			++pos;
-		else
-			pos = videos.erase(pos);
 	
 	parsed = !videos.empty();
 	
 	return parsed;
 }
 
-bool cYTFeedParser::parseFeedDetailsJSON(cYTVideoInfo* vinfo)
+bool cYTFeedParser::parseFeedDetailsJSON(cYTVideoInfo &vinfo)
 {
-	vinfo->duration = 0;
+	dprintf(DEBUG_NORMAL, "cYTFeedParser::parseFeedDetailsJSON:\n");
+	
+	vinfo.duration = 0;
 	// See at https://developers.google.com/youtube/v3/docs/videos
-	std::string url = "https://www.googleapis.com/youtube/v3/videos?id=" + vinfo->id + "&part=contentDetails&key=" + key;
+	std::string url = "https://www.googleapis.com/youtube/v3/videos?id=" + vinfo.id + "&part=contentDetails&key=" + key;
 	std::string answer;
+	
 	if (!getUrl(url, answer))
 		return false;
   
@@ -351,7 +331,7 @@ bool cYTFeedParser::parseFeedDetailsJSON(cYTVideoInfo* vinfo)
 	
 	if (duration.find("PT") != std::string::npos) 
 	{
-		int h=0, m=0, s=0;
+		int h = 0, m = 0, s = 0;
 		if (duration.find("H") != std::string::npos) 
 		{
 			sscanf(duration.c_str(), "PT%dH%dM%dS", &h, &m, &s);
@@ -365,8 +345,9 @@ bool cYTFeedParser::parseFeedDetailsJSON(cYTVideoInfo* vinfo)
 			sscanf(duration.c_str(), "PT%dS", &s);
 		}
 		//printf(">>>>> duration: %s, h: %d, m: %d, s: %d\n", duration.c_str(), h, m, s);
-		vinfo->duration = h*3600 + m*60 + s;
+		vinfo.duration = h*3600 + m*60 + s;
 	}
+	
 	return true;
 }
 
@@ -380,27 +361,35 @@ bool cYTFeedParser::supportedFormat(int fmt)
 
 bool cYTFeedParser::decodeVideoInfo(std::string &answer, cYTVideoInfo &vinfo)
 {
+	dprintf(DEBUG_NORMAL, "cYTFeedParser::decodeVideoInfo\n");
+	
 	bool ret = false;
+	
 	decodeUrl(answer);
 
 	if(answer.find("token=") == std::string::npos)
 		return ret;
+	
+	vinfo.formats.clear();
 
 	//FIXME check expire
 	std::vector<std::string> ulist;
 	unsigned fmt = answer.find("url_encoded_fmt_stream_map=");
+	
 	if (fmt != std::string::npos) 
 	{
 		fmt = answer.find("=", fmt);
-		splitString(answer, ",", ulist, fmt+1);
+		splitString(answer, ",", ulist, fmt + 1);
 		
 		for (unsigned i = 0; i < ulist.size(); i++) 
 		{
 			std::map<std::string,std::string> smap;
 			std::vector<std::string> uparams;
 			splitString(ulist[i], "&", uparams);
+			
 			if (uparams.size() < 3)
 				continue;
+			
 			for (unsigned j = 0; j < uparams.size(); j++) 
 			{
 				decodeUrl(uparams[j]);
@@ -410,9 +399,11 @@ bool cYTFeedParser::decodeVideoInfo(std::string &answer, cYTVideoInfo &vinfo)
 				splitString(uparams[j], "=", smap);
 			}
 
+			// url
 			cYTVideoUrl yurl;
 			yurl.url = smap["url"];
 			
+			// sig
 			std::string::size_type ptr = smap["url"].find("signature=");
 			if (ptr != std::string::npos)
 			{
@@ -423,11 +414,13 @@ bool cYTFeedParser::decodeVideoInfo(std::string &answer, cYTVideoInfo &vinfo)
 					yurl.sig = smap["url"].substr(0, ptr);
 			}
 			
+			// quality/type
 			int id = atoi(smap["itag"].c_str());
 			if (supportedFormat(id) && !yurl.url.empty() && !yurl.sig.empty()) 
 			{
 				yurl.quality = smap["quality"];
 				yurl.type = smap["type"];
+				
 				vinfo.formats.insert(yt_urlmap_pair_t(id, yurl));
 				ret = true;
 			}
@@ -437,8 +430,40 @@ bool cYTFeedParser::decodeVideoInfo(std::string &answer, cYTVideoInfo &vinfo)
 	return ret;
 }
 
+bool cYTFeedParser::ParseVideoInfo(cYTVideoInfo &vinfo)
+{
+	dprintf(DEBUG_NORMAL, "cYTFeedParser::ParseVideoInfo\n");
+	
+	bool ret = false;
+	std::vector<std::string> estr;
+	estr.push_back("&el=embedded");
+	estr.push_back("&el=vevo");
+	estr.push_back("&el=detailpage");
+
+	for (unsigned i = 0; i < estr.size(); i++) 
+	{
+		std::string vurl = "http://www.youtube.com/get_video_info?video_id=";
+		vurl += vinfo.id;
+		vurl += estr[i];
+		vurl += "&ps=default&eurl=&gl=US&hl=en";
+		
+		std::string answer;
+		if (!getUrl(vurl, answer))
+			continue;
+		
+		ret = decodeVideoInfo(answer, vinfo);
+		
+		if (ret)
+			break;
+	}
+	
+	return ret;
+}
+
 bool cYTFeedParser::ParseFeed(std::string &url)
 {
+	dprintf(DEBUG_NORMAL, "cYTFeedParser::parseFeed(2)\n");
+	
 	videos.clear();
 
 	std::string answer;
@@ -455,6 +480,8 @@ bool cYTFeedParser::ParseFeed(std::string &url)
 
 bool cYTFeedParser::ParseFeed(yt_feed_mode_t mode, std::string search, std::string vid, yt_feed_orderby_t orderby)
 {
+	dprintf(DEBUG_NORMAL, "cYTFeedParser::parseFeed(1)\n");
+	
 	std::string answer;
 	std::string url = "https://www.googleapis.com/youtube/v3/search?";
 	bool append_res = true;
@@ -540,34 +567,6 @@ bool cYTFeedParser::ParseFeed(yt_feed_mode_t mode, std::string search, std::stri
 	return ParseFeed(url);
 }
 
-bool cYTFeedParser::ParseVideoInfo(cYTVideoInfo &vinfo)
-{
-	bool ret = false;
-	std::vector<std::string> estr;
-	estr.push_back("&el=embedded");
-	estr.push_back("&el=vevo");
-	estr.push_back("&el=detailpage");
-
-	for (unsigned i = 0; i < estr.size(); i++) 
-	{
-		std::string vurl = "http://www.youtube.com/get_video_info?video_id=";
-		vurl += vinfo.id;
-		vurl += estr[i];
-		vurl += "&ps=default&eurl=&gl=US&hl=en";
-		
-		dprintf(DEBUG_NORMAL, "cYTFeedParser::ParseVideoInfo: get %s\n", vurl.c_str());
-		
-		std::string answer;
-		if (!getUrl(vurl, answer))
-			continue;
-		ret = decodeVideoInfo(answer, vinfo);
-		if (ret)
-			break;
-	}
-	
-	return ret;
-}
-
 bool cYTFeedParser::DownloadThumbnails()
 {
 	bool ret = false;
@@ -592,17 +591,6 @@ bool cYTFeedParser::DownloadThumbnails()
 				videos[i].tfile = fname;
 			ret |= found;
 		}
-	}
-	
-	return ret;
-}
-
-bool cYTFeedParser::GetVideoUrls()
-{
-	bool ret = false;
-	for (unsigned i = 0; i < videos.size(); i++) 
-	{
-		ret |= ParseVideoInfo(videos[i]);
 	}
 	
 	return ret;

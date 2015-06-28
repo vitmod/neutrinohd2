@@ -125,6 +125,7 @@ bool cNKFeedParser::DownloadUrl(std::string &url, std::string &file, CURL *_curl
 		perror(file.c_str());
 		return false;
 	}
+	
 	curl_easy_setopt(_curl_handle, CURLOPT_URL, url.c_str());
 	curl_easy_setopt(_curl_handle, CURLOPT_WRITEFUNCTION, NULL);
 	curl_easy_setopt(_curl_handle, CURLOPT_FILE, fp);
@@ -186,6 +187,8 @@ void cNKFeedParser::encodeUrl(std::string &txt)
 
 bool cNKFeedParser::parseCategoriesJSON(std::string &answer)
 {
+	dprintf(DEBUG_NORMAL, "cNKFeedParser::parseCategoriesJSON:\n");
+	
 	Json::Value root, v;
 	Json::Reader reader;
 
@@ -230,6 +233,8 @@ bool cNKFeedParser::parseCategoriesJSON(std::string &answer)
 
 bool cNKFeedParser::parseFeedJSON(std::string &answer)
 {
+	dprintf(DEBUG_NORMAL, "cNKFeedParser::parseFeedJSON:\n");
+	
 	Json::Value root, v;
 	Json::Reader reader;
 	
@@ -309,6 +314,8 @@ bool cNKFeedParser::parseFeedJSON(std::string &answer)
 
 bool cNKFeedParser::ParseFeed(std::string &url)
 {
+	dprintf(DEBUG_NORMAL, "cNKFeedParser::parseFeed(2)\n");
+	
 	// clear list
 	videos.clear();
 
@@ -322,6 +329,8 @@ bool cNKFeedParser::ParseFeed(std::string &url)
 
 bool cNKFeedParser::ParseFeed(nk_feed_mode_t mode, std::string search, int category)
 {
+	dprintf(DEBUG_NORMAL, "cNKFeedParser::parseFeed(1)\n");
+	
 	std::string url = "http://www.netzkino.de/capi/";
 	
 	if (mode == SEARCH) 
@@ -346,6 +355,8 @@ bool cNKFeedParser::ParseFeed(nk_feed_mode_t mode, std::string search, int categ
 
 bool cNKFeedParser::ParseCategories(void)
 {
+	dprintf(DEBUG_NORMAL, "cNKFeedParser::parseCategories\n");
+	
 	if (categories.empty()) 
 	{
 		std::string url = "http://www.netzkino.de/capi/get_category_index";
@@ -362,6 +373,8 @@ bool cNKFeedParser::ParseCategories(void)
 
 bool cNKFeedParser::DownloadThumbnails(unsigned start, unsigned end)
 {
+	dprintf(DEBUG_NORMAL, "DownloadThumbnails:\n");
+	
 	bool ret = false;
 	if (safe_mkdir(thumbnail_dir.c_str()) && errno != EEXIST) 
 	{
@@ -407,6 +420,8 @@ void cNKFeedParser::Cleanup(bool delete_thumbnails)
 
 bool cNKFeedParser::downloadMovie(std::string &fname, std::string &url)
 {
+	dprintf(DEBUG_INFO, "cNKFeedParser::downloadMovie:\n");
+	
 	bool ret = false;
 	
 	if (safe_mkdir(movie_dir.c_str()) && errno != EEXIST) 

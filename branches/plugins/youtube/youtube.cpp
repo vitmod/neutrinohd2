@@ -1096,16 +1096,6 @@ bool CYTBrowser::showYTMenu()
 		sprintf(cnt, "%d", YT_FEED_OPTIONS[i].key);
 		mainMenu.addItem(new CMenuForwarder(YT_FEED_OPTIONS[i].value, true, NULL, selector, cnt, CRCInput::convertDigitToKey(i + 1)), m_settings.ytmode == (int) YT_FEED_OPTIONS[i].key);
 	}
-	
-	//mainMenu.addItem(GenericMenuSeparatorLine);
-	//bool enabled = (!m_vMovieInfo.empty()) && (m_movieSelectionHandler != NULL);
-	//sprintf(cnt, "%d", cYTFeedParser::RELATED);
-	//mainMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_YT_RELATED, enabled, NULL, selector, cnt, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
-
-	//sprintf(cnt, "%d", cYTFeedParser::NEXT);
-	//mainMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_YT_NEXT_RESULTS, ytparser.HaveNext(), NULL, selector, cnt, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
-	//sprintf(cnt, "%d", cYTFeedParser::PREV);
-	//mainMenu.addItem(new CMenuForwarder(LOCALE_MOVIEBROWSER_YT_PREV_RESULTS, ytparser.HavePrev(), NULL, selector, cnt, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 
 	mainMenu.addItem(GenericMenuSeparatorLine);
 	std::string search = m_settings.ytsearch;
@@ -1230,6 +1220,7 @@ BROWSER:
 			moviePlayerGui->Title = p_movie_info->epgTitle;
 			moviePlayerGui->Info1 = p_movie_info->epgInfo1;
 			moviePlayerGui->Info2 = p_movie_info->epgInfo2;
+			moviePlayerGui->thumbnail = p_movie_info->tfile;
 			
 			// play
 			moviePlayerGui->exec(NULL, "urlplayback");
