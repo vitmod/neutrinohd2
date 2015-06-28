@@ -99,10 +99,10 @@ bool CUPnPDevice::check_response(std::string header, std::string& charset, std::
 
 	trim(content);
 
-	pos=content.find(";");
-	if (pos!=std::string::npos)
+	pos = content.find(";");
+	if (pos != std::string::npos)
 	{
-		attrib=content.substr(pos+1);
+		attrib = content.substr(pos+1);
 		content.erase(pos);
 		trim(content);
 	}
@@ -145,9 +145,9 @@ CUPnPDevice::CUPnPDevice(std::string url)
 	urlbase = url.substr(7);
 	pos = urlbase.find("/");
 	if (pos != std::string::npos)
-		urlbase=url.substr(0,pos+7);
+		urlbase = url.substr(0,pos+7);
 	else
-		urlbase=url;
+		urlbase = url;
 
 	result = HTTP(url);
 
@@ -406,7 +406,7 @@ std::string CUPnPDevice::HTTP(std::string url, std::string post, std::string act
 	if ((pos1 == std::string::npos) || (pos1 > pos2))
 	{
 		hostname = url.substr(0,pos2);
-		port=80;
+		port = 80;
 	}
 	else
 	{
@@ -464,6 +464,7 @@ std::string CUPnPDevice::HTTP(std::string url, std::string post, std::string act
 
 	commandstr = command.str();
 	send(t_socket, commandstr.c_str(), commandstr.size(), 0);
+	
 	while ((received = recv(t_socket, buf, sizeof(buf)-1, 0)) > 0)
 	{
 		buf[received] = 0;

@@ -1600,8 +1600,8 @@ webtv.add_bouquets add User bouquet
 
 youtube.youtube Youtube Player
 youtube.yt_error Failed to load youtube feed
-youtube.yt_most_popular Most popular
-youtube.yt_most_popular_all_time Most resent
+youtube.yt_most_popular Most popular today
+youtube.yt_most_popular_all_time Most popular
 youtube.yt_next_results Next results
 youtube.yt_prev_results Previous results
 youtube.yt_region Region

@@ -33,6 +33,7 @@
 #include <poll.h>
 #include "upnpclient.h"
 
+
 CUPnPService::CUPnPService(CUPnPDevice* dev, std::string curl, std::string eurl, std::string name)
 {
 	device = dev;
@@ -125,7 +126,7 @@ std::list<UPnPAttribute> CUPnPService::SendSOAP(std::string action, std::list<UP
 	if (!node)
 		throw std::runtime_error(std::string("XML: no soap body child"));
 
-	soapresponse=std::string(node->GetType());
+	soapresponse = std::string(node->GetType());
 	pos = soapresponse.find(":");
 	if (pos !=std::string::npos)
 		soapresponse.erase(0,pos+1);
@@ -141,16 +142,16 @@ std::list<UPnPAttribute> CUPnPService::SendSOAP(std::string action, std::list<UP
 			{
 				snode=node->GetChild();
 				if (snode)
-					for (snode=snode->GetChild(); snode; snode=snode->GetNext())
+					for (snode = snode->GetChild(); snode; snode=snode->GetNext())
 					{
-						errstr=snode->GetType();
+						errstr = snode->GetType();
 						pos = errstr.find(":");
-						if (pos !=std::string::npos)
+						if (pos != std::string::npos)
 							errstr.erase(0,pos+1);
-						if (errstr=="errorCode")
-							upnpcode=std::string(snode->GetData()?snode->GetData():"");
-						if (errstr=="errorDescription")
-							upnpdesc=std::string(snode->GetData()?snode->GetData():"");
+						if (errstr == "errorCode")
+							upnpcode = std::string(snode->GetData()?snode->GetData():"");
+						if (errstr == "errorDescription")
+							upnpdesc = std::string(snode->GetData()?snode->GetData():"");
 					}
 
 			}
@@ -165,7 +166,7 @@ std::list<UPnPAttribute> CUPnPService::SendSOAP(std::string action, std::list<UP
 	if (soapresponse != action + "Response")
 		throw std::runtime_error(std::string("XML: no soap response"));
 
-	for (node=node->GetChild(); node; node=node->GetNext())
+	for (node = node->GetChild(); node; node=node->GetNext())
 		results.push_back(UPnPAttribute(node->GetType(), node->GetData()));
 
 	return results;
