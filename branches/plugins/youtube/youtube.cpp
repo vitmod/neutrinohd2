@@ -46,6 +46,7 @@ extern "C" void plugin_del(void);
 
 CFont* CYTBrowser::m_pcFontFoot = NULL;
 CFont* CYTBrowser::m_pcFontTitle = NULL;
+YTB_SETTINGS m_settings;
 
 const neutrino_locale_t m_localizedItemName[YTB_INFO_MAX_NUMBER + 1] =
 {
@@ -71,7 +72,7 @@ const int m_defaultRowWidth[YTB_INFO_MAX_NUMBER + 1] =
 	0 //MB_ROW_WIDTH_MAX_NUMBER 
 };
  
-CYTBrowser::CYTBrowser()
+CYTBrowser::CYTBrowser(): configfile ('\t')
 {
 	dprintf(DEBUG_NORMAL, "$Id: youtube Browser, v 0.0.1 2014/09/15 12:00:30 mohousch Exp $\n");
 	init();
@@ -97,6 +98,9 @@ void CYTBrowser::init(void)
 	dprintf(DEBUG_NORMAL, "CYTBrowser::init\n");
 	
 	initGlobalSettings();
+	
+	// load settings
+	loadSettings(&m_settings);
 		
 	m_reload_movies = true;
 
@@ -195,6 +199,78 @@ void CYTBrowser::initFrames(void)
 	m_cBoxFrameInfo.iHeight = 		m_cBoxFrame.iHeight - m_cBoxFrameBrowserList.iHeight - INTER_FRAME_SPACE - m_cBoxFrameFootRel.iHeight - m_cBoxFrameTitleRel.iHeight;
 }
 
+bool CYTBrowser::loadSettings(YTB_SETTINGS *settings)
+{
+	bool result = true;
+	
+	dprintf(DEBUG_NORMAL, "CYTBrowser::loadSettings\r\n");
+	
+	if(configfile.loadConfig(YTBROWSER_SETTINGS_FILE))
+	{
+		settings->gui = (YTB_GUI)configfile.getInt32("yt_gui", YTB_GUI_MOVIE_INFO);
+
+		char cfg_key[81];
+		// these variables are used for the listframes
+		settings->browserFrameHeight  = configfile.getInt32("yt_browserFrameHeight", 250);
+		settings->browserRowNr  = configfile.getInt32("yt_browserRowNr", 0);
+		
+		for(int i = 0; i < YTB_MAX_ROWS && i < settings->browserRowNr; i++)
+		{
+			sprintf(cfg_key, "yt_browserRowItem_%d", i);
+			settings->browserRowItem[i] = (YTB_INFO_ITEM)configfile.getInt32(cfg_key, YTB_INFO_MAX_NUMBER);
+			sprintf(cfg_key, "yt_browserRowWidth_%d", i);
+			settings->browserRowWidth[i] = configfile.getInt32(cfg_key, 50);
+		}
+		
+		settings->ytmode = configfile.getInt32("ytmode", cYTFeedParser::MOST_POPULAR);
+		settings->ytorderby = configfile.getInt32("ytorderby", cYTFeedParser::ORDERBY_PUBLISHED);
+		settings->ytregion = configfile.getString("ytregion", "default");
+		settings->ytsearch = configfile.getString("ytsearch", "");
+		settings->ytkey = configfile.getString("ytkey", "");
+	}
+	else
+	{
+		dprintf(DEBUG_NORMAL, "CYTBrowser::loadSettings failed\r\n"); 
+		configfile.clear();
+		result = false;
+	}
+	
+	return (result);
+}
+
+bool CYTBrowser::saveSettings(YTB_SETTINGS *settings)
+{
+	bool result = true;
+	dprintf(DEBUG_NORMAL, "CYTBrowser::saveSettings\r\n");
+
+	configfile.setInt32("yt_gui", settings->gui);
+
+	char cfg_key[81];
+	
+	// these variables are used for the listframes
+	configfile.setInt32("yt_browserFrameHeight", settings->browserFrameHeight);
+	configfile.setInt32("yt_browserRowNr",settings->browserRowNr);
+	
+	for(int i = 0; i < YTB_MAX_ROWS && i < settings->browserRowNr; i++)
+	{
+		sprintf(cfg_key, "yt_browserRowItem_%d", i);
+		configfile.setInt32(cfg_key, settings->browserRowItem[i]);
+		sprintf(cfg_key, "yt_browserRowWidth_%d", i);
+		configfile.setInt32(cfg_key, settings->browserRowWidth[i]);
+	}
+	
+	configfile.setInt32("ytmode", settings->ytmode);
+	configfile.setInt32("ytorderby", settings->ytorderby);
+	configfile.setString("ytregion", settings->ytregion);
+	configfile.setString("ytsearch", settings->ytsearch);
+	configfile.setString("ytkey", settings->ytkey);
+ 
+ 	if (configfile.getModifiedFlag())
+		configfile.saveConfig(YTBROWSER_SETTINGS_FILE);
+	
+	return (result);
+}
+
 int CYTBrowser::exec(CMenuTarget * parent, const std::string & actionKey)
 {
 	int returnval = menu_return::RETURN_REPAINT;
@@ -223,7 +299,9 @@ int CYTBrowser::exec()
 
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_YOUTUBE));
 	
-	initGlobalSettings();
+	//initGlobalSettings();
+	// load settings
+	loadSettings(&m_settings);
 	
 	// init frames
 	initFrames();
@@ -324,6 +402,8 @@ int CYTBrowser::exec()
 	
 	//
 	m_prevBrowserSelection = m_currentBrowserSelection;
+	
+	saveSettings(&m_settings);
 	
 	return (res);
 }
@@ -940,9 +1020,7 @@ void CYTBrowser::loadMovies(void)
 	CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 	
 	loadBox.paint();
-
 	loadYTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
-	
 	loadBox.hide();
 
 	refreshBrowserList();	

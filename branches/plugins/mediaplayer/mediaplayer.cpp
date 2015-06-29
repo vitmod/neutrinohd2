@@ -91,7 +91,7 @@ BROWSER:
 		neutrino_msg_t msg;
 		neutrino_msg_data_t data;
 
-		g_RCInput->getMsg_ms(&msg, &data, 40);
+		g_RCInput->getMsg_ms(&msg, &data, 10);
 		
 		if (msg != CRCInput::RC_home) 
 		{

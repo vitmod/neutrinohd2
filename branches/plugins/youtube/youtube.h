@@ -29,6 +29,8 @@
 #include <ytparser.h>
 
 
+#define YTBROWSER_SETTINGS_FILE          PLUGINDIR "/youtube/yt.conf"
+
 //
 #define MIN_YTBROWSER_FRAME_HEIGHT 	100
 #define MAX_YTBROWSER_FRAME_HEIGHT 	400
@@ -74,6 +76,7 @@ typedef struct
 	std::string ytregion;
 	std::string ytvid;
 	std::string ytsearch;
+	std::string ytkey;
 }YTB_SETTINGS;
 
 class CYTBrowser : public CMenuTarget
@@ -112,12 +115,16 @@ class CYTBrowser : public CMenuTarget
 		
 		std::string m_textTitle;
 		
-		YTB_SETTINGS m_settings;
+		CConfigFile configfile;
 		
 		CMovieInfo m_movieInfo;
 		
 		// youtube
 		cYTFeedParser ytparser;
+		
+		bool loadSettings(YTB_SETTINGS* settings); // P2
+		bool saveSettings(YTB_SETTINGS* settings); // P2
+		
 		void loadYTitles(int mode, std::string search = "", std::string id = "");
 		bool showYTMenu(void);
 		

@@ -44,6 +44,8 @@ void plugin_exec(void)
 	
 	fileFilter.addFilter("vob");
 	fileBrowser.Filter = &fileFilter;
+	fileBrowser.Multi_Select    = true;
+	fileBrowser.Dirs_Selectable = false;
 	
 	std::string Path_dvd = "/mnt/dvd";
 				
@@ -60,23 +62,16 @@ DVD_BROWSER:
 	{
 		Path_dvd = fileBrowser.getCurrentDir();
 
-		CFile * file = fileBrowser.getSelectedFile();
-
-		if ((file = fileBrowser.getSelectedFile()) != NULL) 
-		{
-			moviePlayerGui->filename = file->Name.c_str();	
-			moviePlayerGui->Title = file->getFileName();
-			moviePlayerGui->Info1 = file->getFileName();
-			moviePlayerGui->Info2 = file->getFileName();
-
-			// play
+		// filelist player
+		moviePlayerGui->filelist = fileBrowser.getSelectedFiles();;
+		
+		if(!moviePlayerGui->filelist.empty())
 			moviePlayerGui->exec(NULL, "urlplayback");
-		}
 		
 		neutrino_msg_t msg;
 		neutrino_msg_data_t data;
 
-		g_RCInput->getMsg_ms(&msg, &data, 40);
+		g_RCInput->getMsg_ms(&msg, &data, 10);
 		
 		if (msg != CRCInput::RC_home) 
 		{

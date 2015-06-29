@@ -29,6 +29,7 @@
 #include <xmlinterface.h>
 
 
+
 class cYTVideoUrl
 {
 	public:

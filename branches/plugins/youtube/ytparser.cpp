@@ -38,10 +38,11 @@
 #include <system/debug.h>
 #include <plugin.h>
 
+#include <youtube.h>
+
 
 #define URL_TIMEOUT 		60
-#define YOUTUBE_DEV_ID 		"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" //add ur dev id key here
-
+extern YTB_SETTINGS m_settings;
 
 std::string cYTVideoInfo::GetUrl(int fmt)
 {
@@ -71,7 +72,6 @@ cYTFeedParser::cYTFeedParser()
 	feedmode = -1;
 	tquality = "mqdefault";
 	max_results = 25;
-	key = YOUTUBE_DEV_ID;
 }
 
 cYTFeedParser::~cYTFeedParser()
@@ -308,6 +308,8 @@ bool cYTFeedParser::parseFeedDetailsJSON(cYTVideoInfo &vinfo)
 {
 	dprintf(DEBUG_NORMAL, "cYTFeedParser::parseFeedDetailsJSON:\n");
 	
+	key = m_settings.ytkey;
+	
 	vinfo.duration = 0;
 	// See at https://developers.google.com/youtube/v3/docs/videos
 	std::string url = "https://www.googleapis.com/youtube/v3/videos?id=" + vinfo.id + "&part=contentDetails&key=" + key;
@@ -482,6 +484,7 @@ bool cYTFeedParser::ParseFeed(yt_feed_mode_t mode, std::string search, std::stri
 {
 	dprintf(DEBUG_NORMAL, "cYTFeedParser::parseFeed(1)\n");
 	
+	key = m_settings.ytkey;
 	std::string answer;
 	std::string url = "https://www.googleapis.com/youtube/v3/search?";
 	bool append_res = true;
