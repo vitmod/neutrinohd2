@@ -1599,7 +1599,6 @@ const char * locale_real_names[] = {
 	"keybinding.key_screenshot",
 	"keybinding.savekeymap",
 	"keybinding.savekeymap_hint",
-	
 	"keybinding.mb_copy_jump",
 	"keybinding.mb_cut_jump",
 	"keybinding.mb_truncate",
