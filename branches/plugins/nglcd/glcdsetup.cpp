@@ -385,16 +385,23 @@ bool GLCD_Menu::SaveSettings()
 // plugin API
 void plugin_init(void)
 {
+	//FIXME
+	nGLCD::getInstance();
+	
+	//if (glcd_enable)
+	//	nGLCD::getInstance()->Resume();
 }
 
 void plugin_del(void)
 {
+	//FIXME
+	//if (glcd_enable)
+	//	nGLCD::getInstance()->Suspend();
+	nGLCD::Exit();
 }
 
 void plugin_exec(void)
 {
-	nGLCD::getInstance();
-	
 	GLCD_Menu * glcdMenu = new GLCD_Menu();;
 	
 	glcdMenu->exec(NULL, "");
