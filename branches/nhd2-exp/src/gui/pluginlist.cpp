@@ -132,6 +132,7 @@ reload:
 			tmp->number = count;
 			tmp->name = g_PluginList->getName(count);
 			tmp->desc = g_PluginList->getDescription(count);
+			tmp->version = g_PluginList->getVersion(count);
 			tmp->icon = g_PluginList->getIcon(count);
 			pluginlist.push_back(tmp);
 		}
@@ -292,7 +293,7 @@ void CPluginList::paintItem(int pos)
 	
 	frameBuffer->paintBoxRel(x, ypos, width, itemheight, bgcolor );
 	
-	// name + desc + icon???
+	// name + desc + version + icon???
 	if(liststart + pos <pluginlist.size())
 	{
 		pluginitem * actplugin = pluginlist[liststart + pos];
@@ -319,11 +320,20 @@ void CPluginList::paintItem(int pos)
 				frameBuffer->paintIcon( NEUTRINO_ICON_PLUGIN, x + 8, ypos + (itemheight - icon_h)/2 );
 		}
 		
+		std::string Description;
+		Description = actplugin->desc;
+		if(!actplugin->version.empty())
+		{
+			Description += "(";
+			Description += actplugin->version;
+			Description += ")";
+		}
+		
 		// name
 		g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMLARGE]->RenderString(x + 2*BORDER_LEFT + icon_w, ypos + fheight1 + 3, width - (BORDER_LEFT + BORDER_RIGHT), actplugin->name, color, 0, true); // UTF-8
 		
 		// desc
-		g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMSMALL]->RenderString(x + 2*BORDER_LEFT + icon_w, ypos + fheight, width - (BORDER_LEFT + BORDER_RIGHT), actplugin->desc, color, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMSMALL]->RenderString(x + 2*BORDER_LEFT + icon_w, ypos + fheight, width - (BORDER_LEFT + BORDER_RIGHT), Description, color, 0, true); // UTF-8
 	}
 }
 

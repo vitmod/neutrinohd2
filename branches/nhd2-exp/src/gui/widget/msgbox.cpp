@@ -800,8 +800,6 @@ int CMsgBox::result(void)
 //////////////////////////////////////////////////////////////////////
 int ShowMsg2UTF(const neutrino_locale_t Caption, const char * const Text, const CMsgBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int Width, const int timeout, bool returnDefaultOnTimeout)
 {
-	//TRACE("->CMsgBox::ShowTextUTF \r\n");
-
 	int result = ShowMsg2UTF(g_Locale->getText(Caption),Text, Default, ShowButtons, Icon, Width, timeout, returnDefaultOnTimeout);
 
 	return (result);
@@ -822,7 +820,6 @@ int ShowMsg2UTF(const char * const Title,const char * const Text, const CMsgBox:
 	
 	CBox position(g_settings.screen_StartX + 30, g_settings.screen_StartY + 30, g_settings.screen_EndX - g_settings.screen_StartX - 60, g_settings.screen_EndY - g_settings.screen_StartY - 60); 
 	
-	//TRACE("\r\n->ShowTextUTF %s\r\n",Text);
    	CMsgBox * msgBox = new CMsgBox(Text, g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, Title, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], Icon, ShowButtons, Default);
 
 	msgBox->exec( timeout, returnDefaultOnTimeout);

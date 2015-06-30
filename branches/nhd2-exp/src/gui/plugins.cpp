@@ -246,6 +246,10 @@ bool CPlugins::parseCfg(plugin *plugin_data)
 		{
 			plugin_data->description = parm;
 		}
+		else if (cmd == "version")
+		{
+			plugin_data->version = parm;
+		}
 		else if (cmd == "type")
 		{
 			plugin_data->type = getPluginType(atoi(parm.c_str()));

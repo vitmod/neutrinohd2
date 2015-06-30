@@ -57,6 +57,7 @@ class CPluginList : public CMenuTarget
 			int         number;
 			std::string name;   	// UTF-8 encoded
 			std::string desc;   	// UTF-8 encoded
+			std::string version;
 			
 			std::string icon;	// icon
 		};
