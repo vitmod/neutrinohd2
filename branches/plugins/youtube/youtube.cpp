@@ -164,6 +164,8 @@ void CYTBrowser::initGlobalSettings(void)
 	m_settings.ytmode = cYTFeedParser::MOST_POPULAR;
 	m_settings.ytorderby = cYTFeedParser::ORDERBY_PUBLISHED;
 	m_settings.ytregion = "default";
+	m_settings.ytsearch = configfile.getString("ytsearch", "");
+	m_settings.ytkey = configfile.getString("ytkey", "");
 }
 
 void CYTBrowser::initFrames(void)
@@ -207,22 +209,6 @@ bool CYTBrowser::loadSettings(YTB_SETTINGS *settings)
 	
 	if(configfile.loadConfig(YTBROWSER_SETTINGS_FILE))
 	{
-		settings->gui = (YTB_GUI)configfile.getInt32("yt_gui", YTB_GUI_MOVIE_INFO);
-
-		char cfg_key[81];
-		// these variables are used for the listframes
-		settings->browserFrameHeight  = configfile.getInt32("yt_browserFrameHeight", 250);
-		settings->browserRowNr  = configfile.getInt32("yt_browserRowNr", 0);
-		
-		for(int i = 0; i < YTB_MAX_ROWS && i < settings->browserRowNr; i++)
-		{
-			sprintf(cfg_key, "yt_browserRowItem_%d", i);
-			settings->browserRowItem[i] = (YTB_INFO_ITEM)configfile.getInt32(cfg_key, YTB_INFO_MAX_NUMBER);
-			sprintf(cfg_key, "yt_browserRowWidth_%d", i);
-			settings->browserRowWidth[i] = configfile.getInt32(cfg_key, 50);
-		}
-		
-		settings->ytmode = configfile.getInt32("ytmode", cYTFeedParser::MOST_POPULAR);
 		settings->ytorderby = configfile.getInt32("ytorderby", cYTFeedParser::ORDERBY_PUBLISHED);
 		settings->ytregion = configfile.getString("ytregion", "default");
 		settings->ytsearch = configfile.getString("ytsearch", "");
@@ -243,23 +229,6 @@ bool CYTBrowser::saveSettings(YTB_SETTINGS *settings)
 	bool result = true;
 	dprintf(DEBUG_NORMAL, "CYTBrowser::saveSettings\r\n");
 
-	configfile.setInt32("yt_gui", settings->gui);
-
-	char cfg_key[81];
-	
-	// these variables are used for the listframes
-	configfile.setInt32("yt_browserFrameHeight", settings->browserFrameHeight);
-	configfile.setInt32("yt_browserRowNr",settings->browserRowNr);
-	
-	for(int i = 0; i < YTB_MAX_ROWS && i < settings->browserRowNr; i++)
-	{
-		sprintf(cfg_key, "yt_browserRowItem_%d", i);
-		configfile.setInt32(cfg_key, settings->browserRowItem[i]);
-		sprintf(cfg_key, "yt_browserRowWidth_%d", i);
-		configfile.setInt32(cfg_key, settings->browserRowWidth[i]);
-	}
-	
-	configfile.setInt32("ytmode", settings->ytmode);
 	configfile.setInt32("ytorderby", settings->ytorderby);
 	configfile.setString("ytregion", settings->ytregion);
 	configfile.setString("ytsearch", settings->ytsearch);
@@ -615,7 +584,7 @@ void CYTBrowser::refreshTitle(void)
 		
 	neutrino_locale_t loc = getFeedLocale();
 	title += g_Locale->getText(loc);
-	if (loc == LOCALE_YT_RELATED || loc == LOCALE_YT_SEARCH)
+	if (loc == LOCALE_YT_SEARCH)
 		title += " \"" + m_settings.ytsearch + "\"";
 		
 	mb_icon = NEUTRINO_ICON_YT_SMALL;
@@ -775,15 +744,16 @@ bool CYTBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 		{
 			if (m_settings.ytvid != m_movieSelectionHandler->ytid) 
 			{
-				printf("get related for: %s\n", m_movieSelectionHandler->ytid.c_str());
 				m_settings.ytvid = m_movieSelectionHandler->ytid;
+				m_settings.ytmode = cYTFeedParser::RELATED;
 			
 				m_pcWindow->paintBackground();
 				CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
 				loadBox.paint();
 				ytparser.Cleanup();
-				loadYTitles(cYTFeedParser::RELATED, m_settings.ytsearch, m_settings.ytvid);
+				loadYTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
 				loadBox.hide();
+				
 				refreshBrowserList();
 				refresh();
 			}
@@ -1018,8 +988,8 @@ void CYTBrowser::loadMovies(void)
 	m_pcWindow->blit();	
 
 	CHintBox loadBox(LOCALE_YOUTUBE, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
-	
 	loadBox.paint();
+	m_settings.ytmode = cYTFeedParser::MOST_POPULAR;
 	loadYTitles(m_settings.ytmode, m_settings.ytsearch, m_settings.ytvid);
 	loadBox.hide();
 
@@ -1215,20 +1185,10 @@ bool CYTBrowser::showYTMenu()
 		{
 			reload = true;
 		}
-		else if (select == cYTFeedParser::RELATED) 
-		{
-			if (m_settings.ytvid != m_movieSelectionHandler->ytid) 
-			{
-				printf("get related for: %s\n", m_movieSelectionHandler->ytid.c_str());
-				m_settings.ytvid = m_movieSelectionHandler->ytid;
-				m_settings.ytmode = newmode;
-				reload = true;
-			}
-		}
 		else if (select == cYTFeedParser::SEARCH) 
 		{
-			printf("search for: %s\n", search.c_str());
-			if (!search.empty()) {
+			if (!search.empty()) 
+			{
 				reload = true;
 				m_settings.ytsearch = search;
 				m_settings.ytmode = newmode;

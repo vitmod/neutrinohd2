@@ -537,9 +537,11 @@ bool cYTFeedParser::ParseFeed(yt_feed_mode_t mode, std::string search, std::stri
 		if (vid.empty())
 			return false;
 
-		url = "https://www.googleapis.com/youtube/v3/videos/";
+		url = "https://www.googleapis.com/youtube/v3/search?part=snippet&relatedToVideoId=";
 		url += vid;
-		url += "/related?";
+		url += "&type=video&key=";
+		url += key;
+		append_res = false;
 	}
 	else if (mode == SEARCH) 
 	{
@@ -551,7 +553,7 @@ bool cYTFeedParser::ParseFeed(yt_feed_mode_t mode, std::string search, std::stri
 		url = "https://www.googleapis.com/youtube/v3/search?q=";
 		url += search;
 		url += "&part=snippet";
-		//FIXME locale for "title" and "videoCount"
+
 		const char *orderby_values[] = { "date", "relevance", "viewCount", "rating", "title", "videoCount"};
 		url += "&order=" + std::string(orderby_values[orderby & 3]);
 	}
