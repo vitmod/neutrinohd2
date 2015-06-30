@@ -622,14 +622,8 @@ void CMoviePlayerGui::PlayFile(void)
 		}
 		else if(filename != NULL)
 		{
-			sel_filename = std::string(rindex(filename, '/') + 1);
-			
-			if(Title.empty())
-				Title = sel_filename;
-			if(Info1.empty())
-				Info1 = sel_filename;
-			if(Info2.empty())
-				Info2 = sel_filename;
+			if(!Title.empty())
+				sel_filename = Title;
 			
 			//thumbnail
 			if(thumbnail.empty())
@@ -2163,9 +2157,4 @@ void CMoviePlayerGui::showFileInfo()
 	msgBox->setText(&buffer, thumbnail, lx, ly, picw, pich);
 	msgBox->exec();
 	delete msgBox;
-	
-	/*
-	if (p_movie_info != NULL)
-                cMovieInfo.showMovieInfo(*p_movie_info);
-	*/
 }

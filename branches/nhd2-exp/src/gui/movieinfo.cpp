@@ -434,7 +434,6 @@ bool CMovieInfo::parseXmlTree(char */*text*/, MI_MOVIE_INFO */*movie_info*/)
 	if (movie_info->epgInfo2 == "") 
 	{
 		movie_info->epgInfo2 = movie_info->epgInfo1;
-		//movie_info->epgInfo1 = "";
 	} 
 	else 
 	{
