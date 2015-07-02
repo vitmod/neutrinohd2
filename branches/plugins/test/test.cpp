@@ -49,6 +49,13 @@ class CTestMenu : CMenuTarget
 		void testCListBox();
 		void testCListBoxDetails();
 		void testCListBoxHeadInfo();
+		void testCallAudioPlayer();
+		void testCallInternetRadio();
+		void testCallTSMovieBrowser();
+		void testCallMovieBrowser();
+		void testCallFilePlayBack();
+		void testCallPictureViewer();
+		void testCallUPNPBrowser();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -278,6 +285,72 @@ void CTestMenu::testCListBoxHeadInfo()
 	delete listBox;
 }
 
+void CTestMenu::testCallAudioPlayer()
+{
+	CAudioPlayerGui tmpAudioPlayerGui;
+	tmpAudioPlayerGui.exec(NULL, "");
+}
+
+void CTestMenu::testCallInternetRadio()
+{
+	CAudioPlayerGui tmpAudioPlayerGui(true);
+	tmpAudioPlayerGui.exec(NULL, "");
+}
+
+void CTestMenu::testCallTSMovieBrowser()
+{
+	moviePlayerGui->exec(NULL, "tsmoviebrowser");
+
+	if( CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio )
+	{
+		if (!g_settings.radiotext_enable)
+		{
+			CFrameBuffer::getInstance()->loadBackgroundPic("radiomode.jpg");
+			CFrameBuffer::getInstance()->blit();	
+		}
+	}
+}
+
+void CTestMenu::testCallMovieBrowser()
+{
+	moviePlayerGui->exec(NULL, "moviebrowser");
+
+	if( CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio )
+	{
+		if (!g_settings.radiotext_enable)
+		{
+			CFrameBuffer::getInstance()->loadBackgroundPic("radiomode.jpg");
+			CFrameBuffer::getInstance()->blit();	
+		}
+	}
+}
+
+void CTestMenu::testCallFilePlayBack()
+{
+	moviePlayerGui->exec(NULL, "fileplayback");
+
+	if( CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio )
+	{
+		if (!g_settings.radiotext_enable)
+		{
+			CFrameBuffer::getInstance()->loadBackgroundPic("radiomode.jpg");
+			CFrameBuffer::getInstance()->blit();	
+		}
+	}
+}
+
+void CTestMenu::testCallPictureViewer()
+{
+	CPictureViewerGui tmpPictureViewerGui;
+	tmpPictureViewerGui.exec(NULL, "");
+}
+
+void CTestMenu::testCallUPNPBrowser()
+{
+	CUpnpBrowserGui tmpUPNPBrowserGui;
+	tmpUPNPBrowserGui.exec(NULL, "");
+}
+
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	int res = menu_return::RETURN_REPAINT;
@@ -371,6 +444,41 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		testCListBoxHeadInfo();
 		return res;
 	}
+	else if(actionKey == "audioplayer")
+	{
+		testCallAudioPlayer();
+		return res;
+	}
+	else if(actionKey == "internetradio")
+	{
+		testCallInternetRadio();
+		return res;
+	}
+	else if(actionKey == "tsmoviebrowser")
+	{
+		testCallTSMovieBrowser();
+		return res;
+	}
+	else if(actionKey == "moviebrowser")
+	{
+		testCallMovieBrowser();
+		return res;
+	}
+	else if(actionKey == "fileplayback")
+	{
+		testCallFilePlayBack();
+		return res;
+	}
+	else if(actionKey == "pictureviewer")
+	{
+		testCallPictureViewer();
+		return res;
+	}
+	else if(actionKey == "upnpbrowser")
+	{
+		testCallUPNPBrowser();
+		return res;
+	}
 	
 	showTestMenu();
 	
@@ -399,6 +507,13 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CListBox", true, NULL, this, "listbox"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CListBoxInfoDetails", true, NULL, this, "listboxdetails"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CListBoxHeadInfo", true, NULL, this, "listboxheadinfo"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("AudioPlayer", true, NULL, this, "audioplayer"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("InternetRadio", true, NULL, this, "internetradio"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("TSMovieBrowser", true, NULL, this, "tsmoviebrowser"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("MovieBrowser", true, NULL, this, "moviebrowser"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("FilePlayBack", true, NULL, this, "fileplayback"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("PictureViewer", true, NULL, this, "pictureviewer"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("UPNPBrowser", true, NULL, this, "upnpbrowser"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
