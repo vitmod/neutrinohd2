@@ -203,11 +203,6 @@ void * CAudioPlayer::PlayThread( void * /*dummy*/ )
 				
 			break;	
 		}
-		//state
-		if(playback->playing == true)
-			getInstance()->state = CBaseDec::PLAY;
-		else
-			getInstance()->state = CBaseDec::STOP;
 		getInstance()->m_played_time = position/1000;	// in sec
 	}while(getInstance()->state != CBaseDec::STOP_REQ);
 	
@@ -233,6 +228,8 @@ bool CAudioPlayer::play(const CAudiofile *file, const bool highPrio)
 	this assignment is important, otherwise the player would crash if the file currently played was deleted from the playlist
 	*/
 	m_Audiofile = *file;
+	
+	state = CBaseDec::PLAY;
 
 	pthread_attr_t attr;
 	pthread_attr_init(&attr);

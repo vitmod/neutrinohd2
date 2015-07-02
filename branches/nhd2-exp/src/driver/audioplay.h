@@ -55,8 +55,8 @@ class CAudioPlayer
 		void stop();
 		void pause();
 		void init();
-		void ff(unsigned int seconds=0);
-		void rev(unsigned int seconds=0);
+		void ff(unsigned int seconds = 0);
+		void rev(unsigned int seconds = 0);
 		CAudioMetaData getMetaData();
 		bool hasMetaDataChanged();
 		bool readMetaData(CAudiofile* const, const bool);
