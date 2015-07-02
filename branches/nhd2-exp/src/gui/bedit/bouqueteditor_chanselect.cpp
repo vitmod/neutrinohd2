@@ -164,6 +164,9 @@ void CBEChannelSelectWidget::paintItem(uint32_t itemNr, int paintNr, bool _selec
 
 void CBEChannelSelectWidget::onOkKeyPressed()
 {
+	if(Channels.size() == 0)
+		return;
+		
 	setModified();
 	
 	if (isChannelInBouquet(selected))
