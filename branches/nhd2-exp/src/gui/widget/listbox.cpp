@@ -131,7 +131,8 @@ void CListBox::paintItem(int pos)
 
 void CListBox::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width + 5, height + ButtonHeight + 5 + info_height);
+	int ypos = y - HeadInfoHeight;
+	frameBuffer->paintBackgroundBoxRel(x, ypos, width, height + ButtonHeight + info_height + HeadInfoHeight);
 	
 	clearItem2DetailsLine();
 	
