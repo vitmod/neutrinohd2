@@ -1850,9 +1850,7 @@ void CAudioPlayerGui::paintHead()
 	m_frameBuffer->paintIcon(NEUTRINO_ICON_MP3, m_x + BORDER_LEFT, m_y + m_title_height + (m_theight - icon_head_h)/2);
 	
 	//head title
-	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(strCaption, true); // UTF-8
-	int stringstartposX = m_x + (m_width >> 1) - (neededWidth >> 1);
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, m_y + m_title_height + (m_theight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), m_width - (stringstartposX - m_x), strCaption, COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(m_x + BORDER_LEFT + icon_head_w + 5, m_y + m_title_height + (m_theight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), m_width - (BORDER_LEFT + BORDER_RIGHT + icon_head_w + 10), strCaption, COL_MENUHEAD, 0, true); // UTF-8
 	
 	// icon setup
 	if (!m_inetmode)

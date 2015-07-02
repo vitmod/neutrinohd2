@@ -72,11 +72,6 @@
 #include <gui/webtv.h>
 
 
-#ifdef ConnectLineBox_Width
-#undef ConnectLineBox_Width
-#endif
-#define ConnectLineBox_Width    15
-
 extern CPictureViewer * g_PicViewer;
 extern CMoviePlayerGui * moviePlayerGui;	// defined in neutrino.cpp
 extern CWebTV * webtv;
@@ -119,14 +114,14 @@ int CUpnpBrowserGui::exec(CMenuTarget* parent, const std::string & /*actionKey*/
 
 	m_sheight = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 	m_frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &icon_foot_w, &icon_foot_h);
-	m_buttonHeight = std::max(icon_foot_h, m_sheight) + 6;
-	m_theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	m_mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	m_buttonHeight = std::max(icon_foot_h, m_sheight) + 6;				//foot
+	m_theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(); 	//title
+	m_mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();		
 	m_fheight = g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight();
-	m_title_height = m_mheight*2 + 20 + m_sheight + 4;
-	m_info_height = m_mheight*2;
-	m_listmaxshow = (m_height - m_info_height - m_title_height - m_theight - 2*m_buttonHeight) / (m_fheight);
-	m_height = m_theight + m_info_height + m_title_height + 2*m_buttonHeight + m_listmaxshow * m_fheight; // recalc height
+	m_title_height = m_mheight*2 + 20 + m_sheight + 4;				// title info 
+	m_info_height = m_mheight*2;							//info
+	m_listmaxshow = (m_height - (m_title_height + m_theight + m_info_height + 2*m_buttonHeight)) / (m_fheight);
+	m_height = m_title_height + m_theight + m_listmaxshow*m_fheight + m_buttonHeight + m_info_height; // recalc height
 
 	m_x = (((g_settings.screen_EndX - g_settings.screen_StartX) - (m_width + ConnectLineBox_Width)) / 2) + g_settings.screen_StartX + ConnectLineBox_Width;
 	m_y = (((g_settings.screen_EndY- g_settings.screen_StartY) - m_height)/ 2) + g_settings.screen_StartY;
@@ -731,7 +726,7 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 				index -= m_listmaxshow;
 				rchanged = true;
 			}
-			changed=true;
+			changed = true;
 		}
 
 		else if( (msg == CRCInput::RC_yellow/*green*/ || (int) msg == g_settings.key_channelList_pageup) && selected > 0)
@@ -1047,7 +1042,7 @@ void CUpnpBrowserGui::paintDevice()
 	m_frameBuffer->paintBoxRel(m_x + m_width - 13, ypos + 2 + sbs*(sb-4)/sbc, 11, (sb-4)/sbc, COL_MENUCONTENT_PLUS_3);
 
 	// Foot
-	top = m_y + (m_height - m_info_height - 2*m_buttonHeight);
+	top = m_y + m_height - (m_info_height + m_buttonHeight);
 
 	int ButtonWidth = (m_width - BORDER_LEFT - BORDER_RIGHT) / 4;
 	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
@@ -1157,7 +1152,7 @@ void CUpnpBrowserGui::paintItem(std::vector<UPnPEntry> *entry, unsigned int sele
 	m_frameBuffer->paintBoxRel(m_x + m_width - 13, ypos + 2 + sbs*((sb - 4)/sbc + sbh), 11, (sb - 4)/sbc + sbh, COL_MENUCONTENT_PLUS_3);
 
 	// Foot buttons
-	top = m_y + (m_height - m_info_height - 2*m_buttonHeight);
+	top = m_y + m_height - (m_info_height + m_buttonHeight);
 	int ButtonWidth = (m_width - 20) / 4;
 	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 	
@@ -1172,11 +1167,11 @@ void CUpnpBrowserGui::paintItem(std::vector<UPnPEntry> *entry, unsigned int sele
 void CUpnpBrowserGui::paintDetails(std::vector<UPnPEntry> *entry, unsigned int index, bool use_playing)
 {
 	// Foot info
-	int top = m_y + m_height - (m_info_height + m_buttonHeight);
+	int top = m_y + m_height - m_info_height;
 
 	if ((!use_playing) && ((*entry)[index].isdir))
 	{
-		m_frameBuffer->paintBackgroundBoxRel(m_x + 2, top, m_width - 4, 2*m_buttonHeight - 4);
+		m_frameBuffer->paintBackgroundBoxRel(m_x + 2, top, m_width - 4, m_info_height - 4);
 	}
 	else
 	{
@@ -1184,10 +1179,11 @@ void CUpnpBrowserGui::paintDetails(std::vector<UPnPEntry> *entry, unsigned int i
 		{
 			if (!m_playing_entry_is_shown) 
 			{
-				m_frameBuffer->paintBoxRel(m_x + 2, top + 4, m_width - 4, 2*m_buttonHeight - 8, COL_MENUCONTENTDARK_PLUS_0);
+				// refreshbox
+				m_frameBuffer->paintBoxRel(m_x + 2, top + 2, m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
 				m_playing_entry_is_shown = true;
-				g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + 2 + (m_buttonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, m_playing_entry.title + " - " + m_playing_entry.artist, COL_INFOBAR, 0, true); // UTF-8
-				g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + m_buttonHeight + (m_buttonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, m_playing_entry.album, COL_INFOBAR, 0, true); // UTF-8
+				g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + 2 + + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, m_playing_entry.title + " - " + m_playing_entry.artist, COL_INFOBAR, 0, true); // UTF-8
+				g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + 2 + m_info_height/2 + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, m_playing_entry.album, COL_INFOBAR, 0, true); // UTF-8
 			}
 		} 
 		else 
@@ -1195,10 +1191,11 @@ void CUpnpBrowserGui::paintDetails(std::vector<UPnPEntry> *entry, unsigned int i
 			if (entry == NULL) 
 				return;
 			
-			m_frameBuffer->paintBoxRel(m_x + 2, top, m_width - 4, 2*m_buttonHeight - 4, COL_MENUCONTENTDARK_PLUS_0);
+			// refreshbox
+			m_frameBuffer->paintBoxRel(m_x + 2, top + 2, m_width - 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
 			m_playing_entry_is_shown = false;
-			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + 2 + (m_buttonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, (*entry)[index].title + " - " + (*entry)[index].artist, COL_INFOBAR, 0, true); // UTF-8
-			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + m_buttonHeight + (m_buttonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, (*entry)[index].album, COL_INFOBAR, 0, true); // UTF-8
+			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + 2 + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, (*entry)[index].title + " - " + (*entry)[index].artist, COL_INFOBAR, 0, true); // UTF-8
+			g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->RenderString(m_x + 5, top + 2 + m_info_height/2 + (m_info_height/2 - g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight(), m_x + m_width - 10, (*entry)[index].album, COL_INFOBAR, 0, true); // UTF-8
 		}
 	}
 }
@@ -1212,10 +1209,11 @@ void CUpnpBrowserGui::paintItem2DetailsLine(int pos, unsigned int /*ch_index*/)
 {
 	int xpos  = m_x - ConnectLineBox_Width;
 	int ypos1 = m_y + m_title_height + m_theight + pos*m_fheight;
-	int ypos2 = m_y + m_height - (m_info_height + m_buttonHeight);
+	int ypos2 = m_y + m_height - m_info_height;
 
-	int ypos1a = ypos1 + (m_fheight/2)-2;
+	int ypos1a = ypos1 + (m_fheight/2) - 2;
 	int ypos2a = ypos2 + (m_info_height/2) - 2;
+	
 	fb_pixel_t col1 = COL_MENUCONTENT_PLUS_6;
 	fb_pixel_t col2 = COL_MENUCONTENT_PLUS_1;
 
@@ -1224,29 +1222,29 @@ void CUpnpBrowserGui::paintItem2DetailsLine(int pos, unsigned int /*ch_index*/)
 	
 	if (pos < 0) 
 	{
-		m_frameBuffer->paintBackgroundBoxRel(m_x, ypos2, m_width, 2*m_buttonHeight);
+		m_frameBuffer->paintBackgroundBoxRel(m_x, ypos2, m_width, m_info_height);
 	}
 	
 	// paint Line if detail info (and not valid list pos)
 	if (pos >= 0)
 	{
 		// 1. col thick line
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4,  ypos1, 4,  m_fheight,     col1);
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4,  ypos2, 4,  m_info_height, col1);
+		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4,  ypos1, 4,  m_fheight,     col1);//
+		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4,  ypos2, 4,  m_info_height, col1);//
 
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos1a, 4, ypos2a - ypos1a, col1);
+		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 4, ypos2a - ypos1a, col1);//
 
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos1a, 12, 4, col1);
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos2a, 12, 4, col1);
+		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos1a, 12, 4, col1);//
+		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos2a, 12, 4, col1);//
 
 		// 2. col small line
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1, 1, m_fheight, col2);
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos2, 1, m_info_height, col2);
+		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos1, 1, m_fheight, col2);//
+		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 4, ypos2, 1, m_info_height, col2);//
 
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos1a, 1, ypos2a - ypos1a + 4, col2);
+		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 1, ypos2a - ypos1a + 4, col2);//
 
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos1a, 12, 1, col2);
-		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 12, ypos2a, 8,  1, col2);
+		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 16, ypos1a, 12, 1, col2);//
+		m_frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 12, ypos2a, 8,  1, col2);//
 
 		// -- small Frame around infobox
 		m_frameBuffer->paintBoxRel(m_x, ypos2, 2, m_info_height, col1);
@@ -1278,9 +1276,9 @@ void CUpnpBrowserGui::updateTimes(const bool force)
 		if (updatePlayed)
 		{
 			paintDetails(NULL, 0, true);
-			top = m_y + m_height - (m_info_height + m_buttonHeight) + m_buttonHeight - 8;
-			m_frameBuffer->paintBoxRel(m_x + m_width - w - 15, top + 1, w + 4, m_buttonHeight - 4, COL_MENUCONTENTDARK_PLUS_0);
-			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + m_width - w - 11, top + m_buttonHeight, w, play_time, COL_MENUHEAD);			
+			top = m_y + m_height - m_info_height;
+			m_frameBuffer->paintBoxRel(m_x + m_width - w - 15, top + 2, w + 4, m_info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
+			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + m_width - w - 11, top + (m_info_height - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), w, play_time, COL_MENUHEAD);			
 		}
 	}
 }

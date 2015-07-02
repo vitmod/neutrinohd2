@@ -649,9 +649,7 @@ void CPictureViewerGui::paintHead()
 	frameBuffer->paintIcon(NEUTRINO_ICON_PICTURE, x + BORDER_LEFT, y + (theight - icon_head_h)/2);
 	
 	//head title
-	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(strCaption, true); // UTF-8
-	int stringstartposX = x +(width >> 1) - (neededWidth >> 1);
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, y + theight, width - (stringstartposX - x) , strCaption, COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 5, y + theight, width - (BORDER_LEFT + BORDER_RIGHT + icon_head_w + 10) , strCaption, COL_MENUHEAD, 0, true); // UTF-8
 	
 	// icon help
 	int icon_w, icon_h;

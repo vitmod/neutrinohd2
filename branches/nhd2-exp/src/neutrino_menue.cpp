@@ -2717,28 +2717,6 @@ bool CNeutrinoApp::showUserMenu(int button)
 					menu->addItem(menu_item, false);
 				}
                                 break;
-			
-			// plugins
-                        case SNeutrinoSettings::ITEM_PLUGIN:
-				{
-					menu_item++;
-					menu_prev = SNeutrinoSettings::ITEM_PLUGIN;
-					keyhelper.get(&key, &icon, CRCInput::RC_blue);
-					menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_PLUGINS, true, "", new CPluginList( LOCALE_USERMENU_ITEM_PLUGINS, CPlugins::P_TYPE_TOOL | CPlugins::P_TYPE_SCRIPT ), "", key, icon);
-					menu->addItem(menu_item, false);
-                                }
-                                break;
-				
-			// games
-			case SNeutrinoSettings::ITEM_GAME:
-				{
-					menu_item++;
-					menu_prev = SNeutrinoSettings::ITEM_GAME;
-					keyhelper.get(&key, &icon);
-					menu_item = new CMenuForwarder(LOCALE_MAINMENU_GAMES, true, "", new CPluginList(LOCALE_MAINMENU_GAMES, CPlugins::P_TYPE_GAME), "", key, icon);
-					menu->addItem(menu_item, false);
-                                }
-                                break;
 				
 			case SNeutrinoSettings::ITEM_VTXT:
 				if (CNeutrinoApp::getInstance()->getMode() != NeutrinoMessages::mode_iptv)
@@ -2760,6 +2738,28 @@ bool CNeutrinoApp::showUserMenu(int button)
                                 keyhelper.get(&key, &icon);
                                 menu_item = new CMenuForwarder(LOCALE_OPKG_MANAGER, true, NULL, tmpOPKGManager, "-1", key, icon);
                                 menu->addItem(menu_item, false);
+                                break;
+			
+			// plugins
+                        case SNeutrinoSettings::ITEM_PLUGIN:
+				{
+					menu_item++;
+					menu_prev = SNeutrinoSettings::ITEM_PLUGIN;
+					keyhelper.get(&key, &icon, CRCInput::RC_blue);
+					menu_item = new CMenuForwarder(LOCALE_USERMENU_ITEM_PLUGINS, true, "", new CPluginList( LOCALE_USERMENU_ITEM_PLUGINS, CPlugins::P_TYPE_TOOL | CPlugins::P_TYPE_SCRIPT ), "", key, icon);
+					menu->addItem(menu_item, false);
+                                }
+                                break;
+				
+			// games
+			case SNeutrinoSettings::ITEM_GAME:
+				{
+					menu_item++;
+					menu_prev = SNeutrinoSettings::ITEM_GAME;
+					keyhelper.get(&key, &icon);
+					menu_item = new CMenuForwarder(LOCALE_MAINMENU_GAMES, true, "", new CPluginList(LOCALE_MAINMENU_GAMES, CPlugins::P_TYPE_GAME), "", key, icon);
+					menu->addItem(menu_item, false);
+                                }
                                 break;
 
                         default:
