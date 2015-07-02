@@ -157,8 +157,8 @@ void CNetzKinoBrowser::initGlobalSettings(void)
 	
 	// netzkino
 	m_settings.nkmode = cNKFeedParser::CATEGORY;
-	m_settings.nkcategory = 81;	//neu bei netzkino
-	m_settings.nkcategoryname = "Neu bei Netzkino";//"Highlights";
+	m_settings.nkcategory = 8;	//8=Highlights, 81=neu bei Netzkino
+	m_settings.nkcategoryname = "Highlights";
 }
 
 void CNetzKinoBrowser::initFrames(void)

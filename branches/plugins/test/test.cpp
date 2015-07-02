@@ -48,6 +48,7 @@ class CTestMenu : CMenuTarget
 		void testCListFrameBox();
 		void testCListBox();
 		void testCListBoxDetails();
+		void testCListBoxHeadInfo();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -269,6 +270,14 @@ void CTestMenu::testCListBoxDetails()
 	delete listBox;
 }
 
+void CTestMenu::testCListBoxHeadInfo()
+{
+	CListBox * listBox = new CListBox("listBox", MENU_WIDTH, MENU_HEIGHT, true, true);
+	
+	listBox->exec(NULL, "");
+	delete listBox;
+}
+
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	int res = menu_return::RETURN_REPAINT;
@@ -357,6 +366,11 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		testCListBoxDetails();
 		return res;
 	}
+	else if(actionKey == "listboxheadinfo")
+	{
+		testCListBoxHeadInfo();
+		return res;
+	}
 	
 	showTestMenu();
 	
@@ -384,6 +398,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CListFrameBox", true, NULL, this, "listframebox"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CListBox", true, NULL, this, "listbox"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CListBoxInfoDetails", true, NULL, this, "listboxdetails"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("CListBoxHeadInfo", true, NULL, this, "listboxheadinfo"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
