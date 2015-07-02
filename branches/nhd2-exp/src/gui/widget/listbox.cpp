@@ -35,7 +35,7 @@
 #include <gui/widget/icons.h>
 
 
-CListBox::CListBox(const char * const Caption, int _width, int _height)
+CListBox::CListBox(const char * const Caption, int _width, int _height, bool itemDetails)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 	caption = Caption;
@@ -43,6 +43,8 @@ CListBox::CListBox(const char * const Caption, int _width, int _height)
 	selected =  0;
 	width =  _width;
 	height = _height;
+	
+	ItemDetails = itemDetails;
 	
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_bf_w, &icon_bf_h);
 	ButtonHeight = std::max(icon_bf_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 6;
@@ -54,7 +56,10 @@ CListBox::CListBox(const char * const Caption, int _width, int _height)
 	listmaxshow = (height - theight - ButtonHeight)/fheight;
 	height = theight + ButtonHeight + listmaxshow*fheight; // recalc height
 	
-	info_height = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
+	if(ItemDetails)
+		info_height = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
+	else
+		info_height = 0;
 
 	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width) / 2);
 	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - (height + info_height)) / 2;
@@ -279,12 +284,18 @@ int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 
 void CListBox::paintDetails(int index)
 {
+	if(ItemDetails == false)
+		return;
+	
 	// infobox refresh
 	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
 }
 
 void CListBox::paintItem2DetailsLine(int pos, int /*ch_index*/)
 {
+	if(ItemDetails == false)
+		return;
+	
 	int xpos  = x - ConnectLineBox_Width;
 	int ypos1 = y + theight + pos*fheight;
 	int ypos2 = y + height;
@@ -328,8 +339,10 @@ void CListBox::paintItem2DetailsLine(int pos, int /*ch_index*/)
 }
 
 void CListBox::clearItem2DetailsLine()
-{  
+{
+	if(ItemDetails == false)
+		return;
+	  
 	  paintItem2DetailsLine(-1, 0);  
 }
-//
 

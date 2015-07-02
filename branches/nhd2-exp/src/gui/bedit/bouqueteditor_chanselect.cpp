@@ -58,7 +58,7 @@ extern CBouquetManager * g_bouquetManager;
 void addChannelToBouquet(const unsigned int bouquet, const t_channel_id channel_id);
 
 CBEChannelSelectWidget::CBEChannelSelectWidget(const std::string & Caption, unsigned int Bouquet, CZapitClient::channelsMode Mode)
-	:CListBox(Caption.c_str())
+	:CListBox(Caption.c_str(), MENU_WIDTH, MENU_HEIGHT, true)
 {	
 	bouquet = Bouquet;
 	mode = Mode;
