@@ -70,7 +70,7 @@ class CHintBoxExt
 		void refresh(bool paintBg = false);
 
 	public:
-		CHintBoxExt(const neutrino_locale_t Caption, const char * const Text, const int Width, const char * const Icon);
+		CHintBoxExt(const neutrino_locale_t Caption, const char * const Text, const int Width = MENU_WIDTH - 50, const char * const Icon = NEUTRINO_ICON_INFO);
 		CHintBoxExt(const neutrino_locale_t Caption, ContentLines& lines, const int Width = MENU_WIDTH - 50, const char * const Icon = NEUTRINO_ICON_INFO);
 
 		~CHintBoxExt(void);

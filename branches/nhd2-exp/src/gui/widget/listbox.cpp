@@ -35,7 +35,7 @@
 #include <gui/widget/icons.h>
 
 
-CListBox::CListBox(const char * const Caption, int _width, int _height, bool itemDetails)
+CListBox::CListBox(const char * const Caption, int _width, int _height, bool itemDetails, bool headInfo)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 	caption = Caption;
@@ -45,6 +45,16 @@ CListBox::CListBox(const char * const Caption, int _width, int _height, bool ite
 	height = _height;
 	
 	ItemDetails = itemDetails;
+	HeadInfo = headInfo;
+	
+	info_height = 0;
+	HeadInfoHeight = 0;
+	
+	if(ItemDetails)
+		info_height = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
+	
+	if(HeadInfo)
+		HeadInfoHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
 	
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_bf_w, &icon_bf_h);
 	ButtonHeight = std::max(icon_bf_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 6;
@@ -55,14 +65,9 @@ CListBox::CListBox(const char * const Caption, int _width, int _height, bool ite
 	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
 	listmaxshow = (height - theight - ButtonHeight)/fheight;
 	height = theight + ButtonHeight + listmaxshow*fheight; // recalc height
-	
-	if(ItemDetails)
-		info_height = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
-	else
-		info_height = 0;
 
 	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width) / 2);
-	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - (height + info_height)) / 2;
+	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - (height + info_height)) / 2) + HeadInfoHeight/2;
 }
 
 void CListBox::setModified(void)
@@ -251,6 +256,7 @@ int CListBox::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
 		else if( msg ==CRCInput::RC_ok)
 		{
 			onOkKeyPressed();
+			paintHeadInfo();
 		}
 		else if ( msg ==CRCInput::RC_red)
 		{
@@ -333,7 +339,7 @@ void CListBox::paintItem2DetailsLine(int pos, int /*ch_index*/)
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 15, ypos2a, 12, 4, col1);
 		frameBuffer->paintBoxRel(xpos + ConnectLineBox_Width - 12, ypos2a, 8, 1, col2);
 
-		// untere info box lines
+		// untere info box
 		frameBuffer->paintBoxRel(x, ypos2, width, info_height, col1, true);
 	}
 }
@@ -345,4 +351,15 @@ void CListBox::clearItem2DetailsLine()
 	  
 	  paintItem2DetailsLine(-1, 0);  
 }
+
+void CListBox::paintHeadInfo(int index)
+{
+	if(HeadInfo == false)
+		return;
+	
+	// infobox refresh
+	frameBuffer->paintBoxRel(x, y - HeadInfoHeight, width, HeadInfoHeight, COL_MENUCONTENT_PLUS_6);
+	frameBuffer->paintBoxRel(x + 2, y - HeadInfoHeight + 2, width - 4, HeadInfoHeight - 4, COL_MENUCONTENT_PLUS_1);
+}
+
 
