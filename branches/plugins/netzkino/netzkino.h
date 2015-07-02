@@ -128,7 +128,7 @@ class CNetzKinoBrowser : public CMenuTarget
 		~CNetzKinoBrowser();
 		
 		int exec();
-		int exec(CMenuTarget* parent, const std::string & actionKey);
+		int exec(CMenuTarget* parent, const std::string& actionKey);
 		
 		CFile * getSelectedFile(void); 
 		MI_MOVIE_INFO* getCurrentMovieInfo(void){return(m_movieSelectionHandler);};

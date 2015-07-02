@@ -265,6 +265,8 @@ bool cYTFeedParser::parseFeedJSON(std::string &answer)
 	prev = root.get("prevPageToken", "").asString();
   
 	cYTVideoInfo vinfo;
+	vinfo.description.clear();
+	
 	Json::Value elements = root["items"];
 	
 	for(unsigned int i = 0; i < elements.size(); ++i)
