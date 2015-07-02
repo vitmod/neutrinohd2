@@ -268,6 +268,8 @@ void CMoviePlayerGui::cutNeutrino()
 	// save (remeber) last mode
 	m_LastMode = (CNeutrinoApp::getInstance()->getLastMode() | NeutrinoMessages::norezap);
 	
+	CNeutrinoApp::getInstance()->StopSubtitles();
+	
 	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
 	{
 		if(webtv)
@@ -310,6 +312,8 @@ void CMoviePlayerGui::restoreNeutrino()
 		// start epg scanning
 		g_Sectionsd->setPauseScanning(false);
 	}
+	
+	CNeutrinoApp::getInstance()->StartSubtitles();
 
 	// tell neutrino that we are in the last mode
 	CNeutrinoApp::getInstance()->handleMsg(NeutrinoMessages::CHANGEMODE, m_LastMode);

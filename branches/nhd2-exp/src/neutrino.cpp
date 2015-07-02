@@ -3146,16 +3146,6 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 				StartSubtitles();
 			}
 #endif			
-			//music player
-			else if( msg == (neutrino_msg_t)g_settings.key_audioplayer ) 
-			{
-				StopSubtitles();
-
-				CAudioPlayerGui tmpAudioPlayerGui;
-				tmpAudioPlayerGui.exec(NULL, "");
-
-				StartSubtitles();
-			}
 			else if( (msg == CRCInput::RC_dvbsub) && (mode != mode_iptv) )
 			{
 				StopSubtitles();
@@ -3171,7 +3161,12 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 				}
 				
 				StartSubtitles();
-			}			
+			}
+			else if( msg == (neutrino_msg_t)g_settings.key_audioplayer ) 
+			{
+				CAudioPlayerGui tmpAudioPlayerGui;
+				tmpAudioPlayerGui.exec(NULL, "");
+			}
 			else if( msg == (neutrino_msg_t)g_settings.key_inetradio ) 	// internet radio
 			{	  
 				StopSubtitles();
@@ -3183,8 +3178,6 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 			}			
 			else if( msg == (neutrino_msg_t)g_settings.key_recordsbrowser )	// recordsbrowser
 			{
-				StopSubtitles();
-
 				moviePlayerGui->exec(NULL, "tsmoviebrowser");
 
 				if( mode == mode_radio )
@@ -3194,14 +3187,10 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 						frameBuffer->loadBackgroundPic("radiomode.jpg");
 						frameBuffer->blit();	
 					}
-				}
-					
-				StartSubtitles();			
+				}			
 			}
 			else if( msg == (neutrino_msg_t)g_settings.key_moviebrowser )	// moviebrowser
 			{
-				StopSubtitles();
-
 				moviePlayerGui->exec(NULL, "moviebrowser");
 
 				if( mode == mode_radio )
@@ -3211,15 +3200,10 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 						frameBuffer->loadBackgroundPic("radiomode.jpg");
 						frameBuffer->blit();	
 					}
-				}
-					
-				StartSubtitles();	
+				}	
 			}
 			else if( msg == (neutrino_msg_t)g_settings.key_filebrowser )	// filebrowser player
 			{
-	  
-				StopSubtitles();
-
 				moviePlayerGui->exec(NULL, "fileplayback");
 
 				if( mode == mode_radio )
@@ -3229,9 +3213,7 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 						frameBuffer->loadBackgroundPic("radiomode.jpg");
 						frameBuffer->blit();	
 					}
-				}
-					
-				StartSubtitles();	
+				}	
 			}
 			else if( msg == (neutrino_msg_t)g_settings.key_webtv)	// webtv
 			{
@@ -3243,12 +3225,8 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 			}	
 			else if( msg == (neutrino_msg_t)g_settings.key_pictureviewer ) 	// picture viewer
 			{
-				StopSubtitles();
-				
 				CPictureViewerGui tmpPictureViewerGui;
 				tmpPictureViewerGui.exec(NULL, "");
-				
-				StartSubtitles();
 			}			
 			else if ( CRCInput::isNumeric(msg) && g_RemoteControl->director_mode && (mode != mode_iptv)) 
 			{

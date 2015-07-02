@@ -131,6 +131,7 @@
 #include <gui/dvbsub_select.h>
 #include <gui/webtv.h>
 #include <gui/timeosd.h>
+#include <gui/upnpbrowser.h>
 
 #include <system/localize.h>
 #include <system/settings.h>

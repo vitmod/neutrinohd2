@@ -306,6 +306,8 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &)
 	// remember last mode
 	m_LastMode = (CNeutrinoApp::getInstance()->getLastMode());
 	
+	CNeutrinoApp::getInstance()->StopSubtitles();
+	
 	// stop playback
 	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
 	{
@@ -356,7 +358,9 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &)
 		
 		//start epg scanning
 		g_Sectionsd->setPauseScanning(false);
-	}	
+	}
+	
+	CNeutrinoApp::getInstance()->StartSubtitles();
 
 	//set last saved mode
 	CNeutrinoApp::getInstance()->handleMsg( NeutrinoMessages::CHANGEMODE, m_LastMode );

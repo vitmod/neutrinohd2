@@ -163,6 +163,8 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &/*actionKey*
 		frameBuffer->blit();
 	}
 	
+	CNeutrinoApp::getInstance()->StopSubtitles();
+	
 	//
 	if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
 	{
@@ -206,6 +208,8 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &/*actionKey*
 		// Start Sectionsd
 		g_Sectionsd->setPauseScanning(false);
 	}
+	
+	CNeutrinoApp::getInstance()->StartSubtitles();
 
 	// Restore last mode
 	CNeutrinoApp::getInstance()->handleMsg( NeutrinoMessages::CHANGEMODE , m_LastMode );
