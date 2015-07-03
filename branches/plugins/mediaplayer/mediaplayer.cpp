@@ -83,7 +83,7 @@ BROWSER:
 		Path_local = fileBrowser->getCurrentDir();
 		
 		// filelist player
-		moviePlayerGui->filelist = fileBrowser->getSelectedFiles();;
+		moviePlayerGui->filelist = fileBrowser->getSelectedFiles();
 		
 		if(!moviePlayerGui->filelist.empty())
 			moviePlayerGui->exec(NULL, "urlplayback");

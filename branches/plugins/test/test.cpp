@@ -56,6 +56,9 @@ class CTestMenu : CMenuTarget
 		void testCallFilePlayBack();
 		void testCallPictureViewer();
 		void testCallUPNPBrowser();
+		void testPlayMovieURL();
+		void testPlayAudioURL();
+		void testShowPicURL();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -300,43 +303,16 @@ void CTestMenu::testCallInternetRadio()
 void CTestMenu::testCallTSMovieBrowser()
 {
 	moviePlayerGui->exec(NULL, "tsmoviebrowser");
-
-	if( CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio )
-	{
-		if (!g_settings.radiotext_enable)
-		{
-			CFrameBuffer::getInstance()->loadBackgroundPic("radiomode.jpg");
-			CFrameBuffer::getInstance()->blit();	
-		}
-	}
 }
 
 void CTestMenu::testCallMovieBrowser()
 {
 	moviePlayerGui->exec(NULL, "moviebrowser");
-
-	if( CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio )
-	{
-		if (!g_settings.radiotext_enable)
-		{
-			CFrameBuffer::getInstance()->loadBackgroundPic("radiomode.jpg");
-			CFrameBuffer::getInstance()->blit();	
-		}
-	}
 }
 
 void CTestMenu::testCallFilePlayBack()
 {
 	moviePlayerGui->exec(NULL, "fileplayback");
-
-	if( CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio )
-	{
-		if (!g_settings.radiotext_enable)
-		{
-			CFrameBuffer::getInstance()->loadBackgroundPic("radiomode.jpg");
-			CFrameBuffer::getInstance()->blit();	
-		}
-	}
 }
 
 void CTestMenu::testCallPictureViewer()
@@ -349,6 +325,304 @@ void CTestMenu::testCallUPNPBrowser()
 {
 	CUpnpBrowserGui tmpUPNPBrowserGui;
 	tmpUPNPBrowserGui.exec(NULL, "");
+}
+
+void CTestMenu::testPlayMovieURL()
+{
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+		
+	CFileBrowser * fileBrowser;
+	
+	fileBrowser = new CFileBrowser();
+	
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("ts");
+	fileFilter.addFilter("mpg");
+	fileFilter.addFilter("mpeg");
+	fileFilter.addFilter("divx");
+	fileFilter.addFilter("avi");
+	fileFilter.addFilter("mkv");
+	fileFilter.addFilter("asf");
+	fileFilter.addFilter("aiff");
+	fileFilter.addFilter("m2p");
+	fileFilter.addFilter("mpv");
+	fileFilter.addFilter("m2ts");
+	fileFilter.addFilter("vob");
+	fileFilter.addFilter("mp4");
+	fileFilter.addFilter("mov");	
+	fileFilter.addFilter("flv");	
+	fileFilter.addFilter("dat");
+	fileFilter.addFilter("trp");
+	fileFilter.addFilter("vdr");
+	fileFilter.addFilter("mts");
+	fileFilter.addFilter("wmv");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("wma");
+	fileFilter.addFilter("ogg");
+
+	fileBrowser->Multi_Select    = false;
+	fileBrowser->Dirs_Selectable = false;
+	fileBrowser->Filter = &fileFilter;
+	
+	std::string Path_local = g_settings.network_nfs_moviedir;
+
+BROWSER:
+	if (fileBrowser->exec(Path_local.c_str()))
+	{
+		Path_local = fileBrowser->getCurrentDir();
+		
+		CFile * file;
+		
+		if ((file = fileBrowser->getSelectedFile()) != NULL) 
+		{
+		
+			moviePlayerGui->filename = file->Name.c_str();
+				
+			// movieinfos
+			moviePlayerGui->Title = file->Title;
+			moviePlayerGui->Info1 = file->Info1;
+			moviePlayerGui->Info2 = file->Info2;
+			moviePlayerGui->thumbnail = file->thumbnail;
+				
+			// play
+			moviePlayerGui->exec(NULL, "urlplayback");
+		}
+
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg != CRCInput::RC_home) 
+		{
+			goto BROWSER;
+		}
+	}
+	
+	delete fileBrowser;
+}
+
+void CTestMenu::testPlayAudioURL()
+{
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+		
+	CFileBrowser * fileBrowser;
+	
+	fileBrowser = new CFileBrowser();
+	
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("cdr");
+	fileFilter.addFilter("mp3");
+	fileFilter.addFilter("m2a");
+	fileFilter.addFilter("mpa");
+	fileFilter.addFilter("mp2");
+	fileFilter.addFilter("m3u");
+	fileFilter.addFilter("ogg");
+	fileFilter.addFilter("wav");
+	fileFilter.addFilter("flac");
+	fileFilter.addFilter("aac");
+	fileFilter.addFilter("dts");
+	fileFilter.addFilter("m4a");
+	
+	fileBrowser->Multi_Select    = false;
+	fileBrowser->Dirs_Selectable = false;
+	fileBrowser->Filter = &fileFilter;
+	
+	std::string Path_local = g_settings.network_nfs_audioplayerdir;
+
+BROWSER:
+	if (fileBrowser->exec(Path_local.c_str()))
+	{
+		Path_local = fileBrowser->getCurrentDir();
+		
+		CFile * file;
+		
+		if ((file = fileBrowser->getSelectedFile()) != NULL) 
+		{
+			// stop playback
+			if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
+			{
+				if(webtv)
+					webtv->stopPlayBack();
+			}
+			else
+			{
+				// stop/lock live playback	
+				g_Zapit->lockPlayBack();
+				
+				//pause epg scanning
+				g_Sectionsd->setPauseScanning(true);
+			}	
+	
+			CAudiofile mp3(file->Name.c_str(), file->getExtension());
+			
+			printf("\ngetMetaData\n");
+			// get metainfo
+			CAudioPlayer::getInstance()->readMetaData(&mp3, true);
+			
+			printf("\npaintMetaData\n");
+			// metainfobox
+			CBox Box;
+	
+			Box.iX = g_settings.screen_StartX + 10;
+			Box.iY = g_settings.screen_StartY + 10;
+			Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 20;
+			Box.iHeight = 50;
+	
+			CFrameBuffer::getInstance()->paintBoxRel(Box.iX, Box.iY, Box.iWidth, Box.iHeight, COL_MENUCONTENT_PLUS_6 );
+			
+			// infobox refresh
+			CFrameBuffer::getInstance()->paintBoxRel(Box.iX + 2, Box.iY + 2 , Box.iWidth - 4, Box.iHeight - 4, COL_MENUCONTENTSELECTED_PLUS_0);
+
+			std::string tmp;
+			
+			char sNr[20];
+			sprintf(sNr, ": %2d", 1);
+			tmp = g_Locale->getText(LOCALE_AUDIOPLAYER_PLAYING);
+			tmp += sNr ;
+
+			// first line
+			int w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
+			int xstart = (Box.iWidth - w) / 2;
+			if(xstart < 10)
+				xstart = 10;
+			g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(Box.iX + xstart, Box.iY + 4 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), Box.iWidth - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8
+			
+			tmp = mp3.MetaData.title;
+			tmp += " / ";
+			tmp += mp3.MetaData.artist;
+			
+			w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
+			xstart = (Box.iWidth - w)/2;
+			if(xstart < 10)
+				xstart = 10;
+			
+			g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(Box.iX + xstart, Box.iY + 4 + 2*g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), Box.iWidth - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8		
+			
+			// cover
+			if (!mp3.MetaData.cover.empty())
+			{
+				if(!access("/tmp/cover.jpg", F_OK))
+					g_PicViewer->DisplayImage("/tmp/cover.jpg", Box.iX + 2, Box.iY + 2, Box.iHeight - 4, Box.iHeight - 4);		
+			}
+
+			printf("\nPlay\n");
+			// play
+			CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
+			
+			printf("\nloop\n");
+			bool loop = true;
+			while (loop)
+			{
+				g_RCInput->getMsg(&msg, &data, 10); // 1 sec
+
+				if(msg == CRCInput::RC_home || msg == CRCInput::RC_stop)
+				{
+					CAudioPlayer::getInstance()->stop();
+					loop = false;
+				}
+			}
+		
+			printf("\nstop\n");
+			// start playback
+			if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
+			{
+				if(webtv)
+					webtv->startPlayBack(webtv->getTunedChannel());
+			}
+			else
+			{
+				// unlock playback	
+				g_Zapit->unlockPlayBack();	
+				
+				//start epg scanning
+				g_Sectionsd->setPauseScanning(false);
+			}
+			
+			CNeutrinoApp::getInstance()->StartSubtitles();
+			
+			CFrameBuffer::getInstance()->ClearFrameBuffer();
+			CFrameBuffer::getInstance()->blit();
+		}
+
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg != CRCInput::RC_home) 
+		{
+			goto BROWSER;
+		}
+	}
+	
+	delete fileBrowser;
+}
+
+void CTestMenu::testShowPicURL()
+{
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+	CFileBrowser * fileBrowser;
+	
+	fileBrowser = new CFileBrowser();
+	
+	CFileFilter fileFilter;
+	
+	fileFilter.addFilter("png");
+	fileFilter.addFilter("bmp");
+	fileFilter.addFilter("jpg");
+	fileFilter.addFilter("jpeg");
+	
+	fileBrowser->Multi_Select    = false;
+	fileBrowser->Dirs_Selectable = false;
+	fileBrowser->Filter = &fileFilter;
+	
+	std::string Path_local = g_settings.network_nfs_audioplayerdir;
+
+BROWSER:
+	if (fileBrowser->exec(Path_local.c_str()))
+	{
+		Path_local = fileBrowser->getCurrentDir();
+		
+		CFile * file;
+		
+		if ((file = fileBrowser->getSelectedFile()) != NULL) 
+		{	
+			g_PicViewer->SetScaling((CFrameBuffer::ScalingMode)g_settings.picviewer_scaling);
+			g_PicViewer->SetVisible(g_settings.screen_StartX, g_settings.screen_EndX, g_settings.screen_StartY, g_settings.screen_EndY);
+
+			if(g_settings.video_Ratio == 1)
+				g_PicViewer->SetAspectRatio(16.0/9);
+			else
+				g_PicViewer->SetAspectRatio(4.0/3);
+
+
+			g_PicViewer->ShowImage(file->Name);
+			
+			bool loop = true;
+			while (loop)
+			{
+				g_RCInput->getMsg(&msg, &data, 10); // 1 sec
+
+				if( msg == CRCInput::RC_home)
+					loop = false;
+			}
+						
+			CFrameBuffer::getInstance()->ClearFrameBuffer();
+			CFrameBuffer::getInstance()->blit();	
+		}
+
+		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
+		
+		if (msg != CRCInput::RC_home) 
+		{
+			goto BROWSER;
+		}
+	}
+	
+	delete fileBrowser;
 }
 
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -479,6 +753,21 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		testCallUPNPBrowser();
 		return res;
 	}
+	else if(actionKey == "playmovieurl")
+	{
+		testPlayMovieURL();
+		return res;
+	}
+	else if(actionKey == "playaudiourl")
+	{
+		testPlayAudioURL();
+		return res;
+	}
+	else if(actionKey == "showpictureurl")
+	{
+		testShowPicURL();
+		return res;
+	}
 	
 	showTestMenu();
 	
@@ -514,6 +803,9 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarderNonLocalized("FilePlayBack", true, NULL, this, "fileplayback"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("PictureViewer", true, NULL, this, "pictureviewer"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("UPNPBrowser", true, NULL, this, "upnpbrowser"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("PlayMovieURL", true, NULL, this, "playmovieurl"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("PlayAudioURL", true, NULL, this, "playaudiourl"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("ShowPictureURL", true, NULL, this, "showpictureurl"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
