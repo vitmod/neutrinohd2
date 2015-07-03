@@ -427,7 +427,7 @@ void CTestMenu::testPlayAudioURL()
 	fileFilter.addFilter("dts");
 	fileFilter.addFilter("m4a");
 	
-	fileBrowser->Multi_Select    = false;
+	fileBrowser->Multi_Select = false;
 	fileBrowser->Dirs_Selectable = false;
 	fileBrowser->Filter = &fileFilter;
 	
@@ -443,7 +443,7 @@ BROWSER:
 		if ((file = fileBrowser->getSelectedFile()) != NULL) 
 		{
 			// stop playback
-			if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
+			if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
 			{
 				if(webtv)
 					webtv->stopPlayBack();
@@ -461,7 +461,7 @@ BROWSER:
 			
 			printf("\ngetMetaData\n");
 			// get metainfo
-			CAudioPlayer::getInstance()->readMetaData(&mp3, true);
+			CAudioPlayer::getInstance()->readMetaData(&mp3, false);
 			
 			printf("\npaintMetaData\n");
 			// metainfobox
@@ -518,8 +518,8 @@ BROWSER:
 			while (loop)
 			{
 				g_RCInput->getMsg(&msg, &data, 10); // 1 sec
-
-				if(msg == CRCInput::RC_home || msg == CRCInput::RC_stop)
+				
+				if( (msg == CRCInput::RC_home || msg == CRCInput::RC_stop) || CAudioPlayer::getInstance()->getState() == CBaseDec::STOP)
 				{
 					CAudioPlayer::getInstance()->stop();
 					loop = false;
@@ -528,7 +528,7 @@ BROWSER:
 		
 			printf("\nstop\n");
 			// start playback
-			if(CNeutrinoApp::getInstance()->getLastMode() == NeutrinoMessages::mode_iptv)
+			if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
 			{
 				if(webtv)
 					webtv->startPlayBack(webtv->getTunedChannel());
@@ -628,7 +628,7 @@ BROWSER:
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	int res = menu_return::RETURN_REPAINT;
-	dprintf(DEBUG_NORMAL, "CTestMenu::exec: actionKey:%s", actionKey.c_str());
+	dprintf(DEBUG_NORMAL, "\nCTestMenu::exec: actionKey:%s\n", actionKey.c_str());
 	
 	if(parent)
 		hide();
