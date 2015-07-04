@@ -444,6 +444,14 @@ BROWSER:
 		
 		if ((file = fileBrowser->getSelectedFile()) != NULL) 
 		{
+			bool usedBackground = CFrameBuffer::getInstance()->getuseBackground();
+			if (usedBackground)
+				CFrameBuffer::getInstance()->saveBackgroundImage();
+			
+			//show audio background pic	
+			CFrameBuffer::getInstance()->loadBackgroundPic("mp3.jpg");
+			CFrameBuffer::getInstance()->blit();	
+	
 			// stop playback
 			if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
 			{
@@ -546,7 +554,13 @@ BROWSER:
 			
 			CNeutrinoApp::getInstance()->StartSubtitles();
 			
-			CFrameBuffer::getInstance()->ClearFrameBuffer();
+			//restore previous background
+			if (usedBackground)
+				CFrameBuffer::getInstance()->restoreBackgroundImage();
+			
+			CFrameBuffer::getInstance()->useBackground(usedBackground);
+				
+			CFrameBuffer::getInstance()->paintBackground();
 			CFrameBuffer::getInstance()->blit();
 		}
 
@@ -667,6 +681,14 @@ BROWSER:
 
 		if (!filelist.empty()) 
 		{
+			bool usedBackground = CFrameBuffer::getInstance()->getuseBackground();
+			if (usedBackground)
+				CFrameBuffer::getInstance()->saveBackgroundImage();
+			
+			//show audio background pic	
+			CFrameBuffer::getInstance()->loadBackgroundPic("mp3.jpg");
+			CFrameBuffer::getInstance()->blit();
+			
 			// stop playback
 			if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
 			{
@@ -681,7 +703,7 @@ BROWSER:
 				//pause epg scanning
 				g_Sectionsd->setPauseScanning(true);
 			}	
-PLAYNEXT:
+PLAY:
 			CAudiofile mp3(filelist[selected].Name.c_str(), filelist[selected].getExtension());
 			
 			printf("\ngetMetaData\n");
@@ -758,7 +780,7 @@ PLAYNEXT:
 						selected++;
 						CAudioPlayer::getInstance()->stop();
 						mp3.clear();
-						goto PLAYNEXT;
+						goto PLAY;
 					}
 				}
 				else if(msg == CRCInput::RC_left)
@@ -769,7 +791,7 @@ PLAYNEXT:
 						selected--;
 						CAudioPlayer::getInstance()->stop();
 						mp3.clear();
-						goto PLAYNEXT;
+						goto PLAY;
 					}
 				}
 				else if(msg == CRCInput::RC_home || msg == CRCInput::RC_stop)
@@ -797,7 +819,13 @@ PLAYNEXT:
 			
 			CNeutrinoApp::getInstance()->StartSubtitles();
 			
-			CFrameBuffer::getInstance()->ClearFrameBuffer();
+			//restore previous background
+			if (usedBackground)
+				CFrameBuffer::getInstance()->restoreBackgroundImage();
+			
+			CFrameBuffer::getInstance()->useBackground(usedBackground);
+				
+			CFrameBuffer::getInstance()->paintBackground();
 			CFrameBuffer::getInstance()->blit();
 		}
 
