@@ -332,7 +332,7 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &)
 	//show
 	show();
 
-	//Restore previous background
+	//restore previous background
 	if (usedBackground)
 		m_frameBuffer->restoreBackgroundImage();
 	
