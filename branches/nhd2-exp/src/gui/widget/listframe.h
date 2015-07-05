@@ -118,6 +118,7 @@ class CListFrame
 		int LinesPerPage;
 
 		CFrameBuffer * frameBuffer;
+		std::string m_iconTitle;
 	public:
 		/* Constructor */
 		CListFrame();
@@ -139,7 +140,7 @@ class CListFrame
 		void 	scrollLineDown(const int lines);
 		void 	scrollLineUp(const int lines);
 		bool	setLines(LF_LINES* lines);
-		bool	setTitle(char* title);
+		bool	setTitle(char* title = "", const std::string& icon = NULL);
 		bool    setSelectedLine(int selection);
 		void	hide(void);
 		void	paint(void);

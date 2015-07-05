@@ -146,7 +146,7 @@
 #define NEUTRINO_ICON_RESOLUTION_SD2		"res_sd2"
 #define NEUTRINO_ICON_RESOLUTION_HD		"res_hd"
 
-// new
+// for browser
 #define NEUTRINO_ICON_MOVIE			"movie"
 #define NEUTRINO_ICON_PICTURE			"picture"
 #define NEUTRINO_ICON_PLUGIN			"plugin"
@@ -155,8 +155,6 @@
 #define NEUTRINO_ICON_RADIOTEXTGET		"radiotextget"
 #define NEUTRINO_ICON_RADIOTEXTWAIT		"radiotextwait"
 
-#define NEUTRINO_ICON_YT_SMALL			"youtube_small"
-#define NEUTRINO_ICON_NETZKINO_SMALL		"netzkino_small"
 #define NEUTRINO_ICON_WEBTV_SMALL		"webtv_small"
 
 // mp infobar
@@ -173,21 +171,17 @@
 #define NEUTRINO_ICON_FF_SMALL 			"mp_ff_small"
 #define NEUTRINO_ICON_STOP_SMALL 		"mp_stop_small"
 
-#define NEUTRINO_ICON_USB				"usb"
-#define NEUTRINO_ICON_USB_GREY				"usb_gray"
+#define NEUTRINO_ICON_USB			"usb"
+#define NEUTRINO_ICON_USB_GREY			"usb_gray"
 
 // menuitem icons
 #define NEUTRINO_ICON_MENUITEM_TV			"tv"
 #define NEUTRINO_ICON_MENUITEM_RADIO			"radio"
+#define NEUTRINO_ICON_MENUITEM_WEBTV			"webtv"
+
 #define NEUTRINO_ICON_MENUITEM_MOVIEPLAYER		"movieplayer"
 #define NEUTRINO_ICON_MENUITEM_INTERNETRADIO		"internetradio"
 #define NEUTRINO_ICON_MENUITEM_AUDIOPLAYER		"audioplayer"
-#define NEUTRINO_ICON_MENUITEM_VLC			"vlc"
-#define NEUTRINO_ICON_MENUITEM_DVD			"dvd"
-#define NEUTRINO_ICON_MENUITEM_YT      			"youtube"
-#define NEUTRINO_ICON_MENUITEM_NETZKINO			"netzkino"
-#define NEUTRINO_ICON_MENUITEM_WEBTV			"webtv"
-
 #define NEUTRINO_ICON_MENUITEM_PICTUREVIEWER		"pictureviewer"
 #define NEUTRINO_ICON_MENUITEM_UPNPBROWSER		"upnpbrowser"
 

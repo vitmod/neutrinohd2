@@ -135,37 +135,6 @@ void ShoutcastCallback(void *arg)
 
 void * CAudioPlayer::PlayThread( void * /*dummy*/ )
 {
-	//
-	FILE * fp = fopen(getInstance()->m_Audiofile.Filename.c_str(), "r");
-	
-	if ( fp == NULL )
-	{
-		dprintf(DEBUG_NORMAL, "Error opening file %s for decoding.\n", getInstance()->m_Audiofile.Filename.c_str() );
-		return NULL;
-	}
-	// jump to first audio frame; audio_start_pos is only set for FILE_MP3
-	else if (getInstance()->m_Audiofile.MetaData.audio_start_pos && fseek( fp, getInstance()->m_Audiofile.MetaData.audio_start_pos, SEEK_SET ) == -1 )
-	{
-		dprintf(DEBUG_NORMAL, "fseek() failed.\n" );
-		return NULL;
-	}
-	
-	// shoutcast
-	if(getInstance()->m_Audiofile.FileExtension == CFile::EXTENSION_URL)
-	{
-		if ( fstatus( fp, ShoutcastCallback) < 0 )
-		{
-			dprintf(DEBUG_NORMAL, "Error adding shoutcast callback\n");
-		}
-	}
-
-	/*
-	if ( fclose( fp ) == EOF )
-	{
-		dprintf(DEBUG_NORMAL, "Could not close file %s.\n", getInstance()->m_Audiofile.Filename.c_str() );
-	}
-	*/
-	
 	//stop playing if already playing (multiselect)
 	if(playback->playing)
 		playback->Stop();

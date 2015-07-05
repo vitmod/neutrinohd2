@@ -1016,10 +1016,9 @@ bool CAudioPlayerGui::shufflePlaylist(void)
 
 void CAudioPlayerGui::addUrl2Playlist(const char *url, const char *name, const time_t bitrate) 
 {
-	CAudiofileExt mp3( url, CFile::EXTENSION_URL );
+	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::addUrl2Playlist\n");
 	
-	//tmp = tmp.substr(0,tmp.length()-4);	//remove .url
-	//printf("[addUrl2Playlist], name = %s, url = %s\n", name, url);
+	CAudiofileExt mp3( url, CFile::EXTENSION_URL );
 	
 	if (name != NULL) 
 	{
@@ -1047,7 +1046,7 @@ void CAudioPlayerGui::processPlaylistUrl(const char *url, const char *name, cons
 	CURL *curl_handle;
 	struct MemoryStruct chunk;
 
-	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::processPlaylistUrl (%s, %s)\n", url, name);
+	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::processPlaylistUrl\n");
 	
 	chunk.memory = NULL; /* we expect realloc(NULL, size) to work */
 	chunk.size = 0;    /* no data at this point */
@@ -2582,7 +2581,7 @@ void CAudioPlayerGui::screensaver(int type)
 
 void CAudioPlayerGui::GetMetaData(CAudiofileExt &File)
 {
-	//printf("CAudioPlayerGui::GetMetaData: fileType:%d\n", File.FileType);
+	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::GetMetaData: fileExtension:%d\n", File.FileExtension);
 	
 	bool ret = 1;
 

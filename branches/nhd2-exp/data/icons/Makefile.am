@@ -59,7 +59,7 @@ install_DATA += \
 	audioplayersettings.png hddsettings.png \
 	movieplayer.png internetradio.png upnpbrowser.png pictureviewer.png audioplayer.png \
 	cam.png scart.png \
-	vlc.png plugins.png dvd.png
+	plugins.png
 
 # usb hdd
 install_DATA += \
@@ -67,20 +67,8 @@ install_DATA += \
 
 # new
 install_DATA += \
-	picture.png plugin.png softupdate_small.png mark.png radiotextget.png radiotextoff.png radiotextwait.png 
-
-# yt
-install_DATA += \
-	youtube.png youtube_small.png 
+	picture.png plugin.png softupdate_small.png mark.png radiotextget.png radiotextoff.png radiotextwait.png  
 
 # webtv
 install_DATA += \
 	webtv.png webtv_small.png iptv.png
-
-# netzkino.de
-install_DATA += \
-	netzkino.png netzkino_small.png
-
-
-
-
