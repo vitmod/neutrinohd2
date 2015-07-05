@@ -688,6 +688,7 @@ bool CListFrame::setTitle(char* title, const std::string& icon)
 		return(false);
 
 	m_textTitle = title;
+	
 	if(!icon.empty())
 		m_iconTitle = icon;
 	

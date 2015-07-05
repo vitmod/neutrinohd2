@@ -37,10 +37,25 @@
 #include <driver/framebuffer.h>
 #include <system/localize.h>
 
-#include <plugin.h>
+//#include <plugin.h>
 
 #include <string>
 #include <vector>
+
+
+typedef void (*PluginExec)(void);
+typedef void (*PluginInit)(void);
+typedef void (*PluginDel)(void);
+
+typedef enum plugin_type
+{
+	PLUGIN_TYPE_DISABLED = 0,
+	PLUGIN_TYPE_GAME     = 1,
+	PLUGIN_TYPE_TOOL     = 2,
+	PLUGIN_TYPE_SCRIPT   = 3,
+	PLUGIN_TYPE_NEUTRINO = 4
+}
+plugin_type_t;
 
 
 class CPlugins

@@ -104,8 +104,8 @@
 #include <gui/eventlist.h>
 #include <gui/channellist.h>
 #include <gui/screensetup.h>
-//#include <gui/pluginlist.h>
-//#include <gui/plugins.h>
+#include <gui/pluginlist.h>
+#include <gui/plugins.h>
 #include <gui/infoviewer.h>
 #include <gui/epgview.h>
 #include <gui/epg_menu.h>
@@ -159,20 +159,6 @@
 // neutrino
 #include <neutrino.h>
 
-
-typedef void (*PluginExec)(void);
-typedef void (*PluginInit)(void);
-typedef void (*PluginDel)(void);
-
-typedef enum plugin_type
-{
-	PLUGIN_TYPE_DISABLED = 0,
-	PLUGIN_TYPE_GAME     = 1,
-	PLUGIN_TYPE_TOOL     = 2,
-	PLUGIN_TYPE_SCRIPT   = 3,
-	PLUGIN_TYPE_NEUTRINO = 4
-}
-plugin_type_t;
 
 // globals
 extern  SNeutrinoSettings g_settings;
@@ -253,7 +239,7 @@ extern CBouquetList   		* RADIOsatList;
 extern CBouquetList   		* RADIOfavList;
 extern CBouquetList   		* RADIOallList;
 
-//extern CPlugins       		* g_PluginList;
+extern CPlugins       		* g_PluginList;
 extern CRemoteControl 		* g_RemoteControl;
 extern SMSKeyInput 		* c_SMSKeyInput;	//defined in filebrowser and used in ChanneList
 extern CMoviePlayerGui		* moviePlayerGui;

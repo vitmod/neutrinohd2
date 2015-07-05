@@ -35,7 +35,7 @@
 #include <gui/widget/icons.h>
 
 
-CListBox::CListBox(const char * const Caption, int _width, int _height, bool itemDetails, bool titleInfo)
+CListBox::CListBox(const char * const Caption, const std::string& headIcon, int _width, int _height, bool itemDetails, bool titleInfo, bool paintDate)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 	caption = Caption;
@@ -44,8 +44,12 @@ CListBox::CListBox(const char * const Caption, int _width, int _height, bool ite
 	width =  _width;
 	height = _height;
 	
+	if(!headIcon.empty())
+		HeadIcon = headIcon;
+	
 	ItemDetails = itemDetails;
 	TitleInfo = titleInfo;
+	PaintDate = paintDate;
 	
 	InfoHeight = 0;
 	TitleHeight = 0;
@@ -97,8 +101,38 @@ void CListBox::paint()
 
 void CListBox::paintHead()
 {
+	// headBox
 	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);//round
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + theight, width, caption.c_str() , COL_MENUHEAD, 0, true);
+	
+	// icon 
+	int iw = 0;
+	int ih = 0;
+	if(!HeadIcon.empty())
+	{
+		frameBuffer->getIconSize(HeadIcon.c_str(), &iw, &ih);
+		frameBuffer->paintIcon(HeadIcon, x + BORDER_LEFT, y + (theight - ih)/2);
+	}
+	
+	// paint time/date
+	int timestr_len = 0;
+	if(PaintDate)
+	{
+		char timestr[18];
+		
+		time_t now = time(NULL);
+		struct tm * tm = localtime(&now);
+		
+		bool gotTime = g_Sectionsd->getIsTimeSet();
+
+		if(gotTime)
+		{
+			strftime(timestr, 18, "%d.%m.%Y %H:%M", tm);
+			timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr, true); // UTF-8
+			
+			g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - (BORDER_RIGHT - timestr_len), y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr, COL_MENUHEAD, 0, true); // UTF-8 // 100 is pic_w refresh box
+		}
+	}
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + iw + 5, y + theight, width - (BORDER_LEFT + BORDER_RIGHT + iw + 5 + timestr_len), caption.c_str() , COL_MENUHEAD, 0, true);
 }
 
 void CListBox::paintFoot()
@@ -141,7 +175,7 @@ void CListBox::hide()
 
 unsigned int CListBox::getItemCount()
 {
-	return 10;
+	return listmaxshow;
 }
 
 int CListBox::getItemHeight()

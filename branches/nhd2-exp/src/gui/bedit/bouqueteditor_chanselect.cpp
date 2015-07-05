@@ -58,7 +58,7 @@ extern CBouquetManager * g_bouquetManager;
 void addChannelToBouquet(const unsigned int bouquet, const t_channel_id channel_id);
 
 CBEChannelSelectWidget::CBEChannelSelectWidget(const std::string & Caption, unsigned int Bouquet, CZapitClient::channelsMode Mode)
-	:CListBox(Caption.c_str(), MENU_WIDTH, MENU_HEIGHT, true)
+	:CListBox(Caption.c_str(), NULL, MENU_WIDTH, MENU_HEIGHT, true)
 {	
 	bouquet = Bouquet;
 	mode = Mode;
@@ -164,9 +164,9 @@ void CBEChannelSelectWidget::paintItem(uint32_t itemNr, int paintNr, bool _selec
 
 void CBEChannelSelectWidget::onOkKeyPressed()
 {
-	if(Channels.size() == 0)
+	if(Channels.empty())
 		return;
-		
+	
 	setModified();
 	
 	if (isChannelInBouquet(selected))
@@ -176,7 +176,7 @@ void CBEChannelSelectWidget::onOkKeyPressed()
 
 	bouquetChannels = mode == CZapitClient::MODE_TV ? &(g_bouquetManager->Bouquets[bouquet]->tvChannels) : &(g_bouquetManager->Bouquets[bouquet]->radioChannels);
 	
-	paintItem( selected, selected - liststart, false);
+	paintItem(selected, selected - liststart, false);
 	g_RCInput->postMsg( CRCInput::RC_down, 0 );
 }
 

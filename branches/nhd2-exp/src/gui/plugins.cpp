@@ -55,6 +55,10 @@
 
 #include <daemonc/remotecontrol.h>
 #include <system/safe_system.h>
+#include <system/debug.h>
+#include <system/helpers.h>
+
+#include <gui/widget/hintbox.h>
 
 
 extern CPlugins       * g_PluginList;    /* neutrino.cpp */

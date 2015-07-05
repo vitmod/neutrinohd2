@@ -54,12 +54,14 @@ class CListBox : public CMenuWidget
 		int 		ButtonHeight;
 		int 		InfoHeight;
 		int 		TitleHeight;
+		std::string 	HeadIcon;
 		
 		int icon_bf_w;
 		int icon_bf_h;
 		
 		bool ItemDetails;
 		bool TitleInfo;
+		bool PaintDate;
 
 		virtual void paintItem(int pos);
 		virtual void paint();
@@ -98,7 +100,7 @@ class CListBox : public CMenuWidget
 		void setModified(void);
 
 	public:
-		CListBox(const char * const Caption, int _width = MENU_WIDTH, int _height = MENU_HEIGHT, bool itemDetails = false, bool titleInfo = false); 
+		CListBox(const char * const Caption, const std::string& headIcon = NULL, int _width = MENU_WIDTH, int _height = MENU_HEIGHT, bool itemDetails = false, bool titleInfo = false, bool paintDate = false); 
 		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 

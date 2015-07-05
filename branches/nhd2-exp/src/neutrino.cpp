@@ -141,6 +141,8 @@
 
 #include "gui/scan_setup.h"
 
+#include <gui/webtv.h>
+
 // libdvbapi
 #include <video_cs.h>
 #include <audio_cs.h>
