@@ -61,6 +61,7 @@ class CTestMenu : CMenuTarget
 		void testShowPictureURL();
 		void testPlayAudioFolder();
 		void testShowPictureFolder();
+		void testStartPlugin();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -270,7 +271,7 @@ void CTestMenu::testCListFrameBox()
 	CListFrame * listFrame2 = new CListFrame(&listFrameLines, NULL, CListFrame::TITLE | CListFrame::SCROLL | CListFrame::HEADER_LINE, &Box2);
 	
 	std::string testIcon1 = PLUGINDIR "/youtube/youtube_small.png";
-	listFrame1->setTitle("listFrameBox1(Categories)", testIcon1);
+	listFrame1->setTitle("listFrameBox1(mainMenu)", testIcon1);
 	
 	listFrame2->setTitle("listFrameBox2(subMenu)", testIcon1);
 	
@@ -287,7 +288,7 @@ void CTestMenu::testCListFrameBox()
 
 void CTestMenu::testCListBox()
 {
-	CListBox * listBox = new CListBox("listBox", MENU_WIDTH, MENU_HEIGHT);
+	CListBox * listBox = new CListBox("listBox", NEUTRINO_ICON_BUTTON_SETUP, MENU_WIDTH, MENU_HEIGHT, false, false, true);
 	
 	listBox->exec(NULL, "");
 	delete listBox;
@@ -295,7 +296,7 @@ void CTestMenu::testCListBox()
 
 void CTestMenu::testCListBoxDetails()
 {
-	CListBox * listBox = new CListBox("listBox", /*MENU_WIDTH*/w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), /*MENU_HEIGHT*/h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)), true);
+	CListBox * listBox = new CListBox("listBoxInfoDetails", NEUTRINO_ICON_BUTTON_SETUP, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)), true, false, true);
 	
 	listBox->exec(NULL, "");
 	delete listBox;
@@ -303,7 +304,7 @@ void CTestMenu::testCListBoxDetails()
 
 void CTestMenu::testCListBoxHeadInfo()
 {
-	CListBox * listBox = new CListBox("listBox", /*MENU_WIDTH*/w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), /*MENU_HEIGHT*/h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)), true, true);
+	CListBox * listBox = new CListBox("listBoxTitleInfo", NEUTRINO_ICON_BUTTON_SETUP, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)), true, true, true);
 	
 	listBox->exec(NULL, "");
 	delete listBox;
@@ -940,6 +941,11 @@ VIEWPIC:
 	delete fileBrowser;
 }
 
+void CTestMenu::testStartPlugin()
+{
+	g_PluginList->startPlugin("youtube");
+}
+
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	int res = menu_return::RETURN_REPAINT;
@@ -1093,6 +1099,11 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		testShowPictureFolder();
 		return res;
 	}
+	else if(actionKey == "startplugin")
+	{
+		testStartPlugin();
+		return res;
+	}
 	
 	showTestMenu();
 	
@@ -1114,7 +1125,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CMessageBoxInfoMsg", true, NULL, this, "messageboxinfomsg"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CMessageBoxErrorMsg", true, NULL, this, "messageboxerrormsg"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CHintBox", true, NULL, this, "hintbox"));
-	mainMenu->addItem(new CMenuForwarderNonLocalized("CHintBoxExt", true, NULL, this, "hintboxext"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("CHintBoxExt", false, NULL, this, "hintboxext"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CHelpBox", true, NULL, this, "helpbox"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CTextBox", true, NULL, this, "textbox"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CListFrameBox", true, NULL, this, "listframebox"));
@@ -1133,6 +1144,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarderNonLocalized("ShowPictureURL", true, NULL, this, "showpictureurl"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("PlayAudioFolder", true, NULL, this, "playaudiofolder"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("ShowPictureFolder", true, NULL, this, "showpicturefolder"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
