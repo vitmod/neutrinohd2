@@ -43,6 +43,8 @@ extern "C" void plugin_del(void);
 #define INTER_FRAME_SPACE 		4  // space between e.g. upper and lower window
 #define TEXT_BORDER_WIDTH 		8
 
+#define NEUTRINO_ICON_NETZKINO_SMALL		PLUGINDIR "/netzkino/netzkino_small.png"
+
 CFont* CNetzKinoBrowser::m_pcFontFoot = NULL;
 CFont* CNetzKinoBrowser::m_pcFontTitle = NULL;
 

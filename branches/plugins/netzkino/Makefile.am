@@ -28,6 +28,7 @@ install-exec-local:
 	install .libs/netzkino.so $(DESTDIR)$(PLUGINDIR)/netzkino
 	install -m 0644  netzkino.cfg $(DESTDIR)$(PLUGINDIR)/netzkino
 	install -m 0644  netzkino.png $(DESTDIR)$(PLUGINDIR)/netzkino
+	install -m 0644  netzkino_small.png $(DESTDIR)$(PLUGINDIR)/netzkino
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/netzkino/netzkino.so

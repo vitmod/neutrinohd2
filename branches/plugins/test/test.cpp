@@ -250,20 +250,39 @@ void CTestMenu::testCTextBox()
 
 void CTestMenu::testCListFrameBox()
 {
-	CBox Box;
+	CBox Box1;
 	
-	Box.iX = g_settings.screen_StartX + 10;
-	Box.iY = g_settings.screen_StartY + 10;
-	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 20;
-	Box.iHeight = g_settings.screen_EndY - g_settings.screen_StartY - 20;
+	Box1.iX = g_settings.screen_StartX + 10;
+	Box1.iY = g_settings.screen_StartY + 10;
+	Box1.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20)/4;
+	Box1.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20)/4;
 	
 	LF_LINES listFrameLines;
-	CListFrame * listFrame = new CListFrame(&listFrameLines, NULL, CListFrame::SCROLL | CListFrame::HEADER_LINE, &Box);
+	CListFrame * listFrame1 = new CListFrame(&listFrameLines, NULL, CListFrame::TITLE | CListFrame::HEADER_LINE, &Box1);
 	
-	listFrame->paint();
+	CBox Box2;
+	
+	Box2.iX = Box1.iX + Box1.iWidth + 10;
+	Box2.iY = g_settings.screen_StartY + 10;
+	Box2.iWidth = 3*Box1.iWidth;
+	Box2.iHeight = Box1.iHeight;
+	
+	CListFrame * listFrame2 = new CListFrame(&listFrameLines, NULL, CListFrame::TITLE | CListFrame::SCROLL | CListFrame::HEADER_LINE, &Box2);
+	
+	std::string testIcon1 = PLUGINDIR "/youtube/youtube_small.png";
+	listFrame1->setTitle("listFrameBox1(Categories)", testIcon1);
+	
+	listFrame2->setTitle("listFrameBox2(subMenu)", testIcon1);
+	
+	listFrame1->paint();
+	listFrame2->paint();
+	
 	sleep(3);
-	delete listFrame;
-	listFrame = NULL;
+	
+	delete listFrame1;
+	listFrame1 = NULL;
+	delete listFrame2;
+	listFrame2 = NULL;
 }
 
 void CTestMenu::testCListBox()
@@ -276,7 +295,7 @@ void CTestMenu::testCListBox()
 
 void CTestMenu::testCListBoxDetails()
 {
-	CListBox * listBox = new CListBox("listBox", MENU_WIDTH, MENU_HEIGHT, true);
+	CListBox * listBox = new CListBox("listBox", /*MENU_WIDTH*/w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), /*MENU_HEIGHT*/h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)), true);
 	
 	listBox->exec(NULL, "");
 	delete listBox;
@@ -284,7 +303,7 @@ void CTestMenu::testCListBoxDetails()
 
 void CTestMenu::testCListBoxHeadInfo()
 {
-	CListBox * listBox = new CListBox("listBox", MENU_WIDTH, MENU_HEIGHT, true, true);
+	CListBox * listBox = new CListBox("listBox", /*MENU_WIDTH*/w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), /*MENU_HEIGHT*/h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)), true, true);
 	
 	listBox->exec(NULL, "");
 	delete listBox;
@@ -501,6 +520,7 @@ BROWSER:
 				xstart = 10;
 			g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(Box.iX + xstart, Box.iY + 4 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), Box.iWidth - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8
 			
+			// second line
 			tmp = mp3.MetaData.title;
 			tmp += " / ";
 			tmp += mp3.MetaData.artist;
@@ -510,7 +530,7 @@ BROWSER:
 			if(xstart < 10)
 				xstart = 10;
 			
-			g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(Box.iX + xstart, Box.iY + 4 + 2*g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), Box.iWidth - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8		
+			g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(Box.iX + xstart, Box.iY + 2*g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), Box.iWidth - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8		
 			
 			// cover
 			if (!mp3.MetaData.cover.empty())
@@ -744,6 +764,7 @@ PLAY:
 				xstart = 10;
 			g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(Box.iX + xstart, Box.iY + 4 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), Box.iWidth - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8
 			
+			// second line
 			tmp = mp3.MetaData.title;
 			tmp += " / ";
 			tmp += mp3.MetaData.artist;
@@ -753,7 +774,7 @@ PLAY:
 			if(xstart < 10)
 				xstart = 10;
 			
-			g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(Box.iX + xstart, Box.iY + 4 + 2*g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), Box.iWidth - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8		
+			g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(Box.iX + xstart, Box.iY + 2*g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), Box.iWidth - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8		
 			
 			// cover
 			if (!mp3.MetaData.cover.empty())
@@ -772,7 +793,7 @@ PLAY:
 			{
 				g_RCInput->getMsg(&msg, &data, 10); // 1 sec
 				
-				if(msg == CRCInput::RC_right || CAudioPlayer::getInstance()->getState() == CBaseDec::STOP)
+				if((msg == CRCInput::RC_right || msg == CRCInput::RC_up) || CAudioPlayer::getInstance()->getState() == CBaseDec::STOP)
 				{
 					if(filelist.size() > 1 && selected < filelist.size())
 					{
@@ -783,7 +804,7 @@ PLAY:
 						goto PLAY;
 					}
 				}
-				else if(msg == CRCInput::RC_left)
+				else if(msg == CRCInput::RC_left || msg == CRCInput::RC_down)
 				{
 					if(filelist.size() > 1 && selected > 0)
 					{
