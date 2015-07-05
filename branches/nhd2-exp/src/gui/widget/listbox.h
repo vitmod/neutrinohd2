@@ -52,14 +52,14 @@ class CListBox : public CMenuWidget
 		unsigned int	listmaxshow;
 	
 		int 		ButtonHeight;
-		int 		info_height;
-		int 		HeadInfoHeight;
+		int 		InfoHeight;
+		int 		TitleHeight;
 		
 		int icon_bf_w;
 		int icon_bf_h;
 		
 		bool ItemDetails;
-		bool HeadInfo;
+		bool TitleInfo;
 
 		virtual void paintItem(int pos);
 		virtual void paint();
@@ -69,7 +69,7 @@ class CListBox : public CMenuWidget
 		virtual void paintDetails(int index);
 		virtual void paintItem2DetailsLine(int pos, int ch_index);
 		virtual void clearItem2DetailsLine();
-		virtual void paintHeadInfo(int index = 0);
+		virtual void paintTitleInfo(int index = 0);
 		
 
 		
@@ -84,7 +84,6 @@ class CListBox : public CMenuWidget
 		virtual void onInfoKeyPressed(){};
 		virtual void onRightKeyPressed(){};
 		virtual void onLeftKeyPressed(){};
-		virtual void onZapKeyPressed(){};
 		virtual void onMuteKeyPressed(){};
 		virtual void onOtherKeyPressed( int /*key*/ ){};
 
@@ -99,7 +98,7 @@ class CListBox : public CMenuWidget
 		void setModified(void);
 
 	public:
-		CListBox(const char * const Caption, int _width = MENU_WIDTH, int _height = MENU_HEIGHT, bool itemDetails = false, bool headInfo = false); 
+		CListBox(const char * const Caption, int _width = MENU_WIDTH, int _height = MENU_HEIGHT, bool itemDetails = false, bool titleInfo = false); 
 		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 
