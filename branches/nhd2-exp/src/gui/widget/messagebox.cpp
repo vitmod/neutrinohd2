@@ -243,7 +243,7 @@ int CMessageBox::exec(int timeout)
 			result = mbrYes;
 			loop   = false;
 		}
-		else if(msg==CRCInput::RC_right)
+		else if(msg == CRCInput::RC_right)
 		{
 			bool ok = false;
 			while (!ok)
@@ -260,8 +260,10 @@ int CMessageBox::exec(int timeout)
 				scroll_up();
 			else
 				scroll_down();
+			
+			paintButtons();
 		}
-		else if(msg==CRCInput::RC_left)
+		else if(msg == CRCInput::RC_left)
 		{
 			bool ok = false;
 			while (!ok)
