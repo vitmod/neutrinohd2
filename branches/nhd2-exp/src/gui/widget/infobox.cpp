@@ -773,9 +773,9 @@ int CInfoBox::result(void)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-int ShowInfoBox(const neutrino_locale_t Caption, const char * const Text, const CInfoBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int Width, const int timeout, bool returnDefaultOnTimeout)
+int InfoBox(const neutrino_locale_t Caption, const char * const Text, const CInfoBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int Width, const int timeout, bool returnDefaultOnTimeout)
 {
-	int result = ShowInfoBox(g_Locale->getText(Caption),Text, Default, ShowButtons, Icon, Width, timeout, returnDefaultOnTimeout);
+	int result = InfoBox(g_Locale->getText(Caption),Text, Default, ShowButtons, Icon, Width, timeout, returnDefaultOnTimeout);
 
 	return (result);
 
@@ -789,7 +789,7 @@ int ShowInfoBox(const neutrino_locale_t Caption, const char * const Text, const 
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-int ShowInfoBox(const char * const Title,const char * const Text, const CInfoBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int /*Width*/, const int timeout, bool returnDefaultOnTimeout)
+int InfoBox(const char * const Title,const char * const Text, const CInfoBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int /*Width*/, const int timeout, bool returnDefaultOnTimeout)
 {
 	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
 	

@@ -241,7 +241,7 @@ bool CFlashUpdate::selectHttpImage(void)
 
 	if (urls.empty())
 	{
-		ShowHintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_FLASHUPDATE_GETINFOFILEERROR)); // UTF-8
+		HintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_FLASHUPDATE_GETINFOFILEERROR)); // UTF-8
 		return false;
 	}
 		
@@ -314,7 +314,7 @@ bool CFlashUpdate::checkVersion4Update()
 		{
 			// check release cycle
 			if ((strncmp(RELEASE_CYCLE, versionInfo->getReleaseCycle(), 2) != 0) &&
-			(ShowMessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_FLASHUPDATE_WRONGBASE), CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) != CMessageBox::mbrYes))
+			(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_FLASHUPDATE_WRONGBASE), CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) != CMessageBox::mbrYes))
 			{
 				delete versionInfo;
 				return false;
@@ -322,7 +322,7 @@ bool CFlashUpdate::checkVersion4Update()
 
 			// check if not release ask to install (beta + snapshot)
 			if ((strcmp("Release", versionInfo->getType()) != 0) &&
-		    	    (ShowMessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_FLASHUPDATE_EXPERIMENTALIMAGE, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) != CMessageBox::mbrYes))
+		    	    (MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_FLASHUPDATE_EXPERIMENTALIMAGE, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) != CMessageBox::mbrYes))
 			{
 				delete versionInfo;
 				return false;
@@ -366,7 +366,7 @@ bool CFlashUpdate::checkVersion4Update()
 			
 			dprintf(DEBUG_NORMAL, "flash-file not found: %s\n", filename.c_str());
 			
-			ShowHintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_FLASHUPDATE_CANTOPENFILE)); // UTF-8
+			HintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_FLASHUPDATE_CANTOPENFILE)); // UTF-8
 			return false;
 		}
 		
@@ -394,7 +394,7 @@ bool CFlashUpdate::checkVersion4Update()
 		msg_body = (fileType < '3')? LOCALE_FLASHUPDATE_FLASHMSGBOX : LOCALE_FLASHUPDATE_PACKAGEMSGBOX;
 	}
 	
-	return ( (fileType == 'T')? true : ShowMessageBox(LOCALE_MESSAGEBOX_INFO, msg, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) == CMessageBox::mbrYes); // UTF-8
+	return ( (fileType == 'T')? true : MessageBox(LOCALE_MESSAGEBOX_INFO, msg, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) == CMessageBox::mbrYes); // UTF-8
 }
 
 int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
@@ -429,7 +429,7 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 		if(!getUpdateImage(newVersion)) 
 		{
 			hide();
-			ShowHintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_FLASHUPDATE_GETUPDATEFILEERROR)); // UTF-8
+			HintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_FLASHUPDATE_GETUPDATEFILEERROR)); // UTF-8
 			return menu_return::RETURN_REPAINT;
 		}
 		
@@ -456,7 +456,7 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 		// remove flash/package
 		remove(filename.c_str());
 		hide();
-		ShowHintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText( (fileType < '3') ? LOCALE_FLASHUPDATE_FLASHMD5SUMERROR : LOCALE_FLASHUPDATE_PACKAGEMD5SUMERROR)); // UTF-8
+		HintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText( (fileType < '3') ? LOCALE_FLASHUPDATE_FLASHMD5SUMERROR : LOCALE_FLASHUPDATE_PACKAGEMD5SUMERROR)); // UTF-8
 		return menu_return::RETURN_REPAINT;
 	}
 	
@@ -464,7 +464,7 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 	if(updateMode == UPDATEMODE_INTERNET) 
 	{ 
 		//internet-update
-		if ( ShowMessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText( (fileType < '3') ? LOCALE_FLASHUPDATE_DOWNLOADEDIMAGE : LOCALE_FLASHUPDATE_INSTALLPACKAGE ), CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) != CMessageBox::mbrYes) // UTF-8
+		if ( MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText( (fileType < '3') ? LOCALE_FLASHUPDATE_DOWNLOADEDIMAGE : LOCALE_FLASHUPDATE_INSTALLPACKAGE ), CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) != CMessageBox::mbrYes) // UTF-8
 		{
 			// remove flash/package
 			remove(filename.c_str());
@@ -490,7 +490,7 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 			// remove flash if flashing failed
 			remove(filename.c_str());
 			hide();
-			ShowHintBox(LOCALE_MESSAGEBOX_ERROR, ft.getErrorMessage().c_str()); // UTF-8
+			HintBox(LOCALE_MESSAGEBOX_ERROR, ft.getErrorMessage().c_str()); // UTF-8
 			return menu_return::RETURN_REPAINT;
 		}
 
@@ -504,7 +504,7 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 		nfs_mounted_once = false; /* needed by update.cpp to prevent removal of modules after flashing a new cramfs, since rmmod (busybox) might no longer be available */
 		CFSMounter::umount();
 
-		ShowHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_FLASHUPDATE_FLASHREADYREBOOT)); // UTF-8
+		HintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_FLASHUPDATE_FLASHREADYREBOOT)); // UTF-8
 		
 		ft.reboot();
 		sleep(20000);
@@ -521,7 +521,7 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 			fread(buffer, filesize, 1, fd);
 			fclose(fd);
 			buffer[filesize] = 0;
-			ShowMessageBox(LOCALE_MESSAGEBOX_INFO, buffer, CMessageBox::mbrBack, CMessageBox::mbBack); // UTF-8
+			MessageBox(LOCALE_MESSAGEBOX_INFO, buffer, CMessageBox::mbrBack, CMessageBox::mbBack); // UTF-8
 			free(buffer);
 		}
 	}
@@ -535,7 +535,7 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 		if( system(cmd) )
 		{
 			hide();
-			ShowHintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_FLASHUPDATE_INSTALLFAILED)); // UTF-8
+			HintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_FLASHUPDATE_INSTALLFAILED)); // UTF-8
 			return menu_return::RETURN_REPAINT;
 		}
 		
@@ -543,7 +543,7 @@ int CFlashUpdate::exec(CMenuTarget * parent, const std::string &)
 		showGlobalStatus(100);
 		
 		// show successfull msg :-)
-		ShowHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_FLASHUPDATE_READY)); // UTF-8
+		HintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_FLASHUPDATE_READY)); // UTF-8
 	}
 	
 	hide();
@@ -592,7 +592,7 @@ void CFlashExpert::readmtd(int _readmtd)
 		sprintf(message, g_Locale->getText(LOCALE_FLASHUPDATE_SAVESUCCESS), filename.c_str());
 		sleep(1);
 		hide();
-		ShowHintBox(LOCALE_MESSAGEBOX_INFO, message);
+		HintBox(LOCALE_MESSAGEBOX_INFO, message);
 	}
 }
 
@@ -603,7 +603,7 @@ void CFlashExpert::writemtd(const std::string & filename, int mtdNumber)
 	sprintf(message,
 		g_Locale->getText(LOCALE_FLASHUPDATE_REALLYFLASHMTD), FILESYSTEM_ENCODING_TO_UTF8_STRING(filename).c_str(), CMTDInfo::getInstance()->getMTDName(mtdNumber).c_str());
 
-	if (ShowMessageBox(LOCALE_MESSAGEBOX_INFO, message, CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) != CMessageBox::mbrYes) // UTF-8
+	if (MessageBox(LOCALE_MESSAGEBOX_INFO, message, CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_UPDATE) != CMessageBox::mbrYes) // UTF-8
 		return;
 
 #ifdef ENABLE_LCD
@@ -629,7 +629,7 @@ void CFlashExpert::writemtd(const std::string & filename, int mtdNumber)
 		showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_READY)); // UTF-8
 		sleep(1);
 		hide();
-		ShowHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_FLASHUPDATE_FLASHREADYREBOOT)); // UTF-8
+		HintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_FLASHUPDATE_FLASHREADYREBOOT)); // UTF-8
 		ft.reboot();
 	}
 }

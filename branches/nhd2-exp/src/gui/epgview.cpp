@@ -589,7 +589,7 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 
 	if (epgData.title.empty()) /* no epg info found */
 	{
-		ShowHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_EPGVIEWER_NOTFOUND)); // UTF-8
+		HintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_EPGVIEWER_NOTFOUND)); // UTF-8
 		hide();
 		return res;
 	}
@@ -879,12 +879,12 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 														 epgData.epg_times.startzeit - (ANNOUNCETIME + 120 ),
 														 TIMERD_APIDS_CONF, true, recDir,true);
 														 
-										ShowMessageBox(LOCALE_TIMER_EVENTRECORD_TITLE, LOCALE_TIMER_EVENTRECORD_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+										MessageBox(LOCALE_TIMER_EVENTRECORD_TITLE, LOCALE_TIMER_EVENTRECORD_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
 									}
 								} 
 								else 
 								{
-									ShowMessageBox(LOCALE_TIMER_EVENTRECORD_TITLE, LOCALE_TIMER_EVENTRECORD_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+									MessageBox(LOCALE_TIMER_EVENTRECORD_TITLE, LOCALE_TIMER_EVENTRECORD_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
 								}
 							}
 						}
@@ -904,7 +904,7 @@ int CEpgData::show(const t_channel_id channel_id, unsigned long long a_id, time_
 										epgData.epg_times.startzeit - ANNOUNCETIME, 0,
 										epgData.eventID, epgData.epg_times.startzeit, 0);
 										
-						ShowMessageBox(LOCALE_TIMER_EVENTTIMED_TITLE, LOCALE_TIMER_EVENTTIMED_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+						MessageBox(LOCALE_TIMER_EVENTTIMED_TITLE, LOCALE_TIMER_EVENTTIMED_MSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
 					}
 					else
 						printf("timerd not available\n");

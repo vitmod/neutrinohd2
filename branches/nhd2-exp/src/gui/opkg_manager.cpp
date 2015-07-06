@@ -139,12 +139,12 @@ int COPKGManager::exec(CMenuTarget * parent, const std::string &actionKey)
 		{
 				success = getBlankPkgName(filename) + " successfull installed";
 				
-				ShowMessageBoxInfoMessage(success.c_str());
+				MessageBox(LOCALE_MESSAGEBOX_INFO, success.c_str(), CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
 		}
 		else
 		{
 				success = getBlankPkgName(filename) + " install failed";
-				ShowMessageBoxErrorMessage(success.c_str());
+				MessageBox(LOCALE_MESSAGEBOX_ERROR, success.c_str(), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 		}
 		
 		// remove filename.ipk
@@ -191,7 +191,7 @@ bool COPKGManager::showPkgMenu(const int pkg_content_id)
 	{
 		loadingBox->hide();
 		delete loadingBox;
-		ShowMessageBoxErrorMessage("Update failed");
+		MessageBox(LOCALE_MESSAGEBOX_ERROR, "Update failed", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 
 		return false;
 	}
@@ -220,7 +220,7 @@ bool COPKGManager::showPkgMenu(const int pkg_content_id)
 	
 	if (urls.empty())
 	{
-		ShowHintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_FLASHUPDATE_GETINFOFILEERROR)); // UTF-8
+		HintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_FLASHUPDATE_GETINFOFILEERROR)); // UTF-8
 		delete loadingBox;
 		return false;
 	}
@@ -446,7 +446,7 @@ bool COPKGManager::execCmd(const char * cmdstr)
 	
 	if(!system(cmd))
 	{
-		ShowMessageBoxErrorMessage("Command failed");
+		MessageBox(LOCALE_MESSAGEBOX_ERROR, "Command failed", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 		sleep(2);
 		return false;
 	}

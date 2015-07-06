@@ -477,7 +477,7 @@ void CWebTV::showAudioDialog(void)
 	} 
 	else 
 	{
-		ShowMessageBoxErrorMessage(g_Locale->getText(LOCALE_AUDIOSELECTMENUE_NO_TRACKS)); // UTF-8
+		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_AUDIOSELECTMENUE_NO_TRACKS), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 	}
 }
 
@@ -525,7 +525,7 @@ void CWebTV::zapTo(int pos, bool rezap)
 	// show emty channellist error msg
 	if (channels.empty()) 
 	{
-		ShowMessageBoxErrorMessage(g_Locale->getText(LOCALE_WEBTVCHANNELLIST_NONEFOUND)); // UTF-8
+		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_WEBTVCHANNELLIST_NONEFOUND), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 		return;
 	}
 
@@ -1042,7 +1042,7 @@ void CWebTV::showFileInfoWebTV(int pos)
 {
 	if(pos > -1)
 	{
-		ShowInfoBox(channels[pos]->title.c_str(), channels[pos]->description.c_str(), CInfoBox::mbrBack, CInfoBox::mbBack);
+		InfoBox(channels[pos]->title.c_str(), channels[pos]->description.c_str(), CInfoBox::mbrBack, CInfoBox::mbBack);
 		/*
 		int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
 		CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 

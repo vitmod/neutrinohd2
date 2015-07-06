@@ -1244,7 +1244,7 @@ void CMoviePlayerGui::PlayFile(void)
 			} 
 			else 
 			{
-				ShowMessageBoxErrorMessage(g_Locale->getText(LOCALE_AUDIOSELECTMENUE_NO_TRACKS)); // UTF-8
+				MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_AUDIOSELECTMENUE_NO_TRACKS), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 				showaudioselectdialog = false;
 			}
 		}
@@ -2042,7 +2042,7 @@ void CMoviePlayerGui::PlayFile(void)
 		}
 		else if (msg == (neutrino_msg_t)g_settings.key_screenshot && isMovieBrowser == true )
 		{
-         		if(ShowMessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SCREENSHOT_ANNOUNCE), CMessageBox::mbrNo, CMessageBox:: mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) 
+         		if(MessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SCREENSHOT_ANNOUNCE), CMessageBox::mbrNo, CMessageBox:: mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) 
 			{
 				CVCRControl::getInstance()->Screenshot(0, (char *)filename);
 			}

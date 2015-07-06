@@ -58,11 +58,11 @@ CHintBox::CHintBox(const neutrino_locale_t Caption, const char * const Text, con
 
 	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-	height  = theight + fheight;
+	height = theight + fheight;
 
 	caption = Caption;
 
-	begin   = message;
+	begin = message;
 
 	while (true)
 	{
@@ -246,7 +246,7 @@ void CHintBox::hide(void)
 }
 
 //
-int ShowHintBox(const neutrino_locale_t Caption, const char * const Text, const int Width, int timeout, const char * const Icon)
+int HintBox(const neutrino_locale_t Caption, const char * const Text, const int Width, int timeout, const char * const Icon)
 {
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
@@ -305,6 +305,6 @@ int ShowHintBox(const neutrino_locale_t Caption, const char * const Text, const 
 
 int ShowHintBox(const neutrino_locale_t Caption, const neutrino_locale_t Text, const int Width, int timeout, const char * const Icon)
 {
-	return ShowHintBox(Caption, g_Locale->getText(Text), Width, timeout, Icon);
+	return HintBox(Caption, g_Locale->getText(Text), Width, timeout, Icon);
 }
 

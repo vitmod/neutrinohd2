@@ -153,7 +153,7 @@ class CInfoBox
 		bool	setText(const std::string* newText, std::string _thumbnail = "", int _lx = 0, int _ly = 0, int _tw = 0, int _th = 0);
 };
 
-extern int ShowInfoBox(	const neutrino_locale_t Caption, 
+extern int InfoBox(const neutrino_locale_t Caption, 
 						const char * const Text, 
 						const CInfoBox::result_ Default, 
 						const uint32_t ShowButtons, 
@@ -162,7 +162,7 @@ extern int ShowInfoBox(	const neutrino_locale_t Caption,
 						const int timeout = -1, 
 						bool returnDefaultOnTimeout = false); // UTF-8
 
-extern int ShowInfoBox(	const char * const Title, 
+extern int InfoBox(const char * const Title, 
 						const char * const Text, 
 						const CInfoBox::result_ Default, 
 						const uint32_t ShowButtons, 

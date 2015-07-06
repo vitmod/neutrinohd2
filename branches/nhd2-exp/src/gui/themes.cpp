@@ -198,7 +198,7 @@ int CThemes::Show()
 
 	if (hasThemeChanged) 
 	{
-		if (ShowMessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_COLORTHEMEMENU_QUESTION, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_SETTINGS) != CMessageBox::mbrYes)
+		if (MessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_COLORTHEMEMENU_QUESTION, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_SETTINGS) != CMessageBox::mbrYes)
 			rememberOldTheme( false );
 		else
 			hasThemeChanged = false;

@@ -247,21 +247,21 @@ int CExtendedInput::exec( CMenuTarget* parent, const std::string & )
 		else if ( (msg==CRCInput::RC_home) || (msg==CRCInput::RC_timeout) )
 		{
 			if(strcmp(value, oldval)!= 0){
-				int erg = ShowMessageBox(name, LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbNo | CMessageBox::mbYes | CMessageBox::mbCancel);
-				 if(erg==CMessageBox::mbrYes)
+				int erg = MessageBox(name, LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbNo | CMessageBox::mbYes | CMessageBox::mbCancel);
+				 if(erg == CMessageBox::mbrYes)
 				 {
 					strcpy(value, oldval);
-					loop=false;
+					loop = false;
 					if(cancel != NULL)
 						*cancel = true;
 				 }
-				 else if(erg==CMessageBox::mbrNo)
+				 else if(erg == CMessageBox::mbrNo)
 				 {
-					 loop=false;
+					 loop = false;
 					 if(cancel != NULL)
 						 *cancel = false;
 				 }
-				 else if(erg==CMessageBox::mbrCancel)
+				 else if(erg == CMessageBox::mbrCancel)
 				 {
 				 }
 			} 
