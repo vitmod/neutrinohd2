@@ -102,9 +102,9 @@ int CFBCallMonitor::exec(CMenuTarget* parent, const std::string &actionKey)
 	{
 		//SaveSettings();
 		if(this->SaveSettings())
-		 	ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "Einstellungen werden gespeichert !", 450, 2 );
+		 	ShowHintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen werden gespeichert !", 450, 2 );
 		else
-		 	ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "Einstellungen NICHT gespeichert !", 450, 2 );
+		 	ShowHintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen NICHT gespeichert !", 450, 2 );
 	}
 	
 	return menu_return::RETURN_REPAINT;

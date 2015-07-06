@@ -42,6 +42,7 @@ class CTestMenu : CMenuTarget
 		void testCMessageBoxInfoMsg();
 		void testCMessageBoxErrorMsg();
 		void testCHintBox();
+		void testCHintBoxInfo();
 		void testCHintBoxExt();
 		void testCHelpBox();
 		void testCTextBox();
@@ -170,12 +171,12 @@ void CTestMenu::testCMessageBox()
 
 void CTestMenu::testCMessageBoxInfoMsg()
 {
-	DisplayInfoMessage("InfoMessage");
+	ShowMessageBoxInfoMessage("InfoMessage");
 }
 
 void CTestMenu::testCMessageBoxErrorMsg()
 {
-	DisplayErrorMessage("ErrorMessage");
+	ShowMessageBoxErrorMessage("ErrorMessage");
 }
 
 void CTestMenu::testCHintBox()
@@ -186,6 +187,11 @@ void CTestMenu::testCHintBox()
 	sleep(3);
 	hintBox->hide();
 	delete hintBox;
+}
+
+void CTestMenu::testCHintBoxInfo()
+{
+	ShowHintBox(LOCALE_MESSAGEBOX_INFO, "HintBox");
 }
 
 void CTestMenu::testCHintBoxExt()
@@ -1004,6 +1010,11 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		testCHintBox();
 		return res;
 	}
+	else if(actionKey == "hintboxinfo")
+	{
+		testCHintBoxInfo();
+		return res;
+	}
 	else if(actionKey == "hintboxext")
 	{
 		testCHintBoxExt();
@@ -1125,6 +1136,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CMessageBoxInfoMsg", true, NULL, this, "messageboxinfomsg"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CMessageBoxErrorMsg", true, NULL, this, "messageboxerrormsg"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CHintBox", true, NULL, this, "hintbox"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("CHintBoxInfo", true, NULL, this, "hintboxinfo"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CHintBoxExt", false, NULL, this, "hintboxext"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CHelpBox", true, NULL, this, "helpbox"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CTextBox", true, NULL, this, "textbox"));

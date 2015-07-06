@@ -1002,7 +1002,7 @@ void CNetzKinoBrowser::loadNKTitles(int mode, std::string search, int id, unsign
 	else 
 	{
 		//FIXME show error
-		DisplayErrorMessage(g_Locale->getText(LOCALE_NK_ERROR));
+		ShowMessageBoxErrorMessage(g_Locale->getText(LOCALE_NK_ERROR));
 		m_reload_movies = true;
 		return;
 	}

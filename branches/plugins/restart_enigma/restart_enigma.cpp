@@ -21,7 +21,7 @@ void plugin_exec(void)
 	system("touch /etc/.e2");
 	
 	g_RCInput->postMsg( NeutrinoMessages::RESTART, 0 );
-	ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "enigma2 wird gestartet !", 450, 2 );
+	ShowHintBox(LOCALE_MESSAGEBOX_INFO, "enigma2 wird gestartet !");
 }
 
 
