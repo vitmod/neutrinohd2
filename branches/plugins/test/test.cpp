@@ -224,13 +224,16 @@ void CTestMenu::testCTextBox()
 	Box.iX = g_settings.screen_StartX + 10;
 	Box.iY = g_settings.screen_StartY + 10;
 	Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 20;
-	Box.iHeight = g_settings.screen_EndY - g_settings.screen_StartY - 20;
+	Box.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20)/2;
 	
 	CTextBox * textBox = new CTextBox(" ", NULL, CTextBox::SCROLL, &Box);
 	
-	std::string text = "qqqqqqqqqqqqqqqqwwwwwwwww";
+	std::string text = "neutrinoHD2 is cool :-)";
 		
-	int pich, picw, lx, ly;
+	int pich = 246;	//FIXME
+	int picw = 162; 	//FIXME
+	int lx = Box.iX + Box.iWidth - (picw + 20);
+	int ly = Box.iY + 20;
 		
 	std::string fname;
 
@@ -238,12 +241,6 @@ void CTestMenu::testCTextBox()
 		
 	if(access(fname.c_str(), F_OK))
 		fname = "";
-		
-	// display screenshot if exist
-	pich = 320;
-	picw = pich * (4.0 / 3);		// 4/3 format pics
-	lx = Box.iX + Box.iWidth - picw - 10;
-	ly = Box.iY + (Box.iHeight - pich)/2;
 	
 	textBox->setText(&text, fname, lx, ly, picw, pich);
 	
