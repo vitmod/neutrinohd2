@@ -55,9 +55,9 @@ int CTuxdnsConf::exec(CMenuTarget* parent, const std::string & actionKey)
 	if(actionKey == "savesettings") 
 	{
 		if(this->SaveSettings())
-		 	ShowHintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen werden gespeichert !", 450, 2);
+		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen werden gespeichert !", 450, 2);
 		else
-		 	ShowHintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen NICHT gespeichert !", 450, 2);
+		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen NICHT gespeichert !", 450, 2);
 
 		return res;
 	}

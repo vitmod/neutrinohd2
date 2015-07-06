@@ -128,7 +128,7 @@ void CTestMenu::testCInfoBox()
 
 void CTestMenu::testCInfoBoxShowMsg()
 {
-	ShowInfoBox("ShowInfoBox", "infobox.cpp", CInfoBox::mbrBack, CInfoBox::mbBack);	// UTF-8
+	InfoBox("InfoBox", "infobox.cpp", CInfoBox::mbrBack, CInfoBox::mbBack);	// UTF-8
 }
 
 void CTestMenu::testCInfoBoxInfoBox()
@@ -171,12 +171,12 @@ void CTestMenu::testCMessageBox()
 
 void CTestMenu::testCMessageBoxInfoMsg()
 {
-	ShowMessageBoxInfoMessage("InfoMessage");
+	MessageBox(LOCALE_MESSAGEBOX_INFO, "InfoMessage", CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO);
 }
 
 void CTestMenu::testCMessageBoxErrorMsg()
 {
-	ShowMessageBoxErrorMessage("ErrorMessage");
+	MessageBox(LOCALE_MESSAGEBOX_ERROR, "ErrorMessage", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 }
 
 void CTestMenu::testCHintBox()
@@ -191,7 +191,7 @@ void CTestMenu::testCHintBox()
 
 void CTestMenu::testCHintBoxInfo()
 {
-	ShowHintBox(LOCALE_MESSAGEBOX_INFO, "HintBox");
+	HintBox(LOCALE_MESSAGEBOX_INFO, "HintBox");
 }
 
 void CTestMenu::testCHintBoxExt()
@@ -1141,6 +1141,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CListBox", true, NULL, this, "listbox"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CListBoxInfoDetails", true, NULL, this, "listboxdetails"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CListBoxHeadInfo", true, NULL, this, "listboxheadinfo"));
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparatorItemMenuIcon::LINE) );
 	mainMenu->addItem(new CMenuForwarderNonLocalized("AudioPlayer", true, NULL, this, "audioplayer"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("InternetRadio", true, NULL, this, "internetradio"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("TSMovieBrowser", true, NULL, this, "tsmoviebrowser"));
@@ -1148,6 +1149,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarderNonLocalized("FilePlayBack", true, NULL, this, "fileplayback"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("PictureViewer", true, NULL, this, "pictureviewer"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("UPNPBrowser", true, NULL, this, "upnpbrowser"));
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparatorItemMenuIcon::LINE) );
 	mainMenu->addItem(new CMenuForwarderNonLocalized("PlayMovieURL", true, NULL, this, "playmovieurl"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("PlayAudioURL", true, NULL, this, "playaudiourl"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("ShowPictureURL", true, NULL, this, "showpictureurl"));

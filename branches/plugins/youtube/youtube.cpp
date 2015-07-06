@@ -1060,7 +1060,7 @@ void CYTBrowser::loadYTitles(int mode, std::string search, std::string id)
 		else 
 		{
 			//FIXME show error
-			ShowMessageBoxErrorMessage(g_Locale->getText(LOCALE_YT_ERROR));
+			MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_YT_ERROR), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 			m_reload_movies = true;
 			
 			return;

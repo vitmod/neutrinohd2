@@ -314,7 +314,8 @@ bool CVLCPlayer::VlcReceiveStreamStart(void * mrl)
 	
 	if(httpres != 0)
 	{
-		ShowMessageBoxErrorMessage(g_Locale->getText(LOCALE_MOVIEPLAYER_NOSTREAMINGSERVER));	// UTF-8
+		//ShowMessageBoxErrorMessage(g_Locale->getText(LOCALE_MOVIEPLAYER_NOSTREAMINGSERVER));	// UTF-8
+		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_MOVIEPLAYER_NOSTREAMINGSERVER), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 		//playstate = CMoviePlayerGui::STOPPED;
 		return false;
 		// Assume safely that all succeeding HTTP requests are successful
