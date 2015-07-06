@@ -95,7 +95,7 @@ extern CMoviePlayerGui * moviePlayerGui;
 extern bool autoshift;
 extern uint32_t shift_timer;
 
-extern int timeshift;					// defined in movieplayer.cpp
+extern int timeshift;			// defined in movieplayer.cpp
 
 extern std::string ext_channel_name;	// defined in vcrcontrol.cpp
 extern bool timeset;			// defined in sectionsd.cpp
@@ -103,7 +103,6 @@ extern bool timeset;			// defined in sectionsd.cpp
 #define COL_INFOBAR_BUTTONS            (COL_INFOBAR_SHADOW + 1)
 #define COL_INFOBAR_BUTTONS_BACKGROUND (COL_INFOBAR_SHADOW_PLUS_1)
 
-#define SHADOW_OFFSET 	5
 #define borderwidth 	5
 #define LEFT_OFFSET 	5
 #define RIGHT_OFFSET	5

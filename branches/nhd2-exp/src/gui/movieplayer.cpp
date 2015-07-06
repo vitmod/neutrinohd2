@@ -1423,14 +1423,8 @@ void CMoviePlayerGui::PlayFile(void)
 				CVFD::getInstance()->ShowIcon(VFD_ICON_TIMESHIFT, false );
 			}
 
-			//if (!was_file)
-			//	exit = true;
-			
-			//if(filelist.size() > 1)
-			//	was_file = false;
-			
-			if(m_loop)
-				m_loop = false;
+			was_file = false;
+			m_loop = false;
 			
 			exit = true;
 		} 

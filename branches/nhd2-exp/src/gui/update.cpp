@@ -294,13 +294,13 @@ bool CFlashUpdate::checkVersion4Update()
 		if(!selectHttpImage())
 			return false;
 
-		showLocalStatus(100);
+		//showLocalStatus(100);
 		showGlobalStatus(20);
 		showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_VERSIONCHECK) ); // UTF-8
 
 		dprintf(DEBUG_NORMAL, "internet version: %s\n", newVersion.c_str());
 
-		showLocalStatus(100);
+		//showLocalStatus(100);
 		showGlobalStatus(20);
 		hide();
 		

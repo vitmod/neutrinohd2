@@ -86,7 +86,7 @@ bool CFlashTool::readFromMTD( const std::string & filename, int globalProgressEn
 
 	if(statusViewer)
 	{
-		statusViewer->showLocalStatus(0);
+		//statusViewer->showLocalStatus(0);
 	}
 
 	if (mtdDevice.empty())
@@ -132,7 +132,7 @@ bool CFlashTool::readFromMTD( const std::string & filename, int globalProgressEn
 		
 		if(statusViewer)
 		{
-			statusViewer->showLocalStatus(prog);
+			//statusViewer->showLocalStatus(prog);
 			if(globalProgressEnd!=-1)
 			{
 				int globalProg = globalProgressBegin + int((globalProgressEnd-globalProgressBegin) * prog/100. );
@@ -143,7 +143,7 @@ bool CFlashTool::readFromMTD( const std::string & filename, int globalProgressEn
 
 	if(statusViewer)
 	{
-		statusViewer->showLocalStatus(100);
+		//statusViewer->showLocalStatus(100);
 	}
 
 	close(fd1);
@@ -159,7 +159,7 @@ bool CFlashTool::program( const std::string & filename, int globalProgressEndEra
 
 	if(statusViewer)
 	{
-		statusViewer->showLocalStatus(0);
+		//statusViewer->showLocalStatus(0);
 	}
 
 	if (mtdDevice.empty())
@@ -185,7 +185,7 @@ bool CFlashTool::program( const std::string & filename, int globalProgressEndEra
 
 	if(statusViewer)
 	{
-		statusViewer->showLocalStatus(0);
+		//statusViewer->showLocalStatus(0);
 		statusViewer->showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_ERASING)); // UTF-8
 	}
 	
@@ -202,7 +202,7 @@ bool CFlashTool::program( const std::string & filename, int globalProgressEndEra
 		{
 			statusViewer->showGlobalStatus(globalProgressEndErase);
 		}
-		statusViewer->showLocalStatus(0);
+		//statusViewer->showLocalStatus(0);
 		statusViewer->showStatusMessageUTF(g_Locale->getText(LOCALE_FLASHUPDATE_PROGRAMMINGFLASH)); // UTF-8
 	}
 
@@ -236,7 +236,7 @@ bool CFlashTool::program( const std::string & filename, int globalProgressEndEra
 
 		if(statusViewer)
 		{
-			statusViewer->showLocalStatus(prog);
+			//statusViewer->showLocalStatus(prog);
 			if(globalProgressEndFlash!=-1)
 			{
 				int globalProg = globalProgressBegin + int((globalProgressEndFlash-globalProgressBegin) * prog/100. );
@@ -247,7 +247,7 @@ bool CFlashTool::program( const std::string & filename, int globalProgressEndEra
 
 	if(statusViewer)
 	{
-		statusViewer->showLocalStatus(100);
+		//statusViewer->showLocalStatus(100);
 	}
 
 	close(fd1);
@@ -289,7 +289,7 @@ bool CFlashTool::erase(int globalProgressEnd)
 		if(statusViewer)
 		{
 			int prog = int(lerase.start*100./meminfo.size);
-			statusViewer->showLocalStatus(prog);
+			//statusViewer->showLocalStatus(prog);
 			if(globalProgressEnd!=-1)
 			{
 				int globalProg = globalProgressBegin + int((globalProgressEnd-globalProgressBegin) * prog/100. );

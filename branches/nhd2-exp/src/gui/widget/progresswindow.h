@@ -28,6 +28,7 @@
 #define __progresswindow__
 
 #include <driver/framebuffer.h>
+#include <driver/fb_window.h>
 #include <system/localize.h>
 
 #include "progressstatus.h"
@@ -35,11 +36,12 @@
 
 #include <string>
 
+
 class CProgressWindow : public CMenuTarget, public CProgress_StatusViewer
 {
 	protected:
 
-		CFrameBuffer *frameBuffer;
+		/*CFrameBuffer*/CFBWindow *frameBuffer;
 		neutrino_locale_t caption;
 
 		int x;
@@ -49,15 +51,12 @@ class CProgressWindow : public CMenuTarget, public CProgress_StatusViewer
 		int hheight; // head font height
 		int mheight; // menu font height
 		unsigned int global_progress;
-		unsigned int local_progress;
 		int globalstatusX;
 		int globalstatusY;
-		int localstatusY;
 		int statusTextY;
 		std::string statusText;
-
-
-		//----------------------------
+		
+		bool LocalStatus;
 
 		virtual void paint();
 
@@ -71,9 +70,7 @@ class CProgressWindow : public CMenuTarget, public CProgress_StatusViewer
 
 		virtual void showGlobalStatus(const unsigned int prog);
 		virtual unsigned int getGlobalStatus(void);
-		virtual void showLocalStatus(const unsigned int prog);
 		virtual void showStatusMessageUTF(const std::string & text); // UTF-8
 };
-
 
 #endif
