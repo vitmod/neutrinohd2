@@ -79,6 +79,7 @@ void CProgressWindow::showGlobalStatus(const unsigned int prog)
 	
 	char strProg[5] = "100%";
 	int w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(strProg);
+
 	sprintf(strProg, "%d%%", global_progress);
 
 	if(global_progress != 0)
@@ -92,12 +93,12 @@ void CProgressWindow::showGlobalStatus(const unsigned int prog)
 		CFrameBuffer::getInstance()->paintBox(x + 10, globalstatusY, pos, globalstatusY + 10, COL_MENUCONTENT_PLUS_7);
 		
 		//
-		CFrameBuffer::getInstance()->paintBox(x + width - w - 10, globalstatusY, w + 20, globalstatusY + 10, COL_MENUCONTENT_PLUS_0);
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + width - w - 10, globalstatusY + 18, w, strProg, COL_MENUCONTENT, 0, true); // UTF-8
+		CFrameBuffer::getInstance()->paintBoxRel(x + width - (w + 20), globalstatusY - 5, w + 20, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 8, COL_MENUCONTENT_PLUS_0);
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + width - (w + 10), globalstatusY + 18, w, strProg, COL_MENUCONTENT, 0, true); // UTF-8
 	}
 	
 	//hintergrund
-	CFrameBuffer::getInstance()->paintBox(pos, globalstatusY, x + width - w - 20, globalstatusY + 10, COL_MENUCONTENT_PLUS_2);
+	CFrameBuffer::getInstance()->paintBox(pos, globalstatusY, x + width - (w + 20), globalstatusY + 10, COL_MENUCONTENT_PLUS_2);
 	
 	CFrameBuffer::getInstance()->blit();
 
