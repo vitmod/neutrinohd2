@@ -46,8 +46,8 @@
 
 */
 
-#if !defined(MSGBOX_H)
-#define MSGBOX_H
+#if !defined(INFOBOX_H)
+#define INFOBOX_H
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
@@ -60,7 +60,7 @@
 #include <driver/framebuffer.h>
 
 
-class CMsgBox  
+class CInfoBox  
 {
 	public:
 		/* enum definition */
@@ -129,10 +129,10 @@ class CMsgBox
 		result_	m_nResult;
 	public:
 		/* Constructor */
-		virtual ~CMsgBox();
-		CMsgBox();
-		CMsgBox(const char * text);
-		CMsgBox(  const char * text, 
+		virtual ~CInfoBox();
+		CInfoBox();
+		CInfoBox(const char * text);
+		CInfoBox(  const char * text, 
 				   CFont *fontText,
 				   const int mode, 
 				   const CBox* position, 
@@ -153,23 +153,22 @@ class CMsgBox
 		bool	setText(const std::string* newText, std::string _thumbnail = "", int _lx = 0, int _ly = 0, int _tw = 0, int _th = 0);
 };
 
-extern int ShowMsg2UTF(	const neutrino_locale_t Caption, 
+extern int ShowInfoBox(	const neutrino_locale_t Caption, 
 						const char * const Text, 
-						const CMsgBox::result_ Default, 
+						const CInfoBox::result_ Default, 
 						const uint32_t ShowButtons, 
 						const char * const Icon = NULL, 
 						const int Width = MENU_WIDTH - 50, 
 						const int timeout = -1, 
 						bool returnDefaultOnTimeout = false); // UTF-8
 
-extern int ShowMsg2UTF(	const char * const Title, 
+extern int ShowInfoBox(	const char * const Title, 
 						const char * const Text, 
-						const CMsgBox::result_ Default, 
+						const CInfoBox::result_ Default, 
 						const uint32_t ShowButtons, 
 						const char * const Icon = NULL, 
 						const int Width = MENU_WIDTH - 50, 
 						const int timeout = -1, 
 						bool returnDefaultOnTimeout = false); // UTF-8
-						
 
 #endif

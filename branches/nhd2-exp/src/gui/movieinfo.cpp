@@ -52,7 +52,7 @@
 
 #include <unistd.h>
 
-#include <gui/widget/msgbox.h>
+#include <gui/widget/infobox.h>
 #include <gui/movieinfo.h>
 
 //#define XMLTREE_LIB
@@ -571,13 +571,13 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 	if(access(movie_info.tfile.c_str(), F_OK))
 		movie_info.tfile = "";
 	
-	int mode =  CMsgBox::SCROLL | CMsgBox::TITLE | CMsgBox::FOOT | CMsgBox::BORDER;// | //CMsgBox::NO_AUTO_LINEBREAK | //CMsgBox::CENTER | //CMsgBox::AUTO_WIDTH | //CMsgBox::AUTO_HIGH;
+	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CMsgBox * msgBox = new CMsgBox(movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
-	msgBox->setText(&print_buffer, movie_info.tfile, lx, ly, picw, pich);
-	msgBox->exec();
-	delete msgBox;
+	CInfoBox * infoBox = new CInfoBox(movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, movie_info.epgTitle.empty()? movie_info.file.getFileName().c_str() : movie_info.epgTitle.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+	infoBox->setText(&print_buffer, movie_info.tfile, lx, ly, picw, pich);
+	infoBox->exec();
+	delete infoBox;
 }
 
 void CMovieInfo::printDebugMovieInfo(MI_MOVIE_INFO & movie_info)

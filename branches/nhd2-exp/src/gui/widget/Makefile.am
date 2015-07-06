@@ -20,9 +20,12 @@ libneutrino_gui_widget_a_SOURCES = \
 	drawable.cpp \
 	buttons.cpp \
 	menue.cpp \
-	stringinput.cpp stringinput_ext.cpp \
-	msgbox.cpp messagebox.cpp \
-	hintbox.cpp hintboxext.cpp \
+	stringinput.cpp \
+	stringinput_ext.cpp \
+	infobox.cpp \
+	messagebox.cpp \
+	hintbox.cpp \
+	hintboxext.cpp \
 	helpbox.cpp \
 	listbox.cpp \
 	textbox.cpp \

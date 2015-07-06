@@ -43,7 +43,7 @@
 #include <gui/widget/buttons.h>
 #include <gui/widget/messagebox.h>
 #include <gui/widget/helpbox.h>
-#include <gui/widget/msgbox.h>
+#include <gui/widget/infobox.h>
 
 #include <gui/filebrowser.h>
 
@@ -1041,7 +1041,18 @@ void CWebTV::paint()
 void CWebTV::showFileInfoWebTV(int pos)
 {
 	if(pos > -1)
-		ShowMsg2UTF(channels[pos]->title.c_str(), channels[pos]->description.c_str(), CMsgBox::mbrBack, CMsgBox::mbBack);
+	{
+		ShowInfoBox(channels[pos]->title.c_str(), channels[pos]->description.c_str(), CInfoBox::mbrBack, CInfoBox::mbBack);
+		/*
+		int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
+		CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
+					
+		CInfoBox * infoBox = new CInfoBox(channels[pos]->title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, channels[pos]->title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+		infoBox->setText(&channels[pos]->description);
+		infoBox->exec();
+		delete infoBox;
+		*/
+	}
 }
 
 void CWebTV::addUserBouquet(void)

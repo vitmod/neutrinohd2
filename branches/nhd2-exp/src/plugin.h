@@ -95,7 +95,7 @@
 #include <gui/widget/mountchooser.h>
 #include <gui/widget/buttons.h>
 #include <gui/widget/helpbox.h>
-#include <gui/widget/msgbox.h>
+#include <gui/widget/infobox.h>
 #include <gui/widget/listbox.h>
 #include <gui/widget/textbox.h>
 #include <gui/color.h>

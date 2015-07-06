@@ -44,13 +44,15 @@
 	Revision History:
 	Date			Author		Change Description
 	   Nov 2005		Gnther	initial implementation
+	   
+	   renamed to infobox.cpp
 */
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-#include "msgbox.h"
+#include "infobox.h"
 
 #include <gui/widget/icons.h>
 #include <neutrino.h>
@@ -76,14 +78,14 @@
 //////////////////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////////////////
-// Function Name:	CMsgBox	
+// Function Name:	CInfoBox	
 // Description:		
 // Parameters:		
 // Data IN/OUT:		
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-CMsgBox::CMsgBox(  const char * text, 
+CInfoBox::CInfoBox(  const char * text, 
 				   CFont *fontText,
 				   const int _mode, 
 				   const CBox* position, 
@@ -142,14 +144,14 @@ CMsgBox::CMsgBox(  const char * text,
 }
 
 //////////////////////////////////////////////////////////////////////
-// Function Name:	CMsgBox	
+// Function Name:	CInfoBox	
 // Description:		
 // Parameters:		
 // Data IN/OUT:		
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-CMsgBox::CMsgBox(const char * text)
+CInfoBox::CInfoBox(const char * text)
 {
 	initVar();
 
@@ -160,14 +162,14 @@ CMsgBox::CMsgBox(const char * text)
 }
 
 //////////////////////////////////////////////////////////////////////
-// Function Name:	CMsgBox	
+// Function Name:	CInfoBox	
 // Description:		
 // Parameters:		
 // Data IN/OUT:		
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-CMsgBox::CMsgBox()
+CInfoBox::CInfoBox()
 {
 	m_pcTextBox = NULL;
 
@@ -176,14 +178,14 @@ CMsgBox::CMsgBox()
 }
 
 //////////////////////////////////////////////////////////////////////
-// Function Name:	~CMsgBox	
+// Function Name:	~CInfoBox	
 // Description:		
 // Parameters:		
 // Data IN/OUT:		
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-CMsgBox::~CMsgBox()
+CInfoBox::~CInfoBox()
 {
 	if (m_pcWindow != NULL)
 	{
@@ -206,7 +208,7 @@ CMsgBox::~CMsgBox()
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-void CMsgBox::initVar(void)
+void CInfoBox::initVar(void)
 {
 	m_cTitle = "";
 	m_cIcon = "";
@@ -244,7 +246,7 @@ void CMsgBox::initVar(void)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-void CMsgBox::initFramesRel(void)
+void CInfoBox::initFramesRel(void)
 {
 	// init the title frame
 	if(m_nMode & TITLE)
@@ -293,7 +295,7 @@ void CMsgBox::initFramesRel(void)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-void CMsgBox::refreshFoot(void)
+void CInfoBox::refreshFoot(void)
 {
 	uint8_t color;
 	fb_pixel_t bgcolor;
@@ -427,35 +429,29 @@ void CMsgBox::refreshFoot(void)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-void CMsgBox::refreshTitle(void)
+void CInfoBox::refreshTitle(void)
 {
 	// first check if title is configured
 	if(!(m_nMode & TITLE)) 
 		return;
 
 	// draw the background
-	m_pcWindow->paintBoxRel(m_cBoxFrameTitleRel.iX + m_cBoxFrame.iX, 
-					m_cBoxFrameTitleRel.iY+m_cBoxFrame.iY, 
+	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX, 
+					m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY, 
 					m_cBoxFrameTitleRel.iWidth, 
 					m_cBoxFrameTitleRel.iHeight, 
 					COL_MENUHEAD_PLUS_0, 
 					RADIUS_MID, CORNER_TOP);
 
+	int iw = 0;
+	int ih = 0;
 	if (!m_cIcon.empty())
 	{
-		int iw, ih;
 		m_pcWindow->getIconSize(m_cIcon.c_str(), &iw, &ih);
-		
-		// draw icon and title text
-		m_pcWindow->paintIcon(m_cIcon.c_str(), m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + BORDER_LEFT, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iY - ih)/2);
-		
-		m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + iw + TEXT_BORDER_WIDTH, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - iw + TEXT_BORDER_WIDTH, m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
+	
+		m_pcWindow->paintIcon(m_cIcon.c_str(), m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + BORDER_LEFT, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY + (m_cBoxFrameTitleRel.iHeight - ih)/2);
 	}
-	else
-	{
-		// no icon available, just draw the title text
-		m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + TEXT_BORDER_WIDTH, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - TEXT_BORDER_WIDTH, m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
-	}
+	m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + BORDER_LEFT + iw + TEXT_BORDER_WIDTH, m_cBoxFrame.iY + m_cBoxFrameTitleRel.iHeight + (m_cBoxFrameTitleRel.iHeight - m_pcFontTitle->getHeight())/2, m_cBoxFrameTitleRel.iWidth - (BORDER_LEFT + BORDER_RIGHT + iw + TEXT_BORDER_WIDTH), m_cTitle.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -466,7 +462,7 @@ void CMsgBox::refreshTitle(void)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-void CMsgBox::refreshBorder(void)
+void CInfoBox::refreshBorder(void)
 {
 	if(!(m_nMode & BORDER && m_nWindowFrameBorderWidth > 0))
 		return;
@@ -503,13 +499,10 @@ void CMsgBox::refreshBorder(void)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-bool CMsgBox::hide(void)
+bool CInfoBox::hide(void)
 {
-	//TRACE("->CMsgBox::Hide\r\n");
-
 	if (m_pcWindow == NULL)
 	{
-		dprintf(DEBUG_DEBUG, "  return -> window does not exists\r\n");
 		return (false);
 	}
 	
@@ -535,7 +528,7 @@ bool CMsgBox::hide(void)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-void CMsgBox::scrollPageDown(const int pages)
+void CInfoBox::scrollPageDown(const int pages)
 {
 	// send scroll up event to text box if there is one
 	if(m_pcTextBox != NULL)
@@ -553,7 +546,7 @@ void CMsgBox::scrollPageDown(const int pages)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-void CMsgBox::scrollPageUp(const int pages)
+void CInfoBox::scrollPageUp(const int pages)
 {
 	// send scroll up event to text box if there is one
 	if(m_pcTextBox != NULL)
@@ -570,19 +563,10 @@ void CMsgBox::scrollPageUp(const int pages)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-bool CMsgBox::paint(void)
+bool CInfoBox::paint(void)
 {
-	/*
-	 * do not paint stuff twice:
-	 * => thread safety needed by movieplayer.cpp:
-	 *    one thread calls our paint method, the other one our hide method
-	 * => no memory leaks
-	 */
-	//TRACE("->CMsgBox::Paint\r\n");
-
 	if (m_pcWindow != NULL)
 	{
-		dprintf(DEBUG_DEBUG, "  return -> window already exists\r\n");
 		return (false);
 	}
 
@@ -607,13 +591,10 @@ bool CMsgBox::paint(void)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-void CMsgBox::refresh(void)
+void CInfoBox::refresh(void)
 {
-	//TRACE("->CMsgBox::Refresh\r\n");
-
 	if (m_pcWindow == NULL)
 	{
-		dprintf(DEBUG_DEBUG, "  return -> no window\r\n");
 		return;
 	}
 	
@@ -637,19 +618,14 @@ void CMsgBox::refresh(void)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-int CMsgBox::exec( int timeout, int returnDefaultOnTimeout)
+int CInfoBox::exec( int timeout, int returnDefaultOnTimeout)
 {
-	//TRACE("->CMsgBox::exec\r\n");
-#ifdef VC
-	int res = 1;
-
-#else
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 	int return_button = m_nFootButtons;
 	int res = menu_return::RETURN_REPAINT;
 
-	// show message box
+	// show infobox
 	paint();
 	
 	if (m_pcWindow == NULL)
@@ -677,24 +653,24 @@ int CMsgBox::exec( int timeout, int returnDefaultOnTimeout)
 		else if (((msg == CRCInput::RC_timeout) || (msg  == (neutrino_msg_t)g_settings.key_channelList_cancel)) && (return_button & (mbCancel | mbBack)))
 		{
 			m_nResult = (return_button & mbCancel) ? mbrCancel : mbrBack;
-			loop   = false;
+			loop = false;
 		}
 		else if ((msg == CRCInput::RC_green) && (return_button & mbNo))
 		{
 			m_nResult = mbrNo;
-			loop   = false;
+			loop = false;
 		}
 		else if ((msg == CRCInput::RC_red) && (return_button & mbYes))
 		{
 			m_nResult = mbrYes;
-			loop   = false;
+			loop = false;
 		}
-		else if(msg==CRCInput::RC_right)
+		else if(msg == CRCInput::RC_right)
 		{
 			bool ok = false;
 			while (!ok)
 			{
-				m_nResult = (CMsgBox::result_)((m_nResult + 1) & 3);
+				m_nResult = (CInfoBox::result_)((m_nResult + 1) & 3);
 				ok = m_nFootButtons & (1 << m_nResult);
 			}
 
@@ -708,12 +684,12 @@ int CMsgBox::exec( int timeout, int returnDefaultOnTimeout)
 		{
 			scrollPageDown(1);
 		}
-		else if(msg==CRCInput::RC_left)
+		else if(msg == CRCInput::RC_left)
 		{
 			bool ok = false;
 			while (!ok)
 			{
-				m_nResult = (CMsgBox::result_)((m_nResult - 1) & 3);
+				m_nResult = (CInfoBox::result_)((m_nResult - 1) & 3);
 				ok = return_button & (1 << m_nResult);
 			}
 
@@ -733,7 +709,6 @@ int CMsgBox::exec( int timeout, int returnDefaultOnTimeout)
 	}
 
 	hide();
-#endif //VC
 	
 	return res;
 }
@@ -746,7 +721,7 @@ int CMsgBox::exec( int timeout, int returnDefaultOnTimeout)
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-bool CMsgBox::setText(const std::string* newText, std::string _thumbnail, int _lx, int _ly, int _tw, int _th)
+bool CInfoBox::setText(const std::string* newText, std::string _thumbnail, int _lx, int _ly, int _tw, int _th)
 {
 	bool _result = false;
 	
@@ -785,48 +760,48 @@ bool CMsgBox::setText(const std::string* newText, std::string _thumbnail, int _l
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-int CMsgBox::result(void)
+int CInfoBox::result(void)
 {
 	return m_nResult;
 }
 
 //////////////////////////////////////////////////////////////////////
-// Function Name:	ShowMsg2UTF	
+// Function Name:	ShowInfoBox	
 // Description:		
 // Parameters:		
 // Data IN/OUT:		
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-int ShowMsg2UTF(const neutrino_locale_t Caption, const char * const Text, const CMsgBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int Width, const int timeout, bool returnDefaultOnTimeout)
+int ShowInfoBox(const neutrino_locale_t Caption, const char * const Text, const CInfoBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int Width, const int timeout, bool returnDefaultOnTimeout)
 {
-	int result = ShowMsg2UTF(g_Locale->getText(Caption),Text, Default, ShowButtons, Icon, Width, timeout, returnDefaultOnTimeout);
+	int result = ShowInfoBox(g_Locale->getText(Caption),Text, Default, ShowButtons, Icon, Width, timeout, returnDefaultOnTimeout);
 
 	return (result);
 
 }
 
 //////////////////////////////////////////////////////////////////////
-// Function Name:	ShowMsg2UTF	
+// Function Name:	ShowInfoBox	
 // Description:		
 // Parameters:		
 // Data IN/OUT:		
 // Return:		
 // Notes:		
 //////////////////////////////////////////////////////////////////////
-int ShowMsg2UTF(const char * const Title,const char * const Text, const CMsgBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int /*Width*/, const int timeout, bool returnDefaultOnTimeout)
+int ShowInfoBox(const char * const Title,const char * const Text, const CInfoBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int /*Width*/, const int timeout, bool returnDefaultOnTimeout)
 {
-	int mode =  CMsgBox::SCROLL | CMsgBox::TITLE | CMsgBox::FOOT | CMsgBox::BORDER;// | //CMsgBox::NO_AUTO_LINEBREAK | //CMsgBox::CENTER | //CMsgBox::AUTO_WIDTH | //CMsgBox::AUTO_HIGH;
+	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
 	
 	CBox position(g_settings.screen_StartX + 30, g_settings.screen_StartY + 30, g_settings.screen_EndX - g_settings.screen_StartX - 60, g_settings.screen_EndY - g_settings.screen_StartY - 60); 
 	
-   	CMsgBox * msgBox = new CMsgBox(Text, g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, Title, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], Icon, ShowButtons, Default);
+   	CInfoBox * infoBox = new CInfoBox(Text, g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, Title, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], Icon, ShowButtons, Default);
 
-	msgBox->exec( timeout, returnDefaultOnTimeout);
+	infoBox->exec( timeout, returnDefaultOnTimeout);
 
-	int res = msgBox->result();
+	int res = infoBox->result();
 
-	delete msgBox;
+	delete infoBox;
 	
 	return res;
 }

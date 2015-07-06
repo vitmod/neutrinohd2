@@ -62,7 +62,7 @@
 #include <gui/widget/stringinput.h>
 #include <gui/widget/stringinput_ext.h>
 #include <gui/widget/helpbox.h>
-#include <gui/widget/msgbox.h>
+#include <gui/widget/infobox.h>
 
 #include <system/debug.h>
 
@@ -2154,16 +2154,11 @@ void CMoviePlayerGui::showFileInfo()
 	if(access(thumbnail.c_str(), F_OK))
 		thumbnail = "";
 	
-	int mode =  CMsgBox::SCROLL | CMsgBox::TITLE | CMsgBox::FOOT | CMsgBox::BORDER;// | //CMsgBox::NO_AUTO_LINEBREAK | //CMsgBox::CENTER | //CMsgBox::AUTO_WIDTH | //CMsgBox::AUTO_HIGH;
+	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CMsgBox * msgBox = new CMsgBox(Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
-	msgBox->setText(&buffer, thumbnail, lx, ly, picw, pich);
-	msgBox->exec();
-	delete msgBox;
-	
-	/*
-	if (p_movie_info != NULL)
-                cMovieInfo.showMovieInfo(*p_movie_info);
-	*/
+	CInfoBox * infoBox = new CInfoBox(Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+	infoBox->setText(&buffer, thumbnail, lx, ly, picw, pich);
+	infoBox->exec();
+	delete infoBox;
 }
