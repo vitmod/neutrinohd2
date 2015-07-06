@@ -477,7 +477,7 @@ void CWebTV::showAudioDialog(void)
 	} 
 	else 
 	{
-		DisplayErrorMessage(g_Locale->getText(LOCALE_AUDIOSELECTMENUE_NO_TRACKS)); // UTF-8
+		ShowMessageBoxErrorMessage(g_Locale->getText(LOCALE_AUDIOSELECTMENUE_NO_TRACKS)); // UTF-8
 	}
 }
 
@@ -525,7 +525,7 @@ void CWebTV::zapTo(int pos, bool rezap)
 	// show emty channellist error msg
 	if (channels.empty()) 
 	{
-		DisplayErrorMessage(g_Locale->getText(LOCALE_WEBTVCHANNELLIST_NONEFOUND)); // UTF-8
+		ShowMessageBoxErrorMessage(g_Locale->getText(LOCALE_WEBTVCHANNELLIST_NONEFOUND)); // UTF-8
 		return;
 	}
 

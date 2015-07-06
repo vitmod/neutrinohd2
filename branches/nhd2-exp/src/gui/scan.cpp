@@ -304,7 +304,7 @@ int CScanTs::exec(CMenuTarget * parent, const std::string & actionKey)
 				if(manual && scanSettings->scan_mode)
 					continue;
 				
-				if (ShowLocalizedMessage(LOCALE_SCANTS_ABORT_HEADER, LOCALE_SCANTS_ABORT_BODY, CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) 
+				if (ShowMessageBox(LOCALE_SCANTS_ABORT_HEADER, LOCALE_SCANTS_ABORT_BODY, CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes) 
 				{
 					g_Zapit->stopScan();
 				}

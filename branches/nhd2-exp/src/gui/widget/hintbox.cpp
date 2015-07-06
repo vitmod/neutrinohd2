@@ -245,7 +245,8 @@ void CHintBox::hide(void)
 	}	
 }
 
-int ShowHintUTF(const neutrino_locale_t Caption, const char * const Text, const int Width, int timeout, const char * const Icon)
+//
+int ShowHintBox(const neutrino_locale_t Caption, const char * const Text, const int Width, int timeout, const char * const Icon)
 {
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
@@ -266,9 +267,7 @@ int ShowHintUTF(const neutrino_locale_t Caption, const char * const Text, const 
 	{
 		g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
 
-		if ((msg == CRCInput::RC_timeout) ||
-		    (msg == CRCInput::RC_home   ) ||
-		    (msg == CRCInput::RC_ok     ))
+		if ((msg == CRCInput::RC_timeout) || (msg == CRCInput::RC_home) || (msg == CRCInput::RC_ok))
 		{
 				res = messages_return::cancel_info;
 		}
@@ -304,8 +303,8 @@ int ShowHintUTF(const neutrino_locale_t Caption, const char * const Text, const 
 	return 1;
 }
 
-int ShowLocalizedHint(const neutrino_locale_t Caption, const neutrino_locale_t Text, const int Width, int timeout, const char * const Icon)
+int ShowHintBox(const neutrino_locale_t Caption, const neutrino_locale_t Text, const int Width, int timeout, const char * const Icon)
 {
-	return ShowHintUTF(Caption, g_Locale->getText(Text), Width, timeout, Icon);
+	return ShowHintBox(Caption, g_Locale->getText(Text), Width, timeout, Icon);
 }
 

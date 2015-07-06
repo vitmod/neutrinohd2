@@ -139,12 +139,12 @@ int COPKGManager::exec(CMenuTarget * parent, const std::string &actionKey)
 		{
 				success = getBlankPkgName(filename) + " successfull installed";
 				
-				DisplayInfoMessage(success.c_str());
+				ShowMessageBoxInfoMessage(success.c_str());
 		}
 		else
 		{
 				success = getBlankPkgName(filename) + " install failed";
-				DisplayErrorMessage(success.c_str());
+				ShowMessageBoxErrorMessage(success.c_str());
 		}
 		
 		// remove filename.ipk
@@ -191,7 +191,7 @@ bool COPKGManager::showPkgMenu(const int pkg_content_id)
 	{
 		loadingBox->hide();
 		delete loadingBox;
-		DisplayErrorMessage("Update failed");
+		ShowMessageBoxErrorMessage("Update failed");
 
 		return false;
 	}
@@ -220,7 +220,7 @@ bool COPKGManager::showPkgMenu(const int pkg_content_id)
 	
 	if (urls.empty())
 	{
-		ShowHintUTF(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_FLASHUPDATE_GETINFOFILEERROR)); // UTF-8
+		ShowHintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_FLASHUPDATE_GETINFOFILEERROR)); // UTF-8
 		delete loadingBox;
 		return false;
 	}
@@ -446,7 +446,7 @@ bool COPKGManager::execCmd(const char * cmdstr)
 	
 	if(!system(cmd))
 	{
-		DisplayErrorMessage("Command failed");
+		ShowMessageBoxErrorMessage("Command failed");
 		sleep(2);
 		return false;
 	}

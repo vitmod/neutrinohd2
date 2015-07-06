@@ -422,7 +422,7 @@ bool CVideoSetupNotifier::changeNotify(const neutrino_locale_t OptionName, void 
 
 		if(prev_video_Mode != g_settings.video_Mode) 
 		{
-			if(ShowMsgUTF(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_VIDEOMODE_OK), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_INFO) != CMessageBox::mbrYes) 
+			if(ShowMessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_VIDEOMODE_OK), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo, NEUTRINO_ICON_INFO) != CMessageBox::mbrYes) 
 			{
 				g_settings.video_Mode = prev_video_Mode;
 				if(videoDecoder)
@@ -801,7 +801,7 @@ int CDataResetNotifier::exec(CMenuTarget */*parent*/, const std::string& actionK
 
 	if( actionKey == "factory") 
 	{
-		int result = ShowMsgUTF(LOCALE_RESET_SETTINGS, g_Locale->getText(LOCALE_RESET_CONFIRM), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo);
+		int result = ShowMessageBox(LOCALE_RESET_SETTINGS, g_Locale->getText(LOCALE_RESET_CONFIRM), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo);
 		if(result != CMessageBox::mbrYes) 
 			return true;
 		
@@ -873,7 +873,7 @@ int CDataResetNotifier::exec(CMenuTarget */*parent*/, const std::string& actionK
 				system(fname);
 			} 
 			else
-				ShowMsgUTF(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_SETTINGS_BACKUP_FAILED),CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_ERROR);
+				ShowMessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_SETTINGS_BACKUP_FAILED),CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_ERROR);
 		}
 	}
 	else if(actionKey == "restore") 
@@ -882,7 +882,7 @@ int CDataResetNotifier::exec(CMenuTarget */*parent*/, const std::string& actionK
 		fileBrowser.Filter = &fileFilter;
 		if (fileBrowser.exec("/media") == true) 
 		{
-			int result = ShowMsgUTF(LOCALE_SETTINGS_RESTORE, g_Locale->getText(LOCALE_SETTINGS_RESTORE_WARN), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo);
+			int result = ShowMessageBox(LOCALE_SETTINGS_RESTORE, g_Locale->getText(LOCALE_SETTINGS_RESTORE_WARN), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo);
 			if(result == CMessageBox::mbrYes) 
 			{
 				char  fname[256];
@@ -1115,7 +1115,7 @@ void testNetworkSettings(const char* ip, const char* netmask, const char* broadc
 	text += "\nwww.google.de: ";
 	text += mypinghost("173.194.35.152");
 
-	ShowMsgUTF(LOCALE_NETWORKMENU_TEST, text, CMessageBox::mbrBack, CMessageBox::mbBack); // UTF-8
+	ShowMessageBox(LOCALE_NETWORKMENU_TEST, text, CMessageBox::mbrBack, CMessageBox::mbBack); // UTF-8
 }
 
 void showCurrentNetworkSettings()
@@ -1162,6 +1162,6 @@ void showCurrentNetworkSettings()
 		text += router;
 	}
 	
-	ShowMsgUTF(LOCALE_NETWORKMENU_SHOW, text, CMessageBox::mbrBack, CMessageBox::mbBack); // UTF-8
+	ShowMessageBox(LOCALE_NETWORKMENU_SHOW, text, CMessageBox::mbrBack, CMessageBox::mbBack); // UTF-8
 }
 

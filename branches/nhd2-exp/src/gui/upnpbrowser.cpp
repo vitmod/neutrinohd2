@@ -408,7 +408,7 @@ void CUpnpBrowserGui::selectDevice()
 
 	if (!m_devices.size())
 	{
-		ShowLocalizedMessage(LOCALE_MESSAGEBOX_INFO, LOCALE_UPNPBROWSER_NOSERVERS, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_UPDATE);
+		ShowMessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_UPNPBROWSER_NOSERVERS, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_UPDATE);
 		delete scanBox;
 		return;
 	}	
@@ -464,7 +464,7 @@ void CUpnpBrowserGui::selectDevice()
 			
 			if (!m_devices.size())
 			{
-				ShowLocalizedMessage(LOCALE_MESSAGEBOX_INFO, LOCALE_UPNPBROWSER_NOSERVERS, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_UPDATE);
+				ShowMessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_UPNPBROWSER_NOSERVERS, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_UPDATE);
 				delete scanBox;
 				return;
 			}

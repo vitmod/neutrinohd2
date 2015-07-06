@@ -1422,7 +1422,7 @@ void CInfoViewer::showIcon_SubT() const
 
 void CInfoViewer::showFailure()
 {
-  	ShowHintUTF(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText (LOCALE_INFOVIEWER_NOTAVAILABLE), 430);	// UTF-8
+  	ShowHintBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText (LOCALE_INFOVIEWER_NOTAVAILABLE), 430);	// UTF-8
 }
 
 void CInfoViewer::showMotorMoving (int duration)
@@ -1436,7 +1436,7 @@ void CInfoViewer::showMotorMoving (int duration)
 	strcat (text, buffer);
 	strcat (text, " s)");
 	
-	ShowHintUTF(LOCALE_MESSAGEBOX_INFO, text, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth (text, true) + 10, duration);	// UTF-8
+	ShowHintBox(LOCALE_MESSAGEBOX_INFO, text, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth (text, true) + 10, duration);	// UTF-8
 }
 
 // radiotext

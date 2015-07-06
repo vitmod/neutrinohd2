@@ -50,13 +50,13 @@ int CRCLock::exec(CMenuTarget* parent, const std::string &actionKey)
 		parent->hide();
 
 	bool no_input = (actionKey == NO_USER_INPUT);
-	if (ShowLocalizedMessage(LOCALE_RCLOCK_TITLE, LOCALE_RCLOCK_LOCKMSG, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel, NEUTRINO_ICON_INFO, 450, no_input ? 5 : -1, no_input) == CMessageBox::mbrCancel)
+	if (ShowMessageBox(LOCALE_RCLOCK_TITLE, LOCALE_RCLOCK_LOCKMSG, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel, NEUTRINO_ICON_INFO, 450, no_input ? 5 : -1, no_input) == CMessageBox::mbrCancel)
 		return menu_return::RETURN_EXIT_ALL;
 
 	// -- Lockup Box	
 	lockBox();
 
-	ShowLocalizedMessage(LOCALE_RCLOCK_TITLE, LOCALE_RCLOCK_UNLOCKMSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO, 450, no_input ? 5 : -1);
+	ShowMessageBox(LOCALE_RCLOCK_TITLE, LOCALE_RCLOCK_UNLOCKMSG, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO, 450, no_input ? 5 : -1);
 	return  menu_return::RETURN_EXIT_ALL;
 }
 

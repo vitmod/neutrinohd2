@@ -418,7 +418,7 @@ int CHDDInit::exec(CMenuTarget * /*parent*/, const std::string& actionKey)
 	
 	sprintf(src, "/dev/%s", actionKey.c_str());
 
-	res = ShowMsgUTF ( LOCALE_HDD_FORMAT, g_Locale->getText(LOCALE_HDD_INIT_WARN), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo );
+	res = ShowMessageBox( LOCALE_HDD_FORMAT, g_Locale->getText(LOCALE_HDD_INIT_WARN), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo );
 
 	if(res != CMessageBox::mbrYes)
 		return 0;
@@ -607,7 +607,7 @@ int CHDDFmtExec::exec(CMenuTarget *parent, const std::string& actionKey)
 
 	printf("CHDDFmtExec: actionKey %s\n", actionKey.c_str());
 
-	res = ShowMsgUTF(LOCALE_HDD_FORMAT, g_Locale->getText(LOCALE_HDD_FORMAT_WARN), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo );
+	res = ShowMessageBox(LOCALE_HDD_FORMAT, g_Locale->getText(LOCALE_HDD_FORMAT_WARN), CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo );
 
 	if(res != CMessageBox::mbrYes)
 		return 0;

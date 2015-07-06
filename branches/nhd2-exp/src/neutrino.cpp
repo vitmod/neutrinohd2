@@ -2148,7 +2148,7 @@ void CNeutrinoApp::startNextRecording()
 								strcat(msg, "\nDir: ");
 								strcat(msg, nextRecordingInfo->recordingDir);
 
-								ShowHintUTF(LOCALE_MESSAGEBOX_ERROR, msg); // UTF-8
+								ShowHintBox(LOCALE_MESSAGEBOX_ERROR, msg); // UTF-8
 								doRecord = false;
 							}
 							break;
@@ -2718,7 +2718,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 
 		dprintf(DEBUG_INFO, "config file or options missing\n");
 
-		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, loadSettingsErg ==  1 ? g_Locale->getText(LOCALE_SETTINGS_NOCONFFILE) : g_Locale->getText(LOCALE_SETTINGS_MISSINGOPTIONSCONFFILE));
+		ShowHintBox(LOCALE_MESSAGEBOX_INFO, loadSettingsErg ==  1 ? g_Locale->getText(LOCALE_SETTINGS_NOCONFFILE) : g_Locale->getText(LOCALE_SETTINGS_MISSINGOPTIONSCONFFILE));
 		
 		configfile.setModifiedFlag(true);
 
@@ -3054,7 +3054,7 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 				// stop record if recording
 				if( recordingstatus ) 
 				{
-					if(ShowLocalizedMessage(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NULL, 450, 30, true) == CMessageBox::mbrYes)
+					if(ShowMessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo, NULL, 450, 30, true) == CMessageBox::mbrYes)
 					{
 						g_Timerd->stopTimerEvent(recording_id);
 						CVFD::getInstance()->ShowIcon(VFD_ICON_TIMESHIFT, false );
@@ -3389,7 +3389,7 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 			//if(videoDecoder->getBlank() && videoDecoder->getPlayState()) 
 			//{
 			//	const char * text = g_Locale->getText(LOCALE_SCRAMBLED_CHANNEL);
-			//	ShowHintUTF (LOCALE_MESSAGEBOX_INFO, text, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth (text, true) + 10, 5);
+			//	ShowHintBox(LOCALE_MESSAGEBOX_INFO, text, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth (text, true) + 10, 5);
 			//}
 
 			return messages_return::handled;	
@@ -3826,7 +3826,7 @@ _repeat:
 
 				name += zAddData;
 			}
-			ShowHintUTF( LOCALE_MESSAGEBOX_INFO, name.c_str() );
+			ShowHintBox( LOCALE_MESSAGEBOX_INFO, name.c_str() );
 		}
 
 		return messages_return::handled;
@@ -3864,14 +3864,14 @@ _repeat:
 		delete[] (unsigned char*) data;
 		
 		if( mode != mode_scart )
-			ShowHintUTF(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_RECORDTIMER_ANNOUNCE));
+			ShowHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_RECORDTIMER_ANNOUNCE));
 		
 		return messages_return::handled;
 	}
 	else if( msg == NeutrinoMessages::ANNOUNCE_SLEEPTIMER) 
 	{
 		if( mode != mode_scart )
-			ShowHintUTF( LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SLEEPTIMERBOX_ANNOUNCE) );
+			ShowHintBox( LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SLEEPTIMERBOX_ANNOUNCE) );
 		
 		return messages_return::handled;
 	}
@@ -3912,7 +3912,7 @@ _repeat:
 	else if( msg == NeutrinoMessages::ANNOUNCE_SHUTDOWN) 
 	{
 		if( mode != mode_scart )
-			skipShutdownTimer = (ShowLocalizedMessage(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWNTIMER_ANNOUNCE, CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo, NULL, 450, 5) == CMessageBox::mbrYes);
+			skipShutdownTimer = (ShowMessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWNTIMER_ANNOUNCE, CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo, NULL, 450, 5) == CMessageBox::mbrYes);
 	}
 	else if( msg == NeutrinoMessages::SHUTDOWN ) 
 	{
@@ -3953,7 +3953,7 @@ _repeat:
 	else if ( msg == NeutrinoMessages::EVT_POPUP ) 
 	{
 		if (mode != mode_scart)
-			ShowHintUTF(LOCALE_MESSAGEBOX_INFO, (const char *) data); // UTF-8
+			ShowHintBox(LOCALE_MESSAGEBOX_INFO, (const char *) data); // UTF-8
 		
 		delete (unsigned char*) data;
 		
@@ -3962,7 +3962,7 @@ _repeat:
 	else if (msg == NeutrinoMessages::EVT_EXTMSG) 
 	{
 		if (mode != mode_scart)
-			ShowMsgUTF(LOCALE_MESSAGEBOX_INFO, (const char *) data, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO); // UTF-8
+			ShowMessageBox(LOCALE_MESSAGEBOX_INFO, (const char *) data, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO); // UTF-8
 		delete[] (unsigned char*) data;
 		return messages_return::handled;
 	}
@@ -3982,7 +3982,7 @@ _repeat:
 
 			/* use a short timeout of only 5 seconds in case it was only a temporary network problem
 			 * in case of STREAM2FILE_STATUS_IDLE we might even have to immediately start the next recording */
-			ShowLocalizedMessage(LOCALE_MESSAGEBOX_INFO, msgbody, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO, 450, 5);
+			ShowMessageBox(LOCALE_MESSAGEBOX_INFO, msgbody, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO, 450, 5);
 
 skip_message:
 			;
@@ -4013,7 +4013,7 @@ skip_message:
 		}
 		
 		if( mode != mode_scart )
-			ShowMsgUTF(LOCALE_TIMERLIST_TYPE_REMIND, text, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO); // UTF-8
+			ShowMessageBox(LOCALE_TIMERLIST_TYPE_REMIND, text, CMessageBox::mbrBack, CMessageBox::mbBack, NEUTRINO_ICON_INFO); // UTF-8
 			
 		delete[] (unsigned char*) data;
 		
@@ -4119,7 +4119,7 @@ skip_message:
 	else if (msg == NeutrinoMessages::EVT_SERVICES_UPD) 
 	{
 		// dont show this msg
-		//ShowMsgUTF(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_ZAPIT_SDTCHANGED), CMessageBox::mbrBack,CMessageBox::mbBack, NEUTRINO_ICON_INFO);
+		//ShowMessageBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_ZAPIT_SDTCHANGED), CMessageBox::mbrBack,CMessageBox::mbBack, NEUTRINO_ICON_INFO);
 	}
 	
 	if ((msg >= CRCInput::RC_WithData) && (msg < CRCInput::RC_WithData + 0x10000000))
@@ -4140,7 +4140,7 @@ void CNeutrinoApp::ExitRun(int retcode)
 	}
 	
 	//
-	if (!recordingstatus || ShowLocalizedMessage(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo, NULL, 450, 30, true) == CMessageBox::mbrYes)  
+	if (!recordingstatus || ShowMessageBox(LOCALE_MESSAGEBOX_INFO, LOCALE_SHUTDOWN_RECODING_QUERY, CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo, NULL, 450, 30, true) == CMessageBox::mbrYes)  
 	{
 		// stop recording
 		if(recordingstatus) 

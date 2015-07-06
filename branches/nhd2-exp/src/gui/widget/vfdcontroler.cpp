@@ -216,7 +216,7 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 
 			case CRCInput::RC_home:
 				if ( ((brightness != brightness_alt) || (brightnessstandby != brightnessstandby_alt) ) &&
-				     (ShowLocalizedMessage(name, LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel))
+				     (ShowMessageBox(name, LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel))
 					break;
 
 				brightness = brightness_alt;

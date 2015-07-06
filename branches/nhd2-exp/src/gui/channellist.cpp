@@ -425,7 +425,7 @@ int CChannelList::doChannelMenu(void)
 		{
 			case 0: //delete
 				//hide();
-				result = ShowMsgUTF ( LOCALE_BOUQUETEDITOR_DELETE, "Delete channel from bouquet?", CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo );
+				result = ShowMessageBox( LOCALE_BOUQUETEDITOR_DELETE, "Delete channel from bouquet?", CMessageBox::mbrNo, CMessageBox::mbYes | CMessageBox::mbNo );
 
 				if(result == CMessageBox::mbrYes) 
 				{
@@ -1114,7 +1114,7 @@ void CChannelList::zapTo(int pos, bool /*forceStoreToLastChannels*/)
 	if (chanlist.empty()) 
 	{
 		if (FrontendCount >= 1) 
-			DisplayErrorMessage(g_Locale->getText(LOCALE_CHANNELLIST_NONEFOUND)); // UTF-8
+			ShowMessageBoxErrorMessage(g_Locale->getText(LOCALE_CHANNELLIST_NONEFOUND)); // UTF-8
 		return;
 	}
 
@@ -1173,7 +1173,7 @@ int CChannelList::numericZap(int key)
 	if (chanlist.empty()) 
 	{
 		if (FrontendCount >= 1) 
-			DisplayErrorMessage(g_Locale->getText(LOCALE_CHANNELLIST_NONEFOUND)); // UTF-8
+			ShowMessageBoxErrorMessage(g_Locale->getText(LOCALE_CHANNELLIST_NONEFOUND)); // UTF-8
 			
 		return res;
 	}
@@ -1433,7 +1433,7 @@ void CChannelList::virtual_zap_mode(bool up)
         if (chanlist.empty()) 
 	{
 		if (FrontendCount >= 1) 
-			DisplayErrorMessage(g_Locale->getText(LOCALE_CHANNELLIST_NONEFOUND)); // UTF-8
+			ShowMessageBoxErrorMessage(g_Locale->getText(LOCALE_CHANNELLIST_NONEFOUND)); // UTF-8
 			
                 return;
         }

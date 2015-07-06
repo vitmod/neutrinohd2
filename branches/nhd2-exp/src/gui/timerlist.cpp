@@ -1171,7 +1171,7 @@ bool askUserOnTimerConflict(time_t announceTime, time_t stopTime)
 	// todo: localize message
 	//g_Locale->getText(TIMERLIST_OVERLAPPING_MESSAGE);
 
-	return (ShowMsgUTF(LOCALE_MESSAGEBOX_INFO,timerbuf,CMessageBox::mbrNo,CMessageBox::mbNo|CMessageBox::mbYes) == CMessageBox::mbrYes);
+	return (ShowMessageBox(LOCALE_MESSAGEBOX_INFO,timerbuf,CMessageBox::mbrNo,CMessageBox::mbNo|CMessageBox::mbYes) == CMessageBox::mbrYes);
 }
 
 #include "gui/bouquetlist.h"

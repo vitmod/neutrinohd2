@@ -183,7 +183,7 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 			case CRCInput::RC_home:
 				if ( *alpha != alpha_alt)
 				{
-					if (ShowLocalizedMessage(name, LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel)
+					if (ShowMessageBox(name, LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel)
 					{
 						break;
 					}

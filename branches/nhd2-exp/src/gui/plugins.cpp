@@ -293,7 +293,7 @@ void CPlugins::startPlugin(const char * const name)
 		hint += " ";
 		hint += g_Locale->getText(LOCALE_PLUGINS_NOT_INSTALLED);
 		
-		ShowHintUTF(LOCALE_MESSAGEBOX_INFO, hint.c_str(), 450, 2 );
+		ShowHintBox(LOCALE_MESSAGEBOX_INFO, hint.c_str(), 450, 2 );
 	}
 
 }
