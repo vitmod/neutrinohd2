@@ -35,9 +35,9 @@ class CTestMenu : CMenuTarget
 		void testCStringInput();
 		void testCStringInputSMS();
 		void testCPINInput();
-		void testCMsgBox();
-		void testCMsgBoxShowMsg();
-		void testCMsgBoxInfoBox();
+		void testCInfoBox();
+		void testCInfoBoxShowMsg();
+		void testCInfoBoxInfoBox();
 		void testCMessageBox();
 		void testCMessageBoxInfoMsg();
 		void testCMessageBoxErrorMsg();
@@ -113,31 +113,31 @@ void CTestMenu::testCPINInput()
 	delete pinInput;
 }
 
-void CTestMenu::testCMsgBox()
+void CTestMenu::testCInfoBox()
 {
-	int mode =  CMsgBox::SCROLL | CMsgBox::TITLE | CMsgBox::FOOT | CMsgBox::BORDER;// | //CMsgBox::NO_AUTO_LINEBREAK | //CMsgBox::CENTER | //CMsgBox::AUTO_WIDTH | //CMsgBox::AUTO_HIGH;
+	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CMsgBox * msgBox = new CMsgBox("ShowMsg2UTF", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, "msgbox.cpp", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+	CInfoBox * infoBox = new CInfoBox("CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, "infobox.cpp", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
 	
-	msgBox->exec();
-	msgBox->hide();
-	delete msgBox;
+	infoBox->exec();
+	infoBox->hide();
+	delete infoBox;
 }
 
-void CTestMenu::testCMsgBoxShowMsg()
+void CTestMenu::testCInfoBoxShowMsg()
 {
-	ShowMsg2UTF("ShowMsg2UTF", "msgbox.cpp", CMsgBox::mbrBack, CMsgBox::mbBack);	// UTF-8
+	ShowInfoBox("ShowInfoBox", "infobox.cpp", CInfoBox::mbrBack, CInfoBox::mbBack);	// UTF-8
 }
 
-void CTestMenu::testCMsgBoxInfoBox()
+void CTestMenu::testCInfoBoxInfoBox()
 {
 	std::string buffer;
 	
 	// prepare print buffer  
-	buffer = "CMsgBox";
+	buffer = "CInfoBox";
 	buffer += "\n";
-	buffer += "CMsgBoxInfoBox";
+	buffer += "CInfoBoxInfoBox";
 	buffer += "\n";
 
 	// thumbnail
@@ -150,10 +150,10 @@ void CTestMenu::testCMsgBoxInfoBox()
 	if(access(thumbnail.c_str(), F_OK))
 		thumbnail = "";
 	
-	int mode =  CMsgBox::SCROLL | CMsgBox::TITLE | CMsgBox::FOOT | CMsgBox::BORDER;// | //CMsgBox::NO_AUTO_LINEBREAK | //CMsgBox::CENTER | //CMsgBox::AUTO_WIDTH | //CMsgBox::AUTO_HIGH;
+	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CMsgBox * msgBox = new CMsgBox("CMsgBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, "CMsgBoxInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+	CInfoBox * msgBox = new CInfoBox("CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, "CInfoBoxInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_BUTTON_SETUP, CInfoBox::mbAll, CInfoBox::mbrCancel);
 	msgBox->setText(&buffer, thumbnail, lx, ly, picw, pich);
 	msgBox->exec();
 	delete msgBox;
@@ -969,19 +969,19 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		testCPINInput();
 		return res;
 	}
-	else if(actionKey == "msgbox")
+	else if(actionKey == "infobox")
 	{
-		testCMsgBox();
+		testCInfoBox();
 		return res;
 	}
-	else if(actionKey == "msgboxshowmsg")
+	else if(actionKey == "infoboxshowmsg")
 	{
-		testCMsgBoxShowMsg();
+		testCInfoBoxShowMsg();
 		return res;
 	}
-	else if(actionKey == "msgboxinfobox")
+	else if(actionKey == "infoboxinfobox")
 	{
-		testCMsgBoxInfoBox();
+		testCInfoBoxInfoBox();
 		return res;
 	}
 	else if(actionKey == "messagebox")
@@ -1118,9 +1118,9 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CStringInput", true, NULL, this, "stringinput"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CStringInputSMS", true, NULL, this, "stringinputsms"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CPINInput", true, NULL, this, "pininput"));
-	mainMenu->addItem(new CMenuForwarderNonLocalized("CMsgBox", true, NULL, this, "msgbox"));
-	mainMenu->addItem(new CMenuForwarderNonLocalized("CMsgBoxShowMsg", true, NULL, this, "msgboxshowmsg"));
-	mainMenu->addItem(new CMenuForwarderNonLocalized("CMsgBoxInfoBox", true, NULL, this, "msgboxinfobox"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("CInfoBox", true, NULL, this, "infobox"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("CInfoBoxShowMsg", true, NULL, this, "infoboxshowmsg"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("CInfoBoxInfoBox", true, NULL, this, "infoboxinfobox"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CMessageBox", true, NULL, this, "messagebox"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CMessageBoxInfoMsg", true, NULL, this, "messageboxinfomsg"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CMessageBoxErrorMsg", true, NULL, this, "messageboxerrormsg"));

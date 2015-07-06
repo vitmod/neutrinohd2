@@ -972,13 +972,13 @@ void CMPBrowser::showFileInfo()
 	if(!access(mp_itemSelectionHandler->thumbnail.c_str(), F_OK))
 		thumbnail = mp_itemSelectionHandler->thumbnail;
 	
-	int mode =  CMsgBox::SCROLL | CMsgBox::TITLE | CMsgBox::FOOT | CMsgBox::BORDER;// | //CMsgBox::NO_AUTO_LINEBREAK | //CMsgBox::CENTER | //CMsgBox::AUTO_WIDTH | //CMsgBox::AUTO_HIGH;
+	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CMsgBox * msgBox = new CMsgBox(mp_itemSelectionHandler->Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, mp_itemSelectionHandler->Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
-	msgBox->setText(&buffer, thumbnail, lx, ly, picw, pich);
-	msgBox->exec();
-	delete msgBox;
+	CInfoBox * infoBox = new CInfoBox(mp_itemSelectionHandler->Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, mp_itemSelectionHandler->Title.c_str(), g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NULL);
+	infoBox->setText(&buffer, thumbnail, lx, ly, picw, pich);
+	infoBox->exec();
+	delete infoBox;
 }
 
 //plugin API
