@@ -29,9 +29,33 @@
 #include <plugin.h>
 
 
-class CVLCPlayer
+#define VLC_SETTINGS_FILE          PLUGINDIR "/vlcplayer/vlc.conf"
+
+
+// settings
+typedef struct
+{
+	std::string streaming_server_ip;
+	char streaming_server_port[10];
+	char streaming_server_cddrive[21];
+	
+	int streaming_vlc10;
+	
+	char streaming_videorate[6];
+	char streaming_audiorate[6];
+	char streaming_server_startdir[40];
+	int streaming_transcode_audio;
+	int streaming_force_avi_rawaudio;
+	int streaming_force_transcode_video;
+	int streaming_transcode_video_codec;
+	int streaming_resolution;
+}VLC_SETTINGS;
+
+class CVLCPlayer : public CMenuTarget
 {
 	public:
+		CConfigFile configfile;
+		
 		//
 		int streamtype;
 		
@@ -50,18 +74,31 @@ class CVLCPlayer
 		CFileList _filelist;
 		unsigned int selected;
 		std::string title;
+		std::string baseurl;
+		std::string positionurl;
+		std::string m_baseurl;
 		
 		// vlc
-		static size_t CurlDummyWrite (void *ptr, size_t size, size_t nmemb, void *data);
+		static size_t CurlWriteToString (void *ptr, size_t size, size_t nmemb, void *data);
 		CURLcode sendGetRequest (const std::string & url, std::string & response) ;
 		bool VlcRequestStream(char *_mrl, int  transcodeVideo, int transcodeAudio);
 		int VlcGetStreamTime();
 		int VlcGetStreamLength();
 		bool VlcReceiveStreamStart(void * mrl);
 		
+		bool loadSettings(VLC_SETTINGS* settings); 
+		bool saveSettings(VLC_SETTINGS* settings);
+		
+		void VLCPlayerSetup();
+		void vlcPlayerMenu();
+		
+		bool readDir_vlc(const std::string & dirname, CFileList* flist);
+		
 	public:
 		CVLCPlayer();
 		~CVLCPlayer();
+		int exec();
+		int exec(CMenuTarget* parent, const std::string & actionKey);
 };
 
 #endif
