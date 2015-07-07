@@ -9,7 +9,6 @@ SUBDIRS = \
 	tuxdns \
 	restart_enigma \
 	tuxcom \
-	vlcplayer \
 	dvdplayer \
 	mediaplayer \
 	tuxcal \
