@@ -126,7 +126,7 @@ reload:
 	// refill pluginlist items
 	for(unsigned int count = 0; count < (unsigned int)g_PluginList->getNumberOfPlugins(); count++)
 	{
-		if (g_PluginList->getType(count) & pluginlisttype)
+		if ((g_PluginList->getType(count) & pluginlisttype) && !g_PluginList->isHidden(count))
 		{
 			tmp = new pluginitem();
 			tmp->number = count;

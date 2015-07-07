@@ -83,6 +83,7 @@ class CPlugins
 			std::string version;
 			CPlugins::p_type_t type;
 			std::string icon;		// Icon
+			bool hide;
 			
 			bool operator< (const plugin& a) const
 			{
@@ -110,14 +111,15 @@ class CPlugins
 
 		void setPluginDir(const std::string & dir) { plugin_dir = dir; }
 
-		inline       int           getNumberOfPlugins  (void            ) const { return plugin_list.size()                    ; }
-		inline const char *        getName             (const int number) const { return plugin_list[number].name.c_str()      ; }
-		inline const char *        getPluginFile       (const int number) const { return plugin_list[number].pluginfile.c_str(); }
-		inline const char *        getFileName         (const int number) const { return plugin_list[number].filename.c_str()  ; }
-		inline const std::string & getDescription      (const int number) const { return plugin_list[number].description       ; }
-		inline const std::string & getVersion          (const int number) const { return plugin_list[number].version       ; }
-		inline       int           getType             (const int number) const { return plugin_list[number].type              ; }
-		inline const char *        getIcon             (const int number) const { return plugin_list[number].icon.c_str()      ; }
+		inline int getNumberOfPlugins(void) const { return plugin_list.size(); }
+		inline const char * getName(const int number) const { return plugin_list[number].name.c_str(); }
+		inline const char * getPluginFile(const int number) const { return plugin_list[number].pluginfile.c_str(); }
+		inline const char * getFileName(const int number) const { return plugin_list[number].filename.c_str(); }
+		inline const std::string & getDescription(const int number) const { return plugin_list[number].description; }
+		inline const std::string & getVersion(const int number) const { return plugin_list[number].version; }
+		inline int getType(const int number) const { return plugin_list[number].type; }
+		inline const char * getIcon(const int number) const { return plugin_list[number].icon.c_str(); }
+		inline bool isHidden(const int number) const { return plugin_list[number].hide; }
 
 		void startPlugin(int number);
 		void start_plugin_by_name(const std::string & filename);	// start plugins by "name=" in .cfg

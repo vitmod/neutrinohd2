@@ -232,6 +232,7 @@ bool CPlugins::parseCfg(plugin *plugin_data)
 	{};
 
 	plugin_data->type = CPlugins::P_TYPE_DISABLED;
+	plugin_data->hide = false;
 
 	for (int i = 0; i < linecount; i++)
 	{
@@ -261,6 +262,10 @@ bool CPlugins::parseCfg(plugin *plugin_data)
 		else if (cmd == "icon")
 		{
 			plugin_data->icon = parm;
+		}
+		else if (cmd == "hide")
+		{
+			plugin_data->hide = ((parm == "1")?true:false);
 		}
 	}
 
@@ -461,7 +466,7 @@ bool CPlugins::hasPlugin(CPlugins::p_type_t type)
 {
 	for (std::vector<plugin>::iterator it = plugin_list.begin(); it!=plugin_list.end(); it++)
 	{
-		if (it->type == type)
+		if (it->type == type && !it->hide)
 			return true;
 	}
 	return false;
