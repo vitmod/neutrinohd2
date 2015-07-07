@@ -291,7 +291,7 @@ void CTestMenu::testCListFrameBox()
 
 void CTestMenu::testCListBox()
 {
-	CListBox * listBox = new CListBox("listBox", NEUTRINO_ICON_BUTTON_SETUP, MENU_WIDTH, MENU_HEIGHT, false, false, true);
+	CListBox * listBox = new CListBox("listBox", MENU_WIDTH, MENU_HEIGHT, false, false, true);
 	
 	listBox->exec(NULL, "");
 	delete listBox;
@@ -299,7 +299,7 @@ void CTestMenu::testCListBox()
 
 void CTestMenu::testCListBoxDetails()
 {
-	CListBox * listBox = new CListBox("listBoxInfoDetails", NEUTRINO_ICON_BUTTON_SETUP, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)), true, false, true);
+	CListBox * listBox = new CListBox("listBoxInfoDetails", w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)), true, false, true);
 	
 	listBox->exec(NULL, "");
 	delete listBox;
@@ -307,7 +307,7 @@ void CTestMenu::testCListBoxDetails()
 
 void CTestMenu::testCListBoxDetailsTitleInfo()
 {
-	CListBox * listBox = new CListBox("listBoxDetailsTitleInfo", NEUTRINO_ICON_BUTTON_SETUP, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)), true, true, true);
+	CListBox * listBox = new CListBox("listBoxDetailsTitleInfo", w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)), true, true, true);
 	
 	listBox->exec(NULL, "");
 	delete listBox;
