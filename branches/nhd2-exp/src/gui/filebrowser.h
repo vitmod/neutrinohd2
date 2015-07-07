@@ -142,31 +142,39 @@ class CFileBrowser
 	private:
 		CFrameBuffer * frameBuffer;
 
-		CFileList		selected_filelist;
-		bool			readDir(const std::string & dirname, CFileList* flist);
+		CFileList selected_filelist;
+		CFileList filelist;
 		
-		void			addRecursiveDir(CFileList * re_filelist, std::string path, bool bRootCall, CProgressWindow * progress = NULL);
+		std::string Path;
+		
+		bool readDir(const std::string & dirname, CFileList* flist);
+		void addRecursiveDir(CFileList * re_filelist, std::string path, bool bRootCall, CProgressWindow * progress = NULL);
+		/**
+		 * @param selection select the specified entry, ignored if selection == -1
+		 */
+		void ChangeDir(const std::string & filename, int selection = -1);
+		
 		void SMSInput(const neutrino_msg_t msg);
 
-		unsigned int		selected;
-		unsigned int		liststart;
-		unsigned int		listmaxshow;
+		unsigned int selected;
+		unsigned int liststart;
+		unsigned int listmaxshow;
 		std::vector<unsigned int> selections;
 
-		int 			fheight;	// Fonthoehe Filelist-Inhalt
-		int 			theight;	// Fonthoehe Filelist-Titel
-		int			foheight;	// Hoehe der button leiste
+		int fheight;	// Fonthoehe Filelist-Inhalt
+		int theight;	// Fonthoehe Filelist-Titel
+		int foheight;	// Hoehe der button leiste
 		
-		std::string		name;
-		std::string		base;
+		std::string name;
+		std::string base;
 		
-		int 			width;
-		int 			height;
+		int width;
+		int height;
 		
-		bool			bCancel;
+		bool bCancel;
 
-		int 			x;
-		int 			y;
+		int x;
+		int y;
 
 		SMSKeyInput m_SMSKeyInput;
 
@@ -175,25 +183,17 @@ class CFileBrowser
 		void paintHead();
 		void paintFoot();
 		void recursiveDelete(const char* file);
+		void hide();
 
 	protected:
 		void commonInit();
 
 	public:
-		CFileList filelist;
-
-		/**
-		 * @param selection select the specified entry, ignored if selection == -1
-		 */
-		void ChangeDir(const std::string & filename, int selection = -1);
-		void hide();
-
-		std::string		Path;
-		bool			Multi_Select;
-		bool			Dirs_Selectable;
-		bool			Dir_Mode;
-		bool                    Hide_records;
-		bool			use_filter;
+		bool Multi_Select;
+		bool Dirs_Selectable;
+		bool Dir_Mode;
+		bool Hide_records;
+		bool use_filter;
 		
 		CFileFilter * Filter;
 

@@ -406,8 +406,10 @@ CFile * CFileBrowser::getSelectedFile()
 		return NULL;
 }
 
-void CFileBrowser::ChangeDir(const std::string & filename, int selection)
+void CFileBrowser::ChangeDir(const std::string& filename, int selection)
 {
+	dprintf(DEBUG_INFO, "CFileBrowser::readDir %s\n", filename.c_str());
+
 	std::string newpath;
 	
 	if((filename == ".."))
@@ -428,7 +430,7 @@ void CFileBrowser::ChangeDir(const std::string & filename, int selection)
 	}
 	else
 	{
-		newpath=filename;
+		newpath = filename;
 	}
 	
 	if((newpath.rfind('/') != newpath.length()-1 || newpath.length() == 0))
@@ -436,11 +438,14 @@ void CFileBrowser::ChangeDir(const std::string & filename, int selection)
 		newpath += '/';
 	}
 	
-	filelist.clear();
 	Path = newpath;
 	name = newpath;
+	
 	CFileList allfiles;
+	
 	readDir(newpath, &allfiles);
+
+	filelist.clear();
 	
 	// filter
 	CFileList::iterator file = allfiles.begin();
@@ -489,7 +494,7 @@ void CFileBrowser::ChangeDir(const std::string & filename, int selection)
 	paint();
 }
 
-bool CFileBrowser::readDir(const std::string & dirname, CFileList* flist)
+bool CFileBrowser::readDir(const std::string& dirname, CFileList* flist)
 {
 	dprintf(DEBUG_INFO, "CFileBrowser::readDir %s\n", dirname.c_str());
 	
@@ -518,6 +523,7 @@ bool CFileBrowser::readDir(const std::string & dirname, CFileList* flist)
 				file.Mode = statbuf.st_mode;
 				file.Size = statbuf.st_size;
 				file.Time = statbuf.st_mtime;
+				
 				flist->push_back(file);
 			}
 		}
@@ -540,6 +546,7 @@ bool CFileBrowser::exec(const char * const dirname)
 	std::replace(name.begin(), name.end(), '\\', '/');
 	
 	int selection = -1;
+	
 	if (name == Path)
 		selection = selected;
 		
@@ -824,7 +831,7 @@ void CFileBrowser::addRecursiveDir(CFileList * re_filelist, std::string rpath, b
 	dprintf(DEBUG_INFO, "CFileBrowser::addRecursiveDir %s\n", rpath.c_str());
 
 	if (bRootCall) 
-		bCancel=false;
+		bCancel = false;
 
 	g_RCInput->getMsg_us(&msg, &data, 1);
 	if (msg == CRCInput::RC_home)

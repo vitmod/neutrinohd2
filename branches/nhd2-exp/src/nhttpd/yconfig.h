@@ -89,7 +89,7 @@
 #undef HTTPD_NAME
 #define HTTPD_NAME 					"nhttpd"
 #if defined (USE_OPENGL)
-#define HTTPD_STANDARD_PORT				8080
+#define HTTPD_STANDARD_PORT				8888
 #else
 #define HTTPD_STANDARD_PORT				80
 #endif
