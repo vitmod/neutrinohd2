@@ -28,7 +28,6 @@ install-exec-local:
 	install -m 0644 youtube.cfg $(DESTDIR)$(PLUGINDIR)/youtube
 	install -m 0644 youtube.png $(DESTDIR)$(PLUGINDIR)/youtube
 	install -m 0644 youtube_small.png $(DESTDIR)$(PLUGINDIR)/youtube
-	install -m 0644 yt.conf $(DESTDIR)$(PLUGINDIR)/youtube
 
 uninstall-local:
 	-rm $(DESTDIR)$(PLUGINDIR)/youtube/youtube.so
