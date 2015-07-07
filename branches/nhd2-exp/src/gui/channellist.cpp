@@ -77,7 +77,6 @@
 extern CBouquetList * bouquetList;      		// neutrino.cpp
 extern CRemoteControl * g_RemoteControl; 		// neutrino.cpp
 extern SMSKeyInput * c_SMSKeyInput;			// defined in neutrino
-extern CPictureViewer * g_PicViewer;
 extern CBouquetList   * TVbouquetList;
 extern CBouquetList   * TVsatList;
 extern CBouquetList   * TVfavList;
@@ -87,7 +86,6 @@ extern CBouquetList   * RADIOsatList;
 extern CBouquetList   * RADIOfavList;
 extern CBouquetList   * RADIOallList;
 
-#define PIC_W 120
 
 extern t_channel_id rec_channel_id;
 extern t_channel_id live_channel_id;
@@ -810,13 +808,6 @@ int CChannelList::show()
 		{
 			new_mode_active = (new_mode_active ? 0 : 1);
 			paintHead();
-
-			// refresh logo box
-			//frameBuffer->paintBoxRel(x + width - 90 - PIC_W, y, PIC_W, theight, COL_MENUHEAD_PLUS_0);
-			frameBuffer->paintBoxRel(x + width - (BORDER_RIGHT + icon_help_w + 2 + icon_setup_w + 2 + icon_head_w + 2 + PIC_W), y, PIC_W, theight, COL_MENUHEAD_PLUS_0);
-	
-			// paint logo
-			g_PicViewer->DisplayLogo(chanlist[selected]->channel_id, x + width - 90 - PIC_W, y, PIC_W, theight, true);
 		}
 		else if (CRCInput::isNumeric(msg) && ( this->historyMode || g_settings.sms_channel)) 
 		{ 
@@ -1735,24 +1726,6 @@ void CChannelList::paintItem(int pos)
 		// details
 		paintDetails(curr);
 
-		// refresh logo box
-		frameBuffer->paintBoxRel(x + width - (BORDER_RIGHT + icon_help_w + 2 + icon_setup_w + 2 + icon_head_w + 2 + PIC_W), y, PIC_W, theight, COL_MENUHEAD_PLUS_0);
-	
-		// paint logo
-		int PIC_W_1 = theight*1.67;
-		int logo_w = PIC_W; 
-		int logo_h = theight;
-		int logo_bpp = 0;
-		
-		// check for logo
-		logo_ok = g_PicViewer->checkLogo(chanlist[selected]->channel_id);
-		
-		// get logo size	
-		g_PicViewer->getLogoSize(chanlist[selected]->channel_id, &logo_w, &logo_h, &logo_bpp);
-	
-		// display logo
-		g_PicViewer->DisplayLogo(chanlist[selected]->channel_id, x + width - (BORDER_RIGHT + icon_help_w + 2 + icon_setup_w + 2 + icon_head_w + 2) - PIC_W + ((logo_bpp == 4)? 0 : (PIC_W - 2 - PIC_W_1)/2), y, (logo_bpp == 4)? PIC_W : PIC_W_1, theight, true);
-
 		// itembox
 		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, iheight, bgcolor);
 	} 
@@ -1974,11 +1947,11 @@ void CChannelList::paintHead()
 		strftime(timestr, 18, "%d.%m.%Y %H:%M", tm);
 		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr, true); // UTF-8
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_RIGHT - icon_help_w - 2 - icon_setup_w - 2 - icon_head_w - 2 - PIC_W - 5 - timestr_len, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len+1, timestr, COL_MENUHEAD, 0, true); // UTF-8 // 100 is pic_w refresh box
+		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_RIGHT - icon_help_w - 2 - icon_setup_w - 2 - icon_head_w - 2 - timestr_len, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len+1, timestr, COL_MENUHEAD, 0, true); // UTF-8
 	}
 	
 	//title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 10, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - 10 - icon_help_w - 2 - icon_setup_w - 2 - icon_head_w - 2 - PIC_W - 5 - timestr_len, name, COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 10, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - 10 - icon_help_w - 2 - icon_setup_w - 2 - icon_head_w - 2 - timestr_len, name, COL_MENUHEAD, 0, true); // UTF-8
 }
 
 void CChannelList::paint()

@@ -420,6 +420,7 @@ int CMoviePlayerGui::exec(CMenuTarget * parent, const std::string & actionKey)
 	exit = false;
 	was_file = false;
 	m_loop = false;
+	m_multiselect = false;
 	isMovieBrowser = false;
 	isURL = false;
 	timeshift = NO_TIMESHIFT;
@@ -621,6 +622,8 @@ void CMoviePlayerGui::PlayFile(void)
 			start_play = true;
 			was_file = true;
 			is_file_player = true;
+			if(filelist.size() > 1)
+				m_multiselect = true;
 			
 			printf("URL: filename: %s\n", filename);
 		}
@@ -648,7 +651,7 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			update_lcd = true;
 			start_play = true;
-			was_file = false;
+			was_file = true;
 			is_file_player = true;
 		}
 						
@@ -750,7 +753,7 @@ void CMoviePlayerGui::PlayFile(void)
 		{	  
 			exit = false;
 			
-			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (2)\n");
+			dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (3)\n");
 			playstate = CMoviePlayerGui::STOPPED;
 			break;
 		}
@@ -1051,6 +1054,8 @@ void CMoviePlayerGui::PlayFile(void)
 							filelist.clear();
 						
 						filelist = filebrowser->getSelectedFiles();
+
+						m_multiselect = true;
 					} 
 					else 
 					{
@@ -1382,7 +1387,10 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 			else
 			{
-				g_RCInput->postMsg((neutrino_msg_t) g_settings.mpkey_stop, 0);
+				if(filelist.size() > 1 && selected < filelist.size())
+					g_RCInput->postMsg(CRCInput::RC_next, 0);
+				else
+					g_RCInput->postMsg((neutrino_msg_t) g_settings.mpkey_stop, 0);
 			}
 		}
 		
@@ -1422,9 +1430,15 @@ void CMoviePlayerGui::PlayFile(void)
 				
 				CVFD::getInstance()->ShowIcon(VFD_ICON_TIMESHIFT, false );
 			}
-
-			was_file = false;
-			m_loop = false;
+			
+			if(isURL)
+				was_file = false;
+			
+			if(m_loop)
+				m_loop = false;
+			
+			if(m_multiselect)
+				m_multiselect = false;
 			
 			exit = true;
 		} 
@@ -1984,13 +1998,6 @@ void CMoviePlayerGui::PlayFile(void)
 			
 			if(g_InfoViewer->m_visible)
 				  g_InfoViewer->killTitle();
-			
-			if ( (was_file && !isMovieBrowser) || m_loop ) 
-			{
-				was_file = false;
-				m_loop = false;
-				exit = true;
-			}
 		}
 		else if(msg == CRCInput::RC_left || msg == CRCInput::RC_prev)
 		{
@@ -2088,7 +2095,7 @@ void CMoviePlayerGui::PlayFile(void)
 		}
 	} while (playstate >= CMoviePlayerGui::PLAY);
 	
-	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (3)\n");	
+	dprintf(DEBUG_NORMAL, "CMoviePlayerGui::PlayFile: stop (2)\n");	
 
 	if(FileTime.IsVisible())
 		FileTime.hide();
@@ -2101,12 +2108,16 @@ void CMoviePlayerGui::PlayFile(void)
 	CVFD::getInstance()->ShowIcon(VFD_ICON_PLAY, false);
 	CVFD::getInstance()->ShowIcon(VFD_ICON_PAUSE, false);
 
-	if (was_file || m_loop) 
+	if (was_file) 
 	{
 		usleep(3000);
+		
 		if(!isURL)
 			open_filebrowser = true;
-		start_play = true;
+		
+		if(m_multiselect || m_loop)
+			start_play = true;
+		
 		goto go_repeat;
 	}
 }

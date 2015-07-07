@@ -125,9 +125,10 @@ class CMoviePlayerGui : public CMenuTarget
 		bool start_play;
 		bool exit;
 		bool was_file;
-		bool m_loop;
 		bool isMovieBrowser;
 		bool isURL;
+		bool m_loop;
+		bool m_multiselect;
 		
 		bool is_file_player;
 		
