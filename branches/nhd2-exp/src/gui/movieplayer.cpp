@@ -1387,7 +1387,7 @@ void CMoviePlayerGui::PlayFile(void)
 			}
 			else
 			{
-				if(filelist.size() > 1 && selected < filelist.size())
+				if(filelist.size() > 1 && selected + 1 < filelist.size())
 					g_RCInput->postMsg(CRCInput::RC_next, 0);
 				else
 					g_RCInput->postMsg((neutrino_msg_t) g_settings.mpkey_stop, 0);
