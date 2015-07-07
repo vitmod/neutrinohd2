@@ -49,7 +49,7 @@ class CTestMenu : CMenuTarget
 		void testCListFrameBox();
 		void testCListBox();
 		void testCListBoxDetails();
-		void testCListBoxHeadInfo();
+		void testCListBoxDetailsTitleInfo();
 		void testCallAudioPlayer();
 		void testCallInternetRadio();
 		void testCallTSMovieBrowser();
@@ -305,9 +305,9 @@ void CTestMenu::testCListBoxDetails()
 	delete listBox;
 }
 
-void CTestMenu::testCListBoxHeadInfo()
+void CTestMenu::testCListBoxDetailsTitleInfo()
 {
-	CListBox * listBox = new CListBox("listBoxTitleInfo", NEUTRINO_ICON_BUTTON_SETUP, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)), true, true, true);
+	CListBox * listBox = new CListBox("listBoxDetailsTitleInfo", NEUTRINO_ICON_BUTTON_SETUP, w_max ( (CFrameBuffer::getInstance()->getScreenWidth() / 20 * 17), (CFrameBuffer::getInstance()->getScreenWidth() / 20 )), h_max ( (CFrameBuffer::getInstance()->getScreenHeight() / 20 * 16), (CFrameBuffer::getInstance()->getScreenHeight() / 20)), true, true, true);
 	
 	listBox->exec(NULL, "");
 	delete listBox;
@@ -1042,9 +1042,9 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		testCListBoxDetails();
 		return res;
 	}
-	else if(actionKey == "listboxheadinfo")
+	else if(actionKey == "listboxdetailstitleinfo")
 	{
-		testCListBoxHeadInfo();
+		testCListBoxDetailsTitleInfo();
 		return res;
 	}
 	else if(actionKey == "audioplayer")
@@ -1140,7 +1140,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CListFrameBox", true, NULL, this, "listframebox"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CListBox", true, NULL, this, "listbox"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CListBoxInfoDetails", true, NULL, this, "listboxdetails"));
-	mainMenu->addItem(new CMenuForwarderNonLocalized("CListBoxHeadInfo", true, NULL, this, "listboxheadinfo"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("CListBoxDetailsTitleInfo", true, NULL, this, "listboxdetailstitleinfo"));
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparatorItemMenuIcon::LINE) );
 	mainMenu->addItem(new CMenuForwarderNonLocalized("AudioPlayer", true, NULL, this, "audioplayer"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("InternetRadio", true, NULL, this, "internetradio"));
@@ -1155,6 +1155,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarderNonLocalized("ShowPictureURL", true, NULL, this, "showpictureurl"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("PlayAudioFolder", true, NULL, this, "playaudiofolder"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("ShowPictureFolder", true, NULL, this, "showpicturefolder"));
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparatorItemMenuIcon::LINE) );
 	mainMenu->addItem(new CMenuForwarderNonLocalized("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
 	
 	mainMenu->exec(NULL, "");
