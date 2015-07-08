@@ -49,7 +49,7 @@
 class CStringInput : public CMenuTarget
 {
 	protected:
-		CFrameBuffer	*frameBuffer;
+		CFrameBuffer* frameBuffer;
 		int x;
 		int y;
 		int width;

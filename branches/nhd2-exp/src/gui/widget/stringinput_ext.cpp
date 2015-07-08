@@ -68,8 +68,8 @@ void CExtendedInput::Init(void)
 	mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
 	iheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_INFO]->getHeight();
 
-	width = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(g_Locale->getText(name), true) + 20; // UTF-8
-	height = hheight+ mheight+ 20;
+	width = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(g_Locale->getText(name)) + 20; // UTF-8
+	height = hheight + mheight+ 20;
 
 	if (hint_1 != NONEXISTANT_LOCALE)
 		height += iheight;
@@ -100,11 +100,11 @@ void CExtendedInput::calculateDialog()
 	int maxY = 0;
 
 	selectedChar = -1;
-	for(unsigned int i=0; i<inputFields.size();i++)
+	for(unsigned int i = 0; i < inputFields.size(); i++)
 	{
 		inputFields[i]->init( ix, iy);
 		inputFields[i]->setDataPointer( &value[i] );
-		if ((selectedChar==-1) && (inputFields[i]->isSelectable()))
+		if ((selectedChar == -1) && (inputFields[i]->isSelectable()))
 		{
 			selectedChar = i;
 		}
@@ -112,7 +112,7 @@ void CExtendedInput::calculateDialog()
 		maxY = iy > maxY ? iy : maxY;
 	}
 
-	width = width > maxX+40 ? width : maxX+40;
+	width = width > maxX + 40 ? width : maxX + 40;
 	height = height > maxY + hheight + mheight ? height : maxY + hheight + mheight;
 
 	hintPosY = height -10;
@@ -122,8 +122,8 @@ void CExtendedInput::calculateDialog()
 	if (hint_2 != NONEXISTANT_LOCALE)
 		height += iheight;
 
-	x = ((frameBuffer->getScreenWidth() - width)>>1);
-	y = ((frameBuffer->getScreenHeight() - height)>>1);
+	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width)>>1);
+	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height)>>1);
 
 	hintPosY += y;
 }
@@ -139,9 +139,7 @@ int CExtendedInput::exec( CMenuTarget* parent, const std::string & )
 	char oldval[inputFields.size()+10], dispval[inputFields.size()+10];
 
 	if (parent)
-	{
 		parent->hide();
-	}
 
 	strcpy(oldval, value);
 	paint();
@@ -296,23 +294,30 @@ int CExtendedInput::exec( CMenuTarget* parent, const std::string & )
 
 void CExtendedInput::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width, height);
+	frameBuffer->paintBackgroundBoxRel(x, y, width + SHADOW_OFFSET, height + SHADOW_OFFSET);
 
 	frameBuffer->blit();
 }
 
 void CExtendedInput::paint()
 {
+	//head
+	//shadow
+	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + SHADOW_OFFSET, width, hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);
 	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	
+	//foot
+	//shadow
+	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x+ 10, y+ hheight, width- 10, g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 10, y + hheight, width - 10, g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
 
 	if (hint_1 != NONEXISTANT_LOCALE)
 	{
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_INFO]->RenderString(x+ 20, hintPosY, width- 20, g_Locale->getText(hint_1), COL_MENUCONTENT, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_INFO]->RenderString(x + 20, hintPosY, width- 20, g_Locale->getText(hint_1), COL_MENUCONTENT, 0, true); // UTF-8
 		if (hint_2 != NONEXISTANT_LOCALE)
-			g_Font[SNeutrinoSettings::FONT_TYPE_MENU_INFO]->RenderString(x+ 20, hintPosY + iheight, width- 20, g_Locale->getText(hint_2), COL_MENUCONTENT, 0, true); // UTF-8
+			g_Font[SNeutrinoSettings::FONT_TYPE_MENU_INFO]->RenderString(x + 20, hintPosY + iheight, width - 20, g_Locale->getText(hint_2), COL_MENUCONTENT, 0, true); // UTF-8
 	}
 
 	for(unsigned int i=0; i<inputFields.size();i++)
@@ -398,7 +403,7 @@ void CExtendedInput_Item_Char::keyPressed(const int key)
 	else
 	{
 		unsigned int pos = getCharID( *data );
-		if (key==CRCInput::RC_up)
+		if (key == CRCInput::RC_up)
 		{
 			if(pos<allowedChars.size()-1)
 			{
@@ -409,7 +414,7 @@ void CExtendedInput_Item_Char::keyPressed(const int key)
 				*data = allowedChars[0];
 			}
 		}
-		else if (key==CRCInput::RC_down)
+		else if (key == CRCInput::RC_down)
 		{
 			if(pos>0)
 			{
@@ -465,7 +470,8 @@ void CIPInput::onAfterExec()
 	int _ip[4];
 	sscanf( value, "%3d.%3d.%3d.%3d", &_ip[0], &_ip[1], &_ip[2], &_ip[3] );
 	sprintf( value, "%d.%d.%d.%d", _ip[0], _ip[1], _ip[2], _ip[3]);
-	if(strcmp(value,"0.0.0.0")==0)
+	
+	if(strcmp(value, "0.0.0.0")==0)
 	{
 		(*ip) = "";
 	}
@@ -479,9 +485,7 @@ CDateInput::CDateInput(const neutrino_locale_t Name, time_t* Time, const neutrin
 	time=Time;
 	value= new char[20];
 	struct tm *tmTime = localtime(time);
-	sprintf( value, "%02d.%02d.%04d %02d:%02d", tmTime->tm_mday, tmTime->tm_mon+1,
-				tmTime->tm_year+1900,
-				tmTime->tm_hour, tmTime->tm_min);
+	sprintf( value, "%02d.%02d.%04d %02d:%02d", tmTime->tm_mday, tmTime->tm_mon + 1, tmTime->tm_year + 1900, tmTime->tm_hour, tmTime->tm_min);
 	
 	frameBuffer = CFrameBuffer::getInstance();
 	addInputField( new CExtendedInput_Item_Char("0123") );
@@ -512,18 +516,14 @@ CDateInput::~CDateInput()
 void CDateInput::onBeforeExec()
 {
 	struct tm *tmTime = localtime(time);
-	sprintf( value, "%02d.%02d.%04d %02d:%02d", tmTime->tm_mday, tmTime->tm_mon+1,
-				tmTime->tm_year+1900,
-				tmTime->tm_hour, tmTime->tm_min);
+	sprintf( value, "%02d.%02d.%04d %02d:%02d", tmTime->tm_mday, tmTime->tm_mon+1, tmTime->tm_year + 1900, tmTime->tm_hour, tmTime->tm_min);
 	dst = tmTime->tm_isdst;
 }
 
 void CDateInput::onAfterExec()
 {
 	struct tm tmTime;
-	sscanf( value, "%02d.%02d.%04d %02d:%02d", &tmTime.tm_mday, &tmTime.tm_mon,
-				&tmTime.tm_year,
-				&tmTime.tm_hour, &tmTime.tm_min);
+	sscanf( value, "%02d.%02d.%04d %02d:%02d", &tmTime.tm_mday, &tmTime.tm_mon, &tmTime.tm_year, &tmTime.tm_hour, &tmTime.tm_min);
 	tmTime.tm_mon-=1;
 	tmTime.tm_year-=1900;
 	tmTime.tm_sec=0;

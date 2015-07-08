@@ -137,8 +137,7 @@ int CKeyChooserItem::exec(CMenuTarget* parent, const std::string &)
 
 void CKeyChooserItem::hide()
 {
-	CFrameBuffer::getInstance()->paintBackgroundBoxRel(x, y, width, height);
-	
+	CFrameBuffer::getInstance()->paintBackgroundBoxRel(x, y, width + SHADOW_OFFSET, height + SHADOW_OFFSET);
 	CFrameBuffer::getInstance()->blit();
 }
 
@@ -149,12 +148,18 @@ void CKeyChooserItem::paint()
 
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 
-	width       = w_max(MENU_WIDTH, 0);
-	height      = h_max(hheight + 2 * mheight, 0);
-	x           = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth()-width) >> 1);
-	y           = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight()-height) >> 1);
+	width = w_max(MENU_WIDTH, 0);
+	height = h_max(hheight + 2 * mheight, 0);
+	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth()-width) >> 1);
+	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight()-height) >> 1);
 
-	frameBuffer->paintBoxRel(x, y          , width, hheight         , COL_MENUHEAD_PLUS_0   , RADIUS_MID, CORNER_TOP);//round
+	// head
+	//shadow
+	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + SHADOW_OFFSET, width, hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP);//round
+	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0   , RADIUS_MID, CORNER_TOP);//round
+	
+	//foot
+	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 10, y + hheight, width, g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8

@@ -51,6 +51,9 @@
 #include <neutrino.h>
 
 
+#define borderwidth 4
+
+
 CStringInput::CStringInput(const neutrino_locale_t Name, char *Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver *Observ, const char * const Icon)
 {
 	frameBuffer = CFrameBuffer::getInstance();
@@ -129,10 +132,10 @@ void CStringInput::init()
 	int neededWidth;
 	if(head) 
 	{
-		neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(head, true); // UTF-8
+		neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(head); // UTF-8
 	}
 	else
-		neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(g_Locale->getText(name), true); // UTF-8
+		neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(g_Locale->getText(name)); // UTF-8
 
 	if (!(iconfile.empty()))
 		neededWidth += 28;
@@ -454,8 +457,7 @@ int CStringInput::handleOthers(const neutrino_msg_t /*msg*/, const neutrino_msg_
 
 void CStringInput::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width, height);
-
+	frameBuffer->paintBackgroundBoxRel(x, y, width + SHADOW_OFFSET, height + SHADOW_OFFSET);
 	frameBuffer->blit();
 }
 
@@ -469,7 +471,12 @@ void CStringInput::paint()
 	int iconoffset;
 	int icol_w = 28, icol_h = 16;
 
+	//head
+	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + SHADOW_OFFSET, width, hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_TOP); //round
 	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP); //round
+	
+	// foot
+	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 
 	if (!(iconfile.empty()))
@@ -500,8 +507,8 @@ void CStringInput::paintChar(int pos, const char c)
 {
 	const int xs = 20;
 	int ys = mheight;
-	int xpos = x+ 20+ pos* xs;
-	int ypos = y+ hheight+ 25;
+	int xpos = x + 20+ pos* xs;
+	int ypos = y + hheight+ 25;
 
 	char ch[2] = {c, 0};
 
@@ -546,7 +553,6 @@ CStringInputSMS::CStringInputSMS(const neutrino_locale_t Name, char* Value, int 
 	initSMS(Valid_Chars);
 }
 
-//
 CStringInputSMS::CStringInputSMS(char * Head, char* Value, int Size, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, const char * const Valid_Chars, CChangeObserver* Observ, const char * const Icon)
    		: CStringInput(Head, Value, Size, Hint_1, Hint_2, Valid_Chars, Observ, Icon)
 {
@@ -579,7 +585,8 @@ void CStringInputSMS::initSMS(const char * const Valid_Chars)
 	}
 
 	height += 260;
-	y = ((500 - height)>>1);
+	//y = ((500 - height)>>1);
+	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
 }
 
 void CStringInputSMS::NormalKeyPressed(const neutrino_msg_t key)
@@ -599,6 +606,7 @@ void CStringInputSMS::NormalKeyPressed(const neutrino_msg_t key)
 		}
 		else
 			keyCounter = (keyCounter + 1) % arraySizes[numericvalue];
+		
 		value[selected] = Chars[numericvalue][keyCounter];
 		last_digit = numericvalue;
 		paintChar(selected);
@@ -711,6 +719,7 @@ void CPINInput::paintChar(int pos)
 	CStringInput::paintChar(pos, (value[pos] == ' ') ? ' ' : '*');
 }
 
+//CPINInput
 int CPINInput::exec( CMenuTarget* parent, const std::string & )
 {
 	neutrino_msg_t      msg;
@@ -738,7 +747,7 @@ int CPINInput::exec( CMenuTarget* parent, const std::string & )
 		{
 			keyLeftPressed();
 		}
-		else if (msg==CRCInput::RC_right)
+		else if (msg == CRCInput::RC_right)
 		{
 			keyRightPressed();
 		}
@@ -747,15 +756,15 @@ int CPINInput::exec( CMenuTarget* parent, const std::string & )
 			int old_selected = selected;
 			NormalKeyPressed(msg);
 			if ( old_selected == ( size- 1 ) )
-				loop=false;
+				loop = false;
 		}
-		else if ( (msg==CRCInput::RC_up) || (msg==CRCInput::RC_down) )
+		else if ( (msg == CRCInput::RC_up) || (msg == CRCInput::RC_down) )
 		{
 			g_RCInput->postMsg( msg, data );
 			res = menu_return::RETURN_EXIT;
 			loop = false;
 		}
-		else if ( (msg==CRCInput::RC_home) || (msg==CRCInput::RC_timeout) || (msg==CRCInput::RC_ok) )
+		else if ( (msg == CRCInput::RC_home) || (msg == CRCInput::RC_timeout) || (msg == CRCInput::RC_ok) )
 		{
 			loop = false;
 		}
@@ -831,12 +840,9 @@ const char * CPLPINInput::getHint1(void)
 	}
 }
 
-#define borderwidth 4
-
 int CPLPINInput::exec( CMenuTarget* parent, const std::string & )
 {
 	fb_pixel_t * pixbuf = new fb_pixel_t[(width + 2 * borderwidth) * (height + 2 * borderwidth)];
-	//fb_pixel_t * pixbuf = new fb_pixel_t[720 * 576];
 
 	if (pixbuf != NULL)
 	{

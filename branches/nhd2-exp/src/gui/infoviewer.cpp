@@ -858,8 +858,8 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 	}
 	
 	//
-	// show date
-	char datestr[11];
+	// show date/time
+	char datestr[18];
 			
 	time_t wakeup_time;
 	struct tm *now;
@@ -867,7 +867,8 @@ void CInfoViewer::showMovieInfo(const std::string &Title, const std::string &Inf
 	time(&wakeup_time);
 	now = localtime(&wakeup_time);
 		
-	strftime(datestr, sizeof(datestr), "%d.%m.%Y", now);
+	//strftime(datestr, sizeof(datestr), "%d.%m.%Y", now);
+	strftime(datestr, 18, "%d.%m.%Y %H:%M", now);
 			
 	int widthtime = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getRenderWidth(datestr, true); //UTF-8
 	int height = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_INFO]->getHeight();

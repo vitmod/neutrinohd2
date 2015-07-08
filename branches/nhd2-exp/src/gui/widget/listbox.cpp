@@ -110,15 +110,10 @@ void CListBox::paintHead()
 		time_t now = time(NULL);
 		struct tm * tm = localtime(&now);
 		
-		bool gotTime = g_Sectionsd->getIsTimeSet();
-
-		if(gotTime)
-		{
-			strftime(timestr, 18, "%d.%m.%Y %H:%M", tm);
-			timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr, true); // UTF-8
+		strftime(timestr, 18, "%d.%m.%Y %H:%M", tm);
+		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr, true); // UTF-8
 			
-			g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - (BORDER_RIGHT - timestr_len), y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr, COL_MENUHEAD, 0, true); // UTF-8 // 100 is pic_w refresh box
-		}
+		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - (BORDER_RIGHT + timestr_len), y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len + 1, timestr, COL_MENUHEAD, 0, true); // UTF-8 // 100 is pic_w refresh box
 	}
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + theight, width - (BORDER_LEFT + BORDER_RIGHT + timestr_len), caption.c_str() , COL_MENUHEAD, 0, true);
 }

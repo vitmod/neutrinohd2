@@ -41,7 +41,6 @@
 
 CProgressWindow::CProgressWindow()
 {
-	//frameBuffer = CFrameBuffer::getInstance();
 	caption = NONEXISTANT_LOCALE;
 	
 	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();

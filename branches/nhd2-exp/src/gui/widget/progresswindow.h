@@ -41,7 +41,7 @@ class CProgressWindow : public CMenuTarget, public CProgress_StatusViewer
 {
 	protected:
 
-		/*CFrameBuffer*/CFBWindow *frameBuffer;
+		CFBWindow* frameBuffer;
 		neutrino_locale_t caption;
 
 		int x;

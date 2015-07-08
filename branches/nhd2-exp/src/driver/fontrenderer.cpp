@@ -320,7 +320,7 @@ int CFont::getWidth(void)
 	return fontwidth;
 }
 
-int UTF8ToUnicode(const char * &text, const bool utf8_encoded) // returns -1 on error
+int UTF8ToUnicode(const char * &text, bool utf8_encoded) // returns -1 on error
 {
 	int unicode_value;
 	
@@ -375,7 +375,7 @@ static std::string fribidiShapeChar(const char * text)
 	{
 		int len = strlen(text);
 		
-		fribidi_set_mirroring(true);
+		fribidi_set_mirroring(false);
 		fribidi_set_reorder_nsm(false);
 			
 		// init to utf-8
@@ -388,7 +388,6 @@ static std::string fribidiShapeChar(const char * text)
 		FriBidiChar *Logical = (FriBidiChar *)alloca(sizeof(FriBidiChar)*(len + 1));
 		FriBidiChar *Visual = (FriBidiChar *)alloca(sizeof(FriBidiChar)*(len + 1));
 		
-		// convert from the selected charset to Unicode
 		int RtlLen = fribidi_charset_to_unicode(fribidiCharset, const_cast<char *>(text), len, Logical);
 		
 		char * Rtl = NULL;
@@ -396,10 +395,8 @@ static std::string fribidiShapeChar(const char * text)
 		// logical to visual
 		if (fribidi_log2vis(Logical, len, &Base, Visual, NULL, NULL, NULL)) 
 		{
-			// removes bidirectional marks
-			fribidi_remove_bidi_marks(Visual, RtlLen, NULL, NULL, NULL);
-			
 			Rtl = (char *)alloca(sizeof(char)*(RtlLen * 4 + 1));
+			
 			fribidi_unicode_to_charset(fribidiCharset, Visual, RtlLen, Rtl);
 			
 			return std::string(Rtl);
@@ -428,7 +425,7 @@ void CFont::paintFontPixel(fb_pixel_t *td, uint8_t fg_red, uint8_t fg_green, uin
 		 ((fg_blue  + ((korr_b*faktor)/F_MUL))        & 0x000000FF);
 }
 
-void CFont::RenderString(int x, int y, const int width, const char *text, const uint8_t color, const int boxheight, const bool utf8_encoded, const bool useBackground)
+void CFont::RenderString(int x, int y, const int width, const char *text, const uint8_t color, const int boxheight, bool utf8_encoded, const bool useBackground)
 {
 	if (!frameBuffer->getActive())
 		return;
@@ -436,7 +433,7 @@ void CFont::RenderString(int x, int y, const int width, const char *text, const 
 	pthread_mutex_lock( &renderer->render_mutex );
 	
 	// fribidi
-#if defined (ENABLE_FRIBIDI)	
+#if defined (ENABLE_FRIBIDI)
 	std::string Text = fribidiShapeChar(text);
 	text = Text.c_str();
 #endif	
@@ -688,17 +685,17 @@ void CFont::RenderString(int x, int y, const int width, const char *text, const 
 	pthread_mutex_unlock( &renderer->render_mutex );
 }
 
-void CFont::RenderString(int x, int y, const int width, const std::string & text, const uint8_t color, const int boxheight, const bool utf8_encoded, const bool useBackground)
+void CFont::RenderString(int x, int y, const int width, const std::string & text, const uint8_t color, const int boxheight, bool utf8_encoded, const bool useBackground)
 {
 	RenderString(x, y, width, text.c_str(), color, boxheight, utf8_encoded, useBackground);
 }
 
-int CFont::getRenderWidth(const char *text, const bool utf8_encoded)
+int CFont::getRenderWidth(const char *text, bool utf8_encoded)
 {
 	pthread_mutex_lock( &renderer->render_mutex );
 	
 	// fribidi	
-#if defined (ENABLE_FRIBIDI)	
+#if defined (ENABLE_FRIBIDI)
 	std::string Text = fribidiShapeChar(text);
 	text = Text.c_str();
 #endif	
@@ -768,7 +765,7 @@ int CFont::getRenderWidth(const char *text, const bool utf8_encoded)
 	return x;
 }
 
-int CFont::getRenderWidth(const std::string & text, const bool utf8_encoded)
+int CFont::getRenderWidth(const std::string & text, bool utf8_encoded)
 {
 	return getRenderWidth(text.c_str(), utf8_encoded);
 }

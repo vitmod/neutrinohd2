@@ -856,8 +856,10 @@ void CWebTV::paintItem(int pos)
 		l = snprintf(nameAndDescription, sizeof(nameAndDescription), "%s", channels[curr]->title.c_str());
 		
 		// number
-		int numpos = x + 10 + numwidth - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(tmp);
+		int numpos = x + BORDER_LEFT + numwidth - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getRenderWidth(tmp);
 		g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->RenderString(numpos, ypos + (iheight - g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_NUMBER]->getHeight(), numwidth + 5, tmp, color, 0, true);
+		
+		unsigned int ch_name_len = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getRenderWidth(nameAndDescription, true);
 		
 		// description
 		std::string Descr = channels[curr]->description.c_str();
@@ -865,15 +867,16 @@ void CWebTV::paintItem(int pos)
 		{
 			snprintf(nameAndDescription + l, sizeof(nameAndDescription) -l, "  -  ");
 			
-			unsigned int ch_name_len = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getRenderWidth(nameAndDescription, true);
+			ch_name_len = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getRenderWidth(nameAndDescription, true);
 			unsigned int ch_desc_len = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getRenderWidth(channels[curr]->description, true);
 			
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 10 + numwidth + 10, ypos + iheight, width - numwidth - 20 - 15, nameAndDescription, color, 0, true);
+			//channel name
+			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT + numwidth + 10, ypos + iheight, width - BORDER_LEFT - SCROLLBAR_WIDTH - numwidth - 10 - ch_name_len, nameAndDescription, color, 0, true);
 			
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + 5 + numwidth + 10 + ch_name_len, ypos + iheight, ch_desc_len, channels[curr]->description, (curr == selected)?COL_MENUCONTENTSELECTED : COL_COLORED_EVENTS_CHANNELLIST, 0, true);
+			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->RenderString(x + BORDER_LEFT + numwidth + 10 + ch_name_len + 5, ypos + iheight, width - BORDER_LEFT - SCROLLBAR_WIDTH - numwidth - ch_name_len - ch_desc_len - 15, channels[curr]->description, (curr == selected)?COL_MENUCONTENTSELECTED : COL_COLORED_EVENTS_CHANNELLIST, 0, true);
 		}
 		else
-			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + 10 + numwidth + 10, ypos + iheight, width - numwidth - 20 - 15, nameAndDescription, color, 0, true);
+			g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT + numwidth + 10, ypos + iheight, width - BORDER_LEFT - SCROLLBAR_WIDTH - numwidth - ch_name_len - 10, nameAndDescription, color, 0, true);
 	}
 }
 
@@ -910,15 +913,10 @@ void CWebTV::paintHead()
 	time_t now = time(NULL);
 	struct tm *tm = localtime(&now);
 	
-	bool gotTime = g_Sectionsd->getIsTimeSet();
-
-	if(gotTime)
-	{
-		strftime(timestr, 18, "%d.%m.%Y %H:%M", tm);
-		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr, true); // UTF-8
+	strftime(timestr, 18, "%d.%m.%Y %H:%M", tm);
+	timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr, true); // UTF-8
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_LEFT - BORDER_RIGHT - icon_help_w - timestr_len, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len, timestr, COL_MENUHEAD, 0, true); //utf-8
-	}
+	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_LEFT - BORDER_RIGHT - icon_help_w - timestr_len, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len, timestr, COL_MENUHEAD, 0, true); //utf-8
 	
 	//head title
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_webtv_w + 5, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - 20 - icon_webtv_w - timestr_len, title.c_str(), COL_MENUHEAD, 0, true); // UTF-8

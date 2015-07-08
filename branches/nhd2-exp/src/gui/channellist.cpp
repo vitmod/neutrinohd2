@@ -1940,15 +1940,10 @@ void CChannelList::paintHead()
 	time_t now = time(NULL);
 	struct tm * tm = localtime(&now);
 	
-	bool gotTime = g_Sectionsd->getIsTimeSet();
-
-	if(gotTime)
-	{
-		strftime(timestr, 18, "%d.%m.%Y %H:%M", tm);
-		timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr, true); // UTF-8
+	strftime(timestr, 18, "%d.%m.%Y %H:%M", tm);
+	timestr_len = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getRenderWidth(timestr, true); // UTF-8
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_RIGHT - icon_help_w - 2 - icon_setup_w - 2 - icon_head_w - 2 - timestr_len, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len+1, timestr, COL_MENUHEAD, 0, true); // UTF-8
-	}
+	g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->RenderString(x + width - BORDER_RIGHT - icon_help_w - 2 - icon_setup_w - 2 - icon_head_w - 2 - timestr_len, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight(), timestr_len+1, timestr, COL_MENUHEAD, 0, true); // UTF-8
 	
 	//title
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 10, y + (theight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - 10 - icon_help_w - 2 - icon_setup_w - 2 - icon_head_w - 2 - timestr_len, name, COL_MENUHEAD, 0, true); // UTF-8
