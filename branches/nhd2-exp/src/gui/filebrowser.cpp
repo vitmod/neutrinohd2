@@ -953,12 +953,6 @@ void CFileBrowser::paintItem(unsigned int pos)
 
 			switch(actual_file->getType())
 			{
-				/*
-				case CFile::FILE_CDR:
-				case CFile::FILE_MP3:
-				case CFile::FILE_WAV:
-				case CFile::FILE_FLAC:
-				*/
 				case CFile::FILE_AUDIO:
 					fileicon = NEUTRINO_ICON_MP3;
 					break;
@@ -971,14 +965,6 @@ void CFileBrowser::paintItem(unsigned int pos)
 					fileicon = NEUTRINO_ICON_PICTURE;
 					break;
 				
-				/*
-				case CFile::FILE_AVI:
-				case CFile::FILE_ASF:
-				case CFile::FILE_MKV:
-				case CFile::FILE_VOB:
-				case CFile::FILE_MPG:
-				case CFile::FILE_TS:
-				*/
 				case CFile::FILE_VIDEO:
 					fileicon = NEUTRINO_ICON_MOVIE;
 					break;

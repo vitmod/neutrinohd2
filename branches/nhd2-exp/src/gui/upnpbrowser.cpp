@@ -781,7 +781,7 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 			{
 				m_folderplay = false;
 				
-				int preferred=(*entries)[selected - index].preferred;
+				int preferred = (*entries)[selected - index].preferred;
 				if (preferred != -1)
 				{
 					std::string protocol, prot, network, mime, additional;
@@ -948,9 +948,10 @@ void CUpnpBrowserGui::paintItemPos(std::vector<UPnPEntry> *entry, unsigned int p
 	if (pos >= entry->size())
 		return;
 
-	int preferred=(*entry)[pos].preferred;
+	int preferred = (*entry)[pos].preferred;
 	std::string info;
 	std::string fileicon;
+	
 	if ((*entry)[pos].isdir)
 	{
 		info = "<DIR>";
@@ -962,8 +963,24 @@ void CUpnpBrowserGui::paintItemPos(std::vector<UPnPEntry> *entry, unsigned int p
 		if (preferred != -1)
 		{
 			info = (*entry)[pos].resources[preferred].duration;
-			//FIXME
-			fileicon = NEUTRINO_ICON_MP3;
+			
+			// icon
+			std::string protocol, prot, network, mime, additional;
+			protocol = (*entry)[pos].resources[preferred].protocol;
+			splitProtocol(protocol, prot, network, mime, additional);
+					
+			if (mime.substr(0, 6)  == "audio/")
+			{
+				fileicon = NEUTRINO_ICON_MP3;
+			}
+			else if (mime.substr(0, 6) == "image/")
+			{
+				fileicon = NEUTRINO_ICON_PICTURE;
+			}
+			else if (mime.substr(0, 6) == "video/")
+			{
+				fileicon = NEUTRINO_ICON_MOVIE;
+			}
 		}
 		else
 		{
