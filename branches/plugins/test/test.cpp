@@ -55,6 +55,7 @@ class CTestMenu : CMenuTarget
 		void testCListBox();
 		void testCListBoxDetails();
 		void testCListBoxDetailsTitleInfo();
+		//
 		void testCallAudioPlayer();
 		void testCallInternetRadio();
 		void testCallTSMovieBrowser();
@@ -62,12 +63,16 @@ class CTestMenu : CMenuTarget
 		void testCallFilePlayBack();
 		void testCallPictureViewer();
 		void testCallUPNPBrowser();
+		//
 		void testPlayMovieURL();
 		void testPlayAudioURL();
 		void testShowPictureURL();
 		void testPlayAudioFolder();
 		void testShowPictureFolder();
+		//
 		void testStartPlugin();
+		//
+		void testShowActuellEPG();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -1009,6 +1014,38 @@ void CTestMenu::testStartPlugin()
 	g_PluginList->startPlugin("youtube");
 }
 
+void CTestMenu::testShowActuellEPG()
+{
+	CEPGData epgData;
+	event_id_t epgid = 0;
+			
+	if(sectionsd_getActualEPGServiceKey(live_channel_id&0xFFFFFFFFFFFFULL, &epgData))
+		epgid = epgData.eventID;
+
+	if(epgid != 0) 
+	{
+		CShortEPGData epgdata;
+				
+		if(sectionsd_getEPGidShort(epgid, &epgdata)) 
+		{
+			//InfoBox
+			std::string title;
+			title = g_Zapit->getChannelName(live_channel_id);
+			title += ":";
+			title += epgdata.title;
+			std::string buffer;
+			buffer = epgdata.info1;
+			buffer += "\n";
+			buffer += epgdata.info2;
+			
+			InfoBox(title.c_str(), buffer.c_str(), CInfoBox::mbrBack, CInfoBox::mbBack);	// UTF-8
+			
+		}
+	}
+	else
+		MessageBox(LOCALE_MESSAGEBOX_ERROR, "No EPG found!", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
+}
+
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	int res = menu_return::RETURN_REPAINT;
@@ -1197,6 +1234,11 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		testStartPlugin();
 		return res;
 	}
+	else if(actionKey == "showepg")
+	{
+		testShowActuellEPG();
+		return res;
+	}
 	
 	showTestMenu();
 	
@@ -1247,6 +1289,8 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarderNonLocalized("ShowPictureFolder", true, NULL, this, "showpicturefolder"));
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparatorItemMenuIcon::LINE) );
 	mainMenu->addItem(new CMenuForwarderNonLocalized("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparatorItemMenuIcon::LINE) );
+	mainMenu->addItem(new CMenuForwarderNonLocalized("ShowActuellEPG", true, NULL, this, "showepg"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
