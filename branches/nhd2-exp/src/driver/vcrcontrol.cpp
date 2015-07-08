@@ -87,6 +87,10 @@ extern "C" {
 #include <driver/genpsi.h>
 }
 
+bool sectionsd_getEPGidShort(event_id_t epgID, CShortEPGData * epgdata);
+bool sectionsd_getEPGid(const event_id_t epgID, const time_t startzeit, CEPGData * epgdata);
+bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGData * epgdata);
+bool sectionsd_getComponentTagsUniqueKey(const event_id_t uniqueKey, CSectionsdClient::ComponentTagList& tags);
 
 CMovieInfo * g_cMovieInfo;
 MI_MOVIE_INFO * g_movieInfo;
@@ -387,9 +391,7 @@ void CVCRControl::CFileAndServerDevice::CutBackNeutrino(const t_channel_id chann
 		g_Zapit->stopPlayBack();
 }
 
-bool sectionsd_getEPGidShort(event_id_t epgID, CShortEPGData * epgdata);
-bool sectionsd_getEPGid(const event_id_t epgID, const time_t startzeit, CEPGData * epgdata);
-
+//
 std::string CVCRControl::CFileAndServerDevice::getCommandString(const CVCRCommand command, const t_channel_id channel_id, const event_id_t epgid, const std::string& epgTitle, unsigned char apids)
 {
 	char tmp[40];
@@ -710,8 +712,6 @@ bool CVCRControl::CFileDevice::Record(const t_channel_id channel_id, int mode, c
 	}
 }
 
-bool sectionsd_getActualEPGServiceKey(const t_channel_id uniqueServiceKey, CEPGData * epgdata);
-
 bool CVCRControl::Screenshot(const t_channel_id channel_id, char * fname, bool msg) 
 {
 	char filename[512]; // UTF-8
@@ -931,7 +931,6 @@ std::string CVCRControl::CFileAndServerDevice::getMovieInfoString(const CVCRComm
 	return extMessage;
 }
 
-bool sectionsd_getComponentTagsUniqueKey(const event_id_t uniqueKey, CSectionsdClient::ComponentTagList& tags);
 void CVCRControl::CFileAndServerDevice::processAPIDnames()
 {
 	bool has_unresolved_ctags= false;

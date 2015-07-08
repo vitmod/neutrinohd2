@@ -2019,7 +2019,7 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 	
 		case CZapitMessages::CMD_GET_CHANNEL_NAME: 
 		{
-			t_channel_id                           requested_channel_id;
+			t_channel_id requested_channel_id;
 			CZapitMessages::responseGetChannelName response;
 			CBasicServer::receive_data(connfd, &requested_channel_id, sizeof(requested_channel_id));
 			if(requested_channel_id == 0) 

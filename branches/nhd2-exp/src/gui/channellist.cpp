@@ -105,6 +105,7 @@ extern CZapitChannel * live_channel;
 /* events */
 void sectionsd_getChannelEvents(CChannelEventList &eList, const bool tv_mode, t_channel_id *chidlist, int clen);
 void sectionsd_getEventsServiceKey(t_channel_id serviceUniqueKey, CChannelEventList &eList, char search = 0, std::string search_text = "");
+//
 void addChannelToBouquet(const unsigned int bouquet, const t_channel_id channel_id);	// defined in zapit.cpp
 
 extern int old_b_id;
@@ -198,8 +199,6 @@ void CChannelList::putChannel(CZapitChannel * channel)
 		chanlist.resize((unsigned) num + 1);
 	}
 	chanlist[num] = channel;
-
-	//printf("%s : me %x putChannel: %d: %s %x -> %x [0] %x\n", name.c_str(), this, num, channel->getName().c_str(), channel, chanlist[num], chanlist[0]);fflush(stdout);
 }
 
 void CChannelList::updateEvents(void)
@@ -217,7 +216,7 @@ void CChannelList::updateEvents(void)
 			{		
 				//
 				events.clear();
-				//
+
 				sectionsd_getEventsServiceKey(chanlist[count]->channel_id, events);
 				chanlist[count]->nextEvent.startTime = (long)0x7fffffff;
 				
@@ -240,7 +239,7 @@ void CChannelList::updateEvents(void)
 		if (chanlist.size()) 
 		{
 			size_requested_channels = chanlist.size()*sizeof(t_channel_id);
-			p_requested_channels    = (t_channel_id*)malloc(size_requested_channels);
+			p_requested_channels = (t_channel_id*)malloc(size_requested_channels);
 			
 			for (uint32_t count = 0; count < chanlist.size(); count++)
 			{
