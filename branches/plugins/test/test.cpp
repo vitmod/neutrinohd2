@@ -35,6 +35,11 @@ class CTestMenu : CMenuTarget
 		void testCStringInput();
 		void testCStringInputSMS();
 		void testCPINInput();
+		void testCIPInput();
+		void testCDateInput();
+		void testCMACInput();
+		void testCTimeInput();
+		void testCIntInput();
 		void testCInfoBox();
 		void testCInfoBoxShowMsg();
 		void testCInfoBoxInfoBox();
@@ -93,6 +98,7 @@ void CTestMenu::testCStringInput()
 	stringInput->exec(NULL, "");
 	stringInput->hide();
 	delete stringInput;
+	stringInput = NULL;
 }
 void CTestMenu::testCStringInputSMS()
 {
@@ -112,6 +118,60 @@ void CTestMenu::testCPINInput()
 	pinInput->exec(NULL, "");
 	pinInput->hide();
 	delete pinInput;
+}
+
+void CTestMenu::testCIPInput()
+{
+	std::string value;
+	CIPInput * ipInput = new CIPInput(LOCALE_STREAMINGMENU_SERVER_IP, value);
+	
+	ipInput->exec(NULL, "");
+	ipInput->hide();
+	delete ipInput;
+}
+
+void CTestMenu::testCMACInput()
+{
+	std::string value;
+	CMACInput * macInput = new CMACInput(LOCALE_RECORDINGMENU_SERVER_MAC, (char *)value.c_str());
+	
+	macInput->exec(NULL, "");
+	macInput->hide();
+	delete macInput;
+}
+
+void CTestMenu::testCDateInput()
+{
+	/*
+	time_t* value;
+	CDateInput * dateInput = new CDateInput(LOCALE_FILEBROWSER_SORT_DATE, value);
+	
+	dateInput->exec(NULL, "");
+	dateInput->hide();
+	delete dateInput;
+	*/
+}
+
+void CTestMenu::testCTimeInput()
+{
+	std::string value;
+	CTimeInput * timeInput = new CTimeInput(LOCALE_FILEBROWSER_SORT_DATE, (char *)value.c_str());
+	
+	timeInput->exec(NULL, "");
+	timeInput->hide();
+	delete timeInput;
+}
+
+void CTestMenu::testCIntInput()
+{
+	/*
+	int* value;
+	CIntInput * intInput = new CIntInput(LOCALE_FILEBROWSER_SORT_DATE, value);
+	
+	intInput->exec(NULL, "");
+	intInput->hide();
+	delete intInput;
+	*/
 }
 
 void CTestMenu::testCInfoBox()
@@ -972,6 +1032,31 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 		testCPINInput();
 		return res;
 	}
+	else if(actionKey == "ipinput")
+	{
+		testCIPInput();
+		return res;
+	}
+	else if(actionKey == "macinput")
+	{
+		testCMACInput();
+		return res;
+	}
+	else if(actionKey == "dateinput")
+	{
+		testCDateInput();
+		return res;
+	}
+	else if(actionKey == "timeinput")
+	{
+		testCTimeInput();
+		return res;
+	}
+	else if(actionKey == "intinput")
+	{
+		testCIntInput();
+		return res;
+	}
 	else if(actionKey == "infobox")
 	{
 		testCInfoBox();
@@ -1126,6 +1211,11 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CStringInput", true, NULL, this, "stringinput"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CStringInputSMS", true, NULL, this, "stringinputsms"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CPINInput", true, NULL, this, "pininput"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("CIPInput", true, NULL, this, "ipinput"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("CMACInput", true, NULL, this, "macinput"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("CDateInput", false, NULL, this, "dateinput"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("CTimeInput", true, NULL, this, "timeinput"));
+	mainMenu->addItem(new CMenuForwarderNonLocalized("CIntInput", false, NULL, this, "intinput"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CInfoBox", true, NULL, this, "infobox"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CInfoBoxShowMsg", true, NULL, this, "infoboxshowmsg"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CInfoBoxInfoBox", true, NULL, this, "infoboxinfobox"));
