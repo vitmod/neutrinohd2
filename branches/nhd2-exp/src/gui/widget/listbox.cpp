@@ -67,7 +67,7 @@ CListBox::CListBox(const char * const Caption, int _width, int _height, bool ite
 	listmaxshow = (height - theight - ButtonHeight)/fheight;
 	height = theight + ButtonHeight + listmaxshow*fheight; // recalc height
 
-	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width) / 2);
+	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - (width + (ItemDetails? ConnectLineBox_Width : 0))) / 2) + (ItemDetails? ConnectLineBox_Width : 0);
 	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - (height + InfoHeight)) / 2) + TitleHeight/2;
 }
 

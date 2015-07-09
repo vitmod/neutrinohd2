@@ -191,7 +191,7 @@ int CBEChannelSelectWidget::exec(CMenuTarget * parent, const std::string & actio
 	listmaxshow = (height - theight - ButtonHeight)/fheight;
 	height = theight + ButtonHeight + listmaxshow*fheight; // recalc height
 	
-	x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - width) / 2;
+	x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - (width + ConnectLineBox_Width)) / 2 + ConnectLineBox_Width;
 	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - (height + info_height)) / 2;
 
 	bouquetChannels = mode == CZapitClient::MODE_TV ? &(g_bouquetManager->Bouquets[bouquet]->tvChannels) : &(g_bouquetManager->Bouquets[bouquet]->radioChannels);

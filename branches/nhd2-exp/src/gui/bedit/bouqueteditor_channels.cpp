@@ -305,7 +305,7 @@ int CBEChannelWidget::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 	info_height = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
 	
 	// coordinate
-	x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - width) / 2;
+	x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - (width + ConnectLineBox_Width)) / 2 + ConnectLineBox_Width;
 	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height -ButtonHeight - 2 - info_height) / 2;
 
 	Channels = mode == CZapitClient::MODE_TV ? &(g_bouquetManager->Bouquets[bouquet]->tvChannels) : &(g_bouquetManager->Bouquets[bouquet]->radioChannels);

@@ -563,7 +563,7 @@ int CChannelList::show()
 	// info height
 	info_height = 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight() + 5 + g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 5;
 	
-	x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - width) / 2;
+	x = frameBuffer->getScreenX() + (frameBuffer->getScreenWidth() - (width + ConnectLineBox_Width)) / 2 + ConnectLineBox_Width;
 	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - (height + info_height)) / 2;
 
 	displayNext = false;

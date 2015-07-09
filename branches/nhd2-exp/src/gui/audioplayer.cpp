@@ -272,7 +272,6 @@ int CAudioPlayerGui::exec(CMenuTarget * parent, const std::string &)
 	m_sheight = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 	// 
 	m_frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &icon_foot_w, &icon_foot_h);
-	//m_buttonHeight = std::min(25, m_sheight);
 	m_buttonHeight = 2*(std::max(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), icon_foot_h)) + 10;
 	m_theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	m_fheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
@@ -1543,13 +1542,13 @@ bool CAudioPlayerGui::openFilebrowser(void)
 		if (maxProgress > SHOW_FILE_LOAD_LIMIT)
 		{
 			progress.setTitle(LOCALE_AUDIOPLAYER_READING_FILES);
-			progress.exec(this,"");	
+			progress.exec(this, "");	
 		}
 
 		m_Path = filebrowser.getCurrentDir();
 		CFileList::const_iterator files = filebrowser.getSelectedFiles().begin();
 		
-		for(; files != filebrowser.getSelectedFiles().end();files++)
+		for(; files != filebrowser.getSelectedFiles().end(); files++)
 		{
 			if (maxProgress > SHOW_FILE_LOAD_LIMIT)
 			{
