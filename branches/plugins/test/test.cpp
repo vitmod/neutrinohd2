@@ -532,6 +532,7 @@ BROWSER:
 		
 		if ((file = fileBrowser->getSelectedFile()) != NULL) 
 		{
+			/*
 			bool usedBackground = CFrameBuffer::getInstance()->getuseBackground();
 			if (usedBackground)
 				CFrameBuffer::getInstance()->saveBackgroundImage();
@@ -651,6 +652,11 @@ BROWSER:
 				
 			CFrameBuffer::getInstance()->paintBackground();
 			CFrameBuffer::getInstance()->blit();
+			*/
+			CAudioPlayerGui tmpAudioPlayerGui;
+			CAudiofileExt audiofile(file->Name, file->getExtension());
+			tmpAudioPlayerGui.addToPlaylist(audiofile);
+			tmpAudioPlayerGui.exec(NULL, "urlplayback");
 		}
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
@@ -766,6 +772,8 @@ BROWSER:
 	if (fileBrowser->exec(Path_local.c_str()))
 	{
 		Path_local = fileBrowser->getCurrentDir();
+		
+		/*
 		filelist = fileBrowser->getSelectedFiles();
 
 		if (!filelist.empty()) 
@@ -918,6 +926,25 @@ PLAY:
 			CFrameBuffer::getInstance()->paintBackground();
 			CFrameBuffer::getInstance()->blit();
 		}
+		*/
+		CAudioPlayerGui tmpAudioPlayerGui;
+		CFileList::const_iterator files = fileBrowser->getSelectedFiles().begin();
+		
+		for(; files != fileBrowser->getSelectedFiles().end(); files++)
+		{
+
+			if ( (files->getExtension() == CFile::EXTENSION_CDR)
+					||  (files->getExtension() == CFile::EXTENSION_MP3)
+					||  (files->getExtension() == CFile::EXTENSION_WAV)
+					||  (files->getExtension() == CFile::EXTENSION_FLAC)
+			)
+			{
+				CAudiofileExt audiofile(files->Name, files->getExtension());
+				tmpAudioPlayerGui.addToPlaylist(audiofile);
+			}
+		}
+		
+		tmpAudioPlayerGui.exec(NULL, "urlplayback");
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
