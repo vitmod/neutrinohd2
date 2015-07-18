@@ -829,14 +829,11 @@ int CNeutrinoApp::loadSetup(const char * fname)
 
 	g_settings.audioplayer_display = configfile.getInt32("audioplayer_display",(int)CAudioPlayerGui::ARTIST_TITLE);
 	g_settings.audioplayer_follow  = configfile.getInt32("audioplayer_follow",0);
-	strcpy( g_settings.audioplayer_screensaver, configfile.getString( "audioplayer_screensaver", "0" ).c_str() );
 	g_settings.audioplayer_highprio  = configfile.getInt32("audioplayer_highprio",0);
 	g_settings.audioplayer_select_title_by_name = configfile.getInt32("audioplayer_select_title_by_name", 0);
 	g_settings.audioplayer_repeat_on = configfile.getInt32("audioplayer_repeat_on",0);
-	g_settings.audioplayer_screensaver_type = configfile.getInt32("audioplayer_screensaver_type", CAudioPlayerGui::NONE);
 	g_settings.audioplayer_enable_sc_metadata = configfile.getInt32("audioplayer_enable_sc_metadata", 1);
-	// audioplayer screensaver_dir
-	//g_settings.audioplayer_screensaver_dir = configfile.getString("audioplayer_screensaver_dir", DATADIR "/neutrino/icons");
+	g_settings.audioplayer_hide_playlist = configfile.getInt32("audioplayer_hide_playlist", 0);
 	// end audioplayer
 
 	// pictureviewer
@@ -1265,14 +1262,11 @@ void CNeutrinoApp::saveSetup(const char * fname)
 
 	configfile.setInt32( "audioplayer_display", g_settings.audioplayer_display );
 	configfile.setInt32( "audioplayer_follow", g_settings.audioplayer_follow );
-	configfile.setString( "audioplayer_screensaver", g_settings.audioplayer_screensaver );
 	configfile.setInt32( "audioplayer_highprio", g_settings.audioplayer_highprio );
 	configfile.setInt32( "audioplayer_select_title_by_name", g_settings.audioplayer_select_title_by_name );
 	configfile.setInt32( "audioplayer_repeat_on", g_settings.audioplayer_repeat_on );
-	configfile.setInt32( "audioplayer_screensaver_type", g_settings.audioplayer_screensaver_type );
 	configfile.setInt32( "audioplayer_enable_sc_metadata", g_settings.audioplayer_enable_sc_metadata );
-	// audioplayer_screensaver_dir
-	//configfile.setString("audioplayer_screensaver_dir", g_settings.audioplayer_screensaver_dir);
+	configfile.setInt32("audioplayer_hide_playlist", g_settings.audioplayer_hide_playlist);
 	// END AUDIOPLAYER
 
 	// PICVIEWER
@@ -5306,24 +5300,6 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 				
 		return menu_return::RETURN_REPAINT;	
 	}
-	/*
-	else if(actionKey == "audioplayer_screensaver_dir") 
-	{
-		parent->hide();
-		
-		CFileBrowser b;
-		b.Dir_Mode=true;
-		
-		if (b.exec(g_settings.audioplayer_screensaver_dir.c_str())) 
-		{
-			g_settings.audioplayer_screensaver_dir = b.getSelectedFile()->Name;
-
-			dprintf(DEBUG_NORMAL, "CNeutrinoApp::exec: new audioplayer_screensaver dir %s\n", b.getSelectedFile()->Name.c_str());
-		}
-
-		return menu_return::RETURN_REPAINT;
-	}
-	*/
 	else // start plugins with name forwarded into menue
 	{
 		g_PluginList->startPlugin((const char *)actionKey.c_str());

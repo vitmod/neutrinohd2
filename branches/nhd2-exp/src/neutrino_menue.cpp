@@ -977,15 +977,6 @@ const CMenuOptionChooser::keyval AUDIOPLAYER_DISPLAY_ORDER_OPTIONS[AUDIOPLAYER_D
 	{ CAudioPlayerGui::TITLE_ARTIST, LOCALE_AUDIOPLAYER_TITLE_ARTIST, NULL }
 };
 
-// screensaver type
-#define AUDIOPLAYER_SCREENSAVER_TYPE_OPTION_COUNT 2
-const CMenuOptionChooser::keyval AUDIOPLAYER_SCREENSAVER_TYPE_OPTIONS[AUDIOPLAYER_SCREENSAVER_TYPE_OPTION_COUNT] =
-{
-	{ CAudioPlayerGui::NONE, LOCALE_AUDIOPLAYER_SCREENSAVER_NONE, NULL },
-	{ CAudioPlayerGui::HIDE_PLAYLIST, LOCALE_AUDIOPLAYER_SCREENSAVER_HIDEPLAYLIST, NULL },
-	//{ CAudioPlayerGui::SHOW_PIC, LOCALE_AUDIOPLAYER_SCREENSAVER_DIASHOW, NULL }
-};
-
 void CNeutrinoApp::InitAudioplayerSettings(CMenuWidget &audioplayerSettings)
 {
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitAudioplayerSettings\n");
@@ -1012,12 +1003,8 @@ void CNeutrinoApp::InitAudioplayerSettings(CMenuWidget &audioplayerSettings)
 	// repeat
 	audioplayerSettings.addItem(new CMenuOptionChooser(LOCALE_AUDIOPLAYER_REPEAT_ON, &g_settings.audioplayer_repeat_on, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutAudioPlayer++) ));
 
-	// screensaver type
-	audioplayerSettings.addItem(new CMenuOptionChooser(LOCALE_AUDIOPLAYER_SCREENSAVER_TYPE, &g_settings.audioplayer_screensaver_type, AUDIOPLAYER_SCREENSAVER_TYPE_OPTIONS, AUDIOPLAYER_SCREENSAVER_TYPE_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutAudioPlayer++) ));
-
-	// screensaver timeout
-	CStringInput * audio_screensaver= new CStringInput(LOCALE_AUDIOPLAYER_SCREENSAVER_TIMEOUT, g_settings.audioplayer_screensaver, 2, NONEXISTANT_LOCALE, NONEXISTANT_LOCALE, "0123456789 ");
-	audioplayerSettings.addItem(new CMenuForwarder(LOCALE_AUDIOPLAYER_SCREENSAVER_TIMEOUT, true, g_settings.audioplayer_screensaver, audio_screensaver, NULL, CRCInput::convertDigitToKey(shortcutAudioPlayer++)));
+	// hide playlist
+	audioplayerSettings.addItem(new CMenuOptionChooser(LOCALE_AUDIOPLAYER_HIDE_PLAYLIST, &g_settings.audioplayer_hide_playlist, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutAudioPlayer++) ));
 
 	// high prio
 	audioplayerSettings.addItem(new CMenuOptionChooser(LOCALE_AUDIOPLAYER_HIGHPRIO, &g_settings.audioplayer_highprio, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutAudioPlayer++) ));
@@ -1027,9 +1014,6 @@ void CNeutrinoApp::InitAudioplayerSettings(CMenuWidget &audioplayerSettings)
 
 	// sc metadata
 	audioplayerSettings.addItem(new CMenuOptionChooser(LOCALE_AUDIOPLAYER_ENABLE_SC_METADATA, &g_settings.audioplayer_enable_sc_metadata, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutAudioPlayer++) ));
-	
-	// audioplayer screensaver dir
-	//audioplayerSettings.addItem( new CMenuForwarder(LOCALE_AUDIOPLAYER_SCREENSAVER_DIR, true, g_settings.audioplayer_screensaver_dir, this, "audioplayer_screensaver_dir" ) );
 }
 
 // InitPicViewerSettings

@@ -366,13 +366,11 @@ struct SNeutrinoSettings
 
 	int   audioplayer_display;
 	int   audioplayer_follow;
-	char  audioplayer_screensaver[3];
 	int   audioplayer_highprio;
 	int   audioplayer_select_title_by_name;
 	int   audioplayer_repeat_on;
-	int   audioplayer_screensaver_type;
 	int   audioplayer_enable_sc_metadata;
-	//std::string audioplayer_screensaver_dir;
+	int audioplayer_hide_playlist;
 	// END AUDIOPLAYER
 
 	// PICVIEWER

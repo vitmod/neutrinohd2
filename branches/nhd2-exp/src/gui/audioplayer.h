@@ -155,7 +155,6 @@ class CAudioPlayerGui : public CMenuTarget
 
 		int            m_LastMode;
 		int            m_idletime;
-		int            m_screensaver;
 		bool           m_inetmode;
 		uint32_t       stimer;
 		
@@ -163,6 +162,7 @@ class CAudioPlayerGui : public CMenuTarget
 
 		SMSKeyInput    m_SMSKeyInput;
 		std::string shoutcast_dev_id;
+		bool hide_playlist;
 
 		void paintItem(int pos);
 		void paint();
@@ -187,7 +187,7 @@ class CAudioPlayerGui : public CMenuTarget
 		void updateMetaData();
 		void updateTimes(const bool force = false);
 		void showMetaData();
-		void screensaver(int type);
+		void screensaver(void);
 		bool getNumericInput(neutrino_msg_t& msg,int& val);
 
 		void addToPlaylist(CAudiofileExt &file);

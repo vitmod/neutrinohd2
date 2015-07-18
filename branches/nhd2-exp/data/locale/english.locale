@@ -56,6 +56,7 @@ audioplayer.jump_dialog_hint2 (relative, in seconds)
 audioplayer.jump_dialog_title Enter jump target
 audioplayer.jump_forwards jump forwards
 audioplayer.keylevel key level
+audioplayer.hide_playlist hide Playlist
 audioplayer.load_radio_stations Load internet radios
 audioplayer.name Audioplayer
 audioplayer.pause pause
@@ -72,13 +73,7 @@ audioplayer.receiving_list Receiving list, please wait
 audioplayer.repeat_on enable repeat mode
 audioplayer.rewind rewind
 audioplayer.save_playlist save play list
-audioplayer.screensaver_timeout screensaver timeout (min, 0=off)
 audioplayer.select_title_by_name search title by name (SMS)
-audioplayer.screensaver_type Screensaver mode
-audioplayer_screensaver_none off
-audioplayer_screensaver_hide_playlist Hide playlist
-audioplayer_screensaver_diashow Diashow
-audioplayer_screensaver_dir Audioplayer diashow
 audioplayer.shuffle shuffle
 audioplayer.spectrum lcd a-spectrum
 audioplayer.stop Stop

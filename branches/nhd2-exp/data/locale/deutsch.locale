@@ -55,6 +55,7 @@ audioplayer.jump_dialog_hint1 Bitte Sprungziel eingeben
 audioplayer.jump_dialog_hint2 (relativ, in Sekunden)
 audioplayer.jump_dialog_title Sprungziel eingeben
 audioplayer.jump_forwards vorw. springen
+audioplayer.hide_playlist Playlist verstecken
 audioplayer.keylevel Tasten-Umschaltung
 audioplayer.load_radio_stations Lade Internetradios
 audioplayer.name Audioplayer
@@ -72,13 +73,7 @@ audioplayer.receiving_list Empfange Liste, bitte warten...
 audioplayer.repeat_on Repeatmodus aktivieren
 audioplayer.rewind schneller Rückl.
 audioplayer.save_playlist Playlist speichern
-audioplayer.screensaver_timeout Bildschirmschoner timeout(min, 0=aus)
 audioplayer.select_title_by_name Titelsuche nach Name (SMS)
-audioplayer.screensaver_type Bildschirmschoner Modus
-audioplayer_screensaver_none aus
-audioplayer_screensaver_hide_playlist verstecke Playliste
-audioplayer_screensaver_diashow Diashow
-audioplayer_screensaver_dir Audioplayer Diashow
 audioplayer.shuffle Shuffle
 audioplayer.spectrum LCD Skala
 audioplayer.stop Stop
