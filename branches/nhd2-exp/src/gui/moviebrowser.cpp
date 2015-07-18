@@ -1313,10 +1313,10 @@ void CMovieBrowser::refreshMovieInfo(void)
 		
 		if( (!fname.empty() && !access(fname.c_str(), F_OK)) && m_settings.gui != MB_GUI_FILTER )
 		{
-			pich = m_cBoxFrameInfo.iHeight - 10;
+			pich = m_cBoxFrameInfo.iHeight - 20;
 			picw = pich * (4.0 / 3);		// 4/3 format pics
 			
-			lx = m_cBoxFrameInfo.iX + m_cBoxFrameInfo.iWidth - picw - 10;
+			lx = m_cBoxFrameInfo.iX + m_cBoxFrameInfo.iWidth - (picw + SCROLLBAR_WIDTH + 10);
 			ly = m_cBoxFrameInfo.iY + (m_cBoxFrameInfo.iHeight - pich)/2;
 		}
 		

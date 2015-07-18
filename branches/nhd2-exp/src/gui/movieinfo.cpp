@@ -564,8 +564,8 @@ void CMovieInfo::showMovieInfo(MI_MOVIE_INFO & movie_info)
 	// thumbnail
 	// thumbnail
 	int pich = 246;	//FIXME
-	int picw = 162; 	//FIXME
-	int lx = g_settings.screen_StartX + 50 + g_settings.screen_EndX - g_settings.screen_StartX - 100 - (picw + 20);
+	int picw = 162; //FIXME
+	int lx = g_settings.screen_StartX + 50 + g_settings.screen_EndX - g_settings.screen_StartX - 100 - (picw + SCROLLBAR_WIDTH + 10);
 	int ly = g_settings.screen_StartY + 50 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 20;
 		
 	if(access(movie_info.tfile.c_str(), F_OK))

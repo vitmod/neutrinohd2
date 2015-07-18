@@ -65,7 +65,7 @@
 #include <system/debug.h>
 
 #define	TEXT_BORDER_WIDTH	8
-#define	SCROLL_FRAME_WIDTH	10
+#define	SCROLL_FRAME_WIDTH	SCROLLBAR_WIDTH
 #define	SCROLL_MARKER_BORDER	2
 
 #define MAX_WINDOW_WIDTH  	(g_settings.screen_EndX - g_settings.screen_StartX - 40)
@@ -273,12 +273,12 @@ void CTextBox::refreshTextLineArray(void)
 
 	if( m_nMode & AUTO_WIDTH)
 	{
-		/* In case of autowidth, we calculate the max allowed width of the textbox */
+		// In case of autowidth, we calculate the max allowed width of the textbox
 		lineBreakWidth = MAX_WINDOW_WIDTH - m_cFrameScrollRel.iWidth - 2*TEXT_BORDER_WIDTH;
 	}
 	else
 	{
-		/* If not autowidth, we just take the actuall textframe width */
+		// If not autowidth, we just take the actuall textframe width
 		lineBreakWidth = m_cFrameTextRel.iWidth - 2*TEXT_BORDER_WIDTH;
 	}
 	
@@ -352,12 +352,12 @@ void CTextBox::refreshTextLineArray(void)
 				{
 					if( m_nMode & AUTO_WIDTH)
 					{
-						/* In case of autowidth, we calculate the max allowed width of the textbox */
+						// In case of autowidth, we calculate the max allowed width of the textbox
 						lineBreakWidth = MAX_WINDOW_WIDTH - m_cFrameScrollRel.iWidth - 2*TEXT_BORDER_WIDTH;
 					}
 					else
 					{
-						/* If not autowidth, we just take the actuall textframe width */
+						// If not autowidth, we just take the actuall textframe width
 						lineBreakWidth = m_cFrameTextRel.iWidth - 2*TEXT_BORDER_WIDTH;
 					}
 				}
@@ -407,11 +407,11 @@ void CTextBox::refreshScroll(void)
 		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + m_cFrame.iX, m_cFrameScrollRel.iY + m_cFrame.iY, m_cFrameScrollRel.iWidth, m_cFrameScrollRel.iHeight, COL_MENUCONTENT_PLUS_1);
 		
 		unsigned int marker_size = m_cFrameScrollRel.iHeight / m_nNrOfPages;
-		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + SCROLL_MARKER_BORDER+m_cFrame.iX, m_cFrameScrollRel.iY + m_nCurrentPage * marker_size + m_cFrame.iY, m_cFrameScrollRel.iWidth - 2*SCROLL_MARKER_BORDER, marker_size, COL_MENUCONTENT_PLUS_3);
+		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + SCROLL_MARKER_BORDER + m_cFrame.iX, m_cFrameScrollRel.iY + m_nCurrentPage * marker_size + m_cFrame.iY, m_cFrameScrollRel.iWidth - 2*SCROLL_MARKER_BORDER, marker_size, COL_MENUCONTENT_PLUS_3);
 	}
 	else
 	{
-		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + m_cFrame.iX, m_cFrameScrollRel.iY+m_cFrame.iY, m_cFrameScrollRel.iWidth, m_cFrameScrollRel.iHeight, m_textBackgroundColor);
+		frameBuffer->paintBoxRel(m_cFrameScrollRel.iX + m_cFrame.iX, m_cFrameScrollRel.iY + m_cFrame.iY, m_cFrameScrollRel.iWidth, m_cFrameScrollRel.iHeight, m_textBackgroundColor);
 	}
 }
 
