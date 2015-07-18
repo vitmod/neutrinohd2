@@ -42,6 +42,10 @@
 #include <stdarg.h>
 
 #include <system/helpers.h>
+#include <system/debug.h>
+#include <system/settings.h>
+
+#include <global.h>
 
 
 off_t file_size(const char *filename)
@@ -545,6 +549,164 @@ std::string changeFileNameExt(std::string &filename, const char *ext)
 	
 	return filename;
 }
+
+//
+size_t CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data)
+{
+        std::string* pStr = (std::string*) data;
+        pStr->append((char*) ptr, nmemb);
+	
+        return size*nmemb;
+}
+
+bool getUrl(std::string &url, std::string &answer, std::string& userAgent)
+{
+	CURL * curl_handle = curl_easy_init();
+	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
+	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, &CurlWriteToString);
+	curl_easy_setopt(curl_handle, CURLOPT_FILE, (void *)&answer);
+	curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
+	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 60);
+	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
+	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, false);
+	curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, userAgent.c_str());
+	
+	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
+	{
+		curl_easy_setopt(curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
+		
+		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
+		{
+			char tmp[200];
+			strcpy(tmp, g_settings.softupdate_proxyusername);
+			strcat(tmp, ":");
+			strcat(tmp, g_settings.softupdate_proxypassword);
+			curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, tmp);
+		}
+	}
+
+	char cerror[CURL_ERROR_SIZE];
+	curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, cerror);
+
+	dprintf(DEBUG_NORMAL, "cYTFeedParser::getUrl: try to get %s\n", url.c_str());
+	
+	CURLcode httpres = curl_easy_perform(curl_handle);
+
+	curl_easy_cleanup(curl_handle);
+
+	dprintf(DEBUG_NORMAL, "cYTFeedParser::getUrl: http: res %d size %d\n", httpres, (int)answer.size());
+
+	if (httpres != 0 || answer.empty()) 
+	{
+		dprintf(DEBUG_NORMAL, "cYTFeedParser::getUrl: error: %s\n", cerror);
+		return false;
+	}
+	
+	return true;
+}
+
+bool DownloadUrl(std::string &url, std::string &file, std::string& userAgent)
+{
+	FILE * fp = fopen(file.c_str(), "wb");
+	if (fp == NULL) 
+	{
+		perror(file.c_str());
+		return false;
+	}
+	
+	CURL * curl_handle = curl_easy_init();
+	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
+	curl_easy_setopt(curl_handle, CURLOPT_FILE, fp);
+	curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
+	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 60);
+	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
+	curl_easy_setopt(curl_handle, CURLOPT_SSL_VERIFYPEER, false);
+	curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, userAgent.c_str());
+	
+	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
+	{
+		curl_easy_setopt(curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
+		
+		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
+		{
+			char tmp[200];
+			strcpy(tmp, g_settings.softupdate_proxyusername);
+			strcat(tmp, ":");
+			strcat(tmp, g_settings.softupdate_proxypassword);
+			curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, tmp);
+		}
+	}
+
+	char cerror[CURL_ERROR_SIZE];
+	curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, cerror);
+
+	dprintf(DEBUG_NORMAL, "cYTFeedParser::DownloadUrl: try to get %s\n", url.c_str());
+	
+	CURLcode httpres = curl_easy_perform(curl_handle);
+
+	double dsize;
+	curl_easy_getinfo(curl_handle, CURLINFO_SIZE_DOWNLOAD, &dsize);
+	curl_easy_cleanup(curl_handle);
+	fclose(fp);
+
+	dprintf(DEBUG_NORMAL, "cYTFeedParser::DownloadUrl: http: res %d size %f.\n", httpres, dsize);
+
+	if (httpres != 0) 
+	{
+		dprintf(DEBUG_NORMAL, "cYTFeedParser::DownloadUrl: curl error: %s\n", cerror);
+		unlink(file.c_str());
+		return false;
+	}
+	
+	return true;
+}
+
+void decodeUrl(std::string &url)
+{
+	CURL * curl_handle = curl_easy_init();
+	char * str = curl_easy_unescape(curl_handle, url.c_str(), 0, NULL);
+	curl_easy_cleanup(curl_handle);
+	
+	if(str)
+		url = str;
+	
+	curl_free(str);
+}
+
+void encodeUrl(std::string &txt)
+{
+	CURL * curl_handle = curl_easy_init();
+	char * str = curl_easy_escape(curl_handle, txt.c_str(), txt.length());
+	curl_easy_cleanup(curl_handle);
+	
+	if(str)
+		txt = str;
+	
+	curl_free(str);
+}
+
+void splitString(std::string &str, std::string delim, std::vector<std::string> &strlist, int start)
+{
+	strlist.clear();
+	int end = 0;
+	
+	while ((end = str.find(delim, start)) != std::string::npos) 
+	{
+		strlist.push_back(str.substr(start, end - start));
+		start = end + delim.size();
+	}
+	strlist.push_back(str.substr(start));
+}
+
+void splitString(std::string &str, std::string delim, std::map<std::string,std::string> &strmap, int start)
+{
+	int end = 0;
+	if ((end = str.find(delim, start)) != std::string::npos) 
+	{
+		strmap[str.substr(start, end - start)] = str.substr(end - start + delim.size());
+	}
+}
+//
 
 CFileHelpers::CFileHelpers()
 {

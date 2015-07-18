@@ -48,9 +48,6 @@
 #include <string>
 #include <vector>
 
-/* curl */
-#include <curl/curl.h>
-#include <curl/easy.h>
 
 #if !defined (_FILE_OFFSET_BITS) && !defined (__USE_FILE_OFFSET64) && !defined (_DARWIN_USE_64_BIT_INODE)
 #error not using 64 bit file offsets

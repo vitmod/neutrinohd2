@@ -68,6 +68,8 @@
 #include <gui/widget/stringinput_ext.h>
 
 #include <system/settings.h>
+#include <system/helpers.h>
+
 #include <xmlinterface.h>
 
 #include <algorithm>
@@ -166,9 +168,6 @@ static size_t WriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void *da
 	}
 	return realsize;
 }
-
-// we borrow this from filebrowser
-extern size_t CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data);
 
 CAudioPlayerGui::CAudioPlayerGui(bool inetmode)
 {
@@ -521,7 +520,13 @@ int CAudioPlayerGui::show()
 		}
 		else if( ((msg &~ CRCInput::RC_Repeat) == CRCInput::RC_up || (msg &~ CRCInput::RC_Repeat) == CRCInput::RC_page_up) && !calledFromExtern)
 		{
-			if(!hide_playlist && !m_playlist.empty() )
+			if(hide_playlist)
+			{
+				paintInfo();
+				paint();
+			}
+			
+			if(!m_playlist.empty() )
 			{
 				int step = 0;
 				int prevselected = m_selected;
@@ -547,7 +552,13 @@ int CAudioPlayerGui::show()
 		}
 		else if(((msg &~ CRCInput::RC_Repeat) == CRCInput::RC_down || (msg &~ CRCInput::RC_Repeat) == CRCInput::RC_page_down) && !calledFromExtern)
 		{
-			if(!hide_playlist && !m_playlist.empty() )
+			if(hide_playlist)
+			{
+				paintInfo();
+				paint();
+			}
+			
+			if(!m_playlist.empty() )
 			{
 				int prevselected = m_selected;
 				unsigned int step =  msg == CRCInput::RC_page_down ? m_listmaxshow : 1;
@@ -1502,8 +1513,6 @@ bool CAudioPlayerGui::openFilebrowser(void)
 
 void CAudioPlayerGui::hide()
 {
-	//printf("hide(){\n");
-	
 	if(m_visible)
 	{
 		// main box
@@ -2329,7 +2338,7 @@ void CAudioPlayerGui::paintLCD()
 
 void CAudioPlayerGui::GetMetaData(CAudiofileExt &File)
 {
-	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::GetMetaData: fileExtension:%d\n", File.FileExtension);
+	dprintf(DEBUG_DEBUG, "CAudioPlayerGui::GetMetaData: fileExtension:%d\n", File.FileExtension);
 	
 	bool ret = 1;
 

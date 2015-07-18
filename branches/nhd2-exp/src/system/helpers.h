@@ -29,6 +29,13 @@
 #include <string>
 #include <sstream>
 
+#include <curl/curl.h>
+#include <curl/easy.h>
+
+#include <vector>
+#include <string>
+#include <map>
+
 int my_system(const char * cmd);
 int my_system(int argc, const char *arg, ...); /* argc is number of arguments including command */
 
@@ -70,6 +77,16 @@ inline void cstrncpy(char *dest, const std::string &src, size_t n) { n--; strncp
 
 std::string changeFileNameExt(std::string &filename, const char *ext);
 
+//
+size_t CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data);
+void encodeUrl(std::string &txt);
+void decodeUrl(std::string &url);
+void splitString(std::string &str, std::string delim, std::vector<std::string> &strlist, int start = 0);
+void splitString(std::string &str, std::string delim, std::map<std::string,std::string> &strmap, int start = 0);
+bool getUrl(std::string &url, std::string &answer, const std::string& userAgent = " ");
+bool DownloadUrl(std::string &url, std::string &file, const std::string& userAgent = " ");
+//
+
 class CFileHelpers
 {
 	public:
@@ -79,7 +96,7 @@ class CFileHelpers
 		bool doCopyFlag;
 
 		bool copyFile(const char *Src, const char *Dst, mode_t mode);
-		bool copyDir(const char *Src, const char *Dst, bool backupMode=false);
+		bool copyDir(const char *Src, const char *Dst, bool backupMode = false);
 		bool createDir(const char *Dir, mode_t mode);
 		bool removeDir(const char *Dir);
 };

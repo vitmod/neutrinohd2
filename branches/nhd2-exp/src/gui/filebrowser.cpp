@@ -62,10 +62,6 @@
 
 #include <sys/stat.h>
 
-#include <curl/curl.h>
-//#include <curl/types.h>
-#include <curl/easy.h>
-
 #include <driver/encoding.h>
 
 #include <xmlinterface.h>
@@ -91,12 +87,6 @@ typedef struct stat stat_struct;
 
 #define SMSKEY_TIMEOUT 2000
 
-size_t CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data)
-{
-	std::string* pStr = (std::string*) data;
-	pStr->append((char*) ptr, nmemb); // do only add the correct size, do not go until end of data (chunked transfer)
-	return size*nmemb;
-}
 
 SMSKeyInput::SMSKeyInput()
 {
@@ -108,7 +98,7 @@ unsigned char SMSKeyInput::handleMsg(const neutrino_msg_t msg)
 {
 	timeval keyTime;
 	gettimeofday(&keyTime,NULL);
-	bool timeoutNotReached = (keyTime.tv_sec*1000+keyTime.tv_usec/1000 <= m_oldKeyTime.tv_sec*1000+m_oldKeyTime.tv_usec/1000 + m_timeout);
+	bool timeoutNotReached = (keyTime.tv_sec*1000 + keyTime.tv_usec/1000 <= m_oldKeyTime.tv_sec*1000 +m_oldKeyTime.tv_usec/1000 + m_timeout);
 
 	unsigned char key = 0;
 	
