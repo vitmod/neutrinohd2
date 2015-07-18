@@ -550,7 +550,6 @@ std::string changeFileNameExt(std::string &filename, const char *ext)
 	return filename;
 }
 
-//
 size_t CurlWriteToString(void *ptr, size_t size, size_t nmemb, void *data)
 {
         std::string* pStr = (std::string*) data;
@@ -706,7 +705,6 @@ void splitString(std::string &str, std::string delim, std::map<std::string,std::
 		strmap[str.substr(start, end - start)] = str.substr(end - start + delim.size());
 	}
 }
-//
 
 CFileHelpers::CFileHelpers()
 {

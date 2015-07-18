@@ -69,6 +69,7 @@
 #include <movieplayer.h>
 
 #include <gui/webtv.h>
+#include <gui/audioplayer.h>
 #include <gui/hdd_menu.h>
 
 #include <blkid/blkid.h>
@@ -1205,124 +1206,11 @@ REPEAT:
 				}
 				else if(file->getType() == CFile::FILE_AUDIO)
 				{
-					bool usedBackground = CFrameBuffer::getInstance()->getuseBackground();
-					if (usedBackground)
-						CFrameBuffer::getInstance()->saveBackgroundImage();
-					
-					//show audio background pic	
-					CFrameBuffer::getInstance()->loadBackgroundPic("mp3.jpg");
-					CFrameBuffer::getInstance()->blit();	
+					CAudioPlayerGui tmpAudioPlayerGui;
 			
-					// stop playback
-					if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-					{
-						if(webtv)
-							webtv->stopPlayBack();
-					}
-					else
-					{
-						// stop/lock live playback	
-						g_Zapit->lockPlayBack();
-						
-						//pause epg scanning
-						g_Sectionsd->setPauseScanning(true);
-					}	
-			
-					CAudiofile mp3(file->Name.c_str(), file->getExtension());
-					
-					printf("\ngetMetaData\n");
-					// get metainfo
-					CAudioPlayer::getInstance()->readMetaData(&mp3, false);
-					
-					printf("\npaintMetaData\n");
-					// metainfobox
-					CBox Box;
-			
-					Box.iX = g_settings.screen_StartX + 10;
-					Box.iY = g_settings.screen_StartY + 10;
-					Box.iWidth = g_settings.screen_EndX - g_settings.screen_StartX - 20;
-					Box.iHeight = 50;
-			
-					CFrameBuffer::getInstance()->paintBoxRel(Box.iX, Box.iY, Box.iWidth, Box.iHeight, COL_MENUCONTENT_PLUS_6 );
-					
-					// infobox refresh
-					CFrameBuffer::getInstance()->paintBoxRel(Box.iX + 2, Box.iY + 2 , Box.iWidth - 4, Box.iHeight - 4, COL_MENUCONTENTSELECTED_PLUS_0);
-
-					std::string tmp;
-					
-					char sNr[20];
-					sprintf(sNr, ": %2d", 1);
-					tmp = g_Locale->getText(LOCALE_AUDIOPLAYER_PLAYING);
-					tmp += sNr ;
-
-					// first line
-					int w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
-					int xstart = (Box.iWidth - w) / 2;
-					if(xstart < 10)
-						xstart = 10;
-					g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(Box.iX + xstart, Box.iY + 4 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), Box.iWidth - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8
-					
-					tmp = mp3.MetaData.title;
-					tmp += " / ";
-					tmp += mp3.MetaData.artist;
-					
-					w = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(tmp, true); // UTF-8
-					xstart = (Box.iWidth - w)/2;
-					if(xstart < 10)
-						xstart = 10;
-					
-					g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(Box.iX + xstart, Box.iY + 4 + 2*g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), Box.iWidth - 20, tmp, COL_MENUCONTENTSELECTED, 0, true); // UTF-8		
-					
-					// cover
-					if (!mp3.MetaData.cover.empty())
-					{
-						if(!access("/tmp/cover.jpg", F_OK))
-							g_PicViewer->DisplayImage("/tmp/cover.jpg", Box.iX + 2, Box.iY + 2, Box.iHeight - 4, Box.iHeight - 4);		
-					}
-
-					printf("\nPlay\n");
-					// play
-					CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
-					
-					printf("\nloop\n");
-					bool loop = true;
-					while (loop)
-					{
-						g_RCInput->getMsg(&msg, &data, 10); // 1 sec
-						
-						if( (msg == CRCInput::RC_home || msg == CRCInput::RC_stop) || CAudioPlayer::getInstance()->getState() == CBaseDec::STOP)
-						{
-							CAudioPlayer::getInstance()->stop();
-							loop = false;
-						}
-					}
-				
-					printf("\nstop\n");
-					// start playback
-					if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-					{
-						if(webtv)
-							webtv->startPlayBack(webtv->getTunedChannel());
-					}
-					else
-					{
-						// unlock playback	
-						g_Zapit->unlockPlayBack();	
-						
-						//start epg scanning
-						g_Sectionsd->setPauseScanning(false);
-					}
-					
-					CNeutrinoApp::getInstance()->StartSubtitles();
-					
-					//restore previous background
-					if (usedBackground)
-						CFrameBuffer::getInstance()->restoreBackgroundImage();
-					
-					CFrameBuffer::getInstance()->useBackground(usedBackground);
-						
-					CFrameBuffer::getInstance()->paintBackground();
-					CFrameBuffer::getInstance()->blit();
+					CAudiofileExt audiofile(file->Name, file->getExtension());
+					tmpAudioPlayerGui.addToPlaylist(audiofile);
+					tmpAudioPlayerGui.exec(NULL, "urlplayback");
 				}
 			}
 			
