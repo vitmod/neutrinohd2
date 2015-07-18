@@ -101,15 +101,7 @@ class CAudioPlayerGui : public CMenuTarget
 		
 		enum
 		{
-			NONE = 0,
-			HIDE_PLAYLIST = 1,
-			//SHOW_PIC = 2
-		};
-		
-		enum
-		{
 			LOCALRADIO,
-			SHOUTCAST,
 			ICECAST
 		};
 
@@ -161,7 +153,6 @@ class CAudioPlayerGui : public CMenuTarget
 		bool 		info_visible;
 
 		SMSKeyInput    m_SMSKeyInput;
-		std::string shoutcast_dev_id;
 		bool hide_playlist;
 		bool calledFromExtern;
 
@@ -194,7 +185,7 @@ class CAudioPlayerGui : public CMenuTarget
 		void removeFromPlaylist(long pos);
 
 		/**
-		* Adds an url (shoutcast, ...) to the to the audioplayer playlist
+		* Adds an url (icecast, ...) to the to the audioplayer playlist
 		*/
 		void addUrl2Playlist(const char *url, const char *name = NULL, const time_t bitrate = 0);
 
@@ -217,9 +208,6 @@ class CAudioPlayerGui : public CMenuTarget
 		* Reads the icecast directory (XML file) and calls scanXmlData
 		*/
 		void readDir_ic(void);
-		
-		// shoutcast
-		void readDir_sc(void);
 
 		void selectTitle(unsigned char selectionChar);
 		/**

@@ -40,13 +40,29 @@
 #include <string>
 
 #include <errno.h>
-#include <flacdec.h>
+
 #include <linux/soundcard.h>
 #include <algorithm>
 #include <sstream>
-#include <driver/netfile.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+#include <strings.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+#include <errno.h>
+#include <ctype.h>
+#include <pthread.h>
+
+//#include <driver/netfile.h>
 
 #include <system/debug.h>
+
+#include <flacdec.h>
 
 
 #define ProgName "FlacDec"
@@ -569,8 +585,10 @@ bool CFlacDec::Open(FILE* in, FLAC__StreamDecoder* vf)
 	/* and tell our friends about the quality of the stuff */
 	// initialize the sound device here
 
-	if(rval<0)
+	if(rval < 0)
 	{
+		char err_txt[2048];
+		
 		switch(rval)
 		{
 			/* err_txt from netfile.cpp */

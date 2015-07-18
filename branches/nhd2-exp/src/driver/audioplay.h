@@ -28,12 +28,28 @@
 #ifndef __AUDIO_PLAY__
 #define __AUDIO_PLAY__
 
+#include <unistd.h>
 #include <pthread.h>
+
 #include <driver/audiodec/basedec.h>
 #include <driver/audiofile.h>
 #include <driver/audiometadata.h>
 #include <string>
 
+
+typedef struct
+{
+	void	(*cb)(void *);		/* user provided callback function */
+	void	*user;			/* user date hook point */
+	int	state;			/* CONNECTING, BUFFERING, RUNNING */
+	int	bitrate;
+	int	buffered;			/* "waterlevel" in the cache; 0 ... 65535 */
+	char 	station_url[1024];	/*station url */
+	char	station[1024];		/* station name */
+	char	genre[4096];		/* station genre */
+	char	artist[4096];		/* artist currently playing */
+	char	title[4096];			/* title currently playing */
+} CSTATE;
 
 class CAudioPlayer
 {

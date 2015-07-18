@@ -39,7 +39,7 @@
 
 #include <neutrino.h>
 #include <driver/audioplay.h>
-#include <driver/netfile.h>
+//#include <driver/netfile.h>
 
 #include <system/debug.h>
 

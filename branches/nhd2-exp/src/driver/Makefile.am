@@ -33,7 +33,8 @@ INCLUDES += @GST_CFLAGS@
 endif
 endif
 
-noinst_LIBRARIES = libneutrino_driver.a libneutrino_driver_netfile.a
+noinst_LIBRARIES = libneutrino_driver.a 
+#libneutrino_driver_netfile.a
 
 libneutrino_driver_a_SOURCES = \
 	ringbuffer.c \
@@ -70,7 +71,7 @@ libneutrino_driver_a_SOURCES += \
 	glthread.cpp
 endif
 
-libneutrino_driver_netfile_a_SOURCES = netfile.cpp
+#libneutrino_driver_netfile_a_SOURCES = netfile.cpp
 
 
 

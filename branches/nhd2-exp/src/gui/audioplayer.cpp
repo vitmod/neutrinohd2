@@ -103,8 +103,6 @@ extern cVideo * videoDecoder;
 #define AUDIOPLAYER_END_SCRIPT 				CONFIGDIR "/audioplayer.end"
 #define DEFAULT_RADIOSTATIONS_XMLFILE 			CONFIGDIR "/radio-stations.xml"
 
-#define SHOUTCAST_DEV_ID 		"xxxxxxxxxxxxxxxxxxx"
-
 const long int GET_PLAYLIST_TIMEOUT = 10;
 const char RADIO_STATION_XML_FILE[] = {DEFAULT_RADIOSTATIONS_XMLFILE};
 
@@ -714,10 +712,6 @@ int CAudioPlayerGui::show()
 					// localeradios
 					sprintf(cnt, "%d", count);
 					InputSelector.addItem(new CMenuForwarder(LOCALE_AUDIOPLAYER_ADD_LOC, true, NULL, InetRadioInputChanger, cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
-	
-					// shoutcast
-					sprintf(cnt, "%d", ++count);
-					InputSelector.addItem(new CMenuForwarder(LOCALE_AUDIOPLAYER_ADD_SC, true, NULL, InetRadioInputChanger,cnt, CRCInput::convertDigitToKey(count + 1)), old_select == count);
 
 					// icecast
 					sprintf(cnt, "%d", ++count);
@@ -740,10 +734,6 @@ int CAudioPlayerGui::show()
 							CVFD::getInstance()->setMode(CVFD::MODE_AUDIO, g_Locale->getText(m_inetmode? LOCALE_INETRADIO_NAME : LOCALE_AUDIOPLAYER_HEAD));							
 							paintLCD();
 							
-							break;
-						
-						case SHOUTCAST:	
-							readDir_sc();
 							break;
 							
 						case ICECAST:	
@@ -1204,199 +1194,6 @@ void CAudioPlayerGui::readDir_ic(void)
 
 	delete scanBox;
 }
-
-//
-void CAudioPlayerGui::readDir_sc(void)
-{
-#define GET_SHOUTCAST_TIMEOUT	60
-/* how the shoutcast xml interfaces looks/works:
-1st step: get http://www.shoutcast.com/sbin/newxml.phtml
-example answer:
-
-<genrelist>
-...
-<genre name="Trance"/>
-<genre name=...
-...
-
-2nd step: get http://www.shoutcast.com/sbin/newxml.phtml?genre=Trance
-example answer:
-
-<stationlist>
-<tunein base="/sbin/tunein-station.pls"/>
-<station name="TechnoBase.FM - 24h Techno, Dance, Trance, House and More - 128k MP3" mt="audio/mpeg" id="524" br="128" genre="Techno Trance Dance House" ct="We aRe oNe" lc="4466"/>
-<station name=...
-...
-
-3rd step: get/decode playlist http://www.shoutcast.com/sbin/tunein-station.pls?id=524
-and add to neutrino playlist
-
-4th step: play from neutrio playlist
-*/
-
-	//shoutcast
-	CFileList flist;
-	shoutcast_dev_id = SHOUTCAST_DEV_ID;
-	const std::string sc_get_top500 = "/legacy/Top500?k=" + shoutcast_dev_id;
-	const std::string sc_get_genre = "/legacy/stationsearch?k=" + shoutcast_dev_id + "&search=";
-	const std::string sc_tune_in_base = "http://yp.shoutcast.com";
-
-	std::string answer = "";
-	std::string url = "http://api.shoutcast.com";
-	url += "/legacy/genrelist?k=" + shoutcast_dev_id;
-	
-	std::cout << "CAudioPlayerGui::readDir_sc: SC URL: " << url << std::endl;
-	
-	CURL *curl_handle;
-	CURLcode httpres;
-	
-	/* init the curl session */
-	curl_handle = curl_easy_init();
-	/* specify URL to get */
-	curl_easy_setopt(curl_handle, CURLOPT_URL, url.c_str());
-	/* send all data to this function  */
-	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, CurlWriteToString);
-	/* we pass our 'chunk' struct to the callback function */
-	curl_easy_setopt(curl_handle, CURLOPT_FILE, (void *)&answer);
-	/* Generate error if http error >= 400 occurs */
-	curl_easy_setopt(curl_handle, CURLOPT_FAILONERROR, 1);
-	/* set timeout to 30 seconds */
-	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, GET_SHOUTCAST_TIMEOUT);
-	
-	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
-	{
-		curl_easy_setopt(curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
-		
-		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
-		{
-			char tmp[200];
-			strcpy(tmp, g_settings.softupdate_proxyusername);
-			strcat(tmp, ":");
-			strcat(tmp, g_settings.softupdate_proxypassword);
-			curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, tmp);
-		}
-	}
-
-	/* error handling */
-	char error[CURL_ERROR_SIZE];
-	curl_easy_setopt(curl_handle, CURLOPT_ERRORBUFFER, error);
-	/* get it! */
-	httpres = curl_easy_perform(curl_handle);
-	/* cleanup curl stuff */
-	curl_easy_cleanup(curl_handle);
-	
-	if (!answer.empty() && httpres == 0)
-	{
-		dprintf(DEBUG_INFO, "CAudioPlayerGui::readDir_sc: read done, size %d\n", answer.size());
-		xmlDocPtr answer_parser = parseXml(answer.c_str());
-
-		if (answer_parser != NULL) 
-		{
-			char *ptr;
-			unsigned char xml_decode = 0;
-			xmlNodePtr element = xmlDocGetRootElement(answer_parser);
-
-			if (strcmp(xmlGetName(element), "genrelist") == 0) 
-				xml_decode = 1;
-			else if (strcmp(xmlGetName(element), "stationlist") == 0) 
-				xml_decode = 2;
-			element = element->xmlChildrenNode;
-
-			if (element != NULL) 
-			{
-				char * tunein_base = NULL;
-
-				if (xml_decode == 1) 
-				{
-					CFile file;
-					file.Mode = S_IFDIR + 0777 ;
-					file.Name = " Top500"; // use space to have it at the beginning of the list
-					file.Url = sc_get_top500;
-					file.Size = 0;
-					file.Time = 0;
-					flist.push_back(file);
-					//processPlaylistUrl(file.Url.c_str(), file.Name.c_str(), file.Time);
-				} 
-				else if (xml_decode == 2) 
-				{
-					CFile file2;
-					file2.Mode = S_IFDIR + 0777 ;
-					file2.Name = "..";
-					file2.Url = "/legacy/genrelist?k=" + shoutcast_dev_id;
-					file2.Size = 0;
-					file2.Time = 0;
-					//flist.push_back(file2);
-					processPlaylistUrl(file2.Url.c_str(), file2.Name.c_str(), file2.Time);
-				}
-				
-				while (element) 
-				{
-					CFile file;
-					if (xml_decode == 1) 
-					{
-						file.Mode = S_IFDIR + 0777 ;
-						file.Name = xmlGetAttribute(element, (char *) "name");
-						file.Url = "/sbin/newxml.phtml?genre=" + file.Name;
-						file.Size = 0;
-						file.Time = 0;
-
-						//flist.push_back(file);
-						processPlaylistUrl(file.Url.c_str(), file.Name.c_str(), file.Time);
-					}
-					else if (xml_decode == 2) 
-					{
-						ptr = xmlGetName(element);
-						if (ptr != NULL) 
-						{
-							if (strcmp(ptr, "tunein")==0) 
-							{
-								ptr = xmlGetAttribute(element, (char *) "base");
-								if (ptr)
-									tunein_base = ptr;
-							} 
-							else if (strcmp(ptr, "station")==0) 
-							{
-								ptr = xmlGetAttribute(element, (char *) "mt");
-								if (ptr && (strcmp(ptr, "audio/mpeg")==0)) 
-								{
-									file.Mode = S_IFREG + 0777 ;
-									file.Name = xmlGetAttribute(element, (char *) "name");
-									
-									file.Url = sc_tune_in_base + tunein_base + (std::string)"?id=" + xmlGetAttribute(element, "id") + (std::string)"&k=" + shoutcast_dev_id;
-									
-									//printf("adding %s (%s)\n", file.Name.c_str(), file.Url.c_str());
-									
-									ptr = xmlGetAttribute(element, (char *) "br");
-									if (ptr) 
-									{
-										file.Size = atoi(ptr);
-										file.Time = atoi(ptr);
-									} 
-									else 
-									{
-										file.Size = 0;
-										file.Time = 0;
-									}
-
-									//flist.push_back(file);
-									processPlaylistUrl(file.Url.c_str(), file.Name.c_str(), file.Time);
-								}
-							}
-						}
-					}
-					element = element->xmlNextNode;
-				}
-			}
-			xmlFreeDoc(answer_parser);
-			
-			if (m_select_title_by_name)
-			{
-				buildSearchTree();
-			}
-		}
-	}
-}
-//
 
 void CAudioPlayerGui::scanXmlFile(std::string filename)
 {

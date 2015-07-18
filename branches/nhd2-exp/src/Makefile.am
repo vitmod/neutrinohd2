@@ -39,7 +39,6 @@ neutrino_LDADD = \
 	driver/libneutrino_driver.a \
 	gui/movieinfo.o \
 	driver/audiodec/libneutrino_driver_audiodec.a \
-	driver/libneutrino_driver_netfile.a \
 	gui/libneutrino_gui2.a \
 	sectionsd/libsectionsd.a \
 	timerd/libtimerd.a \

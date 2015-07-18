@@ -54,7 +54,8 @@
 
 #include <global.h>
 #include <neutrino.h>
-#include <driver/netfile.h>
+
+//#include <driver/netfile.h>
 
 #include <system/debug.h>
 
