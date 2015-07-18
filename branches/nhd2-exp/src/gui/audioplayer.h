@@ -163,6 +163,7 @@ class CAudioPlayerGui : public CMenuTarget
 		SMSKeyInput    m_SMSKeyInput;
 		std::string shoutcast_dev_id;
 		bool hide_playlist;
+		bool calledFromExtern;
 
 		void paintItem(int pos);
 		void paint();
@@ -187,10 +188,9 @@ class CAudioPlayerGui : public CMenuTarget
 		void updateMetaData();
 		void updateTimes(const bool force = false);
 		void showMetaData();
-		void screensaver(void);
 		bool getNumericInput(neutrino_msg_t& msg,int& val);
 
-		void addToPlaylist(CAudiofileExt &file);
+		//void addToPlaylist(CAudiofileExt &file);
 		void removeFromPlaylist(long pos);
 
 		/**
@@ -269,6 +269,7 @@ class CAudioPlayerGui : public CMenuTarget
 	public:
 		CAudioPlayerGui(bool inetmode = false);
 		~CAudioPlayerGui();
+		void addToPlaylist(CAudiofileExt &file);
 		int show();
 		int exec(CMenuTarget *parent, const std::string &actionKey);
 };
