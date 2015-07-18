@@ -483,14 +483,7 @@ int CAudioPlayerGui::show()
 			}
 			else
 			{
-				if (!hide_playlist)
-				{
-					m_current--;
-					if (m_current < 0)
-						m_current = m_playlist.size()-1;
-					update = true;
-				}
-				else if (!m_playlist.empty())
+				if (!m_playlist.empty())
 				{
 					if (m_selected < m_listmaxshow)
 					{
@@ -513,14 +506,7 @@ int CAudioPlayerGui::show()
 			}
 			else
 			{
-				if (!hide_playlist)
-				{
-					m_current++;
-					if (m_current >= (int)m_playlist.size())
-						m_current = 0;
-					update = true;
-				}
-				else if (!m_playlist.empty())
+				if (!m_playlist.empty())
 				{
 					m_selected += m_listmaxshow;
 					if (m_selected >= m_playlist.size()) 
@@ -550,6 +536,7 @@ int CAudioPlayerGui::show()
 				paintItem(prevselected - m_liststart);
 				unsigned int oldliststart = m_liststart;
 				m_liststart = (m_selected/m_listmaxshow)*m_listmaxshow;
+				
 				if(oldliststart != m_liststart)
 				{
 					update = true;
@@ -568,7 +555,8 @@ int CAudioPlayerGui::show()
 				unsigned int step =  msg == CRCInput::RC_page_down ? m_listmaxshow : 1;
 				m_selected += step;
 
-				if(m_selected >= m_playlist.size()) {
+				if(m_selected >= m_playlist.size()) 
+				{
 					if (((m_playlist.size() / m_listmaxshow) + 1) * m_listmaxshow == m_playlist.size() + m_listmaxshow) // last page has full entries
 						m_selected = 0;
 					else
@@ -578,6 +566,7 @@ int CAudioPlayerGui::show()
 				paintItem(prevselected - m_liststart);
 				unsigned int oldliststart = m_liststart;
 				m_liststart = (m_selected/m_listmaxshow)*m_listmaxshow;
+				
 				if(oldliststart != m_liststart)
 				{
 					update = true;
@@ -592,10 +581,7 @@ int CAudioPlayerGui::show()
 		{
 			if (!m_playlist.empty()) 
 			{
-				if (hide_playlist)
-					play(m_current);
-				else
-					play(m_selected);
+				play(m_selected);
 			}
 		}
 		else if (msg == CRCInput::RC_red && !calledFromExtern)
@@ -611,6 +597,7 @@ int CAudioPlayerGui::show()
 						m_current--;
 						//stop(); // Stop if song is deleted, next song will be startet automat.
 					}
+					
 					if(m_selected >= m_playlist.size())
 						m_selected = m_playlist.size() == 0 ? m_playlist.size() : m_playlist.size() - 1;
 					update = true;
@@ -1739,7 +1726,7 @@ void CAudioPlayerGui::hide()
 
 void CAudioPlayerGui::paintItem(int pos)
 {
-	if(hide_playlist)
+	if(calledFromExtern)
 		return;
 	
 	int ypos = m_y + m_title_height + m_theight + pos*m_fheight;
@@ -1835,7 +1822,7 @@ void CAudioPlayerGui::paintItem(int pos)
 // paint head
 void CAudioPlayerGui::paintHead()
 {
-	if(hide_playlist)
+	if(calledFromExtern)
 		return;
 	
 	std::string strCaption;
@@ -1913,7 +1900,7 @@ const struct button_label AudioPlayerButtons[][4] =
 
 void CAudioPlayerGui::paintFoot()
 {
-	if(hide_playlist)
+	if(calledFromExtern)
 		return;
 	
 	int top = m_y + m_height - (m_buttonHeight + m_info_height); //doppel button foot
@@ -2078,7 +2065,7 @@ void CAudioPlayerGui::paintInfo()
 
 void CAudioPlayerGui::paint()
 {
-	if(hide_playlist)
+	if(calledFromExtern)
 		return;
 	
 	m_liststart = (m_selected / m_listmaxshow) * m_listmaxshow;
@@ -2194,11 +2181,8 @@ void CAudioPlayerGui::stop()
 	
 	m_key_level = 0;
 	
-	if(!calledFromExtern)
-	{
-		paint();
-		paintFoot();
-	}
+	paint();
+	paintFoot();
 
 	if(CAudioPlayer::getInstance()->getState() != CBaseDec::STOP)
 		CAudioPlayer::getInstance()->stop();
