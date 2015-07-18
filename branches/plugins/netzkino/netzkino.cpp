@@ -440,8 +440,8 @@ void CNetzKinoBrowser::refreshMovieInfo(void)
 			// netzkino
 			picw /= 2;
 			
-			lx = m_cBoxFrameInfo.iX + m_cBoxFrameInfo.iWidth - (picw + 20);
-			ly = m_cBoxFrameInfo.iY + 20;
+			lx = m_cBoxFrameInfo.iX + m_cBoxFrameInfo.iWidth - (picw + SCROLLBAR_WIDTH + 10);
+			ly = m_cBoxFrameInfo.iY + (m_cBoxFrameInfo.iHeight - pich)/2;
 		}
 		
 		m_pcInfo->setText(&m_movieSelectionHandler->epgInfo2, m_movieSelectionHandler->tfile, lx, ly, picw, pich);

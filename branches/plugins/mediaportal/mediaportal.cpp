@@ -422,7 +422,7 @@ void CMPBrowser::refreshItemInfo(void)
 		{
 			pich = mp_BoxFrameInfo.iHeight - 20;
 			picw = pich * (4.0 / 3);
-			lx = mp_BoxFrameInfo.iX + mp_BoxFrameInfo.iWidth - (picw + 20);
+			lx = mp_BoxFrameInfo.iX + mp_BoxFrameInfo.iWidth - (picw + SCROLLBAR_WIDTH + 10);
 			ly = mp_BoxFrameInfo.iY + 10;
 		}
 		
