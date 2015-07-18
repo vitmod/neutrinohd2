@@ -177,8 +177,8 @@ void * CAudioPlayer::PlayThread( void * /*dummy*/ )
 	
 	getInstance()->state = CBaseDec::STOP;
 	
-	if(playback->playing)
-		playback->Close();
+	//if(playback->playing)
+	//	playback->Close();
 	
 	pthread_exit(0);
 
