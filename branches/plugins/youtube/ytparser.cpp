@@ -35,7 +35,9 @@
 #include <json/json.h>
 
 #include <ytparser.h>
+
 #include <system/debug.h>
+
 #include <plugin.h>
 
 #include <youtube.h>

@@ -26,8 +26,6 @@
 #include <vector>
 #include <string>
 #include <map>
-#include <xmlinterface.h>
-
 
 
 class cYTVideoUrl
@@ -88,6 +86,7 @@ class cYTFeedParser
 		static void splitString(std::string &str, std::string delim, std::map<std::string,std::string> &strmap, int start = 0);
 		bool getUrl(std::string &url, std::string &answer);
 		bool DownloadUrl(std::string &url, std::string &file);
+		
 		bool parseFeedJSON(std::string &answer);
 		bool parseFeedDetailsJSON(cYTVideoInfo &vinfo);
 		bool ParseVideoInfo(cYTVideoInfo &vinfo);
