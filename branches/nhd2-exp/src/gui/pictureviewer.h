@@ -76,7 +76,7 @@ class CPictureViewerGui : public CMenuTarget
 		
 	private:
 		CFrameBuffer		* frameBuffer;
-		CPictureViewer		* m_viewer;
+
 		unsigned int		selected;
 		unsigned int		liststart;
 		unsigned int		listmaxshow;
@@ -119,11 +119,14 @@ class CPictureViewerGui : public CMenuTarget
 		int  show();
 
 		void showHelp();
+		
+		bool isURL;
 
 	public:
 		CPictureViewerGui();
 		~CPictureViewerGui();
-		int  exec(CMenuTarget * parent, const std::string & actionKey);
+		int  exec(CMenuTarget* parent, const std::string& actionKey);
+		void addToPlaylist(CPicture& file);
 };
 
 #endif

@@ -1147,29 +1147,21 @@ REPEAT:
 				// parse file extension
 				if(file->getType() == CFile::FILE_PICTURE)
 				{
-					bool loop = true;
+					CPictureViewerGui tmpPictureViewerGui;
+					CPicture pic;
+					struct stat statbuf;
 					
-					g_PicViewer->SetScaling((CFrameBuffer::ScalingMode)g_settings.picviewer_scaling);
-					g_PicViewer->SetVisible(g_settings.screen_StartX, g_settings.screen_EndX, g_settings.screen_StartY, g_settings.screen_EndY);
-
-					if(g_settings.video_Ratio == 1)
-						g_PicViewer->SetAspectRatio(16.0/9);
-					else
-						g_PicViewer->SetAspectRatio(4.0/3);
-
-
-					g_PicViewer->ShowImage(file->Name);
+					pic.Filename = file->Name;
+					std::string tmp = file->Name.substr(file->Name.rfind('/') + 1);
+					pic.Name = tmp.substr(0, tmp.rfind('.'));
+					pic.Type = tmp.substr(tmp.rfind('.') + 1);
 					
-					while (loop)
-					{
-						g_RCInput->getMsg(&msg, &data, 10); // 1 sec
-
-						if( msg == CRCInput::RC_home)
-							loop = false;
-					}
-						
-					CFrameBuffer::getInstance()->ClearFrameBuffer();
-					CFrameBuffer::getInstance()->blit();	
+					if(stat(pic.Filename.c_str(), &statbuf) != 0)
+						printf("stat error");
+					pic.Date = statbuf.st_mtime;
+									
+					tmpPictureViewerGui.addToPlaylist(pic);
+					tmpPictureViewerGui.exec(NULL, "urlplayback");	
 				}
 				else if(file->getType() == CFile::FILE_TEXT || file->getType() == CFile::FILE_XML)
 				{

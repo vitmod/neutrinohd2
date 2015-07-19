@@ -70,6 +70,7 @@
 #include <gui/pictureviewer.h>
 #include <gui/movieplayer.h>
 #include <gui/webtv.h>
+#include <gui/audioplayer.h>
 
 
 extern CPictureViewer * g_PicViewer;
@@ -520,7 +521,7 @@ void CUpnpBrowserGui::playnext(void)
 		attribs.push_back(UPnPAttribute("RequestedCount", "1"));
 		attribs.push_back(UPnPAttribute("SortCriteria", ""));
 
-		results=m_devices[m_selecteddevice].SendSOAP("urn:schemas-upnp-org:service:ContentDirectory:1", "Browse", attribs);
+		results = m_devices[m_selecteddevice].SendSOAP("urn:schemas-upnp-org:service:ContentDirectory:1", "Browse", attribs);
 		for (i = results.begin(); i!=results.end(); i++)
 		{
 			if (i->first=="NumberReturned")
@@ -559,8 +560,13 @@ void CUpnpBrowserGui::playnext(void)
 				{
 					m_playing_entry = (*entries)[0];
 					m_playing_entry_is_shown = false;
-					CAudiofile mp3((*entries)[0].resources[preferred].url, CFile::EXTENSION_MP3);
-					CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
+					
+					CAudioPlayerGui tmpAudioPlayerGui;
+			
+					CAudiofileExt audiofile((*entries)[0].resources[preferred].url, CFile::EXTENSION_MP3);
+					tmpAudioPlayerGui.addToPlaylist(audiofile);
+					tmpAudioPlayerGui.exec(NULL, "urlplayback");
+					
 					return;
 				}
 				else if (mime.substr(0,6) == "video/")
@@ -571,15 +577,21 @@ void CUpnpBrowserGui::playnext(void)
 				}
 				else if (mime.substr(0,6) == "image/")
 				{
-					g_PicViewer->SetScaling((CFrameBuffer::ScalingMode)g_settings.picviewer_scaling);
-					g_PicViewer->SetVisible(g_settings.screen_StartX, g_settings.screen_EndX, g_settings.screen_StartY, g_settings.screen_EndY);
-
-					if (g_settings.video_Format == 1)
-						g_PicViewer->SetAspectRatio(16.0/9);
-					else
-						g_PicViewer->SetAspectRatio(4.0/3);
-
-					g_PicViewer->ShowImage((*entries)[0].resources[preferred].url);
+					CPictureViewerGui tmpPictureViewerGui;
+					CPicture pic;
+					struct stat statbuf;
+						
+					pic.Filename = (*entries)[0].resources[preferred].url;
+					std::string tmp = (*entries)[0].resources[preferred].url.substr((*entries)[0].resources[preferred].url.rfind('/') + 1);
+					pic.Name = tmp.substr(0, tmp.rfind('.'));
+					pic.Type = tmp.substr(tmp.rfind('.') + 1);
+						
+					if(stat(pic.Filename.c_str(), &statbuf) != 0)
+						printf("stat error");
+					pic.Date = statbuf.st_mtime;
+										
+					tmpPictureViewerGui.addToPlaylist(pic);
+					tmpPictureViewerGui.exec(NULL, "urlplayback");
 					
 					return;
 				}
@@ -729,7 +741,7 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 			changed = true;
 		}
 
-		else if( (msg == CRCInput::RC_yellow/*green*/ || (int) msg == g_settings.key_channelList_pageup) && selected > 0)
+		else if( (msg == CRCInput::RC_yellow || (int) msg == g_settings.key_channelList_pageup) && selected > 0)
 		{
 			if (index > 0)
 			{
@@ -751,7 +763,7 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 			}
 			changed=true;
 		}
-		else if( (msg == CRCInput::RC_green/*red*/ || (int) msg == g_settings.key_channelList_pagedown)&& selected + 1 < dirnum)
+		else if( (msg == CRCInput::RC_green || (int) msg == g_settings.key_channelList_pagedown)&& selected + 1 < dirnum)
 		{
 			if (index < ((dirnum - 1) / m_listmaxshow) * m_listmaxshow)
 			{
@@ -790,34 +802,29 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 					
 					if (mime == "audio/mpeg")
 					{
-						CAudiofile mp3((*entries)[selected - index].resources[preferred].url, CFile::EXTENSION_MP3);
-						CAudioPlayer::getInstance()->play(&mp3, g_settings.audioplayer_highprio == 1);
+						CAudioPlayerGui tmpAudioPlayerGui;
+			
+						CAudiofileExt audiofile((*entries)[selected - index].resources[preferred].url, CFile::EXTENSION_MP3);
+						tmpAudioPlayerGui.addToPlaylist(audiofile);
+						tmpAudioPlayerGui.exec(NULL, "urlplayback");
 					}
 					else if ((mime == "image/gif") || (mime == "image/jpeg"))
 					{
-						bool _loop = true;
+						CPictureViewerGui tmpPictureViewerGui;
+						CPicture pic;
+						struct stat statbuf;
 						
-						g_PicViewer->SetScaling((CFrameBuffer::ScalingMode)g_settings.picviewer_scaling);
-						g_PicViewer->SetVisible(g_settings.screen_StartX, g_settings.screen_EndX, g_settings.screen_StartY, g_settings.screen_EndY);
-
-						if(g_settings.video_Ratio == 1)
-							g_PicViewer->SetAspectRatio(16.0/9);
-						else
-							g_PicViewer->SetAspectRatio(4.0/3);
-
-
-						g_PicViewer->ShowImage((*entries)[selected - index].resources[preferred].url);
+						pic.Filename = (*entries)[selected - index].resources[preferred].url;
+						std::string tmp = (*entries)[selected - index].resources[preferred].url.substr((*entries)[selected - index].resources[preferred].url.rfind('/') + 1);
+						pic.Name = tmp.substr(0, tmp.rfind('.'));
+						pic.Type = tmp.substr(tmp.rfind('.') + 1);
 						
-						while (_loop)
-						{
-							g_RCInput->getMsg(&msg, &data, 10); // 1 sec
-
-							if( msg == CRCInput::RC_home)
-								_loop = false;
-						}
-					
-						m_frameBuffer->ClearFrameBuffer();
-						m_frameBuffer->blit();	
+						if(stat(pic.Filename.c_str(), &statbuf) != 0)
+							printf("stat error");
+						pic.Date = statbuf.st_mtime;
+										
+						tmpPictureViewerGui.addToPlaylist(pic);
+						tmpPictureViewerGui.exec(NULL, "urlplayback");
 
 						changed = true;
 					}

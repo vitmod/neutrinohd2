@@ -58,6 +58,7 @@
 #include <gui/widget/stringinput.h>
 
 #include <system/settings.h>
+#include <system/debug.h>
 
 #include <algorithm>
 #include <sys/stat.h>
@@ -66,6 +67,7 @@
 #include <gui/webtv.h>
 
 
+extern CPictureViewer * g_PicViewer;
 extern CWebTV * webtv;
 
 bool comparePictureByDate (const CPicture& a, const CPicture& b)
@@ -87,7 +89,7 @@ CPictureViewerGui::CPictureViewerGui()
 	visible = false;
 	selected = 0;
 	m_sort = FILENAME;
-	m_viewer = new CPictureViewer();
+	isURL = false;
 
 	if(strlen(g_settings.network_nfs_picturedir) != 0)
 		Path = g_settings.network_nfs_picturedir;
@@ -103,10 +105,9 @@ CPictureViewerGui::CPictureViewerGui()
 CPictureViewerGui::~CPictureViewerGui()
 {
 	playlist.clear();
-	delete m_viewer;
 }
 
-int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &/*actionKey*/)
+int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &actionKey)
 {
 	selected = 0;
 	
@@ -119,7 +120,7 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &/*actionKey*
 		height = (g_settings.screen_EndY- g_settings.screen_StartY);
 
 	sheight      = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
-	//buttonHeight = std::min(25, sheight);
+	
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &icon_foot_w, &icon_foot_h);
 	buttonHeight = std::max(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), icon_foot_h) + 6;
 	
@@ -137,13 +138,18 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &/*actionKey*
 	x = (((g_settings.screen_EndX- g_settings.screen_StartX)-width) / 2) + g_settings.screen_StartX;
 	y = (((g_settings.screen_EndY- g_settings.screen_StartY)-height)/ 2) + g_settings.screen_StartY;
 
-	m_viewer->SetScaling( (CFrameBuffer::ScalingMode)g_settings.picviewer_scaling);
-	m_viewer->SetVisible(g_settings.screen_StartX, g_settings.screen_EndX, g_settings.screen_StartY, g_settings.screen_EndY);
+	g_PicViewer->SetScaling( (CFrameBuffer::ScalingMode)g_settings.picviewer_scaling);
+	g_PicViewer->SetVisible(g_settings.screen_StartX, g_settings.screen_EndX, g_settings.screen_StartY, g_settings.screen_EndY);
 
 	if(g_settings.video_Ratio == 1)
-		m_viewer->SetAspectRatio(16.0/9);
+		g_PicViewer->SetAspectRatio(16.0/9);
 	else
-		m_viewer->SetAspectRatio(4.0/3);
+		g_PicViewer->SetAspectRatio(4.0/3);
+	
+	if(actionKey == "urlplayback")
+	{
+		isURL = true;
+	}
 
 	if(parent)
 		parent->hide();
@@ -183,7 +189,7 @@ int CPictureViewerGui::exec(CMenuTarget* parent, const std::string &/*actionKey*
 	show();
 
 	// free picviewer mem
-	m_viewer->Cleanup();
+	g_PicViewer->Cleanup();
 
 	// Restore previous background	
 	if (usedBackground) 
@@ -234,9 +240,17 @@ int CPictureViewerGui::show()
 	bool loop = true;
 	bool update = true;
 	
+	if(isURL)
+	{
+		view(selected);
+		visible = false;
+		if(playlist.size() > 1)
+			m_state = SLIDESHOW;
+	}
+	
 	while(loop)
 	{
-		if(update)
+		if(update && !isURL)
 		{
 			hide();
 			update = false;
@@ -244,27 +258,32 @@ int CPictureViewerGui::show()
 		}
 		
 		if(m_state != SLIDESHOW)
-			timeout = 50; // egal
+			timeout = 10; 
 		else
 		{
-			timeout=(m_time+atoi(g_settings.picviewer_slide_time)-(long)time(NULL))*10;
+			timeout = (m_time+atoi(g_settings.picviewer_slide_time) - (long)time(NULL))*10;
 			if(timeout < 0 )
 				timeout = 1;
 		}
 
-		/* msg */
-		g_RCInput->getMsg( &msg, &data, timeout );
+		g_RCInput->getMsg(&msg, &data, timeout);
 
 		if( msg == CRCInput::RC_home)
-		{ 	
+		{
+			if(isURL)
+			{
+				visible = true;
+				loop = false;
+			}
+			
 			//Exit after cancel key
 			if(m_state != MENU)
 			{
 				endView();
-				update=true;
+				update = true;
 			}
 			else
-				loop=false;
+				loop = false;
 		}
 		else if (msg == CRCInput::RC_timeout)
 		{
@@ -274,6 +293,7 @@ int CPictureViewerGui::show()
 				unsigned int next = selected + 1;
 				if (next >= playlist.size())
 					next = 0;
+				
 				view(next);
 			}
 		}
@@ -303,7 +323,8 @@ int CPictureViewerGui::show()
 				if (m_state == MENU)
 				{
 					selected += listmaxshow;
-					if (selected >= playlist.size()) {
+					if (selected >= playlist.size()) 
+					{
 						if (((playlist.size() / listmaxshow) + 1) * listmaxshow == playlist.size() + listmaxshow)
 							selected=0;
 						else
@@ -359,7 +380,7 @@ int CPictureViewerGui::show()
 					update=true;
 				}
 				else
-					{
+				{
 					paintItem(selected - liststart);
 				}
 			}
@@ -405,23 +426,17 @@ int CPictureViewerGui::show()
 						{
 							CPicture pic;
 							pic.Filename = files->Name;
-							std::string tmp   = files->Name.substr(files->Name.rfind('/')+1);
-							pic.Name     = tmp.substr(0, tmp.rfind('.'));
-							pic.Type     = tmp.substr(tmp.rfind('.')+1);
+							std::string tmp = files->Name.substr(files->Name.rfind('/') + 1);
+							pic.Name = tmp.substr(0, tmp.rfind('.'));
+							pic.Type = tmp.substr(tmp.rfind('.') + 1);
 							struct stat statbuf;
 							if(stat(pic.Filename.c_str(),&statbuf) != 0)
 								printf("stat error");
-							pic.Date     = statbuf.st_mtime;
-							playlist.push_back(pic);
+							pic.Date = statbuf.st_mtime;
+							
+							addToPlaylist(pic);
 						}
-						else
-							printf("Wrong Filetype %s:%d\n",files->Name.c_str(), files->getType());
 					}
-					
-					if (m_sort == FILENAME)
-						std::sort(playlist.begin(), playlist.end(), comparePictureByFilename);
-					else if (m_sort == DATE)
-						std::sort(playlist.begin(), playlist.end(), comparePictureByDate);
 				}
 				update = true;
 			}
@@ -463,7 +478,7 @@ int CPictureViewerGui::show()
 		{ 
 			if (m_state != MENU)
 			{
-				m_viewer->Zoom(2.0/3);
+				g_PicViewer->Zoom(2.0/3);
 			}
 
 		}
@@ -471,14 +486,14 @@ int CPictureViewerGui::show()
 		{ 
 			if (m_state != MENU)
 			{
-				m_viewer->Move(0,-50);
+				g_PicViewer->Move(0, -50);
 			}
 		}
 		else if( msg == CRCInput::RC_3 )
 		{ 
 			if (m_state != MENU)
 			{
-				m_viewer->Zoom(1.5);
+				g_PicViewer->Zoom(1.5);
 			}
 
 		}
@@ -486,7 +501,7 @@ int CPictureViewerGui::show()
 		{ 
 			if (m_state != MENU)
 			{
-				m_viewer->Move(-50,0);
+				g_PicViewer->Move(-50, 0);
 			}
 		}
 		else if ( msg == CRCInput::RC_5 )
@@ -500,7 +515,7 @@ int CPictureViewerGui::show()
 						m_sort = DATE;
 						std::sort(playlist.begin(),playlist.end(),comparePictureByDate);
 					}
-					else if(m_sort==DATE)
+					else if(m_sort == DATE)
 					{
 						m_sort = FILENAME;
 						std::sort(playlist.begin(),playlist.end(),comparePictureByFilename);
@@ -513,22 +528,22 @@ int CPictureViewerGui::show()
 		{ 
 			if (m_state != MENU && playlist.empty())
 			{
-				m_viewer->Move(50,0);
+				g_PicViewer->Move(50, 0);
 			}
 		}
 		else if( msg == CRCInput::RC_8 )
 		{ 
 			if (m_state != MENU && playlist.empty())
 			{
-				m_viewer->Move(0,50);
+				g_PicViewer->Move(0, 50);
 			}
 		}
-		else if(msg==CRCInput::RC_0)
+		else if(msg == CRCInput::RC_0)
 		{
 			if (!playlist.empty())
 				view(selected, true);
 		}
-		else if(msg==CRCInput::RC_setup)
+		else if(msg == CRCInput::RC_setup)
 		{
 			if(m_state == MENU)
 			{
@@ -748,12 +763,10 @@ void CPictureViewerGui::view(unsigned int index, bool unscaled)
 	char timestring[19];
 	strftime(timestring, 18, "%d-%m-%Y %H:%M", gmtime(&playlist[index].Date));
 	
-	//CVFD::getInstance()->showMenuText(1, timestring); //FIXME
-	
 	if(unscaled)
-		m_viewer->DecodeImage(playlist[index].Filename, true, unscaled);
+		g_PicViewer->DecodeImage(playlist[index].Filename, true, unscaled);
 	
-	m_viewer->ShowImage(playlist[index].Filename, unscaled);
+	g_PicViewer->ShowImage(playlist[index].Filename, unscaled);
 
 	//Decode next
 	unsigned int next = selected + 1;
@@ -764,15 +777,27 @@ void CPictureViewerGui::view(unsigned int index, bool unscaled)
 		m_state = VIEW;
 	
 	if(m_state == VIEW )
-		m_viewer->DecodeImage(playlist[next].Filename, true);
+		g_PicViewer->DecodeImage(playlist[next].Filename, true);
 	else
-		m_viewer->DecodeImage(playlist[next].Filename, false);
+		g_PicViewer->DecodeImage(playlist[next].Filename, false);
 }
 
 void CPictureViewerGui::endView()
 {
 	if(m_state != MENU)
 		m_state = MENU;
+}
+
+void CPictureViewerGui::addToPlaylist(CPicture& file)
+{	
+	dprintf(DEBUG_NORMAL, "CPictureViewerGui::addToPlaylist: %s\n", file.Filename.c_str());
+	
+	playlist.push_back(file);
+	
+	if (m_sort == FILENAME)
+		std::sort(playlist.begin(), playlist.end(), comparePictureByFilename);
+	else if (m_sort == DATE)
+		std::sort(playlist.begin(), playlist.end(), comparePictureByDate);
 }
 
 void CPictureViewerGui::showHelp()

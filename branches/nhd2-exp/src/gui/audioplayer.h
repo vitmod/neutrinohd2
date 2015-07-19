@@ -1,7 +1,7 @@
 /*
   Neutrino-GUI  -   DBoxII-Project
   
-  $Id: audioplayer.h 2013/10/12 mohousch Exp $
+  $Id: audioplayer.h 2015/07/18 mohousch Exp $
 
   Copyright (C) 2001 Steffen Hehn 'McClean'
   Homepage: http://dbox.cyberphoria.org/
@@ -154,7 +154,7 @@ class CAudioPlayerGui : public CMenuTarget
 
 		SMSKeyInput    m_SMSKeyInput;
 		bool hide_playlist;
-		bool calledFromExtern;
+		bool isURL;
 
 		void paintItem(int pos);
 		void paint();
