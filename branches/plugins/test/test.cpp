@@ -568,29 +568,22 @@ BROWSER:
 		CFile * file;
 		
 		if ((file = fileBrowser->getSelectedFile()) != NULL) 
-		{	
-			g_PicViewer->SetScaling((CFrameBuffer::ScalingMode)g_settings.picviewer_scaling);
-			g_PicViewer->SetVisible(g_settings.screen_StartX, g_settings.screen_EndX, g_settings.screen_StartY, g_settings.screen_EndY);
-
-			if(g_settings.video_Ratio == 1)
-				g_PicViewer->SetAspectRatio(16.0/9);
-			else
-				g_PicViewer->SetAspectRatio(4.0/3);
-
-
-			g_PicViewer->ShowImage(file->Name);
+		{
+			CPictureViewerGui tmpPictureViewerGui;
+			CPicture pic;
+			struct stat statbuf;
 			
-			bool loop = true;
-			while (loop)
-			{
-				g_RCInput->getMsg(&msg, &data, 10); // 1 sec
-
-				if( msg == CRCInput::RC_home)
-					loop = false;
-			}
-						
-			CFrameBuffer::getInstance()->ClearFrameBuffer();
-			CFrameBuffer::getInstance()->blit();	
+			pic.Filename = file->Name;
+			std::string tmp = file->Name.substr(file->Name.rfind('/') + 1);
+			pic.Name = tmp.substr(0, tmp.rfind('.'));
+			pic.Type = tmp.substr(tmp.rfind('.') + 1);
+			
+			if(stat(pic.Filename.c_str(), &statbuf) != 0)
+				printf("stat error");
+			pic.Date = statbuf.st_mtime;
+							
+			tmpPictureViewerGui.addToPlaylist(pic);
+			tmpPictureViewerGui.exec(NULL, "urlplayback");
 		}
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
@@ -700,44 +693,31 @@ BROWSER:
 	{
 		Path_local = fileBrowser->getCurrentDir();
 		
-		filelist = fileBrowser->getSelectedFiles();
-		
-		if (!filelist.empty()) 
-		{	
-			g_PicViewer->SetScaling((CFrameBuffer::ScalingMode)g_settings.picviewer_scaling);
-			g_PicViewer->SetVisible(g_settings.screen_StartX, g_settings.screen_EndX, g_settings.screen_StartY, g_settings.screen_EndY);
-
-			if(g_settings.video_Ratio == 1)
-				g_PicViewer->SetAspectRatio(16.0/9);
-			else
-				g_PicViewer->SetAspectRatio(4.0/3);
-
-VIEWPIC:
-			g_PicViewer->ShowImage(filelist[selected].Name);
-			
-			bool loop = true;
-			while (loop)
-			{
-				g_RCInput->getMsg(&msg, &data, 10); // 1 sec
+		CPictureViewerGui tmpPictureViewerGui;
+		CPicture pic;
+		struct stat statbuf;
 				
-				if(msg != CRCInput::RC_home && selected < filelist.size())
-				{
-					loop = false;
-					usleep(10000);
-					selected++;
-					CFrameBuffer::getInstance()->ClearFrameBuffer();
-					CFrameBuffer::getInstance()->blit();	
-					goto VIEWPIC;
-				}
-				else if( msg == CRCInput::RC_home)
-				{
-					loop = false;
-				}
+		CFileList::const_iterator files = fileBrowser->getSelectedFiles().begin();
+		
+		for(; files != fileBrowser->getSelectedFiles().end(); files++)
+		{
+
+			if (files->getType() == CFile::FILE_PICTURE)
+			{
+				pic.Filename = files->Name;
+				std::string tmp = files->Name.substr(files->Name.rfind('/') + 1);
+				pic.Name = tmp.substr(0, tmp.rfind('.'));
+				pic.Type = tmp.substr(tmp.rfind('.') + 1);
+			
+				if(stat(pic.Filename.c_str(), &statbuf) != 0)
+					printf("stat error");
+				pic.Date = statbuf.st_mtime;
+				
+				tmpPictureViewerGui.addToPlaylist(pic);
 			}
-						
-			CFrameBuffer::getInstance()->ClearFrameBuffer();
-			CFrameBuffer::getInstance()->blit();	
 		}
+		
+		tmpPictureViewerGui.exec(NULL, "urlplayback");
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
