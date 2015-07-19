@@ -242,10 +242,14 @@ int CPictureViewerGui::show()
 	
 	if(isURL)
 	{
-		view(selected);
 		visible = false;
 		if(playlist.size() > 1)
 			m_state = SLIDESHOW;
+		else
+			m_state = VIEW;
+		
+		if (!playlist.empty())
+			view(selected);
 	}
 	
 	while(loop)
@@ -358,7 +362,7 @@ int CPictureViewerGui::show()
 				liststart = (selected/listmaxshow)*listmaxshow;
 				if(oldliststart!=liststart)
 				{
-					update=true;
+					update = true;
 				}
 				else
 				{

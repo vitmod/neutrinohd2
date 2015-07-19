@@ -1953,7 +1953,8 @@ static void commandserviceChanged(int connfd, char *data, const unsigned dataLen
 	}
 	else
 	{
-		if (channel_is_blacklisted) {
+		if (channel_is_blacklisted) 
+		{
 			channel_is_blacklisted = false;
 			dmxCN.request_unpause();
 			dmxEIT.request_unpause();
@@ -1964,14 +1965,16 @@ static void commandserviceChanged(int connfd, char *data, const unsigned dataLen
 
 	if(checkNoDVBTimelist(*uniqueServiceKey))
 	{
-		if (dvb_time_update) {
+		if (dvb_time_update) 
+		{
 			dvb_time_update = false;
 		}
 		dprintf(DEBUG_DEBUG, "[sectionsd] commandserviceChanged: DVB time update is blocked!\n");
 	}
 	else
 	{
-		if (!dvb_time_update) {
+		if (!dvb_time_update) 
+		{
 			dvb_time_update = true;
 			dprintf(DEBUG_DEBUG, "[sectionsd] commandserviceChanged: DVB time update is allowed!\n");
 		}
@@ -1986,6 +1989,7 @@ static void commandserviceChanged(int connfd, char *data, const unsigned dataLen
 			delete myCurrentEvent;
 			myCurrentEvent = NULL;
 		}
+		
 		if (myNextEvent) 
 		{
 			delete myNextEvent;

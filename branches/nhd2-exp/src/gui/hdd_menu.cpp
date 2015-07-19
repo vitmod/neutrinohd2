@@ -1166,15 +1166,18 @@ REPEAT:
 				else if(file->getType() == CFile::FILE_TEXT || file->getType() == CFile::FILE_XML)
 				{
 					std::string buffer;
-					/*
+					buffer.clear();
+					
+					char buf[256];
 					FILE* pFile;
 					pFile = fopen(file->Name.c_str(), "r");
-					if(pFile)
+					if(pFile != NULL)
 					{
-						fgets((char *)buffer.c_str(), 256, pFile); 
+						fgets(buf, sizeof(buf), pFile);
 					}
 					fclose(pFile);
-					*/
+
+					buffer = buf;
 
 					int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
 					CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
