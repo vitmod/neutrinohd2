@@ -173,7 +173,7 @@ void CHintBoxExt::init(const neutrino_locale_t Caption, const int Width, const c
 	if (m_startEntryOfPage.size() > 1)
 	{
 		m_height = maxOverallHeight;
-		m_width += 15; // scroll bar
+		m_width += SCROLLBAR_WIDTH; // scroll bar
 	} 
 	else 
 	{
