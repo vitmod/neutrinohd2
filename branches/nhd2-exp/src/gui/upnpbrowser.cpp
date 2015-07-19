@@ -571,8 +571,12 @@ void CUpnpBrowserGui::playnext(void)
 				}
 				else if (mime.substr(0,6) == "video/")
 				{
+					m_frameBuffer->ClearFrameBuffer();
+					m_frameBuffer->blit();	
+					
 					moviePlayerGui->filename = (*entries)[0].resources[preferred].url.c_str(); //FIXME
 					moviePlayerGui->exec(NULL, "urlplayback");
+					
 					return;
 				}
 				else if (mime.substr(0,6) == "image/")
@@ -664,8 +668,8 @@ bool CUpnpBrowserGui::selectItem(std::string id)
 			attribs.push_back(UPnPAttribute("RequestedCount", scount.str()));
 			attribs.push_back(UPnPAttribute("SortCriteria", ""));
 
-			results=m_devices[m_selecteddevice].SendSOAP("urn:schemas-upnp-org:service:ContentDirectory:1", "Browse", attribs);
-			for (i=results.begin(); i!=results.end(); i++)
+			results = m_devices[m_selecteddevice].SendSOAP("urn:schemas-upnp-org:service:ContentDirectory:1", "Browse", attribs);
+			for (i = results.begin(); i != results.end(); i++)
 			{
 				if (i->first == "NumberReturned")
 				{
