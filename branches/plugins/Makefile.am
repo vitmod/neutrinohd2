@@ -12,7 +12,6 @@ SUBDIRS = \
 	dvdplayer \
 	mediaplayer \
 	tuxcal \
-	mediaportal \
 	fileexplorer
 
 

@@ -29,7 +29,6 @@ dvdplayer/Makefile
 mediaplayer/Makefile
 tuxcal/Makefile
 tuxcal/daemon/Makefile
-mediaportal/Makefile
 nglcd/Makefile
 fileexplorer/Makefile
 ])
