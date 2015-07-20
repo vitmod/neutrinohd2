@@ -34,6 +34,8 @@
 #include <stdio.h>
 
 #include <algorithm>    // std::sort
+#include <fstream>
+#include <iostream>
 
 #include <global.h>
 #include <neutrino.h>
@@ -236,6 +238,8 @@ bool CWebTV::readChannellist(std::string filename)
 	int ext_pos = 0;
 	ext_pos = filename.rfind('.');
 	bool iptv = false;
+	bool webtv = false;
+	bool playlist = false;
 					
 	if( ext_pos > 0)
 	{
@@ -244,6 +248,10 @@ bool CWebTV::readChannellist(std::string filename)
 						
 		if( strcasecmp("tv", extension.c_str()) == 0)
 			iptv = true;
+		else if( strcasecmp("m3u", extension.c_str()) == 0)
+			playlist = true;
+		if( strcasecmp("xml", extension.c_str()) == 0)
+			webtv = true;
 	}
 	
 	if(iptv)
@@ -302,7 +310,7 @@ bool CWebTV::readChannellist(std::string filename)
 			return true;
 		}
 	}
-	else
+	else if(webtv)
 	{
 		parser = parseXmlFile(filename.c_str());
 		
@@ -341,6 +349,50 @@ bool CWebTV::readChannellist(std::string filename)
 		}
 		
 		xmlFreeDoc(parser);
+	}
+	else if(playlist)
+	{
+		std::ifstream infile;
+		char cLine[1024];
+		char name[1024] = { 0 };
+		int duration;
+		std::string description;
+				
+		infile.open(filename.c_str(), std::ifstream::in);
+
+		while (infile.good())
+		{
+			infile.getline(cLine, sizeof(cLine));
+					
+			// remove CR
+			if(cLine[strlen(cLine) - 1] == '\r')
+				cLine[strlen(cLine) - 1] = 0;
+					
+			sscanf(cLine, "#EXTINF:%d,%[^\n]\n", &duration, name);
+					
+			if(strlen(cLine) > 0 && cLine[0] != '#')
+			{
+				char *url = NULL;
+				if ((url = strstr(cLine, "http://")) || (url = strstr(cLine, "rtmp://")) || (url = strstr(cLine, "rtsp://")) || (url = strstr(cLine, "mmsh://")) ) 
+				{
+					if (url != NULL) 
+					{
+						description = "stream";
+					
+						webtv_channels * tmp = new webtv_channels();
+							
+						tmp->title = name;
+						tmp->url = url;
+						tmp->description = description.c_str();
+						tmp->locked = false;
+							
+						// fill channelslist
+						channels.push_back(tmp);
+					}
+				}
+			}
+		}
+		infile.close();
 	}
 	
 	return false;
@@ -1060,6 +1112,7 @@ void CWebTV::addUserBouquet(void)
 	
 	fileFilter.addFilter("xml");
 	fileFilter.addFilter("tv");
+	fileFilter.addFilter("m3u");
 
 	filebrowser.Filter = &fileFilter;
 
