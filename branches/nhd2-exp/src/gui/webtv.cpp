@@ -223,6 +223,7 @@ void CWebTV::loadChannels(void)
 	title = std::string(rindex(g_settings.userBouquet.c_str(), '/') + 1);
 	strReplace(title, ".xml", "");
 	strReplace(title, ".tv", "");
+	strReplace(title, ".m3u", "");
 	strReplace(title, "userbouquet.", "");
 }
 
