@@ -205,7 +205,8 @@ void CWebTV::ClearChannels(void)
 int CWebTV::exec(bool rezap)
 {
 	// load streams channels list
-	loadChannels();
+	if(channels.empty())
+		loadChannels();
 	
 	int nNewChannel = Show();
 	
