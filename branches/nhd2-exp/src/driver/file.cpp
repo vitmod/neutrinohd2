@@ -179,7 +179,7 @@ const CFile::FileType file_type_list[] =
 	CFile::FILE_VIDEO,
 	
 	CFile::FILE_PICTURE, 
-	CFile::FILE_URL, 
+	CFile::FILE_PLAYLIST, 
 	CFile::FILE_PICTURE, 
 	CFile::FILE_PICTURE,
 	

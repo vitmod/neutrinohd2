@@ -63,13 +63,13 @@ extern int GLWidth;
 extern int GLHeight;
 #endif
 
-
 GstElement * m_gst_playbin = NULL;
 GstElement * audioSink = NULL;
 GstElement * videoSink = NULL;
 gchar * uri = NULL;
 GstBus * bus = NULL;
 bool end_eof = false;
+
 #elif defined (ENABLE_LIBEPLAYER3)
 #include <common.h>
 #include <subtitle.h>

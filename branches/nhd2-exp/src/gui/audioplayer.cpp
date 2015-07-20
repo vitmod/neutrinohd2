@@ -76,7 +76,7 @@
 #include <sys/time.h>
 #include <fstream>
 #include <iostream>
-#include <sstream>
+//#include <sstream>
 
 #include <gui/pictureviewer.h>
 #include <audio_cs.h>
@@ -971,6 +971,8 @@ bool CAudioPlayerGui::playPrev(bool allow_rotate)
 
 bool CAudioPlayerGui::clearPlaylist(void)
 {
+	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::clearPlaylist\n");
+	
 	bool result = false;
 
 	if (!(m_playlist.empty()))
@@ -985,7 +987,9 @@ bool CAudioPlayerGui::clearPlaylist(void)
 }
 
 bool CAudioPlayerGui::shufflePlaylist(void)
-{	
+{
+	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::shufflePlaylist\n");
+	
 	RandomNumber rnd;
 	bool result = false;
 	
@@ -1013,9 +1017,9 @@ bool CAudioPlayerGui::shufflePlaylist(void)
 
 void CAudioPlayerGui::addUrl2Playlist(const char *url, const char *name, const time_t bitrate) 
 {
-	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::addUrl2Playlist\n");
+	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::addUrl2Playlist: name = %s, url = %s\n", name, url);
 	
-	CAudiofileExt mp3( url, CFile::EXTENSION_URL );
+	CAudiofileExt mp3(url, CFile::EXTENSION_URL);
 	
 	if (name != NULL) 
 	{
@@ -1040,13 +1044,13 @@ void CAudioPlayerGui::addUrl2Playlist(const char *url, const char *name, const t
 
 void CAudioPlayerGui::processPlaylistUrl(const char *url, const char *name, const time_t tim) 
 {
-	CURL *curl_handle;
-	struct MemoryStruct chunk;
-
 	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::processPlaylistUrl\n");
 	
-	chunk.memory = NULL; /* we expect realloc(NULL, size) to work */
-	chunk.size = 0;    /* no data at this point */
+	CURL *curl_handle;
+	struct MemoryStruct chunk;
+	
+	chunk.memory = NULL; 	/* we expect realloc(NULL, size) to work */
+	chunk.size = 0;    	/* no data at this point */
 
 	curl_global_init(CURL_GLOBAL_ALL);
 
@@ -1130,6 +1134,7 @@ void CAudioPlayerGui::processPlaylistUrl(const char *url, const char *name, cons
 						tmp = strchr(line, '\n');
 						if (tmp != NULL)
 							*tmp = '\0';
+						
 						addUrl2Playlist(ptr, name, tim);
 					}
 				}
@@ -1147,6 +1152,8 @@ void CAudioPlayerGui::processPlaylistUrl(const char *url, const char *name, cons
 
 void CAudioPlayerGui::readDir_ic(void)
 {
+	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::readDir_ic\n");
+	
 	std::string answer = "";
 	std::cout << "CAudioPlayerGui::readDir_ic: IC URL: " << icecasturl << std::endl;
 	CURL *curl_handle;
@@ -1214,6 +1221,8 @@ void CAudioPlayerGui::scanXmlFile(std::string filename)
 
 void CAudioPlayerGui::scanXmlData(xmlDocPtr answer_parser, const char *nametag, const char *urltag, const char *bitratetag, bool usechild)
 {
+	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::scanXmlData\n");
+	
 #define IC_typetag "server_type"
 
 	if (answer_parser != NULL) 
@@ -1323,12 +1332,13 @@ void CAudioPlayerGui::scanXmlData(xmlDocPtr answer_parser, const char *nametag, 
 		xmlFreeDoc(answer_parser);
 	}
 	else
-		printf("[scanXmlData] answer_parser == NULL");
+		dprintf(DEBUG_NORMAL, "[scanXmlData] answer_parser == NULL");
 }
 
 bool CAudioPlayerGui::openFilebrowser(void)
 {
 	dprintf(DEBUG_INFO, "CAudioPlayerGui::openFilebrowser\n");
+	
 	bool result = false;
 	CFileBrowser filebrowser((g_settings.filebrowser_denydirectoryleave) ? g_settings.network_nfs_audioplayerdir : "");
 
@@ -1396,7 +1406,7 @@ bool CAudioPlayerGui::openFilebrowser(void)
 						dprintf(DEBUG_INFO, "CAudioPlayerGui::openFilebrowser: m3u/pls Playlist found: %s\n", buf);
 						
 						filename = buf;
-						processPlaylistUrl(buf);
+						processPlaylistUrl(files->Name.c_str());
 					}
 					else
 					{
@@ -1404,26 +1414,35 @@ bool CAudioPlayerGui::openFilebrowser(void)
 					}
 				}
 			}
-			else if(files->getExtension() == CFile::EXTENSION_PLS)
+			else if(files->getType() == CFile::FILE_PLAYLIST)
 			{
 				std::string sPath = files->Name.substr(0, files->Name.rfind('/'));
 				std::ifstream infile;
-				char cLine[256];
-				infile.open(files->Name.c_str(), std::ifstream::in);
+				char cLine[1024];
+				char name[1024] = { 0 };
+				int duration;
 				
+				infile.open(files->Name.c_str(), std::ifstream::in);
+
 				while (infile.good())
 				{
-					infile.getline(cLine, 255);
+					infile.getline(cLine, sizeof(cLine));
+					
 					// remove CR
-					if(cLine[strlen(cLine)-1]=='\r')
-						cLine[strlen(cLine)-1]=0;
-					if(strlen(cLine) > 0 && cLine[0]!='#')
+					if(cLine[strlen(cLine) - 1] == '\r')
+						cLine[strlen(cLine) - 1] = 0;
+					
+					sscanf(cLine, "#EXTINF:%d,%[^\n]\n", &duration, name);
+					
+					if(strlen(cLine) > 0 && cLine[0] != '#')
 					{
 						char *url = strstr(cLine, "http://");
 						if (url != NULL) 
 						{
 							if (strstr(url, ".m3u") || strstr(url, ".pls"))
 								processPlaylistUrl(url);
+							else
+								addUrl2Playlist(url, name, duration);
 						} 
 						else if ((url = strstr(cLine, "icy://")) != NULL) 
 						{
@@ -1438,11 +1457,12 @@ bool CAudioPlayerGui::openFilebrowser(void)
 							std::string filename = sPath + '/' + cLine;
 
 							std::string::size_type pos;
-							while((pos=filename.find('\\'))!=std::string::npos)
-								filename[pos]='/';
+							while((pos = filename.find('\\')) != std::string::npos)
+								filename[pos] = '/';
 
 							std::ifstream testfile;
 							testfile.open(filename.c_str(), std::ifstream::in);
+							
 							if(testfile.good())
 							{
 #ifdef AUDIOPLAYER_CHECK_FOR_DUPLICATES
@@ -1454,7 +1474,7 @@ bool CAudioPlayerGui::openFilebrowser(void)
 										removeFromPlaylist(i);
 								}
 #endif
-								if(strcasecmp(filename.substr(filename.length()-3,3).c_str(), "url")==0)
+								if(strcasecmp(filename.substr(filename.length() - 3, 3).c_str(), "url")==0)
 								{
 									addUrl2Playlist(filename.c_str());
 								}
@@ -2465,7 +2485,7 @@ void CAudioPlayerGui::getFileInfoToDisplay(std::string &info, CAudiofileExt &fil
 
 void CAudioPlayerGui::addToPlaylist(CAudiofileExt &file)
 {	
-	dprintf(DEBUG_NORMAL, "add2Playlist: %s\n", file.Filename.c_str());
+	dprintf(DEBUG_NORMAL, "CAudioPlayerGui::add2Playlist: %s\n", file.Filename.c_str());
 	
 	if (m_select_title_by_name)
 	{	
@@ -2615,8 +2635,6 @@ void CAudioPlayerGui::buildSearchTree()
 
 	for (CAudioPlayList::iterator it = m_playlist.begin(); it!=m_playlist.end(); it++)
 	{
-		//if (m_state == CAudioPlayerGui::PLAY)
-		// 	usleep(10*1000);
 		listPos++;
 		progress.showGlobalStatus(100*listPos / maxProgress);
 		//std::string info;
@@ -2625,11 +2643,9 @@ void CAudioPlayerGui::buildSearchTree()
 		const std::pair<CTitle2Pos::iterator,bool> item = m_title2Pos.insert(CTitle2PosItem(firstChar, CPosList()));
 		item.first->second.insert(listPos);
 	}
+	
 	progress.hide();
 	m_playlistHasChanged = false;
-
-	//printf("after:\n");
-	//printSearchTree();
 }
 
 unsigned char CAudioPlayerGui::getFirstChar(CAudiofileExt &file)
@@ -2776,12 +2792,9 @@ void CAudioPlayerGui::savePlaylist()
 bool CAudioPlayerGui::askToOverwriteFile(const std::string& filename) 
 {
 	char msg[filename.length() + 127];
-	snprintf(msg,
-		filename.length() + 126,
-		"%s\n%s",
-		g_Locale->getText(LOCALE_AUDIOPLAYER_PLAYLIST_FILEOVERWRITE_MSG),
-		filename.c_str());
-	bool res = (MessageBox(LOCALE_AUDIOPLAYER_PLAYLIST_FILEOVERWRITE_TITLE, msg,CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo)== CMessageBox::mbrYes);
+	
+	snprintf(msg, filename.length() + 126, "%s\n%s", g_Locale->getText(LOCALE_AUDIOPLAYER_PLAYLIST_FILEOVERWRITE_MSG), filename.c_str());
+	bool res = (MessageBox(LOCALE_AUDIOPLAYER_PLAYLIST_FILEOVERWRITE_TITLE, msg, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes);
 	this->paint();
 	return res;
 }
@@ -2796,7 +2809,7 @@ std::string CAudioPlayerGui::absPath2Rel(const std::string& fromDir, const std::
 	// fromDir:     /foo/bar/angle/1          (length: 16)
 	// absFilename: /foo/bar/devil/2/fire.mp3 (length: 19)
 	// -> /foo/bar/ is prefix, lastSlash will be 8
-	for (int i=0;i<length;i++) 
+	for (int i = 0; i < length; i++) 
 	{
 		if (fromDir[i] == absFilename[i]) 
 		{
@@ -2820,7 +2833,7 @@ std::string CAudioPlayerGui::absPath2Rel(const std::string& fromDir, const std::
 	// relFromDir is now /angle/1
 
 	// go up as many directories as neccessary
-	for (unsigned int i=0;i<relFromDir.size();i++)
+	for (unsigned int i = 0; i < relFromDir.size(); i++)
 	{
 		if (relFromDir[i] == '/') 
 		{
