@@ -173,7 +173,7 @@ extern CBouquetManager * g_bouquetManager;		// defined in zapit.cpp
 int old_b_id = -1;
 
 // hintbox
-CHintBox * reloadhintBox = 0;
+CHintBox * reloadhintBox = NULL;
 
 // record and timeshift
 bool autoshift = false;
@@ -281,7 +281,7 @@ CCAMMenuHandler 	* g_CamHandler;
 #endif
 
 // webtv
-CWebTV 			* webtv;
+CWebTV * webtv;
 
 // timezone for wizard
 extern CMenuOptionStringChooser * tzSelect;
@@ -3630,6 +3630,8 @@ _repeat:
 		channelList->adjustToChannelID(live_channel_id);//FIXME what if deleted ?
 		
 		reloadhintBox->hide();
+		delete reloadhintBox;
+		reloadhintBox = NULL;
 
 		return messages_return::handled;
 	}
@@ -5075,9 +5077,11 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 
 		reloadhintBox->paint();
 		
-		g_Zapit->reinitChannels();	//we don't need the reloadhint box g_zapit reinit channels apple evt bouquets change 
+		g_Zapit->reinitChannels();
 		
 		reloadhintBox->hide();
+		delete reloadhintBox;
+		reloadhintBox = NULL;
 	}
 	else if(actionKey == "reloadplugins") 
 	{

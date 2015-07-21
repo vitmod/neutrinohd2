@@ -2113,8 +2113,6 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 			response.cmd = CZapitMessages::CMD_READY;
 			CBasicServer::send_data(connfd, &response, sizeof(response));
 			
-			dprintf(DEBUG_INFO, "[zapit] sending EVT_SERVICES_CHANGED\n");
-			
 			//live_fe->setTsidOnid(0);
 			zapit(live_channel_id, current_is_nvod);
 

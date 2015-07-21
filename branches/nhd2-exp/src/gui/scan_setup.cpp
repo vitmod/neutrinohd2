@@ -314,6 +314,7 @@ int CScanSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 		
 		hintBox->hide();
 		delete hintBox;
+		hintBox = NULL;
 		
 		return res;
 	}

@@ -2114,10 +2114,8 @@ void CAudioPlayerGui::play(unsigned int pos)
 	}
 
 	// metadata
-	if (m_playlist[pos].FileExtension != CFile::EXTENSION_URL && !m_playlist[pos].MetaData.bitrate)
+	if ( (m_playlist[pos].FileExtension != CFile::EXTENSION_M3U || m_playlist[pos].FileExtension != CFile::EXTENSION_URL || m_playlist[pos].FileExtension != CFile::EXTENSION_PLS)&& !m_playlist[pos].MetaData.bitrate)
 	{
-		// id3tag noch nicht geholt
-		//printf("play: need getMetaData\n");
 		GetMetaData(m_playlist[pos]);
 	}
 	
