@@ -133,11 +133,11 @@ void CTuxdnsConf::TuxdnsSettings()
 	}
 
 	CMenuWidget * settingsselector = new CMenuWidget("TuxDNS", NEUTRINO_ICON_STREAMING);
-	//settingsselector->addItem(GenericMenuSeparator);
-	settingsselector->addItem(GenericMenuBack);
-	settingsselector->addItem(GenericMenuSeparatorLine);
-	settingsselector->addItem( new CMenuForwarderNonLocalized("Save settings", true, "", this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED) );
-	settingsselector->addItem(GenericMenuSeparatorLine);
+	
+	settingsselector->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	settingsselector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	settingsselector->addItem(new CMenuForwarderNonLocalized("Save settings", true, "", this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED) );
+	settingsselector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	//user
 	CStringInputSMS*  ojuser = new CStringInputSMS((char *)"User Name", user);

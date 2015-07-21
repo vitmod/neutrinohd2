@@ -118,10 +118,10 @@ void CFBCallMonitor::doMenu()
 	// create menu
 	CMenuWidget * FritzBoxCallSettingsMenu = new CMenuWidget("FritzBoxCallMonitor", NEUTRINO_ICON_SETTINGS);
 
-	FritzBoxCallSettingsMenu->addItem(GenericMenuBack);
-	FritzBoxCallSettingsMenu->addItem(GenericMenuSeparatorLine);
+	FritzBoxCallSettingsMenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	FritzBoxCallSettingsMenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	FritzBoxCallSettingsMenu->addItem(new CMenuForwarderNonLocalized("Einstellungen speichern", true, NULL, this, "save", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
-	FritzBoxCallSettingsMenu->addItem(GenericMenuSeparatorLine);
+	FritzBoxCallSettingsMenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	// fb ip
 	CStringInputSMS * FB_IP = new CStringInputSMS((char *)"IP der Fritzbox", (char *)FB_IP_STRG.c_str());

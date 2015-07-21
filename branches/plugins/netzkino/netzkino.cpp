@@ -1101,7 +1101,7 @@ bool CNetzKinoBrowser::showNKMenu()
 	CNKCategoriesMenu nkCategoriesMenu(m_settings.nkmode, m_settings.nkcategory, m_settings.nkcategoryname, nkparser);
 	
 	mainMenu.addItem(new CMenuForwarder(LOCALE_NK_CATEGORIES, true, m_settings.nkcategoryname, &nkCategoriesMenu));
-	mainMenu.addItem(GenericMenuSeparatorLine);
+	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	std::string search = m_settings.nksearch;
 	CStringInputSMS stringInput(LOCALE_YT_SEARCH, &search);

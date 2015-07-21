@@ -607,7 +607,6 @@ void CTestMenu::testPlayAudioFolder()
 	CFileFilter fileFilter;
 	
 	CFileList filelist;
-	int selected = 0;
 	
 	fileFilter.addFilter("cdr");
 	fileFilter.addFilter("mp3");
@@ -988,7 +987,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CListBox", true, NULL, this, "listbox"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CListBoxInfoDetails", true, NULL, this, "listboxdetails"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("CListBoxDetailsTitleInfo", true, NULL, this, "listboxdetailstitleinfo"));
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparatorItemMenuIcon::LINE) );
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarderNonLocalized("AudioPlayer", true, NULL, this, "audioplayer"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("InternetRadio", true, NULL, this, "internetradio"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("TSMovieBrowser", true, NULL, this, "tsmoviebrowser"));
@@ -996,15 +995,15 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarderNonLocalized("FilePlayBack", true, NULL, this, "fileplayback"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("PictureViewer", true, NULL, this, "pictureviewer"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("UPNPBrowser", true, NULL, this, "upnpbrowser"));
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparatorItemMenuIcon::LINE) );
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarderNonLocalized("PlayMovieURL", true, NULL, this, "playmovieurl"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("PlayAudioURL", true, NULL, this, "playaudiourl"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("ShowPictureURL", true, NULL, this, "showpictureurl"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("PlayAudioFolder", true, NULL, this, "playaudiofolder"));
 	mainMenu->addItem(new CMenuForwarderNonLocalized("ShowPictureFolder", true, NULL, this, "showpicturefolder"));
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparatorItemMenuIcon::LINE) );
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarderNonLocalized("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
-	mainMenu->addItem( new CMenuSeparator(CMenuSeparatorItemMenuIcon::LINE) );
+	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarderNonLocalized("ShowActuellEPG", true, NULL, this, "showepg"));
 	
 	mainMenu->exec(NULL, "");

@@ -1147,7 +1147,7 @@ bool CYTBrowser::showYTMenu()
 		mainMenu.addItem(new CMenuForwarder(YT_FEED_OPTIONS[i].value, true, NULL, selector, cnt, CRCInput::convertDigitToKey(i + 1)), m_settings.ytmode == (int) YT_FEED_OPTIONS[i].key);
 	}
 
-	mainMenu.addItem(GenericMenuSeparatorLine);
+	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	std::string search = m_settings.ytsearch;
 	
 	CStringInputSMS stringInput(LOCALE_YT_SEARCH, &search);
@@ -1158,7 +1158,7 @@ bool CYTBrowser::showYTMenu()
 	sprintf(cnt, "%d", cYTFeedParser::SEARCH);
 	mainMenu.addItem(new CMenuForwarder(LOCALE_EVENTFINDER_START_SEARCH, true, NULL, selector, cnt, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 
-	mainMenu.addItem(GenericMenuSeparatorLine);
+	mainMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	char rstr[20];
 	sprintf(rstr, "%s", m_settings.ytregion.c_str());
