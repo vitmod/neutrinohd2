@@ -42,44 +42,43 @@ const CMenuOptionChooser::keyval OPTIONS_OFF_ON_OPTIONS[OPTIONS_OFF_ON_OPTION_CO
 CTuxdnsConf::CTuxdnsConf()
 {
 	sprintf(pause, "%s", "600");
-	verbose		= 1;
+	verbose = 1;
 	sprintf(user, "%s", "benutzer");
 	sprintf(pass, "%s", "passwort");
 	sprintf(host, "%s", "myhost.dyndns.org");
 }
 
-int CTuxdnsConf::exec(CMenuTarget* parent, const std::string & actionKey)
+CTuxdnsConf::~CTuxdnsConf()
 {
-	int   res = menu_return::RETURN_REPAINT;
-
-	if(actionKey == "savesettings") 
-	{
-		if(this->SaveSettings())
-		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen werden gespeichert !", 450, 2);
-		else
-		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen NICHT gespeichert !", 450, 2);
-
-		return res;
-	}
-
-	if (parent)
-		parent->hide();
-
-	paint();
-
-	TuxdnsSettings();
-
-	return res;
 }
 
 void CTuxdnsConf::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width, height);
+	CFrameBuffer::getInstance()->paintBackground();
+	CFrameBuffer::getInstance()->blit();
 }
 
-void CTuxdnsConf::paint()
+void CTuxdnsConf::readSettings()
 {
-	printf("[neutrino] TuxDNS-Setup\n");
+	FILE* fd = fopen(TuxdnsCFG, "r");
+	char buffer[120];
+
+	if(fd) 
+	{
+		while(fgets(buffer, 120, fd)!=NULL) 
+		{
+			sscanf(buffer, "pause = %s"	, (char *) pause);
+			sscanf(buffer, "verbose = %d"	, &verbose);
+			sscanf(buffer, "user = %s"	, (char *) user);
+			sscanf(buffer, "pass = %s"	, (char *) pass);
+			sscanf(buffer, "host = %s"	, (char *) host);
+		}
+		fclose(fd);
+	}
+	else 
+	{
+		printf("tuxdns.conf: File %s not found. Using defaults.\n",TuxdnsCFG);
+	}
 }
 
 bool CTuxdnsConf::SaveSettings()
@@ -110,57 +109,56 @@ bool CTuxdnsConf::SaveSettings()
 	return true;
 }
 
+int CTuxdnsConf::exec(CMenuTarget* parent, const std::string & actionKey)
+{
+	if (parent)
+		parent->hide();
+	
+	if(actionKey == "savesettings") 
+	{
+		if(this->SaveSettings())
+		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen werden gespeichert!");
+		else
+		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen NICHT gespeichert!");
+	}
+
+	return menu_return::RETURN_REPAINT;
+}
+
 void CTuxdnsConf::TuxdnsSettings()
 {
-	FILE* fd = fopen(TuxdnsCFG, "r");
-	char buffer[120];
-
-	if(fd) 
-	{
-		while(fgets(buffer, 120, fd)!=NULL) 
-		{
-			sscanf(buffer, "pause = %s"	, (char *) pause);
-			sscanf(buffer, "verbose = %d"	, &verbose);
-			sscanf(buffer, "user = %s"	, (char *) user);
-			sscanf(buffer, "pass = %s"	, (char *) pass);
-			sscanf(buffer, "host = %s"	, (char *) host);
-		}
-		fclose(fd);
-	}
-	else 
-	{
-		printf("tuxdns.conf: File %s not found. Using defaults.\n",TuxdnsCFG);
-	}
-
-	CMenuWidget * settingsselector = new CMenuWidget("TuxDNS", NEUTRINO_ICON_STREAMING);
+	readSettings();
 	
-	settingsselector->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	settingsselector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
-	settingsselector->addItem(new CMenuForwarder("Save settings", true, "", this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED) );
-	settingsselector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	//
+	CMenuWidget * tuxDNSMenu = new CMenuWidget("TuxDNS", NEUTRINO_ICON_STREAMING);
+	
+	tuxDNSMenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	tuxDNSMenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	tuxDNSMenu->addItem(new CMenuForwarder("Save settings", true, "", this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED) );
+	tuxDNSMenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	//user
 	CStringInputSMS*  ojuser = new CStringInputSMS((char *)"User Name", user);
-	settingsselector->addItem( new CMenuForwarder("User Name", true, user, ojuser ));
+	tuxDNSMenu->addItem( new CMenuForwarder("User Name", true, user, ojuser ));
 	
 	//passwd
 	CStringInputSMS*  ojpass = new CStringInputSMS((char *)"Password", pass);
-	settingsselector->addItem( new CMenuForwarder("Password", true, pass, ojpass ));
+	tuxDNSMenu->addItem( new CMenuForwarder("Password", true, pass, ojpass ));
 	
 	//host name
 	CStringInputSMS*  ojhost = new CStringInputSMS((char *)"Host Name", host);
-	settingsselector->addItem( new CMenuForwarder("Host Name", true, host, ojhost ));
+	tuxDNSMenu->addItem( new CMenuForwarder("Host Name", true, host, ojhost ));
 	
 	//pause
 	CStringInput*  ojpause = new CStringInput((char *)"Pause", pause);
-	settingsselector->addItem( new CMenuForwarder("Pause", true, pause, ojpause ));
+	tuxDNSMenu->addItem( new CMenuForwarder("Pause", true, pause, ojpause ));
 	
 	//verbose
-	settingsselector->addItem(new CMenuOptionChooser("verbose", &verbose, OPTIONS_OFF_ON_OPTIONS, OPTIONS_OFF_ON_OPTION_COUNT,true));
+	tuxDNSMenu->addItem(new CMenuOptionChooser("verbose", &verbose, OPTIONS_OFF_ON_OPTIONS, OPTIONS_OFF_ON_OPTION_COUNT,true));
 
-	settingsselector->exec(NULL, "");
-	settingsselector->hide();
-	delete settingsselector;
+	tuxDNSMenu->exec(NULL, "");
+	tuxDNSMenu->hide();
+	delete tuxDNSMenu;
 }
 
 //
@@ -176,8 +174,7 @@ void plugin_exec(void)
 {
 	CTuxdnsConf * TuxdnsConf = new CTuxdnsConf();
 	
-	TuxdnsConf->exec(NULL, "");
-	TuxdnsConf->hide();
+	TuxdnsConf->TuxdnsSettings();
 	
 	delete TuxdnsConf;
 }

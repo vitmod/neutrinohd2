@@ -39,6 +39,20 @@ const CMenuOptionChooser::keyval OPTIONS_OFF0_ON1_OPTIONS[OPTIONS_OFF0_ON1_OPTIO
         { 1, LOCALE_OPTIONS_ON, NULL }
 };
 
+CFBCallMonitor::CFBCallMonitor()
+{
+}
+
+CFBCallMonitor::~CFBCallMonitor()
+{
+}
+
+void CFBCallMonitor::hide()
+{
+	CFrameBuffer::getInstance()->paintBackground();
+	CFrameBuffer::getInstance()->blit();
+}
+
 void CFBCallMonitor::ReadSettings() 
 {
 	CConfigFile *bpfbconfig = new CConfigFile(',');
@@ -102,9 +116,9 @@ int CFBCallMonitor::exec(CMenuTarget* parent, const std::string &actionKey)
 	{
 		//SaveSettings();
 		if(this->SaveSettings())
-		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen werden gespeichert !", 450, 2 );
+		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen werden gespeichert!");
 		else
-		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen NICHT gespeichert !", 450, 2 );
+		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen NICHT gespeichert!");
 	}
 	
 	return menu_return::RETURN_REPAINT;

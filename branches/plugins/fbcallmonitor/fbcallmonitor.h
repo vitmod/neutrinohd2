@@ -53,12 +53,15 @@ class CFBCallMonitor : public CMenuTarget
 		int FB_POPUP;
 		int FB_INVERS;
 		
-        public:
 		void ReadSettings();
 		bool SaveSettings();
-		void doMenu();
+        public:
+		CFBCallMonitor();
+		~CFBCallMonitor();
 		
 		int exec(CMenuTarget *parent,  const std::string &actionkey);
+		void doMenu();
+		void hide();
 };
 
 #endif

@@ -33,28 +33,20 @@ using namespace std;
 class CTuxdnsConf : public CMenuTarget
 {
 	private:
-
-		CFrameBuffer *frameBuffer;
-		int x;
-		int y;
-		int width;
-		int height;
-		int hheight,mheight; // head/menu font height
-
 		char	pause[5];
 		int	verbose;
 		char	user[21];
 		char	pass[21];
 		char	host[32];
-
-	public:
-
-		CTuxdnsConf();
-		void paint();
-		void hide();
-		int  exec(CMenuTarget* parent, const std::string & actionKey);
-		void TuxdnsSettings();
+		
+		void readSettings();
 		bool SaveSettings();
+	public:
+		CTuxdnsConf();
+		~CTuxdnsConf();
+		int  exec(CMenuTarget* parent, const std::string & actionKey);
+		void hide();
+		void TuxdnsSettings();
 };
 
 #endif //__tuxdnsconf__

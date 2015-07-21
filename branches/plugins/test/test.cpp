@@ -647,10 +647,9 @@ BROWSER:
 			{
 				CAudiofileExt audiofile(files->Name, files->getExtension());
 				tmpAudioPlayerGui.addToPlaylist(audiofile);
+				tmpAudioPlayerGui.exec(NULL, "urlplayback");
 			}
 		}
-		
-		tmpAudioPlayerGui.exec(NULL, "urlplayback");
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
@@ -713,10 +712,9 @@ BROWSER:
 				pic.Date = statbuf.st_mtime;
 				
 				tmpPictureViewerGui.addToPlaylist(pic);
+				tmpPictureViewerGui.exec(NULL, "urlplayback");
 			}
 		}
-		
-		tmpPictureViewerGui.exec(NULL, "urlplayback");
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
@@ -768,7 +766,6 @@ void CTestMenu::testShowActuellEPG()
 
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 {
-	int res = menu_return::RETURN_REPAINT;
 	dprintf(DEBUG_NORMAL, "\nCTestMenu::exec: actionKey:%s\n", actionKey.c_str());
 	
 	if(parent)
@@ -777,187 +774,149 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	if(actionKey == "stringinput")
 	{
 		testCStringInput();
-		return res;
 	}
 	else if(actionKey == "stringinputsms")
 	{
 		testCStringInputSMS();
-		return res;
 	}
 	else if(actionKey == "pininput")
 	{
 		testCPINInput();
-		return res;
 	}
 	else if(actionKey == "ipinput")
 	{
 		testCIPInput();
-		return res;
 	}
 	else if(actionKey == "macinput")
 	{
 		testCMACInput();
-		return res;
 	}
 	else if(actionKey == "dateinput")
 	{
 		testCDateInput();
-		return res;
 	}
 	else if(actionKey == "timeinput")
 	{
 		testCTimeInput();
-		return res;
 	}
 	else if(actionKey == "intinput")
 	{
 		testCIntInput();
-		return res;
 	}
 	else if(actionKey == "infobox")
 	{
 		testCInfoBox();
-		return res;
 	}
 	else if(actionKey == "infoboxshowmsg")
 	{
 		testCInfoBoxShowMsg();
-		return res;
 	}
 	else if(actionKey == "infoboxinfobox")
 	{
 		testCInfoBoxInfoBox();
-		return res;
 	}
 	else if(actionKey == "messagebox")
 	{
 		testCMessageBox();
-		return res;
 	}
 	else if(actionKey == "messageboxinfomsg")
 	{
 		testCMessageBoxInfoMsg();
-		return res;
 	}
 	else if(actionKey == "messageboxerrormsg")
 	{
 		testCMessageBoxErrorMsg();
-		return res;
 	}
 	else if(actionKey == "hintbox")
 	{
 		testCHintBox();
-		return res;
 	}
 	else if(actionKey == "hintboxinfo")
 	{
 		testCHintBoxInfo();
-		return res;
 	}
 	else if(actionKey == "helpbox")
 	{
 		testCHelpBox();
-		return res;
 	}
 	else if(actionKey == "textbox")
 	{
 		testCTextBox();
-		return res;
 	}
 	else if(actionKey == "listframebox")
 	{
 		testCListFrameBox();
-		return res;
 	}
 	else if(actionKey == "listbox")
 	{
 		testCListBox();
-		return res;
 	}
 	else if(actionKey == "listboxdetails")
 	{
 		testCListBoxDetails();
-		return res;
 	}
 	else if(actionKey == "listboxdetailstitleinfo")
 	{
 		testCListBoxDetailsTitleInfo();
-		return res;
 	}
 	else if(actionKey == "audioplayer")
 	{
 		testCallAudioPlayer();
-		return res;
 	}
 	else if(actionKey == "internetradio")
 	{
 		testCallInternetRadio();
-		return res;
 	}
 	else if(actionKey == "tsmoviebrowser")
 	{
 		testCallTSMovieBrowser();
-		return res;
 	}
 	else if(actionKey == "moviebrowser")
 	{
 		testCallMovieBrowser();
-		return res;
 	}
 	else if(actionKey == "fileplayback")
 	{
 		testCallFilePlayBack();
-		return res;
 	}
 	else if(actionKey == "pictureviewer")
 	{
 		testCallPictureViewer();
-		return res;
 	}
 	else if(actionKey == "upnpbrowser")
 	{
 		testCallUPNPBrowser();
-		return res;
 	}
 	else if(actionKey == "playmovieurl")
 	{
 		testPlayMovieURL();
-		return res;
 	}
 	else if(actionKey == "playaudiourl")
 	{
 		testPlayAudioURL();
-		return res;
 	}
 	else if(actionKey == "showpictureurl")
 	{
 		testShowPictureURL();
-		return res;
 	}
 	else if(actionKey == "playaudiofolder")
 	{
 		testPlayAudioFolder();
-		return res;
 	}
 	else if(actionKey == "showpicturefolder")
 	{
 		testShowPictureFolder();
-		return res;
 	}
 	else if(actionKey == "startplugin")
 	{
 		testStartPlugin();
-		return res;
 	}
 	else if(actionKey == "showepg")
 	{
 		testShowActuellEPG();
-		return res;
 	}
 	
-	showTestMenu();
-	
-	return res;
+	return menu_return::RETURN_REPAINT;
 }
 
 void CTestMenu::showTestMenu()
