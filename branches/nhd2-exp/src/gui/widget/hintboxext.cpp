@@ -67,11 +67,40 @@ CHintBoxExt::CHintBoxExt(const neutrino_locale_t Caption, const char * const Tex
 		begin = strtok(NULL, "\n");
 	}
 	
-	init(Caption, Width, Icon);
+	init(g_Locale->getText(Caption), Width, Icon);
 }
 
 
 CHintBoxExt::CHintBoxExt(const neutrino_locale_t Caption, ContentLines& lines, const int Width, const char * const Icon)
+{
+	m_message = NULL;
+	m_lines = lines;
+	init(g_Locale->getText(Caption), Width, Icon);
+}
+
+CHintBoxExt::CHintBoxExt(const char * const Caption, const char * const Text, const int Width, const char * const Icon)
+{
+	m_message = strdup(Text);
+
+	char *begin   = m_message;
+
+	begin = strtok(m_message, "\n");
+	
+	while (begin != NULL)
+	{
+		std::vector<Drawable*> oneLine;
+		std::string s(begin);
+		DText *d = new DText(s);
+		oneLine.push_back(d);
+		m_lines.push_back(oneLine);
+		begin = strtok(NULL, "\n");
+	}
+	
+	init(Caption, Width, Icon);
+}
+
+
+CHintBoxExt::CHintBoxExt(const char * const Caption, ContentLines& lines, const int Width, const char * const Icon)
 {
 	m_message = NULL;
 	m_lines = lines;
@@ -102,7 +131,7 @@ CHintBoxExt::~CHintBoxExt(void)
 	}
 }
 
-void CHintBoxExt::init(const neutrino_locale_t Caption, const int Width, const char * const Icon)
+void CHintBoxExt::init(const char * const Caption, const int Width, const char * const Icon)
 {
 	m_width   = Width;
 	int nw = 0;
@@ -200,7 +229,7 @@ void CHintBoxExt::init(const neutrino_locale_t Caption, const int Width, const c
 	else
 		m_iconfile = "";
 
-	nw = additional_width + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(g_Locale->getText(m_caption), true); // UTF-8
+	nw = additional_width + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(m_caption); // UTF-8
 
 	if (nw > m_width)
 		m_width = nw;
@@ -244,7 +273,7 @@ void CHintBoxExt::refresh(bool paintBg)
 	// title
 	m_window->paintBoxRel(0, 0, m_width, m_theight, (CFBWindow::color_t)COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);//round
 	
-	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth( g_Locale->getText(m_caption), true); // UTF-8
+	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(m_caption); // UTF-8
 
 	if (!m_iconfile.empty())
 	{
@@ -252,7 +281,7 @@ void CHintBoxExt::refresh(bool paintBg)
 	}
 	
 	int stringstartposX = (m_width >> 1) - (neededWidth >> 1);
-	m_window->RenderString( g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], stringstartposX, m_theight, m_width - (stringstartposX) , g_Locale->getText(m_caption), (CFBWindow::color_t)COL_MENUHEAD, 0, true); // UTF-8
+	m_window->RenderString( g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], stringstartposX, m_theight, m_width - (stringstartposX) , m_caption.c_str(), (CFBWindow::color_t)COL_MENUHEAD, 0, true); // UTF-8
 
 	// menu text panel
 	m_window->paintBoxRel(0, m_theight, m_width, ((m_maxEntriesPerPage + 1)*m_fheight), (CFBWindow::color_t)COL_MENUCONTENT_PLUS_0);

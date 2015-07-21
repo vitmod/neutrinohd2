@@ -484,7 +484,7 @@ void CWebTV::showAudioDialog(void)
 			if (!name_ok)
 				apidtitle.append(apidnumber);
 
-			APIDSelector.addItem(new CMenuForwarderNonLocalized( apidtitle.c_str(), enabled, NULL, APIDChanger, apidnumber, CRCInput::convertDigitToKey(count + 1)), defpid);
+			APIDSelector.addItem(new CMenuForwarder( apidtitle.c_str(), enabled, NULL, APIDChanger, apidnumber, CRCInput::convertDigitToKey(count + 1)), defpid);
 		}
 				
 				// ac3

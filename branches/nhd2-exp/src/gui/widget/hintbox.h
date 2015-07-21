@@ -49,26 +49,27 @@ class CHintBox
 {
 	protected:
 
-		CFBWindow *              window;
+		CFBWindow * window;
 
-		unsigned int             entries_per_page;
-		unsigned int             current_page;
+		unsigned int entries_per_page;
+		unsigned int current_page;
 
-		int                      width;
-		int                      height;
+		int width;
+		int height;
 
-		int                      fheight;
-		int                      theight;
-		neutrino_locale_t        caption;
-		char *                   message;
-		std::vector<char *>      line;
-		std::string              iconfile;
+		int fheight;
+		int theight;
+		std::string caption;
+		char * message;
+		std::vector<char *>line;
+		std::string iconfile;
 		
 		void refresh(void);
 
 	public:
 		// Text is UTF-8 encoded
 		CHintBox(const neutrino_locale_t Caption, const char * const Text, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
+		CHintBox(const char * Caption, const char * const Text, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
 		~CHintBox(void);
 
 		bool has_scrollbar(void);
@@ -82,5 +83,7 @@ class CHintBox
 // Text is UTF-8 encoded
 int HintBox(const neutrino_locale_t Caption, const char * const Text, const int Width = HINTBOX_WIDTH, int timeout = -1, const char * const Icon = NEUTRINO_ICON_INFO);
 int HintBox(const neutrino_locale_t Caption, const neutrino_locale_t Text, const int Width = HINTBOX_WIDTH, int timeout = -1, const char * const Icon = NEUTRINO_ICON_INFO);
+int HintBox(const char * Caption, const char * const Text, const int Width = HINTBOX_WIDTH, int timeout = -1, const char * const Icon = NEUTRINO_ICON_INFO);
+int HintBox(const char * Caption, const neutrino_locale_t Text, const int Width = HINTBOX_WIDTH, int timeout = -1, const char * const Icon = NEUTRINO_ICON_INFO);
 
 #endif

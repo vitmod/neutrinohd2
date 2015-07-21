@@ -101,7 +101,7 @@ int CDVBSubSelectMenuHandler::doMenu ()
 				char item[64];
 	
 				snprintf(item,sizeof(item), "DVB: %s", sd->ISO639_language_code.c_str());
-				DVBSubSelector.addItem(new CMenuForwarderNonLocalized(item, sd->pId != dvbsub_getpid() /*dvbsub_getpid(&pid, NULL)*/, NULL, &SubtitleChanger, spid, CRCInput::convertDigitToKey(++count)));
+				DVBSubSelector.addItem(new CMenuForwarder(item, sd->pId != dvbsub_getpid() /*dvbsub_getpid(&pid, NULL)*/, NULL, &SubtitleChanger, spid, CRCInput::convertDigitToKey(++count)));
 			}
 			
 			//txt subs
@@ -120,7 +120,7 @@ int CDVBSubSelectMenuHandler::doMenu ()
 				char item[64];
 				
 				snprintf(item, sizeof(item), "TTX: %s", sd->ISO639_language_code.c_str());
-				DVBSubSelector.addItem(new CMenuForwarderNonLocalized(item,  !tuxtx_subtitle_running(&pid, &page, NULL), NULL, &SubtitleChanger, spid, CRCInput::convertDigitToKey(++count)));
+				DVBSubSelector.addItem(new CMenuForwarder(item,  !tuxtx_subtitle_running(&pid, &page, NULL), NULL, &SubtitleChanger, spid, CRCInput::convertDigitToKey(++count)));
 			}
 		}
 		

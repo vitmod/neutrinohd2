@@ -3045,7 +3045,7 @@ void CMovieBrowser::showMovieInfoMenu(MI_MOVIE_INFO * movie_info)
 		pBookItemMenu[i1]->addItem( new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_POSITION, true,  pBookPosIntInput[i1]->getValue(), pBookPosIntInput[i1]));
 		pBookItemMenu[i1]->addItem( new CMenuForwarder(LOCALE_MOVIEBROWSER_BOOK_TYPE,     true,  pBookTypeIntInput[i1]->getValue(),pBookTypeIntInput[i1]));
 
-		bookmarkMenu.addItem( new CMenuForwarderNonLocalized (movie_info->bookmarks.user[i1].name.c_str(),   true, pBookPosIntInput[i1]->getValue(),pBookItemMenu[i1]));
+		bookmarkMenu.addItem( new CMenuForwarder(movie_info->bookmarks.user[i1].name.c_str(),   true, pBookPosIntInput[i1]->getValue(),pBookItemMenu[i1]));
 	}
 
 	// serie
@@ -3357,7 +3357,7 @@ int CMovieBrowser::showStartPosSelectionMenu(void) // P2
 			dprintf(DEBUG_NORMAL, "[mb] adding boomark menu N %d, position %d\n", menu_nr, position[menu_nr]);
 			
 			startPosSelectionMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
-			startPosSelectionMenu.addItem(new CMenuForwarderNonLocalized (m_movieSelectionHandler->bookmarks.user[i].name.c_str(), 	true, book[i]));
+			startPosSelectionMenu.addItem(new CMenuForwarder(m_movieSelectionHandler->bookmarks.user[i].name.c_str(), 	true, book[i]));
 			menu_nr++;
 		}
 	}
@@ -3978,7 +3978,7 @@ void CDirMenu::show(void)
 	{
 		sprintf(tmp,"%d",i);
 		tmp[1]=0;
-		dirMenu.addItem( new CMenuForwarderNonLocalized ( (*dirList)[i].name.c_str(), (dirState[i] != DIR_STATE_UNKNOWN), dirOptionText[i], this, tmp));
+		dirMenu.addItem( new CMenuForwarder( (*dirList)[i].name.c_str(), (dirState[i] != DIR_STATE_UNKNOWN), dirOptionText[i], this, tmp));
 	}
 	dirMenu.exec(NULL," ");
 	return;

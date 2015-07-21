@@ -28,7 +28,7 @@
 
 typedef struct button_label
 {
-	const char *      button;
+	const char * button;
 	neutrino_locale_t locale;
 } button_label_struct;
 

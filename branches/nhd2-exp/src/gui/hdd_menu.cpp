@@ -204,6 +204,9 @@ int CHDDMenuHandler::hddMenu()
 	// noise
 	hddmenu->addItem( new CMenuOptionChooser(LOCALE_HDD_NOISE, &g_settings.hdd_noise, HDD_NOISE_OPTIONS, HDD_NOISE_OPTION_COUNT, true, NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, true ));
 	
+	// HDDs
+	hddmenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	
 	ret = stat("/", &s);
 	int drive_mask = 0xfff0;
 	if (ret != -1) 
@@ -360,14 +363,14 @@ int CHDDMenuHandler::hddMenu()
 			PartMenu[j]->addItem(new CMenuForwarder(LOCALE_HDD_BROWSER, mounted, NULL, new CHDDBrowser(), DEVICE));
 			
 			// part
-			tempMenu[i]->addItem(new CMenuForwarderNonLocalized(PART, true, mounted? g_Locale->getText(LOCALE_HDD_MOUNTED) : g_Locale->getText(LOCALE_HDD_UMOUNTED), PartMenu[j]));
+			tempMenu[i]->addItem(new CMenuForwarder(PART, true, mounted? g_Locale->getText(LOCALE_HDD_MOUNTED) : g_Locale->getText(LOCALE_HDD_UMOUNTED), PartMenu[j]));
 			
 			close(fd);
 		}
 		/* END check for Parts */
 		
-		hddmenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
-		hddmenu->addItem(new CMenuForwarderNonLocalized(str, enabled, NULL, tempMenu[i]));
+		//hddmenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+		hddmenu->addItem(new CMenuForwarder(str, enabled, NULL, tempMenu[i]));
 
 		/* result */
 		hdd_found = 1;

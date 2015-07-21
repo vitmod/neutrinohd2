@@ -100,7 +100,8 @@ class CListBox : public CMenuWidget
 		void setModified(void);
 
 	public:
-		CListBox(const char * const Caption, int _width = MENU_WIDTH, int _height = MENU_HEIGHT, bool itemDetails = false, bool titleInfo = false, bool paintDate = false); 
+		CListBox(const char * const Caption, int _width = MENU_WIDTH, int _height = MENU_HEIGHT, bool itemDetails = false, bool titleInfo = false, bool paintDate = false);
+		CListBox(const neutrino_locale_t Caption, int _width = MENU_WIDTH, int _height = MENU_HEIGHT, bool itemDetails = false, bool titleInfo = false, bool paintDate = false); 
 		virtual int exec(CMenuTarget* parent, const std::string& actionKey);
 };
 

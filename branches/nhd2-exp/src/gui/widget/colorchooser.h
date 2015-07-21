@@ -54,7 +54,7 @@ class CColorChooser : public CMenuTarget
 
 		unsigned char * value[4]; // r, g, b, alpha
 
-		neutrino_locale_t name;
+		std::string name;
 
 		CChangeObserver* observer;
 
@@ -65,6 +65,7 @@ class CColorChooser : public CMenuTarget
 	public:
 
 		CColorChooser(const neutrino_locale_t Name, unsigned char *R, unsigned char *G, unsigned char *B, unsigned char* Alpha, CChangeObserver* Observer = NULL); // UTF-8
+		CColorChooser(const char * const Name, unsigned char *R, unsigned char *G, unsigned char *B, unsigned char* Alpha, CChangeObserver* Observer = NULL); // UTF-8
 
 		void hide();
 		int exec(CMenuTarget* parent, const std::string & actionKey);

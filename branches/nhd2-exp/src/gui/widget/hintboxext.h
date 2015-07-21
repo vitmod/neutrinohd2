@@ -51,32 +51,34 @@
 class CHintBoxExt
 {
 	protected:
-		CFBWindow *              m_window;
+		CFBWindow * m_window;
 
-		unsigned int             m_currentPage;
-		std::vector<int>         m_startEntryOfPage;
-		int                      m_maxEntriesPerPage;
-		int                      m_pages;
+		unsigned int m_currentPage;
+		std::vector<int>m_startEntryOfPage;
+		int m_maxEntriesPerPage;
+		int m_pages;
 
-		int                      m_width;
-		int                      m_height;
+		int m_width;
+		int m_height;
 
-		int                      m_fheight;
-		int                      m_theight;
-		neutrino_locale_t        m_caption;
-		char *                   m_message;
-		ContentLines             m_lines;
-		std::string              m_iconfile;
+		int m_fheight;
+		int m_theight;
+		std::string m_caption;
+		char * m_message;
+		ContentLines m_lines;
+		std::string  m_iconfile;
 		
 		void refresh(bool paintBg = false);
 
 	public:
 		CHintBoxExt(const neutrino_locale_t Caption, const char * const Text, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
 		CHintBoxExt(const neutrino_locale_t Caption, ContentLines& lines, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
+		CHintBoxExt(const char * const Caption, const char * const Text, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
+		CHintBoxExt(const char * const Caption, ContentLines& lines, const int Width = HINTBOX_WIDTH, const char * const Icon = NEUTRINO_ICON_INFO);
 
 		~CHintBoxExt(void);
 		
-		void init(const neutrino_locale_t Caption, const int Width, const char * const Icon);
+		void init(const char* const Caption, const int Width, const char * const Icon);
 
 		bool has_scrollbar(void);
 		void scroll_up(void);

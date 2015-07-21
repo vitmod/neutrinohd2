@@ -230,7 +230,7 @@ bool CFlashUpdate::selectHttpImage(void)
 				if(!allow_flash && (versionInfo.snapshot < '3'))
 					enabled = false;
 
-				SelectionWidget.addItem(new CMenuForwarderNonLocalized(names[i].c_str(), enabled, descriptions[i].c_str(), new CUpdateMenuTarget(i, &selected), NULL, NULL, NEUTRINO_ICON_UPDATE_SMALL ));
+				SelectionWidget.addItem(new CMenuForwarder(names[i].c_str(), enabled, descriptions[i].c_str(), new CUpdateMenuTarget(i, &selected), NULL, NULL, NEUTRINO_ICON_UPDATE_SMALL ));
 				i++;
 			}
 		}
@@ -678,11 +678,11 @@ void CFlashExpert::showMTDSelector(const std::string & actionkey)
 		
 		if(actionkey == "writemtd")
 		{			  
-			mtdselector->addItem(new CMenuForwarderNonLocalized(mtdInfo->getMTDName(x1).c_str(), true, NULL, this, sActionKey));
+			mtdselector->addItem(new CMenuForwarder(mtdInfo->getMTDName(x1).c_str(), true, NULL, this, sActionKey));
 		}
 		else if(actionkey == "readmtd")
 		{
-			mtdselector->addItem(new CMenuForwarderNonLocalized(mtdInfo->getMTDName(x1).c_str(), true, NULL, this, sActionKey));
+			mtdselector->addItem(new CMenuForwarder(mtdInfo->getMTDName(x1).c_str(), true, NULL, this, sActionKey));
 		}
 	}
 	
@@ -712,7 +712,7 @@ void CFlashExpert::showFileSelector(const std::string & actionkey)
 			int pos = filen.find(".img");
 			if(pos!=-1)
 			{
-				fileselector->addItem(new CMenuForwarderNonLocalized(filen.c_str(), true, NULL, this, (actionkey + filen).c_str()));
+				fileselector->addItem(new CMenuForwarder(filen.c_str(), true, NULL, this, (actionkey + filen).c_str()));
 //#warning TODO: make sure file is UTF-8 encoded
 			}
 			free(namelist[count]);

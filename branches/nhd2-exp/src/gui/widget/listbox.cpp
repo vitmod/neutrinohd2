@@ -71,6 +71,42 @@ CListBox::CListBox(const char * const Caption, int _width, int _height, bool ite
 	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - (height + InfoHeight)) / 2) + TitleHeight/2;
 }
 
+CListBox::CListBox(const neutrino_locale_t Caption, int _width, int _height, bool itemDetails, bool titleInfo, bool paintDate)
+{
+	frameBuffer = CFrameBuffer::getInstance();
+	caption = g_Locale->getText(Caption);
+	liststart = 0;
+	selected =  0;
+	width =  _width;
+	height = _height;
+	
+	ItemDetails = itemDetails;
+	TitleInfo = titleInfo;
+	PaintDate = paintDate;
+	
+	InfoHeight = 0;
+	TitleHeight = 0;
+	
+	if(ItemDetails)
+		InfoHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
+	
+	if(TitleInfo)
+		TitleHeight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST_DESCR]->getHeight() + 10;
+	
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_bf_w, &icon_bf_h);
+	ButtonHeight = std::max(icon_bf_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 6;
+	
+	modified = false;
+	
+	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->getHeight();
+	listmaxshow = (height - theight - ButtonHeight)/fheight;
+	height = theight + ButtonHeight + listmaxshow*fheight; // recalc height
+
+	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - (width + (ItemDetails? ConnectLineBox_Width : 0))) / 2) + (ItemDetails? ConnectLineBox_Width : 0);
+	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - (height + InfoHeight)) / 2) + TitleHeight/2;
+}
+
 void CListBox::setModified(void)
 {
 	modified = true;

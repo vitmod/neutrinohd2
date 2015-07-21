@@ -60,6 +60,72 @@ CHintBox::CHintBox(const neutrino_locale_t Caption, const char * const Text, con
 	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
 	height = theight + fheight;
 
+	caption = g_Locale->getText(Caption);
+
+	begin = message;
+
+	while (true)
+	{
+		height += fheight;
+		if (height > HINTBOX_MAX_HEIGHT)
+			height -= fheight;
+
+		line.push_back(begin);
+		pos = strchr(begin, '\n');
+		if (pos != NULL)
+		{
+			*pos = 0;
+			begin = pos + 1;
+		}
+		else
+			break;
+	}
+	entries_per_page = ((height - theight) / fheight) - 1;
+	current_page = 0;
+
+	unsigned int additional_width;
+
+	if (entries_per_page < line.size())
+		additional_width = 20 + 15;
+	else
+		additional_width = 20 +  0;
+
+	if (Icon != NULL)
+	{
+		iconfile = Icon;
+		additional_width += 30;
+	}
+	else
+		iconfile = "";
+
+	nw = additional_width + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(caption); // UTF-8
+
+	if (nw > width)
+		width = nw;
+
+	for (std::vector<char *>::const_iterator it = line.begin(); it != line.end(); it++)
+	{
+		nw = additional_width + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(*it, true); // UTF-8
+		if (nw > width)
+			width = nw;
+	}
+	window = NULL;
+}
+
+CHintBox::CHintBox(const char * Caption, const char * const Text, const int Width, const char * const Icon)
+{
+	char * begin;
+	char * pos;
+	int    nw;
+
+	message = strdup(Text);
+
+	width   = Width;
+
+	theight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	height = theight + fheight;
+
 	caption = Caption;
 
 	begin = message;
@@ -98,7 +164,7 @@ CHintBox::CHintBox(const neutrino_locale_t Caption, const char * const Text, con
 	else
 		iconfile = "";
 
-	nw = additional_width + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(g_Locale->getText(caption), true); // UTF-8
+	nw = additional_width + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(caption); // UTF-8
 
 	if (nw > width)
 		width = nw;
@@ -178,7 +244,7 @@ void CHintBox::refresh(void)
 					(CFBWindow::color_t)COL_MENUHEAD_PLUS_0, 
 					RADIUS_MID, CORNER_TOP);//round
 	
-	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth( g_Locale->getText(caption), true); // UTF-8
+	int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(caption); // UTF-8
 
 	if (!iconfile.empty())
 	{
@@ -188,7 +254,7 @@ void CHintBox::refresh(void)
 	}
 	
 	int stringstartposX = (width >> 1) - (neededWidth >> 1);
-	window->RenderString( g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], stringstartposX, theight, width - (stringstartposX) , g_Locale->getText(caption), (CFBWindow::color_t)COL_MENUHEAD, 0, true); // UTF-8
+	window->RenderString( g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], stringstartposX, theight, width - (stringstartposX) , caption.c_str(), (CFBWindow::color_t)COL_MENUHEAD, 0, true); // UTF-8
 
 	// body + foot
 	window->paintBoxRel(0, 
@@ -303,8 +369,71 @@ int HintBox(const neutrino_locale_t Caption, const char * const Text, const int 
 	return 1;
 }
 
-int ShowHintBox(const neutrino_locale_t Caption, const neutrino_locale_t Text, const int Width, int timeout, const char * const Icon)
+int HintBox(const neutrino_locale_t Caption, const neutrino_locale_t Text, const int Width, int timeout, const char * const Icon)
 {
 	return HintBox(Caption, g_Locale->getText(Text), Width, timeout, Icon);
 }
+
+int HintBox(const char * Caption, const char * const Text, const int Width, int timeout, const char * const Icon)
+{
+	neutrino_msg_t msg;
+	neutrino_msg_data_t data;
+
+ 	CHintBox * hintBox = new CHintBox(Caption, Text, Width, Icon);
+	hintBox->paint();
+	
+	CFrameBuffer::getInstance()->blit();
+
+	if ( timeout == -1 )
+		timeout = g_settings.timing[SNeutrinoSettings::TIMING_INFOBAR];
+
+	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd( timeout );
+
+	int res = messages_return::none;
+
+	while ( ! ( res & ( messages_return::cancel_info | messages_return::cancel_all ) ) )
+	{
+		g_RCInput->getMsgAbsoluteTimeout( &msg, &data, &timeoutEnd );
+
+		if ((msg == CRCInput::RC_timeout) || (msg == CRCInput::RC_home) || (msg == CRCInput::RC_ok))
+		{
+				res = messages_return::cancel_info;
+		}
+		else if ((hintBox->has_scrollbar()) && ((msg == CRCInput::RC_up) || (msg == CRCInput::RC_down)))
+		{
+			if (msg == CRCInput::RC_up)
+				hintBox->scroll_up();
+			else
+				hintBox->scroll_down();
+		}
+		else if((msg == CRCInput::RC_mode) || (msg == CRCInput::RC_next) || (msg == CRCInput::RC_prev)) 
+		{
+				res = messages_return::cancel_info;
+				g_RCInput->postMsg(msg, data);
+		}
+		else
+		{
+			res = CNeutrinoApp::getInstance()->handleMsg(msg, data);
+			if (res & messages_return::unhandled)
+			{
+				// raus hier und dar�ber behandeln...
+				g_RCInput->postMsg(msg, data);
+				res = messages_return::cancel_info;
+			}
+		}
+
+		CFrameBuffer::getInstance()->blit();	
+	}
+
+	hintBox->hide();
+		
+	delete hintBox;
+	return 1;
+}
+
+int HintBox(const char * Caption, const neutrino_locale_t Text, const int Width, int timeout, const char * const Icon)
+{
+	return HintBox(Caption, g_Locale->getText(Text), Width, timeout, Icon);
+}
+
 

@@ -74,6 +74,27 @@ CColorChooser::CColorChooser(const neutrino_locale_t Name, unsigned char *R, uns
 	hheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	mheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
 	observer = Observer;
+	name = g_Locale->getText(Name);
+	width = w_max(MENU_WIDTH, 0);
+	height = h_max(hheight + mheight*4, 0);
+
+	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width) >> 1);
+	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >>1);
+
+	value[VALUE_R]     = R;
+	value[VALUE_G]     = G;
+	value[VALUE_B]     = B;
+	value[VALUE_ALPHA] = Alpha;
+	
+	startx = width - mheight*4 - 30; //FIXME: 30?
+}
+
+CColorChooser::CColorChooser(const char * const Name, unsigned char *R, unsigned char *G, unsigned char *B, unsigned char* Alpha, CChangeObserver* Observer) // UTF-8
+{
+	frameBuffer = CFrameBuffer::getInstance();
+	hheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+	mheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	observer = Observer;
 	name = Name;
 	width = w_max(MENU_WIDTH, 0);
 	height = h_max(hheight + mheight*4, 0);
@@ -201,7 +222,7 @@ int CColorChooser::exec(CMenuTarget *parent, const std::string &)
 				
 			case CRCInput::RC_home:
 				if (((*value[VALUE_R] != r_alt) || (*value[VALUE_G] != g_alt) || (*value[VALUE_B] != b_alt) || ((value[VALUE_ALPHA]) && (*(value[VALUE_ALPHA]) != a_alt))) &&
-						(MessageBox(name, LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel))
+						(MessageBox(name.c_str(), LOCALE_MESSAGEBOX_DISCARD, CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbCancel) == CMessageBox::mbrCancel))
 					break;
 
 				// sonst abbruch...
@@ -250,7 +271,7 @@ void CColorChooser::paint()
 	frameBuffer->paintBoxRel(x, y, width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP); //round
 	
 	// head title
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + hheight, width, g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT, y + hheight, width, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 
 	// menu box
 	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round

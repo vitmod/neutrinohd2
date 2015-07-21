@@ -98,6 +98,61 @@ CMessageBox::CMessageBox(const neutrino_locale_t Caption, ContentLines& Lines, c
 		m_width = new_width;
 }
 
+CMessageBox::CMessageBox(const char* const Caption, const char * const Text, const int Width, const char * const Icon, const CMessageBox::result_ Default, const uint32_t ShowButtons) : CHintBoxExt(Caption, Text, Width, Icon)
+{
+	returnDefaultOnTimeout = false;
+
+	m_height += (m_fheight << 1);
+
+	result = Default;
+
+	showbuttons = ShowButtons;
+
+	int MaxButtonTextWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(g_Locale->getText(LOCALE_MESSAGEBOX_CANCEL), true); // UTF-8
+	int ButtonWidth = 20 + 33 + MaxButtonTextWidth + 5;
+	int num = 0;
+	
+	if (showbuttons & mbYes)
+		num++;
+	
+	if (showbuttons & mbNo)
+		num++;
+	
+	if (showbuttons & (mbCancel | mbBack | mbOk))
+		num++;
+	
+	int new_width = 15 + num*ButtonWidth;
+	if(new_width > m_width)
+		m_width = new_width;
+}
+
+CMessageBox::CMessageBox(const char* const Caption, ContentLines& Lines, const int Width, const char * const Icon, const CMessageBox::result_ Default, const uint32_t ShowButtons) : CHintBoxExt(Caption, Lines, Width, Icon)
+{
+	returnDefaultOnTimeout = false;
+
+	m_height += (m_fheight << 1);
+
+	result = Default;
+
+	showbuttons = ShowButtons;
+	int MaxButtonTextWidth = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getRenderWidth(g_Locale->getText(LOCALE_MESSAGEBOX_CANCEL), true); // UTF-8
+	int ButtonWidth = 20 + 33 + MaxButtonTextWidth + 5;
+	int num = 0;
+	
+	if (showbuttons & mbYes)
+		num++;
+	
+	if (showbuttons & mbNo)
+		num++;
+	
+	if (showbuttons & (mbCancel | mbBack | mbOk))
+		num++;
+	
+	int new_width = 15 + num*ButtonWidth;
+	if(new_width > m_width)
+		m_width = new_width;
+}
+
 void CMessageBox::returnDefaultValueOnTimeout(bool returnDefault)
 {
 	returnDefaultOnTimeout = returnDefault;
@@ -311,6 +366,27 @@ int MessageBox(const neutrino_locale_t Caption, const neutrino_locale_t Text, co
 }
 
 int MessageBox(const neutrino_locale_t Caption, const std::string & Text, const CMessageBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int Width, const int timeout, bool returnDefaultOnTimeout)
+{
+	return MessageBox(Caption, Text.c_str(), Default, ShowButtons, Icon, Width, timeout,returnDefaultOnTimeout);
+}
+
+int MessageBox(const char * const Caption, const char * const Text, const CMessageBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int Width, const int timeout, bool returnDefaultOnTimeout)
+{
+   	CMessageBox * messageBox = new CMessageBox(Caption, Text, Width, Icon, Default, ShowButtons);
+	messageBox->returnDefaultValueOnTimeout(returnDefaultOnTimeout);
+	messageBox->exec(timeout);
+	int res = messageBox->result;
+	delete messageBox;
+
+	return res;
+}
+
+int MessageBox(const char * const Caption, const neutrino_locale_t Text, const CMessageBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int Width, const int timeout, bool returnDefaultOnTimeout)
+{
+	return MessageBox(Caption, g_Locale->getText(Text), Default, ShowButtons, Icon, Width, timeout,returnDefaultOnTimeout);
+}
+
+int MessageBox(const char * const Caption, const std::string & Text, const CMessageBox::result_ Default, const uint32_t ShowButtons, const char * const Icon, const int Width, const int timeout, bool returnDefaultOnTimeout)
 {
 	return MessageBox(Caption, Text.c_str(), Default, ShowButtons, Icon, Width, timeout,returnDefaultOnTimeout);
 }

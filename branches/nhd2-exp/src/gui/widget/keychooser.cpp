@@ -63,7 +63,22 @@ class CKeyValue : public CMenuSeparator
 		};
 };
 
-CKeyChooser::CKeyChooser(int * const Key, const neutrino_locale_t title, const std::string & Icon) : CMenuWidget(title, Icon)
+CKeyChooser::CKeyChooser(int * const Key, const neutrino_locale_t Title, const std::string & Icon) : CMenuWidget(Title, Icon)
+{
+	frameBuffer = CFrameBuffer::getInstance();
+	key = Key;
+	keyChooser = new CKeyChooserItem(LOCALE_KEYCHOOSER_HEAD, key);
+	keyDeleter = new CKeyChooserItemNoKey(key);
+
+	addItem(new CKeyValue());
+	addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	addItem(new CMenuForwarder(LOCALE_KEYCHOOSERMENU_SETNEW , true, NULL, keyChooser));
+	addItem(new CMenuForwarder(LOCALE_KEYCHOOSERMENU_SETNONE, true, NULL, keyDeleter));
+}
+
+CKeyChooser::CKeyChooser(int * const Key, const char * const Title, const std::string & Icon) : CMenuWidget(Title, Icon)
 {
 	frameBuffer = CFrameBuffer::getInstance();
 	key = Key;
@@ -92,6 +107,13 @@ void CKeyChooser::paint()
 }
 
 CKeyChooserItem::CKeyChooserItem(const neutrino_locale_t Name, int * Key)
+{
+	name = g_Locale->getText(Name);
+	key = Key;
+	x = y = width = height = 0;
+}
+
+CKeyChooserItem::CKeyChooserItem(const char * const Name, int * Key)
 {
 	name = Name;
 	key = Key;
@@ -162,7 +184,7 @@ void CKeyChooserItem::paint()
 	frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 	frameBuffer->paintBoxRel(x, y + hheight, width, height - hheight, COL_MENUCONTENT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);//round
 
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 10, y + hheight, width, g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 10, y + hheight, width, name.c_str(), COL_MENUHEAD, 0, true); // UTF-8
 
 	//paint msg...
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(x + 10, y + hheight + mheight, width, g_Locale->getText(LOCALE_KEYCHOOSER_TEXT1), COL_MENUCONTENT, 0, true); // UTF-8

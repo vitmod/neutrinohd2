@@ -205,28 +205,25 @@ void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu, CMenuWidget &mainSettings
 	if(FrontendCount)
 	{
 		// tv modus
-		mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE ), true);
+		mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE ), true);
 
 		// radio modus
-		mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE ));	
+		mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_RADIOMODE, true, NULL, this, "radio", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_RADIO, LOCALE_HELPTEXT_RADIOMODE ));	
 	}
 
 	// media center
 	// Media player main menu
-	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, &MediaPlayer, NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_MEDIAPLAYER ));
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, &MediaPlayer, NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_MEDIAPLAYER ));
 	
 	int shortcutMediaPlayer = 1;
 	
 	//
-	//MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	//MediaPlayer.addItem(new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE));
-	
 #if defined (ENABLE_LIBEPLAYER3) || defined (ENABLE_GSTREAMER)	
 	//Internet Radio
-	MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_INETRADIO, true, NULL, new CAudioPlayerGui(true), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_INTERNETRADIO, LOCALE_HELPTEXT_INTERNETRADIO ));
+	MediaPlayer.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_INETRADIO, true, NULL, new CAudioPlayerGui(true), NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_INTERNETRADIO, LOCALE_HELPTEXT_INTERNETRADIO ));
 
 	//AudioPlayer
-	MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_AUDIOPLAYER, true, NULL, new CAudioPlayerGui(), NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_AUDIOPLAYER, LOCALE_HELPTEXT_AUDIOPLAYER ));
+	MediaPlayer.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_AUDIOPLAYER, true, NULL, new CAudioPlayerGui(), NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_AUDIOPLAYER, LOCALE_HELPTEXT_AUDIOPLAYER ));
 #endif	
 	
 	// movieplayer
@@ -234,109 +231,95 @@ void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu, CMenuWidget &mainSettings
 	
 #if defined (ENABLE_LIBEPLAYER3) || defined (ENABLE_GSTREAMER)
 	// ts/movie/file
-	//MediaPlayer.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
-	
 	// ts player
-	MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_RECORDS, true, NULL, moviePlayerGui, "tsmoviebrowser", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_TSMOVIEBROWSER ));
+	MediaPlayer.addItem(new CMenuForwarderExtended(LOCALE_MOVIEPLAYER_RECORDS, true, NULL, moviePlayerGui, "tsmoviebrowser", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_TSMOVIEBROWSER ));
 	
 	// movie player
-	MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_MOVIES, true, NULL, moviePlayerGui, "moviebrowser", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_TSMOVIEBROWSER ));
+	MediaPlayer.addItem(new CMenuForwarderExtended(LOCALE_MOVIEPLAYER_MOVIES, true, NULL, moviePlayerGui, "moviebrowser", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_TSMOVIEBROWSER ));
 	
 	// fileplayback
-	MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MOVIEPLAYER_FILEPLAYBACK, true, NULL, moviePlayerGui, "fileplayback", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_FILEPLAYBACK ));	
+	MediaPlayer.addItem(new CMenuForwarderExtended(LOCALE_MOVIEPLAYER_FILEPLAYBACK, true, NULL, moviePlayerGui, "fileplayback", CRCInput::convertDigitToKey(shortcutMediaPlayer++), NULL, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_FILEPLAYBACK ));	
 #endif	
 
-	//MediaPlayer.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
-
 	//PictureViewer
-	MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_PICTUREVIEWER, true, NULL, new CPictureViewerGui(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_PICTUREVIEWER, LOCALE_HELPTEXT_PICTUREVIEWER ));
+	MediaPlayer.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_PICTUREVIEWER, true, NULL, new CPictureViewerGui(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_PICTUREVIEWER, LOCALE_HELPTEXT_PICTUREVIEWER ));
 	
 	//UPNP Browser
- 	MediaPlayer.addItem(new CMenuForwarderItemMenuIcon(LOCALE_UPNPBROWSER_HEAD, true, NULL, new CUpnpBrowserGui(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_UPNPBROWSER, LOCALE_HELPTEXT_UPNPBROWSER ));
+ 	MediaPlayer.addItem(new CMenuForwarderExtended(LOCALE_UPNPBROWSER_HEAD, true, NULL, new CUpnpBrowserGui(), NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_UPNPBROWSER, LOCALE_HELPTEXT_UPNPBROWSER ));
 
 	// webtv
-	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_WEBTV_HEAD, true, NULL, this, "webtv", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_SCART) );
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_WEBTV_HEAD, true, NULL, this, "webtv", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_SCART) );
 	
 	//Main Setting Menu
-	//mainMenu.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
-
-	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_SETTINGS, true, NULL, &mainSettings, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MAINSETTINGS ));
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SETTINGS, true, NULL, &mainSettings, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MAINSETTINGS ));
 
 	//Service
-	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_SERVICE, true, NULL, &service, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SERVICE ));
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SERVICE, true, NULL, &service, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SERVICE ));
 	
 	// timerlist
-	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_TIMERLIST_NAME, true, NULL, Timerlist, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_SLEEPTIMER, LOCALE_HELPTEXT_TIMERLIST ));
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_TIMERLIST_NAME, true, NULL, Timerlist, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_SLEEPTIMER, LOCALE_HELPTEXT_TIMERLIST ));
 	
 	// features
-	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_INFOVIEWER_FEATURES, true, NULL, this, "features", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_PLUGINS, LOCALE_HELPTEXT_FEATURES ));
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_INFOVIEWER_FEATURES, true, NULL, this, "features", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_PLUGINS, LOCALE_HELPTEXT_FEATURES ));
 
 	//sleep timer
-	//mainMenu.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
-
-	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_SLEEPTIMER, true, NULL, new CSleepTimerWidget, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_SLEEPTIMER, LOCALE_HELPTEXT_SLEEPTIMER ));
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SLEEPTIMER, true, NULL, new CSleepTimerWidget, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_SLEEPTIMER, LOCALE_HELPTEXT_SLEEPTIMER ));
 
 	//Reboot
-	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_REBOOT, true, NULL, this, "reboot", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_REBOOT, LOCALE_HELPTEXT_REBOOT ));
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_REBOOT, true, NULL, this, "reboot", CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_REBOOT, LOCALE_HELPTEXT_REBOOT ));
 
 	//Shutdown
-	mainMenu.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINMENU_SHUTDOWN, true, NULL, this, "shutdown", CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_SHUTDOWN, LOCALE_HELPTEXT_SHUTDOWN ));//FIXME
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SHUTDOWN, true, NULL, this, "shutdown", CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_SHUTDOWN, LOCALE_HELPTEXT_SHUTDOWN ));//FIXME
 
 	//box info
-	//mainMenu.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
-
-	mainMenu.addItem( new CMenuForwarderItemMenuIcon(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP_SMALL, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO ));
+	mainMenu.addItem( new CMenuForwarderExtended(LOCALE_DBOXINFO, true, NULL, new CDBoxInfoWidget, NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP_SMALL, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_BOXINFO ));
 	// end main menu
 
 	// main settings
 	int shortcutMainSettings = 1;
-	
-	//
-	//mainSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	//mainSettings.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
 
 	// video settings
-	mainSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINSETTINGS_VIDEO, true, NULL, &videoSettings, NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_VIDEOSETTINGS ));
+	mainSettings.addItem(new CMenuForwarderExtended(LOCALE_MAINSETTINGS_VIDEO, true, NULL, &videoSettings, NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_VIDEOSETTINGS ));
 
 	//Audio Settings
-	mainSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINSETTINGS_AUDIO, true, NULL, &audioSettings, NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_AUDIOSETTINGS, LOCALE_HELPTEXT_AUDIOSETTINGS ));
+	mainSettings.addItem(new CMenuForwarderExtended(LOCALE_MAINSETTINGS_AUDIO, true, NULL, &audioSettings, NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_AUDIOSETTINGS, LOCALE_HELPTEXT_AUDIOSETTINGS ));
 
 	//Parentallock
 	if(g_settings.parentallock_prompt)
-		mainSettings.addItem(new CLockedMenuForwarderItemMenuIcon(LOCALE_PARENTALLOCK_PARENTALLOCK, g_settings.parentallock_pincode, true, true, NULL, &parentallockSettings, NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, "parentallock", LOCALE_HELPTEXT_PARENTALLOCK ));
+		mainSettings.addItem(new CLockedMenuForwarderExtended(LOCALE_PARENTALLOCK_PARENTALLOCK, g_settings.parentallock_pincode, true, true, NULL, &parentallockSettings, NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, "parentallock", LOCALE_HELPTEXT_PARENTALLOCK ));
 	else
-		mainSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_PARENTALLOCK_PARENTALLOCK, true, NULL, &parentallockSettings, NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_PARENTALLOCK, LOCALE_HELPTEXT_PARENTALLOCK ));
+		mainSettings.addItem(new CMenuForwarderExtended(LOCALE_PARENTALLOCK_PARENTALLOCK, true, NULL, &parentallockSettings, NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_PARENTALLOCK, LOCALE_HELPTEXT_PARENTALLOCK ));
 
 	//Network Settings
-	mainSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINSETTINGS_NETWORK, true, NULL, &networkSettings  , NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_UPNPBROWSER, LOCALE_HELPTEXT_NETWORKSETTINGS ));
+	mainSettings.addItem(new CMenuForwarderExtended(LOCALE_MAINSETTINGS_NETWORK, true, NULL, &networkSettings  , NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_UPNPBROWSER, LOCALE_HELPTEXT_NETWORKSETTINGS ));
 
 	//Recording Settings
-	mainSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINSETTINGS_RECORDING, true, NULL, &recordingSettings, NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_RECORDINGSETTINGS, LOCALE_HELPTEXT_RECORDINGSETTINGS ));
+	mainSettings.addItem(new CMenuForwarderExtended(LOCALE_MAINSETTINGS_RECORDING, true, NULL, &recordingSettings, NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_RECORDINGSETTINGS, LOCALE_HELPTEXT_RECORDINGSETTINGS ));
 
 	//MoviePlayer und Streamings Settings
-	mainSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINSETTINGS_STREAMING, true, NULL, &moviePlayerSettings, NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_MOVIEPLAYERSETTINGS ));
+	mainSettings.addItem(new CMenuForwarderExtended(LOCALE_MAINSETTINGS_STREAMING, true, NULL, &moviePlayerSettings, NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_MOVIEPLAYERSETTINGS ));
 
 	//OSD settings
-	mainSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINSETTINGS_OSD, true, NULL, &colorSettings, NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_OSDSETTINGS, LOCALE_HELPTEXT_OSDSETTINGS ));
+	mainSettings.addItem(new CMenuForwarderExtended(LOCALE_MAINSETTINGS_OSD, true, NULL, &colorSettings, NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_OSDSETTINGS, LOCALE_HELPTEXT_OSDSETTINGS ));
 
 	// vfd/lcd settings
 	if(CVFD::getInstance()->has_lcd)
-		mainSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINSETTINGS_LCD, true, NULL, &lcdSettings, NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_VFDSETTINGS ));	
+		mainSettings.addItem(new CMenuForwarderExtended(LOCALE_MAINSETTINGS_LCD, true, NULL, &lcdSettings, NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_VFDSETTINGS ));	
 
 	//Keys settings
-	mainSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINSETTINGS_KEYBINDING, true, NULL, &keySettings, NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_KEYSSETTINGS, LOCALE_HELPTEXT_KEYSSETTINGS ));
+	mainSettings.addItem(new CMenuForwarderExtended(LOCALE_MAINSETTINGS_KEYBINDING, true, NULL, &keySettings, NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_KEYSSETTINGS, LOCALE_HELPTEXT_KEYSSETTINGS ));
 
 	//Audio-Player settings
-	mainSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_AUDIOPLAYERSETTINGS_GENERAL, true, NULL, &audioplayerSettings, NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_AUDIOPLAYERSETTINGS, LOCALE_HELPTEXT_AUDIOPLAYERSETTINGS ));
+	mainSettings.addItem(new CMenuForwarderExtended(LOCALE_AUDIOPLAYERSETTINGS_GENERAL, true, NULL, &audioplayerSettings, NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_AUDIOPLAYERSETTINGS, LOCALE_HELPTEXT_AUDIOPLAYERSETTINGS ));
 	
 	//Picture-Player settings
-	mainSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_PICTUREVIEWERSETTINGS_GENERAL, true, NULL, &PicViewerSettings, NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_PICTUREVIEWER, LOCALE_HELPTEXT_PICTUREVIEWERSETTINGS ));
+	mainSettings.addItem(new CMenuForwarderExtended(LOCALE_PICTUREVIEWERSETTINGS_GENERAL, true, NULL, &PicViewerSettings, NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_PICTUREVIEWER, LOCALE_HELPTEXT_PICTUREVIEWERSETTINGS ));
 
 	//Misc Settings
-	mainSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MAINSETTINGS_MISC, true, NULL, &miscSettings, NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGS ));
+	mainSettings.addItem(new CMenuForwarderExtended(LOCALE_MAINSETTINGS_MISC, true, NULL, &miscSettings, NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGS ));
 
 	//HDD settings
-	mainSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_HDD_SETTINGS, true, NULL, new CHDDMenuHandler(), NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_HDDSETTINGS, LOCALE_HELPTEXT_HDDSETTINGS ));
+	mainSettings.addItem(new CMenuForwarderExtended(LOCALE_HDD_SETTINGS, true, NULL, new CHDDMenuHandler(), NULL, CRCInput::convertDigitToKey(shortcutMainSettings++), NULL, NEUTRINO_ICON_MENUITEM_HDDSETTINGS, LOCALE_HELPTEXT_HDDSETTINGS ));
 }
 
 //Video Settings
@@ -830,10 +813,6 @@ void CNeutrinoApp::InitServiceSettings(CMenuWidget &service, CMenuWidget & Tuner
 	
 	int shortcutService = 1;
 	
-	//
-	//service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	//service.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
-	
 	if(FrontendCount)
 	{
 		// scan setup
@@ -849,42 +828,34 @@ void CNeutrinoApp::InitServiceSettings(CMenuWidget &service, CMenuWidget & Tuner
 				char tbuf[255];
 			
 				sprintf(tbuf, "Tuner-%d: %s", i + 1, fe->getInfo()->name);
-				TunerSetup.addItem(new CMenuForwarderNonLocalized(tbuf, true, NULL, new CScanSetup(i) ));
+				TunerSetup.addItem(new CMenuForwarder(tbuf, true, NULL, new CScanSetup(i) ));
 			}	
 			
 			// scan settings
-			service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_SERVICEMENU_SCANTS, true, NULL, &TunerSetup, NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SCANSETUP ));
+			service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_SCANTS, true, NULL, &TunerSetup, NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SCANSETUP ));
 		}
 		else
 		{
 			// scan settings
-			service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_SERVICEMENU_SCANTS, true, NULL, new CScanSetup(), "", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SCANSETUP ));
+			service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_SCANTS, true, NULL, new CScanSetup(), "", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SCANSETUP ));
 		}
 
 		// reload Channels
-		service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_SERVICEMENU_RELOAD, true, NULL, this, "reloadchannels", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_RELOADCHANNELS ));
+		service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_RELOAD, true, NULL, this, "reloadchannels", CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_RELOADCHANNELS ));
 
 		// Bouquets Editor
-		service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_BOUQUETEDITOR_NAME, true, NULL, new CBEBouquetWidget(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_BOUQUETSEDITOR ));
+		service.addItem(new CMenuForwarderExtended(LOCALE_BOUQUETEDITOR_NAME, true, NULL, new CBEBouquetWidget(), NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_BOUQUETSEDITOR ));
 	
 	// CI Cam 	
 #if defined (ENABLE_CI)
-		//service.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
-	  
-		service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_CAM_SETTINGS, true, NULL, g_CamHandler, NULL, CRCInput::convertDigitToKey(shortcutService++), NULL, NEUTRINO_ICON_MENUITEM_CAM, LOCALE_HELPTEXT_CAM ));
+		service.addItem(new CMenuForwarderExtended(LOCALE_CAM_SETTINGS, true, NULL, g_CamHandler, NULL, CRCInput::convertDigitToKey(shortcutService++), NULL, NEUTRINO_ICON_MENUITEM_CAM, LOCALE_HELPTEXT_CAM ));
 #endif
-
-
-		// Image Info 
-		//service.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparator::LINE) );
 	}
 	
-	service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_SERVICEMENU_IMAGEINFO,  true, NULL, new CImageInfo(), NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP_SMALL, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_IMAGEINFO), false);
+	service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_IMAGEINFO,  true, NULL, new CImageInfo(), NULL, CRCInput::RC_info, NEUTRINO_ICON_BUTTON_HELP_SMALL, NEUTRINO_ICON_MENUITEM_BOXINFO, LOCALE_HELPTEXT_IMAGEINFO), false);
 
 	// restart neutrino
-	//service.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
-	
-	service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_SERVICEMENU_RESTART, true, NULL, this, "restart", CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_SHUTDOWN, LOCALE_HELPTEXT_SOFTRESTART ));
+	service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_RESTART, true, NULL, this, "restart", CRCInput::RC_standby, NEUTRINO_ICON_BUTTON_POWER, NEUTRINO_ICON_MENUITEM_SHUTDOWN, LOCALE_HELPTEXT_SOFTRESTART ));
 
 	// softupdate	
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitServiceSettings. init soft-update-stuff\n");
@@ -963,10 +934,8 @@ void CNeutrinoApp::InitServiceSettings(CMenuWidget &service, CMenuWidget & Tuner
 	updateSettings->addItem(new CMenuForwarder(LOCALE_FLASHUPDATE_UPDATEMODE_INTERNET, true, NULL, new CFlashUpdate(CFlashUpdate::UPDATEMODE_INTERNET), "", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
 	
 	// software update
-	//service.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
-		
 	// updatesettings
-	service.addItem(new CMenuForwarderItemMenuIcon(LOCALE_SERVICEMENU_UPDATE, true, NULL, updateSettings, NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SOFTWAREUPDATE ));
+	service.addItem(new CMenuForwarderExtended(LOCALE_SERVICEMENU_UPDATE, true, NULL, updateSettings, NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_SERVICE, LOCALE_HELPTEXT_SOFTWAREUPDATE ));
 }
 
 // Init AudioPlayer Settings
@@ -1101,15 +1070,6 @@ void CNeutrinoApp::InitMiscSettings(CMenuWidget &miscSettings, CMenuWidget &misc
 	
 	int shortcutMiscSettings = 1;
 	
-	//
-	//miscSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	//miscSettings.addItem( new CMenuSeparatorItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE) );
-
-	// general
-	// intros
-	//miscSettingsGeneral.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	//miscSettingsGeneral.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
-	
 	// save settings
 	miscSettingsGeneral.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	//miscSettingsGeneral.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
@@ -1211,7 +1171,7 @@ void CNeutrinoApp::InitMiscSettings(CMenuWidget &miscSettings, CMenuWidget &misc
 	miscSettingsGeneral.addItem(new CMenuForwarder(LOCALE_SETTINGS_BACKUP,  true, NULL, resetNotifier, "backup", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW ));
 	miscSettingsGeneral.addItem(new CMenuForwarder(LOCALE_SETTINGS_RESTORE, true, NULL, resetNotifier, "restore", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE ));
 
-	miscSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MISCSETTINGS_GENERAL, true, "", &miscSettingsGeneral, NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSGENERAL ));
+	miscSettings.addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_GENERAL, true, "", &miscSettingsGeneral, NULL, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSGENERAL ));
 	
 	//Channal List
 	int shortcutMiscChannel = 1;
@@ -1249,7 +1209,7 @@ void CNeutrinoApp::InitMiscSettings(CMenuWidget &miscSettings, CMenuWidget &misc
 	miscSettingsChannelList.addItem(new CMenuOptionChooser(LOCALE_EXTRA_ZAPIT_MAKE_BOUQUET, (int *)&zapitCfg.makeRemainingChannelsBouquet, OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutMiscChannel++) ));
 	miscSettingsChannelList.addItem( new CMenuOptionChooser(LOCALE_ZAPIT_SCANSDT, (int *)&zapitCfg.scanSDT, SECTIONSD_SCAN_OPTIONS, SECTIONSD_SCAN_OPTIONS_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutMiscChannel++)) );
 
-	miscSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MISCSETTINGS_CHANNELLIST, true, "", &miscSettingsChannelList, NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSCHANNELLIST ));
+	miscSettings.addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_CHANNELLIST, true, "", &miscSettingsChannelList, NULL, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSCHANNELLIST ));
 
 	// EPG
 	int shortcutMiscEpg = 1;
@@ -1312,7 +1272,7 @@ void CNeutrinoApp::InitMiscSettings(CMenuWidget &miscSettings, CMenuWidget &misc
 		miscSettingsEPG.addItem(epglangSelect[i]);
 	///
 
-	miscSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MISCSETTINGS_EPG_HEAD, true, "", &miscSettingsEPG, NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSEPG ));
+	miscSettings.addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_EPG_HEAD, true, "", &miscSettingsEPG, NULL, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSEPG ));
 
 	// File Browser
 	int shortcutMiscFileBrowser = 1;
@@ -1334,15 +1294,15 @@ void CNeutrinoApp::InitMiscSettings(CMenuWidget &miscSettings, CMenuWidget &misc
 	// deny dir
 	miscSettingsFileBrowser.addItem(new CMenuOptionChooser(LOCALE_FILEBROWSER_DENYDIRECTORYLEAVE, &g_settings.filebrowser_denydirectoryleave, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, NULL, CRCInput::convertDigitToKey(shortcutMiscFileBrowser++) ));
 
-	miscSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_FILEBROWSER_HEAD, true, NULL, &miscSettingsFileBrowser, NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSFILEBROWSER ));
+	miscSettings.addItem(new CMenuForwarderExtended(LOCALE_FILEBROWSER_HEAD, true, NULL, &miscSettingsFileBrowser, NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSFILEBROWSER ));
 	
 	// zapit setup (start channel)
-	miscSettings.addItem(new CMenuForwarderItemMenuIcon(LOCALE_MISCSETTINGS_ZAPIT, true, NULL, new CZapitSetup(), NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSZAPITSETUP ));
+	miscSettings.addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_ZAPIT, true, NULL, new CZapitSetup(), NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSZAPITSETUP ));
 	
 	// psi setup
 #if defined (__sh__)	
 	//CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
-	//miscSettings.addItem( new CMenuForwarderItemMenuIcon(LOCALE_VIDEOMENU_PSISETUP, true, NULL, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSPSISETUP ));
+	//miscSettings.addItem( new CMenuForwarderExtended(LOCALE_VIDEOMENU_PSISETUP, true, NULL, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSPSISETUP ));
 #endif
 }
 
@@ -1452,7 +1412,7 @@ void CNeutrinoApp::InitNetworkSettings(CMenuWidget &networkSettings)
 	network_encryption	= (networkConfig.encryption == "WPA") ? 0 : 1;
 	
 	//eth id
-	CMenuForwarder * mac = new CMenuForwarderNonLocalized("MAC", false, mac_addr);
+	CMenuForwarder * mac = new CMenuForwarder("MAC", false, mac_addr);
 	
 	CIPInput * networkSettings_NetworkIP  = new CIPInput(LOCALE_NETWORKMENU_IPADDRESS, networkConfig.address, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2, MyIPChanger);
 	CIPInput * networkSettings_NetMask    = new CIPInput(LOCALE_NETWORKMENU_NETMASK, networkConfig.netmask, LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
@@ -2364,14 +2324,14 @@ bool CNeutrinoApp::getNVODMenu(CMenuWidget * menu)
                                 nvod_time_x[0]= 0;
 
                         sprintf(nvod_s, "%s - %s %s", nvod_time_a, nvod_time_e, nvod_time_x);
-                        menu->addItem(new CMenuForwarderNonLocalized(nvod_s, true, NULL, NVODChanger, nvod_id), (count == g_RemoteControl->selected_subchannel));
+                        menu->addItem(new CMenuForwarder(nvod_s, true, NULL, NVODChanger, nvod_id), (count == g_RemoteControl->selected_subchannel));
                 } 
 		else 
 		{
 			if (count == 0)
-				menu->addItem(new CMenuForwarderNonLocalized( (Latin1_to_UTF8(e->subservice_name)).c_str(), true, NULL, NVODChanger, nvod_id, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
+				menu->addItem(new CMenuForwarder( (Latin1_to_UTF8(e->subservice_name)).c_str(), true, NULL, NVODChanger, nvod_id, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE));
 			else
-				menu->addItem(new CMenuForwarderNonLocalized( (Latin1_to_UTF8(e->subservice_name)).c_str(), true, NULL, NVODChanger, nvod_id, CRCInput::convertDigitToKey(count)), (count == g_RemoteControl->selected_subchannel));
+				menu->addItem(new CMenuForwarder( (Latin1_to_UTF8(e->subservice_name)).c_str(), true, NULL, NVODChanger, nvod_id, CRCInput::convertDigitToKey(count)), (count == g_RemoteControl->selected_subchannel));
                 }
 
                 count++;

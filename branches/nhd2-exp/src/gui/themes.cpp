@@ -135,10 +135,10 @@ void CThemes::readThemes(CMenuWidget &themes)
 					if ( p == 1 ) 
 					{
 						userThemeFile = "{U}" + (std::string)file;
-						oj = new CMenuForwarderNonLocalized((char*)file, true, "", this, userThemeFile.c_str());
+						oj = new CMenuForwarder((char*)file, true, "", this, userThemeFile.c_str());
 					} 
 					else
-						oj = new CMenuForwarderNonLocalized((char*)file, true, "", this, file);
+						oj = new CMenuForwarder((char*)file, true, "", this, file);
 					
 					themes.addItem( oj );
 				}
@@ -154,8 +154,6 @@ int CThemes::Show()
 	std::string file_name = "";
 
 	CMenuWidget themes (LOCALE_COLORMENU_MENUCOLORS, NEUTRINO_ICON_SETTINGS, width);
-	
-	//themes.addIntroItems(LOCALE_COLORTHEMEMENU_HEAD2);
 	
 	//set default theme
 	themes.addItem(new CMenuForwarder(LOCALE_COLORTHEMEMENU_NEUTRINO_THEME, true, NULL, this, "theme_neutrino" ));

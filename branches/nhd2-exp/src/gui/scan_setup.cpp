@@ -457,7 +457,7 @@ void CScanSetup::showScanService()
 				tempsat->addItem(new CMenuForwarder(LOCALE_SATSETUP_LOFS, true, lofS->getValue(), lofS));
 					
 				// sat setup
-				satSetup->addItem(new CMenuForwarderNonLocalized(sit->second.name.c_str(), true, NULL, tempsat));
+				satSetup->addItem(new CMenuForwarder(sit->second.name.c_str(), true, NULL, tempsat));
 			}
 		}
 	} 
@@ -880,7 +880,7 @@ int CTPSelectHandler::exec(CMenuTarget* parent, const std::string &/*actionKey*/
 				break;
 		}
 		
-		menu->addItem(new CMenuForwarderNonLocalized(buf, true, NULL, selector, cnt), old_selected == i);
+		menu->addItem(new CMenuForwarder(buf, true, NULL, selector, cnt), old_selected == i);
 		tmplist.insert(std::pair <int, transponder>(i, tI->second));
 		i++;
 	}

@@ -212,7 +212,7 @@ bool COPKGManager::showPkgMenu(const int pkg_content_id)
 			printf("Update to %s\n", vp_pkg_menu->at(i).c_str());
 			urls.push_back(vp_pkg_menu->at(i));
 
-			menu.addItem( new CMenuForwarderNonLocalized(vp_pkg_menu->at(i).c_str(), true, NULL, new CUpdateMenuTarget(i, &selected), NULL, NULL, NEUTRINO_ICON_UPDATE_SMALL));
+			menu.addItem( new CMenuForwarder(vp_pkg_menu->at(i).c_str(), true, NULL, new CUpdateMenuTarget(i, &selected), NULL, NULL, NEUTRINO_ICON_UPDATE_SMALL));
 		}
 	}
 
