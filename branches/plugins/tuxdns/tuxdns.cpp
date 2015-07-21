@@ -136,24 +136,24 @@ void CTuxdnsConf::TuxdnsSettings()
 	
 	settingsselector->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	settingsselector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
-	settingsselector->addItem(new CMenuForwarderNonLocalized("Save settings", true, "", this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED) );
+	settingsselector->addItem(new CMenuForwarder("Save settings", true, "", this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED) );
 	settingsselector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	//user
 	CStringInputSMS*  ojuser = new CStringInputSMS((char *)"User Name", user);
-	settingsselector->addItem( new CMenuForwarderNonLocalized("User Name", true, user, ojuser ));
+	settingsselector->addItem( new CMenuForwarder("User Name", true, user, ojuser ));
 	
 	//passwd
 	CStringInputSMS*  ojpass = new CStringInputSMS((char *)"Password", pass);
-	settingsselector->addItem( new CMenuForwarderNonLocalized("Password", true, pass, ojpass ));
+	settingsselector->addItem( new CMenuForwarder("Password", true, pass, ojpass ));
 	
 	//host name
 	CStringInputSMS*  ojhost = new CStringInputSMS((char *)"Host Name", host);
-	settingsselector->addItem( new CMenuForwarderNonLocalized("Host Name", true, host, ojhost ));
+	settingsselector->addItem( new CMenuForwarder("Host Name", true, host, ojhost ));
 	
 	//pause
 	CStringInput*  ojpause = new CStringInput((char *)"Pause", pause);
-	settingsselector->addItem( new CMenuForwarderNonLocalized("Pause", true, pause, ojpause ));
+	settingsselector->addItem( new CMenuForwarder("Pause", true, pause, ojpause ));
 	
 	//verbose
 	settingsselector->addItem(new CMenuOptionChooser("verbose", &verbose, OPTIONS_OFF_ON_OPTIONS, OPTIONS_OFF_ON_OPTION_COUNT,true));

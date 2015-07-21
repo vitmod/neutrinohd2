@@ -1081,7 +1081,7 @@ int CNKCategoriesMenu::exec(CMenuTarget *parent, const std::string &actionKey)
 
 	for (unsigned i = 0; i < cats.size(); i++)
 	{
-		m.addItem(new CMenuForwarderNonLocalized(cats[i].title.c_str(), true, /*("(" + to_string(cats[i].post_count) + ")").c_str()*/NULL, this, to_string(i).c_str(), CRCInput::convertDigitToKey(i + 1)), cats[i].id == *nkcategory);
+		m.addItem(new CMenuForwarder(cats[i].title.c_str(), true, /*("(" + to_string(cats[i].post_count) + ")").c_str()*/NULL, this, to_string(i).c_str(), CRCInput::convertDigitToKey(i + 1)), cats[i].id == *nkcategory);
 	}
 
 	m.exec(NULL, "");
