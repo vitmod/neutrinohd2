@@ -71,9 +71,9 @@ CKeyChooser::CKeyChooser(int * const Key, const neutrino_locale_t title, const s
 	keyDeleter = new CKeyChooserItemNoKey(key);
 
 	addItem(new CKeyValue());
-	addItem(GenericMenuSeparatorLine);
-	addItem(GenericMenuBack);
-	addItem(GenericMenuSeparatorLine);
+	addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	addItem(new CMenuForwarder(LOCALE_KEYCHOOSERMENU_SETNEW , true, NULL, keyChooser));
 	addItem(new CMenuForwarder(LOCALE_KEYCHOOSERMENU_SETNONE, true, NULL, keyDeleter));
 }

@@ -180,7 +180,7 @@ int CThemes::Show()
 	
 	if (access(USERDIR, F_OK) == 0 ) 
 	{
-		themes.addItem(GenericMenuSeparatorLine);
+		themes.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 		themes.addItem(m1);
 	} 
 	else 

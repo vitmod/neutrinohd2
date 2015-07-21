@@ -42,27 +42,27 @@
 #include <sectionsdclient/sectionsdclient.h>
 #include <timerdclient/timerdclient.h>
 
-#include "driver/fontrenderer.h"
-#include "driver/rcinput.h"
+#include <driver/fontrenderer.h>
+#include <driver/rcinput.h>
 
 #if ENABLE_LCD
-#include "driver/lcdd.h"
+#include <driver/lcdd.h>
 #define CVFD CLCD
 #else
 #if defined (PLATFORM_COOLSTREAM)
 #include <cs_vfd.h>
 #endif
-#include "driver/vfd.h"
+#include <driver/vfd.h>
 #endif
 
-#include "system/localize.h"
-#include "system/settings.h"
+#include <system/localize.h>
+#include <system/settings.h>
 
-#include "gui/epgview.h"
-#include "gui/infoviewer.h"
-#include "gui/eventlist.h"
+#include <gui/epgview.h>
+#include <gui/infoviewer.h>
+#include <gui/eventlist.h>
 
-#include "driver/radiotext.h"
+#include <driver/radiotext.h>
 
 #ifndef NEUTRINO_CPP
   #define NEUTRINO_CPP extern

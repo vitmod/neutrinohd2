@@ -43,8 +43,9 @@
 #include <vector>
 
 
-#define MENU_WIDTH	DEFAULT_XRES/2	+ 50
-#define MENU_HEIGHT	576
+#define MENU_WIDTH			DEFAULT_XRES/2 - 50
+#define MENU_HEIGHT			576
+#define HINTBOX_WIDTH			MENU_WIDTH + 50
 
 struct menu_return
 {
@@ -82,27 +83,22 @@ class CMenuItem
 		int x, y, dx, offx;
 		
 	public:
-		bool           active;
+		bool active;
 		neutrino_msg_t directKey;
 		neutrino_msg_t msg;
-		bool		can_arrow;
-		std::string    iconName;
-		std::string    itemIcon;
+		bool can_arrow;
+		std::string iconName;
 
 		CMenuItem()
 		{
 			x = -1;
 			directKey = CRCInput::RC_nokey;
 			iconName = "";
-			itemIcon = "";
 			can_arrow = false;
 		}
 		virtual ~CMenuItem(){}
-
 		virtual void init(const int X, const int Y, const int DX, const int OFFX);
-
 		virtual int paint (bool selected = false ) = 0;
-
 		virtual int getHeight(void) const = 0;
 		virtual int getWidth(void) const
 		{
@@ -124,7 +120,7 @@ class CMenuItem
 
 class CMenuSeparator : public CMenuItem
 {
-	int               type;
+	int type;
 
 	public:
 		neutrino_locale_t text;
@@ -140,7 +136,7 @@ class CMenuSeparator : public CMenuItem
 		};
 
 
-		CMenuSeparator(const int Type = 0, const neutrino_locale_t Text = NONEXISTANT_LOCALE);
+		CMenuSeparator(const int Type = EMPTY, const neutrino_locale_t Text = NONEXISTANT_LOCALE);
 
 		int paint(bool selected = false );
 		int getHeight(void) const;
@@ -149,44 +145,7 @@ class CMenuSeparator : public CMenuItem
 		virtual const char * getString(void);
 };
 
-class CMenuForwarder : public CMenuItem
-{
-	const char *        option;
-	const std::string * option_string;
-	CMenuTarget *       jumpTarget;
-	std::string         actionKey;
-
-	protected:
-		neutrino_locale_t text;
-
-		virtual const char * getOption(void);
-		virtual const char * getName(void);
-		
-	public:
-
-		CMenuForwarder(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
-		CMenuForwarder(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
-		int paint(bool selected = false );
-		int getHeight(void) const;
-		int getWidth(void) const;
-		int exec(CMenuTarget * parent);
-		bool isSelectable(void) const
-		{
-			return active;
-		}
-};
-
-class CMenuForwarderNonLocalized : public CMenuForwarder
-{
-	protected:
-		std::string the_text;
-		virtual const char * getName(void);
-	public:
-		// Text must be UTF-8 encoded:
-		CMenuForwarderNonLocalized(const char * const Text, const bool Active = true, const char * const Option = NULL, CMenuTarget* Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
-		CMenuForwarderNonLocalized(const char * const Text, const bool Active, const std::string &Option, CMenuTarget* Target=NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
-};
-
+// optionchooser
 class CAbstractMenuOptionChooser : public CMenuItem
 {
 	protected:
@@ -309,63 +268,43 @@ class CMenuOptionLanguageChooser : public CMenuItem
 		int exec(CMenuTarget *parent);
 };
 
-// CMenuWidget
-class CMenuWidget : public CMenuTarget
+// menuforwarder
+class CMenuForwarder : public CMenuItem
+{
+	const char * option;
+	const std::string * option_string;
+	CMenuTarget * jumpTarget;
+	std::string actionKey;
+
+	protected:
+		neutrino_locale_t text;
+
+		virtual const char * getOption(void);
+		virtual const char * getName(void);
+		
+	public:
+
+		CMenuForwarder(const neutrino_locale_t Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
+		CMenuForwarder(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
+		int paint(bool selected = false );
+		int getHeight(void) const;
+		int getWidth(void) const;
+		int exec(CMenuTarget * parent);
+		bool isSelectable(void) const
+		{
+			return active;
+		}
+};
+
+class CMenuForwarderNonLocalized : public CMenuForwarder
 {
 	protected:
-		std::string		nameString;
-		neutrino_locale_t       name;
-		CFrameBuffer		*frameBuffer;
-		std::vector<CMenuItem*>	items;
-		std::vector<unsigned int> page_start;
-		std::string		iconfile;
-
-		int			width;
-		int			height;
-		int         		wanted_height;
-		int			x;
-		int			y;
-		int			offx, offy;
-		int			selected;
-		int 			iconOffset;
-		unsigned int         	item_start_y;
-		unsigned int         	current_page;
-		unsigned int         	total_pages;
-		bool		     	exit_pressed;
-		
-		fb_pixel_t		* background;
-		int			full_width, full_height;
-		bool			savescreen;
-		
-		void Init(const std::string & Icon, const int mwidth, const int mheight);
-		virtual void paintItems();
-		
-		void saveScreen();
-		void restoreScreen();
-
+		std::string the_text;
+		virtual const char * getName(void);
 	public:
-		CMenuWidget();
-		CMenuWidget(const char *Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT );
-		CMenuWidget(const neutrino_locale_t Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT );
-		
-		~CMenuWidget();
-
-		virtual void addItem(CMenuItem * menuItem, const bool defaultselected = false);
-		bool hasItem();
-		virtual void paint();
-		virtual void hide();
-		virtual int exec(CMenuTarget* parent, const std::string & actionKey);
-		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
-		int getSelected() { return selected; };
-		void move(int xoff, int yoff);
-		int getSelectedLine(void){return exit_pressed ? -1 : selected;};
-		
-		int getHeight(void) const
-		{
-			return height;
-		}
-		
-		void enableSaveScreen(bool enable);
+		// Text must be UTF-8 encoded:
+		CMenuForwarderNonLocalized(const char * const Text, const bool Active = true, const char * const Option = NULL, CMenuTarget* Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
+		CMenuForwarderNonLocalized(const char * const Text, const bool Active, const std::string &Option, CMenuTarget* Target=NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
 };
 
 class CPINProtection
@@ -421,14 +360,15 @@ class CMenuSelectorTarget : public CMenuTarget
 // new (items with icons)
 class CMenuForwarderItemMenuIcon : public CMenuItem
 {
-	const char *        option;
+	const char * option;
 	const std::string * option_string;
-	CMenuTarget *       jumpTarget;
-	std::string         actionKey;
+	CMenuTarget * jumpTarget;
+	std::string actionKey;
 
 	protected:
 		neutrino_locale_t text;
 		neutrino_locale_t helptext;
+		std::string itemIcon;
 
 		virtual const char * getOption(void);
 		virtual const char * getName(void);
@@ -477,9 +417,10 @@ class CMenuForwarderItemMenuIconNonLocalized : public CMenuForwarderItemMenuIcon
 		CMenuForwarderItemMenuIconNonLocalized(const char * const Text, const bool Active, const std::string &Option, CMenuTarget* Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const char * const ItemIcon = NULL);
 };
 
+/*
 class CMenuSeparatorItemMenuIcon : public CMenuItem
 {
-	int               type;
+	int type;
 
 	public:
 		neutrino_locale_t text;
@@ -503,17 +444,74 @@ class CMenuSeparatorItemMenuIcon : public CMenuItem
 
 		virtual const char * getString(void);
 };
-//
+*/
 
-// global
-extern CMenuSeparator * const GenericMenuSeparator;
-extern CMenuSeparator * const GenericMenuSeparatorLine;
-extern CMenuForwarder * const GenericMenuBack;
-extern CMenuForwarder * const GenericMenuCancel;
+// CMenuWidget
+class CMenuWidget : public CMenuTarget
+{
+	protected:
+		std::string nameString;
+		neutrino_locale_t name;
+		CFrameBuffer *frameBuffer;
+		std::vector<CMenuItem*>	items;
+		std::vector<unsigned int> page_start;
+		std::string iconfile;
 
-//
-extern CMenuSeparatorItemMenuIcon * const GenericMenuSeparatorItemMenuIcon;
-extern CMenuSeparatorItemMenuIcon * const GenericMenuSeparatorLineItemMenuIcon;
-extern CMenuForwarderItemMenuIcon * const GenericMenuBackItemMenuIcon;
+		int width;
+		int height;
+		int wanted_height;
+		int x;
+		int y;
+		int offx, offy;
+		int selected;
+		int iconOffset;
+		unsigned int item_start_y;
+		unsigned int current_page;
+		unsigned int total_pages;
+		bool exit_pressed;
+		
+		fb_pixel_t * background;
+		int full_width;
+		int full_height;
+		bool savescreen;
+		
+		void Init(const std::string & Icon, const int mwidth, const int mheight);
+		virtual void paintItems();
+		
+		void saveScreen();
+		void restoreScreen();
+		
+		int hheight;
+		int fheight;
+		int sp_height;
+		int item_height;
+		int sb_width;
+		
+		bool extended;
+
+	public:
+		CMenuWidget();
+		CMenuWidget(const char *Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT );
+		CMenuWidget(const neutrino_locale_t Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT );
+		
+		~CMenuWidget();
+
+		virtual void addItem(CMenuItem * menuItem, const bool defaultselected = false);
+		bool hasItem();
+		virtual void paint();
+		virtual void hide();
+		virtual int exec(CMenuTarget* parent, const std::string & actionKey);
+		void setSelected(unsigned int _new) { if(_new <= items.size()) selected = _new; };
+		int getSelected() { return selected; };
+		void move(int xoff, int yoff);
+		int getSelectedLine(void){return exit_pressed ? -1 : selected;};
+		
+		int getHeight(void) const
+		{
+			return height;
+		}
+		
+		void enableSaveScreen(bool enable);
+};
 
 #endif

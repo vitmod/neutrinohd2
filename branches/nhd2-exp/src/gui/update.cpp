@@ -165,8 +165,7 @@ bool CFlashUpdate::selectHttpImage(void)
 	CMenuWidget SelectionWidget(LOCALE_FLASHUPDATE_SELECTIMAGE, NEUTRINO_ICON_UPDATE , MENU_WIDTH + 50);
 	
 	// intros
-	//SelectionWidget.addItem(GenericMenuSeparator);
-	SelectionWidget.addItem(GenericMenuBack);
+	SelectionWidget.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 
 	std::ifstream urlFile(g_settings.softupdate_url_file);
 
@@ -640,9 +639,8 @@ void CFlashExpert::showMTDSelector(const std::string & actionkey)
 	CMenuWidget * mtdselector = new CMenuWidget(LOCALE_FLASHUPDATE_MTDSELECTOR, NEUTRINO_ICON_UPDATE);
 	
 	// intros
-	//mtdselector->addItem(GenericMenuSeparator);
 	mtdselector->addItem(new CMenuForwarder(LOCALE_MESSAGEBOX_CANCEL));
-	mtdselector->addItem(GenericMenuSeparatorLine);
+	mtdselector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	CMTDInfo* mtdInfo =CMTDInfo::getInstance();
 
@@ -697,9 +695,8 @@ void CFlashExpert::showFileSelector(const std::string & actionkey)
 	CMenuWidget * fileselector = new CMenuWidget(LOCALE_FLASHUPDATE_FILESELECTOR, NEUTRINO_ICON_UPDATE);
 	
 	// intros
-	//fileselector->addItem(GenericMenuSeparator);
 	fileselector->addItem(new CMenuForwarder(LOCALE_MESSAGEBOX_CANCEL));
-	fileselector->addItem(GenericMenuSeparatorLine);
+	fileselector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	struct dirent **namelist;
 	int n = scandir("/tmp", &namelist, 0, alphasort);
 	if (n < 0)

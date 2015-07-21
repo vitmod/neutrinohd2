@@ -57,11 +57,11 @@ FT_Error FBFontRenderClass::myFTC_Face_Requester(FTC_FaceID  face_id,
 
 FBFontRenderClass::FBFontRenderClass(const int xr, const int yr)
 {
-	dprintf(DEBUG_DEBUG, "[FONT] initializing core...\n");
+	dprintf(DEBUG_DEBUG, "FBFontRenderClass::FBFontRenderClass: initializing core...\n");
 	
 	if (FT_Init_FreeType(&library))
 	{
-		dprintf(DEBUG_NORMAL, "[FONT] initializing core failed.\n");
+		dprintf(DEBUG_NORMAL, "FBFontRenderClass::FBFontRenderClass: initializing core failed.\n");
 		return;
 	}
 
@@ -71,24 +71,24 @@ FBFontRenderClass::FBFontRenderClass(const int xr, const int yr)
 	yres = yr;
 
 	int maxbytes= 4 *1024*1024;
-	dprintf(DEBUG_INFO, "[FONT] Intializing font cache, using max. %dMB...\n", maxbytes/1024/1024);
+	dprintf(DEBUG_INFO, "FBFontRenderClass::FBFontRenderClass: Intializing font cache, using max. %dMB...\n", maxbytes/1024/1024);
 	fflush(stdout);
 	
 	if (FTC_Manager_New(library, 10, 20, maxbytes, myFTC_Face_Requester, this, &cacheManager))
 	{
-		dprintf(DEBUG_NORMAL, "[FONT] manager failed!\n");
+		dprintf(DEBUG_NORMAL, "FBFontRenderClass::FBFontRenderClass: manager failed!\n");
 		return;
 	}
 	
 	if (!cacheManager)
 	{
-		dprintf(DEBUG_NORMAL, "[FONT] error.\n");
+		dprintf(DEBUG_NORMAL, "FBFontRenderClass::FBFontRenderClass: error.\n");
 		return;
 	}
 	
 	if (FTC_SBitCache_New(cacheManager, &sbitsCache))
 	{
-		dprintf(DEBUG_NORMAL, "[FONT] sbit failed!\n");
+		dprintf(DEBUG_NORMAL, "FBFontRenderClass::FBFontRenderClass: sbit failed!\n");
 		return;
 	}
 	
@@ -116,12 +116,12 @@ FT_Error FBFontRenderClass::FTC_Face_Requester(FTC_FaceID face_id, FT_Face* afac
 	if (!lfont)
 		return -1;
 	
-	dprintf(DEBUG_DEBUG, "[FONT] FTC_Face_Requester (%s/%s)\n", lfont->family, lfont->style);
+	dprintf(DEBUG_DEBUG, "FBFontRenderClass::FTC_Face_Requester: FTC_Face_Requester (%s/%s)\n", lfont->family, lfont->style);
 
 	int error;
 	if ((error = FT_New_Face(library, lfont->filename, 0, aface)))
 	{
-		dprintf(DEBUG_NORMAL, "[FONT] FTC_Face_Requester (%s/%s) failed: %i\n", lfont->family, lfont->style, error);
+		dprintf(DEBUG_NORMAL, "FBFontRenderClass::FTC_Face_Requester: FTC_Face_Requester (%s/%s) failed: %i\n", lfont->family, lfont->style, error);
 		return error;
 	}
 
@@ -189,7 +189,7 @@ const char * FBFontRenderClass::AddFont(const char * const filename, bool make_i
 
 	if ((error = FT_New_Face(library, filename, 0, &face)))
 	{
-		dprintf(DEBUG_NORMAL, "[FONT] adding font %s, failed: %i\n", filename, error);
+		dprintf(DEBUG_NORMAL, "FBFontRenderClass::AddFont: adding font %s, failed: %i\n", filename, error);
 		//delete n;//Memory leak: n
 		return NULL;
 	}
@@ -201,7 +201,7 @@ const char * FBFontRenderClass::AddFont(const char * const filename, bool make_i
 	FT_Done_Face(face);
 	n->next = font;
 	
-	dprintf(DEBUG_DEBUG, "[FONT] adding font %s... family %s, style %s ok\n", filename, n->family, n->style);
+	dprintf(DEBUG_DEBUG, "FBFontRenderClass::AddFont: adding font %s... family %s, style %s ok\n", filename, n->family, n->style);
 	font = n;
 	
 	return n->style;
@@ -220,11 +220,11 @@ CFont *FBFontRenderClass::getFont(const char * const family, const char * const 
 
 	if (!id) 
 	{
-		dprintf(DEBUG_DEBUG, "[FONT] getFont: family %s, style %s failed!\n", family, style);
+		dprintf(DEBUG_DEBUG, "FBFontRenderClass::getFont: getFont: family %s, style %s failed!\n", family, style);
 		return 0;
 	}
 
-	dprintf(DEBUG_DEBUG, "[FONT] getFont: family %s, style %s ok\n", family, style);
+	dprintf(DEBUG_DEBUG, "FBFontRenderClass::getFont: getFont: family %s, style %s ok\n", family, style);
 
 	return new CFont(this, id, size, (strcmp(((fontListEntry *)id)->style, style) == 0) ? CFont::Regular : CFont::Embolden);
 }
@@ -280,7 +280,7 @@ int CFont::setSize(int isize)
 	
 	if (err != 0)
 	{
-		dprintf(DEBUG_NORMAL, "%s:FTC_Manager_LookupSize failed (0x%x)\n", __FUNCTION__, err);
+		dprintf(DEBUG_NORMAL, "%s: FTC_Manager_LookupSize failed (0x%x)\n", __FUNCTION__, err);
 		return 0;
 	}
 	face = size->face;
@@ -588,7 +588,7 @@ void CFont::RenderString(int x, int y, const int width, const char *text, const 
 		
 		if (getGlyphBitmap(index, &glyph))
 		{
-			dprintf(DEBUG_NORMAL, "failed to get glyph bitmap.\n");
+			dprintf(DEBUG_NORMAL, "CFont::RenderString: failed to get glyph bitmap.\n");
 			continue;
 		}
 
@@ -733,7 +733,7 @@ int CFont::getRenderWidth(const char *text, bool utf8_encoded)
 		
 		if (getGlyphBitmap(index, &glyph))
 		{
-			dprintf(DEBUG_NORMAL, "failed to get glyph bitmap.\n");
+			dprintf(DEBUG_NORMAL, "CFont::getRenderWidth: failed to get glyph bitmap.\n");
 			continue;
 		}
 		

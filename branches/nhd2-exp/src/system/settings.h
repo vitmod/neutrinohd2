@@ -40,7 +40,6 @@
 
 #include <string>
 
-#include <gui/widget/menue.h>
 #include <gui/widget/icons.h>
 #include <gui/widget/stringinput.h>
 

@@ -158,7 +158,7 @@ extern int InfoBox(const neutrino_locale_t Caption,
 						const CInfoBox::result_ Default, 
 						const uint32_t ShowButtons, 
 						const char * const Icon = NULL, 
-						const int Width = MENU_WIDTH - 50, 
+						const int Width = HINTBOX_WIDTH, 
 						const int timeout = -1, 
 						bool returnDefaultOnTimeout = false); // UTF-8
 
@@ -167,7 +167,7 @@ extern int InfoBox(const char * const Title,
 						const CInfoBox::result_ Default, 
 						const uint32_t ShowButtons, 
 						const char * const Icon = NULL, 
-						const int Width = MENU_WIDTH - 50, 
+						const int Width = HINTBOX_WIDTH, 
 						const int timeout = -1, 
 						bool returnDefaultOnTimeout = false); // UTF-8
 

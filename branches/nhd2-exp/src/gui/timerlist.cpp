@@ -953,13 +953,12 @@ int CTimerList::modifyTimer()
 	CMenuWidget timerSettings(LOCALE_TIMERLIST_MENUMODIFY, NEUTRINO_ICON_SETTINGS);
 	
 	// intros
-	//timerSettings.addItem(GenericMenuSeparator);
-	timerSettings.addItem(GenericMenuBack);
-	timerSettings.addItem(GenericMenuSeparatorLine);
+	timerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	timerSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	//
 	timerSettings.addItem(new CMenuForwarder(LOCALE_TIMERLIST_SAVE, true, NULL, this, "modifytimer", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
-	timerSettings.addItem(GenericMenuSeparatorLine);
+	timerSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	char type[80];
 	strcpy(type, convertTimerType2String(timer->eventType)); // UTF
@@ -1003,11 +1002,11 @@ int CTimerList::modifyTimer()
 	bool recDirEnabled = recDirs.hasItem() && (timer->eventType == CTimerd::TIMER_RECORD) && (recDir != NULL);
 	CMenuForwarder *m6 = new CMenuForwarder(LOCALE_TIMERLIST_RECORDING_DIR, recDirEnabled, timer->recordingDir, &recDirs);
 
-	timerSettings.addItem(GenericMenuSeparatorLine);
+	timerSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	timerSettings.addItem(m3);
 	timerSettings.addItem(m4);
 	timerSettings.addItem(m5);
-	timerSettings.addItem(GenericMenuSeparatorLine);
+	timerSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	timerSettings.addItem(m6);
 
 	CMenuWidget timerSettings_apids(LOCALE_TIMERLIST_APIDS, NEUTRINO_ICON_SETTINGS);
@@ -1016,9 +1015,9 @@ int CTimerList::modifyTimer()
 	timer_apids_std = (timer->apids & TIMERD_APIDS_STD) ? 1 : 0 ;
 	timer_apids_ac3 = (timer->apids & TIMERD_APIDS_AC3) ? 1 : 0 ;
 	timer_apids_alt = (timer->apids & TIMERD_APIDS_ALT) ? 1 : 0 ;
-	timerSettings_apids.addItem(GenericMenuSeparator);
-	timerSettings_apids.addItem(GenericMenuBack);
-	timerSettings_apids.addItem(GenericMenuSeparatorLine);
+
+	timerSettings_apids.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	timerSettings_apids.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	CMenuOptionChooser* ma1 = new CMenuOptionChooser(LOCALE_TIMERLIST_APIDS_DFLT, &timer_apids_dflt, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, &apid_notifier);
 	timerSettings_apids.addItem(ma1);
 	CMenuOptionChooser* ma2 = new CMenuOptionChooser(LOCALE_RECORDINGMENU_APIDS_STD, &timer_apids_std, MESSAGEBOX_NO_YES_OPTIONS, MESSAGEBOX_NO_YES_OPTION_COUNT, true, &apid_notifier);
@@ -1052,13 +1051,12 @@ int CTimerList::newTimer()
 	CMenuWidget timerSettings(LOCALE_TIMERLIST_MENUNEW, NEUTRINO_ICON_SETTINGS);
 	
 	// intros
-	//timerSettings.addItem(GenericMenuSeparator);
-	timerSettings.addItem(GenericMenuBack);
-	timerSettings.addItem(GenericMenuSeparatorLine);
+	timerSettings.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	timerSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	//
 	timerSettings.addItem(new CMenuForwarder(LOCALE_TIMERLIST_SAVE, true, NULL, this, "newtimer", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
-	timerSettings.addItem(GenericMenuSeparatorLine);
+	timerSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	CDateInput timerSettings_alarmTime(LOCALE_TIMERLIST_ALARMTIME, &(timerNew.alarmTime) , LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
 	CMenuForwarder *m1 = new CMenuForwarder(LOCALE_TIMERLIST_ALARMTIME, true, timerSettings_alarmTime.getValue (), &timerSettings_alarmTime );
@@ -1105,11 +1103,11 @@ int CTimerList::newTimer()
 	timerSettings.addItem( m0);
 	timerSettings.addItem( m1);
 	timerSettings.addItem( m2);
-	timerSettings.addItem(GenericMenuSeparatorLine);
+	timerSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	timerSettings.addItem( m3);
 	timerSettings.addItem( m4);
 	timerSettings.addItem( m5);
-	timerSettings.addItem(GenericMenuSeparatorLine);
+	timerSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	timerSettings.addItem( m6);
 	timerSettings.addItem( m7);
 	timerSettings.addItem( m8);

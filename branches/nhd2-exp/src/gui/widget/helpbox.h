@@ -34,6 +34,7 @@
 #define __helpbox__
 
 #include <system/localize.h>
+#include <system/settings.h>
 
 #include <gui/widget/drawable.h>
 
@@ -53,7 +54,7 @@ class Helpbox
 		void addLine(const char *icon, const char *text);
 		void addPagebreak();
 		
-		void show(const neutrino_locale_t Caption, const int Width = MENU_WIDTH - 50, int timeout = -1);
+		void show(const neutrino_locale_t Caption, const int Width = HINTBOX_WIDTH, int timeout = -1);
 		
 	protected:
 		

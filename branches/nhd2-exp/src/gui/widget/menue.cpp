@@ -51,45 +51,14 @@
 #include <cctype>
 
 
-#define ITEM_ICON_W	128	// min=100, max = 128
-#define ITEM_ICON_H	128	// min=100, max = 128
+#define ITEM_ICON_W	128	// min=100, max=128
+#define ITEM_ICON_H	128	// min=100, max=128
 
 #define ICON_OFFSET	5	// offset from left border
 #define LOCAL_OFFSET	8	// offset from painted icon at left border
 
 static int HEIGHT;
 static int FULL_HEIGHT;
-
-
-/* the following generic menu items are integrated into multiple menus at the same time */
-CMenuSeparator CGenericMenuSeparator;
-CMenuSeparator CGenericMenuSeparatorLine(CMenuSeparator::LINE);
-
-CMenuForwarder CGenericMenuBack(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT);
-//CMenuForwarder CGenericMenuCancel(LOCALE_MENU_CANCEL, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_HOME);
-//CMenuForwarder CGenericMenuNext(LOCALE_MENU_NEXT, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_HOME);
-
-//
-CMenuForwarderItemMenuIcon CGenericMenuBackItemMenuIcon(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT);
-
-//
-CMenuSeparatorItemMenuIcon CGenericMenuSeparatorItemMenuIcon;
-CMenuSeparatorItemMenuIcon CGenericMenuSeparatorLineItemMenuIcon(CMenuSeparatorItemMenuIcon::LINE);;
-
-// globals
-CMenuSeparator * const GenericMenuSeparator = &CGenericMenuSeparator;
-CMenuSeparator * const GenericMenuSeparatorLine = &CGenericMenuSeparatorLine;
-
-CMenuForwarder * const GenericMenuBack = &CGenericMenuBack;
-//CMenuForwarder * const GenericMenuCancel = &CGenericMenuCancel;
-//CMenuForwarder * const GenericMenuNext = &CGenericMenuNext;
-
-//
-CMenuForwarderItemMenuIcon * const GenericMenuBackItemMenuIcon = &CGenericMenuBackItemMenuIcon;
-
-//
-CMenuSeparatorItemMenuIcon * const GenericMenuSeparatorItemMenuIcon = &CGenericMenuSeparatorItemMenuIcon;
-CMenuSeparatorItemMenuIcon * const GenericMenuSeparatorLineItemMenuIcon = &CGenericMenuSeparatorLineItemMenuIcon;
 
 // CMenuItem
 void CMenuItem::init(const int X, const int Y, const int DX, const int OFFX)
@@ -172,7 +141,7 @@ CMenuWidget::~CMenuWidget()
 	{
 		CMenuItem * item = items[count];
 		
-		if ((item != GenericMenuSeparator) && (item != GenericMenuSeparatorLine) && (item != GenericMenuBack))
+		//if ((item != GenericMenuSeparator) && (item != GenericMenuSeparatorLine) && (item != GenericMenuBack))
 			delete item;
 	}
 
@@ -520,7 +489,7 @@ void CMenuWidget::paint()
 	// head height
 	int icon_head_w, icon_head_h;
 	frameBuffer->getIconSize(iconfile.c_str(), &icon_head_w, &icon_head_h);
-	int hheight = std::max(icon_head_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
+	hheight = std::max(icon_head_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
 	
 	// globals
 	int itemHeightTotal = 0;
@@ -529,12 +498,12 @@ void CMenuWidget::paint()
 	page_start.clear();
 	page_start.push_back(0);
 	total_pages = 1;
-	int sp_height = 5;
+	sp_height = 5;
 	
 	// foot height
 	int icon_foot_w, icon_foot_h;
 	frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &icon_foot_w, &icon_foot_h);
-	int fheight = std::max(icon_foot_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
+	fheight = std::max(icon_foot_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
 
 	//
 	for (unsigned int i = 0; i < items.size(); i++) 
@@ -543,7 +512,7 @@ void CMenuWidget::paint()
 		itemHeightTotal += item_height;
 		heightCurrPage += item_height;
 
-		if(heightCurrPage > (height - hheight - 2*sp_height - fheight)) 
+		if(heightCurrPage > height - (hheight + sp_height + sp_height + fheight))
 		{
 			page_start.push_back(i);
 			total_pages++;
@@ -567,13 +536,13 @@ void CMenuWidget::paint()
 
 	// shrink menu if less items
 	if(hheight + sp_height + itemHeightTotal + sp_height + fheight < height)
-		height = hheight + sp_height + itemHeightTotal + sp_height + fheight;
+		height = hheight + sp_height + /*itemHeightTotal*/heightCurrPage + sp_height + fheight;
 
 	// coordinations
 	x = offx + frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width ) >> 1 );
 	y = offy + frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight() - height) >> 1 );
 
-	int sb_width = 0;
+	sb_width = 0;
 	
 	if(total_pages > 1)
 		sb_width = SCROLLBAR_WIDTH;
@@ -590,7 +559,7 @@ void CMenuWidget::paint()
 		saveScreen();
 
 	// paint head
-	frameBuffer->paintBoxRel(x, y, width + sb_width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	frameBuffer->paintBoxRel(x, y, full_width, hheight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
 	
 	//paint icon
 	frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icon_head_h)/2);
@@ -599,11 +568,14 @@ void CMenuWidget::paint()
 	int stringstartposX = x + ((width + sb_width)>> 1) - ( neededWidth >> 1) - BORDER_LEFT;
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - BORDER_RIGHT - (stringstartposX - x), l_name, COL_MENUHEAD, 0, true); // UTF-8
 	
-	// paint separator
-	frameBuffer->paintBoxRel(x, y + hheight, width + sb_width, sp_height, COL_MENUCONTENTDARK_PLUS_0);
+	// paint head separator
+	frameBuffer->paintBoxRel(x, y + hheight, full_width, sp_height, COL_MENUCONTENTDARK_PLUS_0);
+	
+	// foot sep
+	frameBuffer->paintBoxRel(x, y + height - (fheight + sp_height), full_width, sp_height, COL_MENUCONTENTDARK_PLUS_0);
 	
 	//paint foot
-	frameBuffer->paintBoxRel(x, y + (height - fheight), width + sb_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, y + height - fheight, full_width, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 	
 	// all height position (needed to paint itemIcon and help text)
 	HEIGHT = y + full_height;
@@ -618,13 +590,8 @@ void CMenuWidget::paint()
 /* paint items */
 void CMenuWidget::paintItems()
 {
-	// fheight
-	int icon_foot_w, icon_foot_h;
-	frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &icon_foot_w, &icon_foot_h);
-	int fheight = std::max(icon_foot_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
-	
 	// item height
-	int item_height = height - fheight - (item_start_y - y); // all items height without sep up/down
+	item_height = height - (hheight + 2 *sp_height + fheight);
 
 	//Item not currently on screen
 	if (selected >= 0)
@@ -635,20 +602,19 @@ void CMenuWidget::paintItems()
 		while(selected >= (int)page_start[current_page + 1])
 			current_page++;
 	}
-
+	
+	// paint items background
+	frameBuffer->paintBoxRel(x, item_start_y, full_width, item_height, COL_MENUCONTENTDARK_PLUS_0);
+	
 	// paint right scroll bar if we have more then one page
 	if(total_pages > 1)
 	{
-		//sb_width = SCROLLBAR_WIDTH;
 		int sbh = ((item_height - 4) / total_pages);
 
 		//scrollbar
-		frameBuffer->paintBoxRel(x + width, item_start_y, SCROLLBAR_WIDTH, item_height, COL_MENUCONTENT_PLUS_1); //15 = sb width
-		frameBuffer->paintBoxRel(x + width + 2, item_start_y + 2 + current_page * sbh, SCROLLBAR_WIDTH - 4, sbh, COL_MENUCONTENT_PLUS_3);
+		frameBuffer->paintBoxRel(x + full_width - sb_width, item_start_y, SCROLLBAR_WIDTH, item_height, COL_MENUCONTENT_PLUS_1);
+		frameBuffer->paintBoxRel(x + full_width - sb_width + 2, item_start_y + 2 + current_page * sbh, SCROLLBAR_WIDTH - 4, sbh, COL_MENUCONTENT_PLUS_3);
 	}
-	
-	// paint items background
-	frameBuffer->paintBoxRel(x, item_start_y, width, item_height, COL_MENUCONTENTDARK_PLUS_0 );
 
 	// paint items
 	int ypos = item_start_y;
@@ -698,9 +664,6 @@ void CMenuWidget::restoreScreen()
 	{
 		if(savescreen)
 			frameBuffer->RestoreScreen(x, y, full_width, full_height, background);
-		
-		//delete [] background;
-		//background = NULL;
 	}
 }
 
@@ -2004,6 +1967,7 @@ CMenuForwarderItemMenuIconNonLocalized::CMenuForwarderItemMenuIconNonLocalized(c
 }
 
 // CMenuSeparatorMainMenu
+#if 0
 CMenuSeparatorItemMenuIcon::CMenuSeparatorItemMenuIcon(const int Type, const neutrino_locale_t Text)
 {
 	directKey = CRCInput::RC_nokey;
@@ -2078,6 +2042,7 @@ int CMenuSeparatorItemMenuIcon::paint(bool /*selected*/)
 
 	return y + height;
 }
+#endif
 
 int CLockedMenuForwarderItemMenuIcon::exec(CMenuTarget *parent)
 {

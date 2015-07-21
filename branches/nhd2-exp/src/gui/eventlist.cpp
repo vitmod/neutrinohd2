@@ -1074,15 +1074,12 @@ int CEventFinderMenu::showMenu(void)
 	
 	CMenuWidget searchMenu(LOCALE_EVENTFINDER_HEAD, NEUTRINO_ICON_FEATURES);
 
-	// intros
-        //searchMenu.addItem(GenericMenuSeparator);
-	
         searchMenu.addItem(mf2, false);
-        searchMenu.addItem(GenericMenuSeparatorLine);
+        searchMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
         searchMenu.addItem(mo0, false);
         searchMenu.addItem(mf1, false);
         searchMenu.addItem(mo1, false);
-        searchMenu.addItem(GenericMenuSeparatorLine);
+        searchMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
         searchMenu.addItem(mf0, false);
 	
 	res = searchMenu.exec(NULL, "");

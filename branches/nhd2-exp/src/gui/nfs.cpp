@@ -187,9 +187,8 @@ int CNFSMountGui::menu()
 	CMenuWidget mountMenuW(LOCALE_NFS_MOUNT, NEUTRINO_ICON_NETWORK, 720);
 	
 	// intros
-	//mountMenuW.addItem(GenericMenuSeparator);
-	mountMenuW.addItem(GenericMenuBack);
-	mountMenuW.addItem(GenericMenuSeparatorLine);
+	mountMenuW.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	mountMenuW.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	char s2[12];
 
 	for(int i = 0 ; i < NETWORK_NFS_NR_OF_ENTRIES ; i++)
@@ -274,9 +273,8 @@ int CNFSMountGui::menuEntry(int nr)
 	CMenuWidget mountMenuEntryW(LOCALE_NFS_MOUNT, NEUTRINO_ICON_NETWORK);
 	
 	// intros
-	//mountMenuEntryW.addItem(GenericMenuSeparator);
-	mountMenuEntryW.addItem(GenericMenuBack);
-	mountMenuEntryW.addItem(GenericMenuSeparatorLine);
+	mountMenuEntryW.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	mountMenuEntryW.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	// ip
 	CIPInput ipInput(LOCALE_NFS_IP, g_settings.network_nfs_ip[nr], LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
@@ -354,9 +352,8 @@ int CNFSUmountGui::menu()
 	CMenuWidget umountMenu(LOCALE_NFS_UMOUNT, NEUTRINO_ICON_NETWORK);
 	
 	// intros
-	//umountMenu.addItem(GenericMenuSeparator);
-	umountMenu.addItem(GenericMenuBack);
-	umountMenu.addItem(GenericMenuSeparatorLine);
+	umountMenu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	umountMenu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	CFSMounter::getMountedFS(infos);
 	for (CFSMounter::MountInfos::const_iterator it = infos.begin(); it != infos.end();it++)
@@ -389,9 +386,8 @@ int CNFSSmallMenu::exec( CMenuTarget* parent, const std::string & actionKey )
 		CNFSUmountGui umountGui;
 		
 		// intros
-		//menu.addItem(GenericMenuSeparator);
-		menu.addItem(GenericMenuBack);
-		menu.addItem(GenericMenuSeparatorLine);
+		menu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+		menu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 		
 		menu.addItem(new CMenuForwarder(LOCALE_NFS_REMOUNT, true, NULL, this, "remount"));
 		menu.addItem(new CMenuForwarder(LOCALE_NFS_MOUNT , true, NULL, & mountGui));

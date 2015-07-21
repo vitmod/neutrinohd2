@@ -720,13 +720,13 @@ int CUserMenuMenu::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
                 parent->hide();
 
         CMenuWidget menu(local , NEUTRINO_ICON_KEYBINDING);
-	//menu.addItem(GenericMenuSeparator);
-        menu.addItem(GenericMenuBack);
-        menu.addItem(GenericMenuSeparatorLine);
+	
+        menu.addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+        menu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
         CStringInputSMS name(LOCALE_USERMENU_NAME, &g_settings.usermenu_text[button]);
         menu.addItem(new CMenuForwarder(LOCALE_USERMENU_NAME, true, g_settings.usermenu_text[button],&name));
-        menu.addItem(GenericMenuSeparatorLine);
+        menu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
         char text[10];
         for(int item = 0; item < SNeutrinoSettings::ITEM_MAX; item++)

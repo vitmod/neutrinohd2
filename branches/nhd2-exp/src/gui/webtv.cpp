@@ -489,12 +489,12 @@ void CWebTV::showAudioDialog(void)
 				
 				// ac3
 #if !defined (PLATFORM_COOLSTREAM)				
-		APIDSelector.addItem(GenericMenuSeparatorLine);
+		APIDSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 		APIDSelector.addItem(new CMenuOptionChooser(LOCALE_AUDIOMENU_HDMI_DD, &g_settings.hdmi_dd, AC3_OPTIONS, AC3_OPTION_COUNT, true, audioSetupNotifier, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED ));
 #endif				
 				
 		// policy/aspect ratio
-		APIDSelector.addItem(GenericMenuSeparatorLine);
+		APIDSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 				
 		// video aspect ratio 4:3/16:9
 		APIDSelector.addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEORATIO, &g_settings.video_Ratio, VIDEOMENU_VIDEORATIO_OPTIONS, VIDEOMENU_VIDEORATIO_OPTION_COUNT, true, videoSetupNotifier, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, true ));

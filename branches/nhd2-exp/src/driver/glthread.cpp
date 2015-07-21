@@ -36,6 +36,8 @@
 #include "glthread.h"
 #include <GL/glx.h>
 
+#include <system/debug.h>
+
 #include <playback_cs.h>
 extern cPlayback *playback;
 
@@ -117,7 +119,7 @@ void GLThreadObj::run()
 	{
 		if((!GLEW_VERSION_1_5)||(!GLEW_EXT_pixel_buffer_object)||(!GLEW_ARB_texture_non_power_of_two))
 		{
-			std::cout << "Sorry, your graphics card is not supported. Needs at least OpenGL 1.5, pixel buffer objects and NPOT textures." << std::endl;
+			dprintf(DEBUG_NORMAL, "GLThreadObj::run: Sorry, your graphics card is not supported. Needs at least OpenGL 1.5, pixel buffer objects and NPOT textures.\n");
 			perror("incompatible graphics card");
 			_exit(1);
 		}
@@ -138,7 +140,7 @@ void GLThreadObj::run()
 	}
 	else
 	{
-		printf("GLThread: error initializing glew: %d\n", err);
+		dprintf(DEBUG_NORMAL, "GLThreadObj::run: GLThread: error initializing glew: %d\n", err);
 	}
 	
 	if(g_RCInput)
@@ -149,7 +151,7 @@ void GLThreadObj::run()
 	{ /* yeah, whatever... */
 		::kill(getpid(), SIGKILL);
 	}
-	std::cout << "GL thread stopping" << std::endl;
+	dprintf(DEBUG_NORMAL, "GLThreadObj::run: GL thread stopping\n");
 }
 
 void GLThreadObj::setupCtx()
@@ -157,7 +159,7 @@ void GLThreadObj::setupCtx()
 	int argc = 1;
 	/* some dummy commandline for GLUT to be happy */
 	char const *argv[2] = { "neutrino", 0 };
-	std::cout << "GL thread starting" << std::endl;
+	dprintf(DEBUG_NORMAL, "GLThreadObj::setupCtx: GL thread starting\n");
 	glutInit(&argc, const_cast<char **>(argv));
 	glutInitWindowSize(mX, mY);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
@@ -181,7 +183,7 @@ void GLThreadObj::setupOSDBuffer()
 	{
 		int fbmem = mState.width * mState.height * 4 * 2;
 		mOSDBuffer.resize(fbmem);
-		printf("OSD buffer set to %d bytes\n", fbmem);
+		dprintf(DEBUG_NORMAL, "GLThreadObj::setupOSDBuffer: OSD buffer set to %d bytes\n", fbmem);
 	}
 }
 
@@ -316,7 +318,7 @@ void GLThreadObj::render()
 	GLuint err = glGetError();
 	if(err != 0)
 	{
-		printf("GLError:%d 0x%04x\n", err, err);
+		dprintf(DEBUG_NORMAL, "GLThreadObj::render: GLError:%d 0x%04x\n", err, err);
 	}
 
 	/* simply limit to 30 Hz, if anyone wants to do this properly, feel free */
@@ -407,7 +409,7 @@ void GLThreadObj::bltDisplayBuffer()
 	
 	// set displayer buffer
 	mDisplayBuffer.resize(5*1024*1024);
-	//printf("DisplayBuffer set to %d bytes\n", 5*1024*1024);
+	//dprintf(DEBUG_NORMAL, "GLThreadObj::bltDisplayBuffer: DisplayBuffer set to %d bytes\n", 5*1024*1024);
 	
 	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, mState.displaypbo);
 	glBufferData(GL_PIXEL_UNPACK_BUFFER, mDisplayBuffer.size(), &mDisplayBuffer[0], GL_STREAM_DRAW_ARB);

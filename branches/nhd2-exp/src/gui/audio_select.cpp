@@ -104,9 +104,6 @@ int CAudioSelectMenuHandler::doMenu()
 {
 	CMenuWidget AudioSelector(LOCALE_APIDSELECTOR_HEAD, NEUTRINO_ICON_AUDIO);
 	
-	// intros
-	//AudioSelector.addItem(GenericMenuSeparator);
-	
 	unsigned int count;
 	CSubtitleChangeExec SubtitleChanger;
 	
@@ -119,14 +116,14 @@ int CAudioSelectMenuHandler::doMenu()
 	}
 
 	// subs
-	AudioSelector.addItem(GenericMenuSeparatorLine);
+	AudioSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	CMenuOptionChooser * oj = new CMenuOptionChooser(LOCALE_AUDIOMENU_ANALOGOUT, &g_settings.audio_AnalogMode, AUDIOMENU_ANALOGOUT_OPTIONS, AUDIOMENU_ANALOGOUT_OPTION_COUNT, true, audioSetupNotifier, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED);
 	AudioSelector.addItem( oj );
 	
 	// ac3
 #if !defined (PLATFORM_COOLSTREAM)	
-	AudioSelector.addItem(GenericMenuSeparatorLine);
+	AudioSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	AudioSelector.addItem(new CMenuOptionChooser(LOCALE_AUDIOMENU_HDMI_DD, &g_settings.hdmi_dd, AC3_OPTIONS, AC3_OPTION_COUNT, true, audioSetupNotifier, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN ));
 #endif
 
@@ -184,7 +181,7 @@ int CAudioSelectMenuHandler::doMenu()
 		
 		if(sep_added) 
 		{
-			AudioSelector.addItem(GenericMenuSeparatorLine);
+			AudioSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 			AudioSelector.addItem(new CMenuForwarder(LOCALE_SUBTITLES_STOP, true, NULL, &SubtitleChanger, "off", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW ));
 		}
 

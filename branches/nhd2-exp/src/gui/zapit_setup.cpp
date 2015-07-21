@@ -98,12 +98,12 @@ void CZapitSetup::showMenu()
 	zapit->setSelected(selected);
 	
 	// intros
-	zapit->addItem(GenericMenuBack);
-	zapit->addItem(GenericMenuSeparatorLine);
+	zapit->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	zapit->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	// save settings
 	zapit->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "save_action", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
-	zapit->addItem(GenericMenuSeparatorLine);
+	zapit->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	int shortcut = 1;
 	

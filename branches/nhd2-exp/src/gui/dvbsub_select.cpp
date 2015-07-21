@@ -71,9 +71,6 @@ int CDVBSubSelectMenuHandler::doMenu ()
 {
 	CMenuWidget DVBSubSelector(LOCALE_SUBTITLES_HEAD, NEUTRINO_ICON_SUBT);
 	
-	// intros
-	//DVBSubSelector.addItem(GenericMenuSeparator);
-	
 	CSubtitleChangeExec SubtitleChanger;
 	unsigned int count;
 
@@ -129,7 +126,7 @@ int CDVBSubSelectMenuHandler::doMenu ()
 		
 		if(sep_added) 
 		{
-			DVBSubSelector.addItem(GenericMenuSeparatorLine);
+			DVBSubSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 			DVBSubSelector.addItem(new CMenuForwarder(LOCALE_SUBTITLES_STOP, true, NULL, &SubtitleChanger, "off", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED ));
 		}
 	}
