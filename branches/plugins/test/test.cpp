@@ -491,10 +491,8 @@ void CTestMenu::testPlayAudioURL()
 	
 	fileFilter.addFilter("cdr");
 	fileFilter.addFilter("mp3");
-	fileFilter.addFilter("m2a");
 	fileFilter.addFilter("mpa");
 	fileFilter.addFilter("mp2");
-	fileFilter.addFilter("m3u");
 	fileFilter.addFilter("ogg");
 	fileFilter.addFilter("wav");
 	fileFilter.addFilter("flac");
@@ -613,7 +611,6 @@ void CTestMenu::testPlayAudioFolder()
 	fileFilter.addFilter("m2a");
 	fileFilter.addFilter("mpa");
 	fileFilter.addFilter("mp2");
-	fileFilter.addFilter("m3u");
 	fileFilter.addFilter("ogg");
 	fileFilter.addFilter("wav");
 	fileFilter.addFilter("flac");
