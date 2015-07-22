@@ -1658,7 +1658,6 @@ void CMovieBrowser::refreshTitle(void)
 	m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + TEXT_BORDER_WIDTH + icon_w + 10, m_cBoxFrame.iY+m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight, m_cBoxFrameTitleRel.iWidth - (TEXT_BORDER_WIDTH << 1) - 2*icon_w - 10 - icon_h_w, title.c_str(), TITLE_FONT_COLOR, 0, true); // UTF-8
 }
 
-#define ADD_FOOT_HEIGHT 4
 void CMovieBrowser::refreshFoot(void) 
 {
 	dprintf(DEBUG_INFO, "[mb]->refreshButtonLine \r\n");
