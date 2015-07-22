@@ -50,6 +50,7 @@
 
 CExtendedInput::CExtendedInput(const neutrino_locale_t Name, char* Value, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, CChangeObserver* Observ, bool* Cancel)
 {
+	nameStringOption = Name;
 	name = g_Locale->getText(Name);
 	value = Value;
 	cancel = Cancel;
@@ -63,6 +64,7 @@ CExtendedInput::CExtendedInput(const neutrino_locale_t Name, char* Value, const 
 
 CExtendedInput::CExtendedInput(const char * const Name, char* Value, const neutrino_locale_t Hint_1, const neutrino_locale_t Hint_2, CChangeObserver* Observ, bool* Cancel)
 {
+	nameStringOption = NONEXISTANT_LOCALE;
 	name = Name;
 	value = Value;
 	cancel = Cancel;
@@ -300,7 +302,7 @@ int CExtendedInput::exec( CMenuTarget* parent, const std::string & )
 
 	if ((observ) && (msg == CRCInput::RC_ok))
 	{
-		observ->changeNotify(name, value);
+		observ->changeNotify(nameStringOption, value);
 	}
 
 	return res;

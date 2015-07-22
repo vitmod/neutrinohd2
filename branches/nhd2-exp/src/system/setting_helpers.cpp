@@ -107,93 +107,9 @@ extern int tuxtx_main(int pid, int page, int source);
 
 //extern int tuner_to_scan;		//defined in scan_setup.cpp
 extern CFrontend * live_fe;
-extern CScanSettings * scanSettings;
-extern CFrontend * getFE(int index);
-
 extern t_channel_id live_channel_id;
 
 extern "C" int pinghost( const char *hostname );
-
-CSatelliteSetupNotifier::CSatelliteSetupNotifier(int num)
-{
-	feindex = num;
-}
-
-/* items1 enabled for advanced diseqc settings, items2 for diseqc != NO_DISEQC, items3 disabled for NO_DISEQC */
-bool CSatelliteSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
-{
-	std::vector<CMenuItem*>::iterator it;
-	int type = *((int*) Data);
-
-	if (type == NO_DISEQC) 
-	{
-		for(it = items1.begin(); it != items1.end(); it++) 
-		{
-			(*it)->setActive(false);
-		}
-		for(it = items2.begin(); it != items2.end(); it++) 
-		{
-			(*it)->setActive(false);
-		}
-		for(it = items3.begin(); it != items3.end(); it++) 
-		{
-			(*it)->setActive(false);
-		}
-	}
-	else if(type < DISEQC_ADVANCED) 
-	{
-		for(it = items1.begin(); it != items1.end(); it++) 
-		{
-			(*it)->setActive(false);
-		}
-		for(it = items2.begin(); it != items2.end(); it++) 
-		{
-			(*it)->setActive(true);
-		}
-		for(it = items3.begin(); it != items3.end(); it++) 
-		{
-			(*it)->setActive(true);
-		}
-	}
-	else if(type == DISEQC_ADVANCED) 
-	{
-		for(it = items1.begin(); it != items1.end(); it++) 
-		{
-			(*it)->setActive(true);
-		}
-		for(it = items2.begin(); it != items2.end(); it++) 
-		{
-			(*it)->setActive(false);
-		}
-		for(it = items3.begin(); it != items3.end(); it++) 
-		{
-			(*it)->setActive(true);
-		}
-	}
-
-	getFE(feindex)->setDiseqcType( getFE(feindex)->diseqcType );
-	getFE(feindex)->setDiseqcRepeats( getFE(feindex)->diseqcRepeats );
-
-	return true;
-}
-
-void CSatelliteSetupNotifier::addItem(int list, CMenuItem* item)
-{
-	switch(list) 
-	{
-		case 0:
-			items1.push_back(item);
-			break;
-		case 1:
-			items2.push_back(item);
-			break;
-		case 2:
-			items3.push_back(item);
-			break;
-		default:
-			break;
-	}
-}
 
 // dhcp notifier
 CDHCPNotifier::CDHCPNotifier( CMenuForwarder* a1, CMenuForwarder* a2, CMenuForwarder* a3, CMenuForwarder* a4, CMenuForwarder* a5)
@@ -976,72 +892,6 @@ bool CSubLangSelectNotifier::changeNotify(const neutrino_locale_t, void *)
 	toDisable[2]->setActive(g_settings.auto_subs);
 	
 	return true;
-}
-
-// scansetup notifier
-CScanSetupNotifier::CScanSetupNotifier(int num)
-{
-	feindex = num;
-}
-
-/* items1 enabled for advanced diseqc settings, items2 for diseqc != NO_DISEQC, items3 disabled for NO_DISEQC */
-bool CScanSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
-{
-	std::vector<CMenuItem*>::iterator it;
-	int FeMode = *((int*) Data);
-	
-	dprintf(DEBUG_NORMAL, "CScanSetupNotifier::changeNotify: Femode:%d\n", FeMode);
-
-	if ( (FeMode == FE_NOTCONNECTED) || (FeMode == FE_LOOP) ) 
-	{
-		for(it = items1.begin(); it != items1.end(); it++) 
-		{
-			(*it)->setActive(false);
-		}
-		for(it = items2.begin(); it != items2.end(); it++) 
-		{
-			(*it)->setActive(false);
-		}
-		for(it = items3.begin(); it != items3.end(); it++) 
-		{
-			(*it)->setActive(false);
-		}
-	}
-	else
-	{
-		for(it = items1.begin(); it != items1.end(); it++) 
-		{
-			(*it)->setActive(true);
-		}
-		for(it = items2.begin(); it != items2.end(); it++) 
-		{
-			(*it)->setActive(true);
-		}
-		for(it = items3.begin(); it != items3.end(); it++) 
-		{
-			(*it)->setActive(true);
-		}
-	}
-
-	return true;
-}
-
-void CScanSetupNotifier::addItem(int list, CMenuItem *item)
-{
-	switch(list) 
-	{
-		case 0:
-			items1.push_back(item);
-			break;	
-		case 1:
-			items2.push_back(item);
-			break;
-		case 2:
-			items3.push_back(item);
-			break;
-		default:
-			break;
-	}
 }
 
 // volume conf

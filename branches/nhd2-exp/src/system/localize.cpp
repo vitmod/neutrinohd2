@@ -175,6 +175,7 @@ CLocaleManager::loadLocale_ret_t CLocaleManager::loadLocale(const char * const l
 			for(i = 1; i < sizeof(locale_real_names)/sizeof(const char *); i++)
 			{
 				//printf("[%s] [%s]\n", buf,locale_real_names[i]);
+				
 				if(!strcmp(buf,locale_real_names[i]))
 				{
 					if(localeData[i] == locale_real_names[i])

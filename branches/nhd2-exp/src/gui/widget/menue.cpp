@@ -50,6 +50,8 @@
 
 #include <cctype>
 
+#include <system/debug.h>
+
 
 #define ITEM_ICON_W	128	// min=100, max=128
 #define ITEM_ICON_H	128	// min=100, max=128
@@ -1306,6 +1308,8 @@ void CMenuOptionLanguageChooser::addOption(const char * const value)
 
 int CMenuOptionLanguageChooser::exec(CMenuTarget*)
 {
+	dprintf(DEBUG_NORMAL, "CMenuOptionLanguageChooser::exec: %s\n", g_settings.language);
+	
 	bool wantsRepaint = false;
 
 	//select value

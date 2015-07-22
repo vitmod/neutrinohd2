@@ -5028,10 +5028,17 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 	}	
 	else if(actionKey == "network") 
 	{
+		CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_NETWORKMENU_SETUPNOW)); // UTF-8
+		hintBox->paint();
+		
 		networkConfig.automatic_start = (network_automatic_start == 1);
 		networkConfig.stopNetwork();
 		networkConfig.commitConfig();
 		networkConfig.startNetwork();
+		
+		hintBox->hide();
+		delete hintBox;
+		hintBox = NULL;
 	}
 	else if(actionKey == "networktest") 
 	{
@@ -5060,6 +5067,7 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 
 		hintBox->hide();
 		delete hintBox;
+		hintBox = NULL;
 	}
 	else if(actionKey == "recording") 
 	{
@@ -5070,6 +5078,7 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 		
 		hintBox->hide();
 		delete hintBox;
+		hintBox = NULL;
 	}
 	else if(actionKey == "reloadchannels") 
 	{
@@ -5093,6 +5102,7 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 
 		hintBox->hide();
 		delete hintBox;
+		hintBox = NULL;
 	}
 	else if(actionKey == "osd.def") 
 	{
@@ -5231,6 +5241,7 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 		
 		hintBox->hide();
 		delete hintBox;
+		hintBox = NULL;
 	} 
 	else if(actionKey == "select_font")
 	{
@@ -5277,6 +5288,7 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 		
 		hintBox->hide();
 		delete hintBox;
+		hintBox = NULL;
 
 		return menu_return::RETURN_REPAINT;	
 	}
@@ -5292,6 +5304,7 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 		
 		hintBox->hide();
 		delete hintBox;
+		hintBox = NULL;
 
 		return menu_return::RETURN_REPAINT;	
 	}
@@ -5309,6 +5322,7 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 	{
 		g_PluginList->startPlugin((const char *)actionKey.c_str());
 	}
+
 
 	return returnval;
 }
@@ -5331,6 +5345,8 @@ bool CNeutrinoApp::changeNotify(const neutrino_locale_t OptionName, void */*data
 	}
 	else if (ARE_LOCALES_EQUAL(OptionName, LOCALE_LANGUAGESETUP_SELECT)) 
 	{
+		dprintf(DEBUG_NORMAL, "CNeutrinoApp::changeNotify: %s\n", g_settings.language);
+		
 		g_Locale->loadLocale(g_settings.language);
 		return true;
 	}

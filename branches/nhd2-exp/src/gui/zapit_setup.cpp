@@ -168,6 +168,9 @@ int CSelectChannelWidget::exec(CMenuTarget *parent, const std::string &actionKey
 
 void CSelectChannelWidget::InitZapitChannelHelper(CZapitClient::channelsMode mode)
 {
+	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
+		return;
+	
 	int nNewChannel;
 	int nNewBouquet;
 	

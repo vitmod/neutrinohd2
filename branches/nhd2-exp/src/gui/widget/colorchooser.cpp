@@ -70,11 +70,14 @@ static const neutrino_locale_t colorchooser_names[4] =
 
 CColorChooser::CColorChooser(const neutrino_locale_t Name, unsigned char *R, unsigned char *G, unsigned char *B, unsigned char* Alpha, CChangeObserver* Observer) // UTF-8
 {
+	observer = Observer;
+	nameStringOption = Name;
+	name = g_Locale->getText(Name);
+	
 	frameBuffer = CFrameBuffer::getInstance();
 	hheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	mheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-	observer = Observer;
-	name = g_Locale->getText(Name);
+	
 	width = w_max(MENU_WIDTH, 0);
 	height = h_max(hheight + mheight*4, 0);
 
@@ -91,11 +94,14 @@ CColorChooser::CColorChooser(const neutrino_locale_t Name, unsigned char *R, uns
 
 CColorChooser::CColorChooser(const char * const Name, unsigned char *R, unsigned char *G, unsigned char *B, unsigned char* Alpha, CChangeObserver* Observer) // UTF-8
 {
+	observer = Observer;
+	name = Name;
+	nameStringOption = NONEXISTANT_LOCALE;
+	
 	frameBuffer = CFrameBuffer::getInstance();
 	hheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	mheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-	observer = Observer;
-	name = Name;
+	
 	width = w_max(MENU_WIDTH, 0);
 	height = h_max(hheight + mheight*4, 0);
 
@@ -251,7 +257,7 @@ int CColorChooser::exec(CMenuTarget *parent, const std::string &)
 	hide();
 
 	if(observer)
-		observer->changeNotify(name, NULL);
+		observer->changeNotify(nameStringOption, NULL);
 
 	return res;
 }

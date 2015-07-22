@@ -317,7 +317,6 @@ int CBouquetList::doMenu()
 	return 0;
 }
 
-#define SHADOW_OFFSET	5
 /* bShowChannelList default to true, returns new bouquet or -1/-2 */
 int CBouquetList::show(bool bShowChannelList)
 {
@@ -356,9 +355,6 @@ int CBouquetList::show(bool bShowChannelList)
 	
 	while ((i = i/10) != 0)
 		maxpos1++;
-	
-	// paint shadow
-	//frameBuffer->paintBoxRel(x + SHADOW_OFFSET, y + SHADOW_OFFSET, width, height, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTH);
 
 	paintHead();
 	paint();
@@ -556,8 +552,7 @@ int CBouquetList::show(bool bShowChannelList)
 
 void CBouquetList::hide()
 {
-	frameBuffer->paintBackgroundBoxRel(x, y, width + SHADOW_OFFSET, height + SHADOW_OFFSET);
-	
+	frameBuffer->paintBackgroundBoxRel(x, y, width, height);
 	frameBuffer->blit();
 }
 

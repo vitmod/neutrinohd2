@@ -64,6 +64,7 @@ class CExtendedInput : public CMenuTarget
 		int selectedChar;
 
 		std::string name;
+		neutrino_locale_t nameStringOption;
 		neutrino_locale_t hint_1;
 		neutrino_locale_t hint_2;
 

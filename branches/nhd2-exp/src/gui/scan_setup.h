@@ -43,9 +43,8 @@ class CTPSelectHandler : public CMenuTarget
 		int feindex;
 	
 	public:
-		int exec(CMenuTarget* parent,  const std::string &actionkey);
-		
 		CTPSelectHandler(int num = 0);
+		int exec(CMenuTarget* parent,  const std::string &actionkey);
 };
 
 class CScanSettings
@@ -89,9 +88,6 @@ class CScanSettings
 class CScanSetup : public CMenuTarget
 {
 	private:
-		CFrameBuffer *frameBuffer;
-		int x, y, width, height, menue_width, hheight, mheight;
-		
 		int feindex;
 
 		void hide();
@@ -101,6 +97,36 @@ class CScanSetup : public CMenuTarget
 		CScanSetup(int num = 0);
 		~CScanSetup();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
+};
+
+// sat setup notifuer
+class CSatelliteSetupNotifier : public CChangeObserver
+{
+	private:
+		std::vector<CMenuItem*> items1;
+		std::vector<CMenuItem*> items2;
+		std::vector<CMenuItem*> items3;
+		
+		int feindex;
+	public:
+		CSatelliteSetupNotifier(int num = 0);
+		void addItem(int list, CMenuItem* item);
+		bool changeNotify(const neutrino_locale_t, void * Data);
+};
+
+// scan setup notifier
+class CScanSetupNotifier : public CChangeObserver
+{
+	private:
+		std::vector<CMenuItem*> items1;
+		std::vector<CMenuItem*> items2;
+		std::vector<CMenuItem*> items3;
+		
+		int feindex;
+	public:
+		CScanSetupNotifier(int num = 0);
+		void addItem(int list , CMenuItem *item);
+		bool changeNotify(const neutrino_locale_t, void * Data);
 };
 
 #endif

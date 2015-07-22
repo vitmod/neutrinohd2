@@ -253,32 +253,27 @@ const CMenuOptionChooser::keyval FRONTEND_MODE_OPTIONS[FRONTEND_MODE_TWIN_OPTION
 
 CScanSetup::CScanSetup(int num)
 {
-	frameBuffer = CFrameBuffer::getInstance();
-
-	width = w_max (MENU_WIDTH, 0);
-	
-	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-	
-	height = hheight + 13*mheight + 10;
-	
-	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth()-width) >> 1);
-	y = frameBuffer->getScreenY() + ((frameBuffer->getScreenHeight()-height) >> 1);
-	
 	feindex = num;
 	
 	scanSettings = new CScanSettings(feindex);
 }
 
 CScanSetup::~CScanSetup()
+{	
+}
+
+void CScanSetup::hide()
 {
-	
+	CFrameBuffer::getInstance()->paintBackground();
+	CFrameBuffer::getInstance()->blit();
 }
 
 int CScanSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 {
 	dprintf(DEBUG_DEBUG, "CScanSetup::exec: init scan service\n");
-	int   res = menu_return::RETURN_REPAINT;
+	
+	if (parent)
+		parent->hide();
 
 	if(actionKey == "save_scansettings") 
 	{
@@ -316,28 +311,17 @@ int CScanSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 		delete hintBox;
 		hintBox = NULL;
 		
-		return res;
+		return menu_return::RETURN_REPAINT;
 	}
 	
-	if (parent)
-		parent->hide();
-
 	showScanService();
 	
-	return res;
-}
-
-void CScanSetup::hide()
-{
-	frameBuffer->paintBackgroundBoxRel(x, y, width, height);
-	frameBuffer->blit();
+	return menu_return::RETURN_REPAINT;
 }
 
 void CScanSetup::showScanService()
 {
-	dprintf(DEBUG_DEBUG, "init scansettings\n");
-	
-	printf("CScanSetup::showScanService: Tuner: %d\n", feindex);
+	dprintf(DEBUG_NORMAL, "CScanSetup::showScanService: Tuner: %d\n", feindex);
 	
 	if(!getFE(feindex))
 		return;
@@ -348,8 +332,6 @@ void CScanSetup::showScanService()
 	
 	//menue init
 	CMenuWidget * scansetup = new CMenuWidget(LOCALE_SERVICEMENU_SCANTS, NEUTRINO_ICON_SETTINGS);
-	
-	dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitScanSettings\n");
 	
 	// 
 	int dmode = getFE(feindex)->diseqcType;
@@ -792,7 +774,7 @@ void CScanSetup::showScanService()
 	delete scansetup;
 }
 
-/* TPSelectHandler */
+// TPSelectHandler
 CTPSelectHandler::CTPSelectHandler(int num)
 {
 	feindex = num;
@@ -949,7 +931,6 @@ CScanSettings::CScanSettings( int num)
 	strcpy(satNameNoDiseqc, "none");
 	bouquetMode     = CZapitClient::BM_UPDATEBOUQUETS;
 	//scanType = CServiceScan::SCAN_TVRADIO;
-	//delivery_system = DVB_S;
 	
 	feindex = num;
 }
@@ -1089,5 +1070,149 @@ bool CScanSettings::saveSettings(const char * const fileName, int index)
 	return true;
 }
 
+CSatelliteSetupNotifier::CSatelliteSetupNotifier(int num)
+{
+	feindex = num;
+}
 
+/* items1 enabled for advanced diseqc settings, items2 for diseqc != NO_DISEQC, items3 disabled for NO_DISEQC */
+bool CSatelliteSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
+{
+	std::vector<CMenuItem*>::iterator it;
+	int type = *((int*) Data);
 
+	if (type == NO_DISEQC) 
+	{
+		for(it = items1.begin(); it != items1.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+		for(it = items2.begin(); it != items2.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+		for(it = items3.begin(); it != items3.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+	}
+	else if(type < DISEQC_ADVANCED) 
+	{
+		for(it = items1.begin(); it != items1.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+		for(it = items2.begin(); it != items2.end(); it++) 
+		{
+			(*it)->setActive(true);
+		}
+		for(it = items3.begin(); it != items3.end(); it++) 
+		{
+			(*it)->setActive(true);
+		}
+	}
+	else if(type == DISEQC_ADVANCED) 
+	{
+		for(it = items1.begin(); it != items1.end(); it++) 
+		{
+			(*it)->setActive(true);
+		}
+		for(it = items2.begin(); it != items2.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+		for(it = items3.begin(); it != items3.end(); it++) 
+		{
+			(*it)->setActive(true);
+		}
+	}
+
+	getFE(feindex)->setDiseqcType( getFE(feindex)->diseqcType );
+	getFE(feindex)->setDiseqcRepeats( getFE(feindex)->diseqcRepeats );
+
+	return true;
+}
+
+void CSatelliteSetupNotifier::addItem(int list, CMenuItem* item)
+{
+	switch(list) 
+	{
+		case 0:
+			items1.push_back(item);
+			break;
+		case 1:
+			items2.push_back(item);
+			break;
+		case 2:
+			items3.push_back(item);
+			break;
+		default:
+			break;
+	}
+}
+
+// scansetup notifier
+CScanSetupNotifier::CScanSetupNotifier(int num)
+{
+	feindex = num;
+}
+
+/* items1 enabled for advanced diseqc settings, items2 for diseqc != NO_DISEQC, items3 disabled for NO_DISEQC */
+bool CScanSetupNotifier::changeNotify(const neutrino_locale_t, void * Data)
+{
+	std::vector<CMenuItem*>::iterator it;
+	int FeMode = *((int*) Data);
+	
+	dprintf(DEBUG_NORMAL, "CScanSetupNotifier::changeNotify: Femode:%d\n", FeMode);
+
+	if ( (FeMode == FE_NOTCONNECTED) || (FeMode == FE_LOOP) ) 
+	{
+		for(it = items1.begin(); it != items1.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+		for(it = items2.begin(); it != items2.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+		for(it = items3.begin(); it != items3.end(); it++) 
+		{
+			(*it)->setActive(false);
+		}
+	}
+	else
+	{
+		for(it = items1.begin(); it != items1.end(); it++) 
+		{
+			(*it)->setActive(true);
+		}
+		for(it = items2.begin(); it != items2.end(); it++) 
+		{
+			(*it)->setActive(true);
+		}
+		for(it = items3.begin(); it != items3.end(); it++) 
+		{
+			(*it)->setActive(true);
+		}
+	}
+
+	return true;
+}
+
+void CScanSetupNotifier::addItem(int list, CMenuItem *item)
+{
+	switch(list) 
+	{
+		case 0:
+			items1.push_back(item);
+			break;	
+		case 1:
+			items2.push_back(item);
+			break;
+		case 2:
+			items3.push_back(item);
+			break;
+		default:
+			break;
+	}
+}

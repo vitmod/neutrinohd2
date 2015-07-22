@@ -66,10 +66,6 @@ class CChangeObserver
 		{
 			return false;
 		}
-		virtual bool changeNotify(const std::string&, void *)
-		{
-			return false;
-		}
 };
 
 class CMenuTarget

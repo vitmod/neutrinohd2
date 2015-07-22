@@ -41,21 +41,6 @@
 #include <string>
 
 
-// sat setup notifuer
-class CSatelliteSetupNotifier : public CChangeObserver
-{
-	private:
-		std::vector<CMenuItem*> items1;
-		std::vector<CMenuItem*> items2;
-		std::vector<CMenuItem*> items3;
-		
-		int feindex;
-	public:
-		CSatelliteSetupNotifier(int num = 0);
-		void addItem(int list, CMenuItem* item);
-		bool changeNotify(const neutrino_locale_t, void * Data);
-};
-
 // dhcp notifier
 class CDHCPNotifier : public CChangeObserver
 {
@@ -246,21 +231,6 @@ class CEPGlangSelectNotifier : public CChangeObserver
 {	
 	public:
 		bool changeNotify(const neutrino_locale_t, void * /*data*/);
-};
-
-// scan setup notifier
-class CScanSetupNotifier : public CChangeObserver
-{
-	private:
-		std::vector<CMenuItem*> items1;
-		std::vector<CMenuItem*> items2;
-		std::vector<CMenuItem*> items3;
-		
-		int feindex;
-	public:
-		CScanSetupNotifier(int num = 0);
-		void addItem(int list , CMenuItem *item);
-		bool changeNotify(const neutrino_locale_t, void * Data);
 };
 
 // volume conf
