@@ -149,7 +149,7 @@ void CBouquetList::adjustToChannelID(t_channel_id channel_id)
 		}
 	}
 	
-	printf("CBouquetList::adjustToChannelID to %llx\n", channel_id);
+	dprintf(DEBUG_NORMAL, "CBouquetList::adjustToChannelID to %llx\n", channel_id);
 	
 	for (uint32_t i = 0; i < Bouquets.size(); i++) 
 	{
@@ -291,7 +291,7 @@ int CBouquetList::doMenu()
 		delete menu;
 		delete selector;
 		
-		printf("CBouquetList::doMenu: %d selected\n", select);
+		dprintf(DEBUG_NORMAL, "CBouquetList::doMenu: %d selected\n", select);
 		
 		if(select >= 0) 
 		{

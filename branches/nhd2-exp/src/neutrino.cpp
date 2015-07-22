@@ -2811,9 +2811,6 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::RealRun: initialized everything\n");
 
-	// start plugins
-	//g_PluginList->startPlugin("startup.cfg"); //NOTE: startup.cfg not used anymore
-
 	// clear msg 
 	g_RCInput->clearRCMsg();
 
@@ -4108,6 +4105,8 @@ skip_message:
 	}	
 	else if (msg == NeutrinoMessages::EVT_START_PLUGIN) 
 	{
+		dprintf(DEBUG_NORMAL, "CNeutrinoApp::handleMsg: start Plugin: %s\n", (char *)data);
+		
 		g_PluginList->startPlugin((const char *)data);
 		
 		delete[] (unsigned char*) data;
