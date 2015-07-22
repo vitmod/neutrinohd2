@@ -647,9 +647,10 @@ BROWSER:
 			{
 				CAudiofileExt audiofile(files->Name, files->getExtension());
 				tmpAudioPlayerGui.addToPlaylist(audiofile);
-				tmpAudioPlayerGui.exec(NULL, "urlplayback");
 			}
 		}
+		
+		tmpAudioPlayerGui.exec(NULL, "urlplayback");
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
@@ -712,9 +713,10 @@ BROWSER:
 				pic.Date = statbuf.st_mtime;
 				
 				tmpPictureViewerGui.addToPlaylist(pic);
-				tmpPictureViewerGui.exec(NULL, "urlplayback");
 			}
 		}
+		
+		tmpPictureViewerGui.exec(NULL, "urlplayback");
 
 		g_RCInput->getMsg_ms(&msg, &data, 10); // 1 sec
 		
