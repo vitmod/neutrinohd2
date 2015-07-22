@@ -676,11 +676,11 @@ int CInfoBox::exec( int timeout, int returnDefaultOnTimeout)
 
 			refreshFoot();
 		}
-		else if (msg == CRCInput::RC_up )
+		else if (msg == CRCInput::RC_up || msg == CRCInput::RC_page_up)
 		{
 			scrollPageUp(1);
 		}
-		else if (msg == CRCInput::RC_down)
+		else if (msg == CRCInput::RC_down || msg == CRCInput::RC_page_down)
 		{
 			scrollPageDown(1);
 		}

@@ -57,6 +57,7 @@
 
 
 #define LF_MAX_ROWS 6
+
 typedef struct
 {
 	int rows;
