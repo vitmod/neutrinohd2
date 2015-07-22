@@ -406,7 +406,7 @@ int CYTBrowser::paint(void)
 
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_YOUTUBE));	
 
-	m_pcBrowser = new CListFrame(&m_browserListLines, NULL, CListFrame::SCROLL | CListFrame::HEADER_LINE, &m_cBoxFrameBrowserList);
+	m_pcBrowser = new CListFrame(&m_browserListLines, NULL, CListFrame::SCROLL, &m_cBoxFrameBrowserList);
 	m_pcInfo = new CTextBox(" ", NULL, CTextBox::SCROLL, &m_cBoxFrameInfo);	
 
 	if(m_pcBrowser == NULL || m_pcInfo == NULL )

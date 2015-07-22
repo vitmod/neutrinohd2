@@ -355,7 +355,7 @@ int CNetzKinoBrowser::paint(void)
 
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_NETZKINO));	
 
-	m_pcBrowser = new CListFrame(&m_browserListLines, NULL, CListFrame::SCROLL | CListFrame::HEADER_LINE, &m_cBoxFrameBrowserList);
+	m_pcBrowser = new CListFrame(&m_browserListLines, NULL, CListFrame::SCROLL, &m_cBoxFrameBrowserList);
 	m_pcInfo = new CTextBox(" ", NULL, CTextBox::SCROLL, &m_cBoxFrameInfo);	
 
 	if(m_pcBrowser == NULL || m_pcInfo == NULL )
@@ -480,7 +480,7 @@ void CNetzKinoBrowser::refreshBrowserList(void) //P1
 	{
 		m_browserListLines.lineArray[row].clear();
 		m_browserListLines.rowWidth[row] = m_settings.browserRowWidth[row];
-		m_browserListLines.lineHeader[row]= g_Locale->getText(m_localizedItemName[m_settings.browserRowItem[row]]);
+		m_browserListLines.lineHeader[row] = g_Locale->getText(m_localizedItemName[m_settings.browserRowItem[row]]);
 	}
 	m_vHandleBrowserList.clear();
 	
@@ -575,7 +575,6 @@ void CNetzKinoBrowser::refreshTitle(void)
 	m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + TEXT_BORDER_WIDTH + icon_w + 10, m_cBoxFrame.iY+m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight, m_cBoxFrameTitleRel.iWidth - (TEXT_BORDER_WIDTH << 1) - 2*icon_w - 10 - icon_h_w, title.c_str(), TITLE_FONT_COLOR, 0, true); // UTF-8
 }
 
-#define ADD_FOOT_HEIGHT 4
 void CNetzKinoBrowser::refreshFoot(void) 
 {
 	dprintf(DEBUG_INFO, "CNetzKinoBrowser::refreshFoot\n");
@@ -665,6 +664,34 @@ bool CNetzKinoBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 	{
 		result = false;
 	}
+	else if (msg == CRCInput::RC_red ) 
+	{	
+		NKStart -= m_pcBrowser->getLinesPerPage();
+			
+		if(NKStart >= 0)
+		{
+			NKEnd -= m_pcBrowser->getLinesPerPage();
+			printf("[2], NKStart:%d NKEnd:%d\n", NKStart, NKEnd);
+				
+			m_pcWindow->paintBackground();
+					
+			//
+			CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
+			loadBox.paint();
+				
+			nkparser.Cleanup();
+			loadNKTitles(m_settings.nkmode, m_settings.nksearch, m_settings.nkcategory, NKStart, NKEnd);
+				
+			loadBox.hide();
+					
+			refreshBrowserList();
+			refresh();
+		}
+		else
+			NKStart += m_pcBrowser->getLinesPerPage();
+			
+		printf("[3] NKStart:%d NKEnd:%d\n", NKStart, NKEnd);
+	}
 	else if (msg == CRCInput::RC_green) 
 	{
 		NKEnd += m_pcBrowser->getLinesPerPage();
@@ -701,34 +728,6 @@ bool CNetzKinoBrowser::onButtonPressMainFrame(neutrino_msg_t msg)
 		nkparser.Cleanup();	
 		loadMovies();
 		refresh();
-	}
-	else if (msg == CRCInput::RC_red ) 
-	{	
-		NKStart -= m_pcBrowser->getLinesPerPage();
-			
-		if(NKStart >= 0)
-		{
-			NKEnd -= m_pcBrowser->getLinesPerPage();
-			printf("[2], NKStart:%d NKEnd:%d\n", NKStart, NKEnd);
-				
-			m_pcWindow->paintBackground();
-					
-			//
-			CHintBox loadBox(LOCALE_NETZKINO, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES));
-			loadBox.paint();
-				
-			nkparser.Cleanup();
-			loadNKTitles(m_settings.nkmode, m_settings.nksearch, m_settings.nkcategory, NKStart, NKEnd);
-				
-			loadBox.hide();
-					
-			refreshBrowserList();
-			refresh();
-		}
-		else
-			NKStart += m_pcBrowser->getLinesPerPage();
-			
-		printf("[3] NKStart:%d NKEnd:%d\n", NKStart, NKEnd);
 	}
 	else if ( msg == CRCInput::RC_info) 
 	{
