@@ -215,6 +215,8 @@ bool cNKFeedParser::parseCategoriesJSON(std::string &answer)
 		v = cat.get("id", "");
 		if (v.type() == Json::intValue || v.type() == Json::uintValue)
 			c.id = v.asInt();
+		if(c.id > 111 || c.id == 9)
+			continue;
 		
 		v = cat.get("title", "");
 		if (v.type() == Json::stringValue)
