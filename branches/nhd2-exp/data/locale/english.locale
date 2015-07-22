@@ -464,7 +464,7 @@ fontmenu.eventlist Eventlist
 fontmenu.gamelist Gamelist
 fontmenu.head Fontsize settings
 fontmenu.infobar Infobar
-fontmenu.scaling Schriftgrössenfaktor
+fontmenu.scaling Global Font Zoom Factor
 fontmenu.scaling_x Horizontal (in %)
 fontmenu.scaling_x_hint2 Horizontal (in %) min 50 / max 200
 fontmenu.scaling_y Vertikal (in %)
