@@ -715,6 +715,7 @@ mainmenu.settings Settings
 mainmenu.shutdown Shutdown
 mainmenu.sleeptimer SleepTimer
 mainmenu.tvmode TV-Mode
+mainmenu.webtvmode WebTV-Modus
 mainsettings.audio Audio Setup
 mainsettings.head Settings
 mainsettings.keybinding Remote-Control settings
@@ -1587,8 +1588,8 @@ keybinding.mb_truncate MB truncate key
 
 audiomenu.volumebar_audiosteps Volume Step Size
 
-webtv.head WebTV
-webtvchannellist.nonefound No WebTV channels were found!
+webtv.webtv_head WebTV
+webtv.channellist_nonefound No WebTV channels were found!
 webtv.user User bouquet
 webtv.bouquets Favorites
 webtv.add_bouquets add User bouquet

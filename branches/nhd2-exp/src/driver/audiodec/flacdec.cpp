@@ -58,8 +58,6 @@
 #include <ctype.h>
 #include <pthread.h>
 
-//#include <driver/netfile.h>
-
 #include <system/debug.h>
 
 #include <flacdec.h>

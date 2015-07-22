@@ -212,11 +212,16 @@ void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu, CMenuWidget &mainSettings
 	}
 	
 	// webtv
-	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_WEBTV_HEAD, true, NULL, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_SCART) );
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_WEBTVMODE, true, NULL, this, "webtv", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, NEUTRINO_ICON_MENUITEM_WEBTV, LOCALE_HELPTEXT_SCART) );
+	
+#if defined (ENABLE_SCART)
+	// webtv
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_SCARTMODE, true, NULL, this, "scart", CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_SCART, LOCALE_HELPTEXT_SCART) );
+#endif
 
 	// media center
 	// Media player main menu
-	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, &MediaPlayer, NULL, CRCInput::RC_blue, NEUTRINO_ICON_BUTTON_BLUE, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_MEDIAPLAYER ));
+	mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_MEDIAPLAYER, true, NULL, &MediaPlayer, NULL, CRCInput::convertDigitToKey(shortcut++), NULL, NEUTRINO_ICON_MENUITEM_MOVIEPLAYER, LOCALE_HELPTEXT_MEDIAPLAYER ));
 	
 	int shortcutMediaPlayer = 1;
 	

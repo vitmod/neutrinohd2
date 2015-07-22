@@ -34,10 +34,8 @@ endif
 endif
 
 noinst_LIBRARIES = libneutrino_driver.a 
-#libneutrino_driver_netfile.a
 
 libneutrino_driver_a_SOURCES = \
-	ringbuffer.c \
 	encoding.cpp \
 	fontrenderer.cpp \
 	framebuffer.cpp \
@@ -47,7 +45,6 @@ libneutrino_driver_a_SOURCES = \
 	audioplay.cpp \
 	stream2file.cpp \
 	screen_max.cpp \
-	slotbuffer.c \
 	file.cpp \
 	audiometadata.cpp \
 	audiofile.cpp \
@@ -70,8 +67,3 @@ if USE_OPENGL
 libneutrino_driver_a_SOURCES += \
 	glthread.cpp
 endif
-
-#libneutrino_driver_netfile_a_SOURCES = netfile.cpp
-
-
-

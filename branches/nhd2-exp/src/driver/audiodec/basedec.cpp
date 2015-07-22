@@ -40,8 +40,6 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 
-//#include <driver/netfile.h>
-
 #include <global.h>
 #include <neutrino.h>
 

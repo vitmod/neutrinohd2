@@ -4499,6 +4499,8 @@ void CNeutrinoApp::setVolume(const neutrino_msg_t key, const bool bDoPaint, bool
 // TV Mode
 void CNeutrinoApp::tvMode( bool rezap )
 {
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::tvMode: rezap %s\n", rezap ? "yes" : "no");
+	
 	if(mode == mode_radio ) 
 	{	  
 		if (g_settings.radiotext_enable && g_Radiotext) 
@@ -4671,11 +4673,10 @@ void CNeutrinoApp::radioMode( bool rezap)
 // Scart Mode
 void CNeutrinoApp::scartMode( bool bOnOff )
 {
-	printf( ( bOnOff ) ? "mode: scart on\n" : "mode: scart off\n" );
+	printf( ( bOnOff ) ? "CNeutrinoApp::scartMode: scart on\n" : "mode: scart off\n" );
 
 	if( bOnOff ) 
 	{
-		// SCART AN
 		frameBuffer->useBackground(false);
 		frameBuffer->paintBackground();
 
@@ -4687,8 +4688,8 @@ void CNeutrinoApp::scartMode( bool bOnOff )
 		mode = mode_scart;
 		
 #if !defined (PLATFORM_COOLSTREAM)	  
-		if(videoDecoder)
-			videoDecoder->SetInput(INPUT_SCART);
+		//if(videoDecoder)
+		//	videoDecoder->SetInput(INPUT_SCART);
 #endif		
 	} 
 	else 

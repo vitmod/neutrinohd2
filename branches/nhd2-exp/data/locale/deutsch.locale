@@ -715,6 +715,7 @@ mainmenu.settings Einstellungen
 mainmenu.shutdown Ausschalten
 mainmenu.sleeptimer Ausschalt Timer
 mainmenu.tvmode TV-Modus
+mainmenu.webtvmode WebTV-Modus
 mainsettings.audio Audio Einstellungen
 mainsettings.head Einstellungen
 mainsettings.keybinding Fernbedienung Einstellungen
@@ -1589,8 +1590,8 @@ keybinding.mb_truncate MB kürzen Taste
 
 audiomenu.volumebar_audiosteps Lautstärke Schrittweite
 
-webtv.head WebTV
-webtvchannellist.nonefound Es wurden keine WebTV Kanäle gefunden!
+webtv.webtv_head WebTV
+webtv.channellist_nonefound Es wurden keine WebTV Kanäle gefunden!
 webtv.user User Bouquet
 webtv.bouquets Favoriten
 webtv.add_bouquets User Bouquet einfügen

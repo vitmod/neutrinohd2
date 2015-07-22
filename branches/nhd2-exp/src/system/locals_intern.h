@@ -557,6 +557,7 @@ const char * locale_real_names[] = {
 	"mainmenu.shutdown",
 	"mainmenu.sleeptimer",
 	"mainmenu.tvmode",
+	"mainmenu.webtvmode",
 	"mainsettings.audio",
 	"mainsettings.osd",
 	"mainsettings.head",
@@ -1600,8 +1601,8 @@ const char * locale_real_names[] = {
 	
 	"audiomenu.volumebar_audiosteps",
 	
-	"webtv.head",
-	"webtvchannellist.nonefound",
+	"webtv.webtv_head",
+	"webtv.channellist_nonefound",
 	"webtv.user",
 	"webtv.bouquets",
 	"webtv.add_bouquets",

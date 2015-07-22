@@ -55,8 +55,6 @@
 #include <global.h>
 #include <neutrino.h>
 
-//#include <driver/netfile.h>
-
 #include <system/debug.h>
 
 /* libid3tag extension: This is neccessary in order to call fclose

@@ -146,7 +146,6 @@ int CHDDMenuHandler::exec(CMenuTarget * parent, const std::string &actionKey)
 	}
 	else if(actionKey == "activateNow")
 	{
-		/* hint box */
 		CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_MAINSETTINGS_SAVESETTINGSNOW_HINT)); // UTF-8
 		hintBox->paint();
 		
@@ -189,7 +188,7 @@ int CHDDMenuHandler::hddMenu()
 	CMenuWidget * hddmenu = new CMenuWidget(LOCALE_HDD_SETTINGS, NEUTRINO_ICON_SETTINGS);
 	
 	hddmenu->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
-	hddmenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
+	hddmenu->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	// save settings
 	hddmenu->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savehddsettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));

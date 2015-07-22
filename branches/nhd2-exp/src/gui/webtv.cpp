@@ -579,7 +579,7 @@ void CWebTV::zapTo(int pos, bool rezap)
 	// show emty channellist error msg
 	if (channels.empty()) 
 	{
-		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_WEBTVCHANNELLIST_NONEFOUND), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
+		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_WEBTV_CHANNELLIST_NONEFOUND), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 		return;
 	}
 
