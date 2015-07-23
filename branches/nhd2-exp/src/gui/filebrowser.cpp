@@ -755,7 +755,7 @@ bool CFileBrowser::exec(const char * const dirname)
 				}
 			}
 		}
-		else if ( msg==CRCInput::RC_info )
+		else if ( msg == CRCInput::RC_info )
 		{
 			if (++g_settings.filebrowser_sortmethod >= FILEBROWSER_NUMBER_OF_SORT_VARIANTS)
 				g_settings.filebrowser_sortmethod = 0;
@@ -1060,7 +1060,7 @@ const struct button_label FileBrowserFilterButton[2] =
 
 void CFileBrowser::paintFoot()
 {
-	int dx = (width-20) / 4;
+	int dx = (width - (BORDER_RIGHT + BORDER_LEFT)) / 4;
 	//Second Line (bottom, top)
 	int by2 = y + height - (foheight - 4);
 	int ty2 = by2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
@@ -1072,15 +1072,15 @@ void CFileBrowser::paintFoot()
 	{
 		int by = y + height - 2 * (foheight - 4);
 
-		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + 10, by, dx, Multi_Select ? 3 : 2, FileBrowserButtons);
+		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, by, dx, Multi_Select ? 3 : 2, FileBrowserButtons);
 
 		if(Filter != NULL)
-			::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + 10 + (3 * dx), by, dx, 1, &(FileBrowserFilterButton[use_filter?0:1]));
+			::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT + (3 * dx), by, dx, 1, &(FileBrowserFilterButton[use_filter? 0 : 1]));
 
 		//OK-Button
 		if( (filelist[selected].getType() != CFile::FILE_UNKNOWN) || (S_ISDIR(filelist[selected].Mode)) )
 		{
-			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x +3 , by2 - 3);
+			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + 3 , by2 - 3);
 
 			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + 35, ty2, dx - 35, g_Locale->getText(LOCALE_FILEBROWSER_SELECT), COL_INFOBAR, 0, true); // UTF-8
 

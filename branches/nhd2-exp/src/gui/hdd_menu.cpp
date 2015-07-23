@@ -1122,8 +1122,6 @@ int CHDDBrowser::exec(CMenuTarget * parent, const std::string& actionKey)
 		
 	printf("mount point is %s\n", dst);
 	endmntent(fstab);
-			
-	filebrowser.use_filter = false;	
 	
 	if(dst != NULL)
 	{

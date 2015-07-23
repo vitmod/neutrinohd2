@@ -2156,7 +2156,7 @@ void CMoviePlayerGui::showFileInfo()
 	// thumbnail
 	int pich = 246;	//FIXME
 	int picw = 162; 	//FIXME
-	int lx = g_settings.screen_StartX + 50 + g_settings.screen_EndX - g_settings.screen_StartX - 100 - (picw + 20);
+	int lx = g_settings.screen_StartX + 50 + g_settings.screen_EndX - g_settings.screen_StartX - 100 - (picw + 10 + SCROLLBAR_WIDTH);
 	int ly = g_settings.screen_StartY + 50 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight() + 20;
 		
 	if(access(thumbnail.c_str(), F_OK))
