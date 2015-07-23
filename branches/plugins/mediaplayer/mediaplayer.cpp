@@ -71,8 +71,7 @@ void plugin_exec(void)
 	fileFilter.addFilter("wma");
 	fileFilter.addFilter("ogg");
 
-	fileBrowser->Multi_Select    = true;
-	fileBrowser->Dirs_Selectable = false;
+	fileBrowser->Multi_Select = true;
 	fileBrowser->Filter = &fileFilter;
 	
 	std::string Path_local = g_settings.network_nfs_moviedir;

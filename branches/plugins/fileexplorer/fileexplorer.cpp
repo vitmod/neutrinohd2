@@ -42,8 +42,7 @@ void plugin_exec(void)
 	neutrino_msg_t msg;
 	neutrino_msg_data_t data;
 		
-	CFileBrowser filebrowser;	
-	filebrowser.use_filter = false;	
+	CFileBrowser filebrowser;
 	
 	std::string Path_local = "/media/hdd";
 	
