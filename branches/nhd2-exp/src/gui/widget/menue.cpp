@@ -793,7 +793,6 @@ int CMenuOptionNumberChooser::paint(bool selected)
 	int stringstartposName = x + BORDER_LEFT + LOCAL_OFFSET;
 	int stringstartposOption = x + dx - stringwidth - BORDER_RIGHT - 5; //+ offx
 
-	//const char * l_optionName = (optionString != NULL) ? optionString : optionNameString.c_str();
 	const char * l_name;
 	
 	if(name == NONEXISTANT_LOCALE)
@@ -831,7 +830,7 @@ int CMenuOptionNumberChooser::paint(bool selected)
 		// help text locale
 		const char * help_text = (optionString != NULL) ? optionString : nameString.c_str();
 			
-		g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + icon_w + 5, fposy + (fheight -g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), dx - (x + (offx == 0? 0 : offx) + BORDER_LEFT + icon_w + 5 - x), help_text, COL_MENUFOOT, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + icon_w + 5, fposy + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), dx - (x + (offx == 0? 0 : offx) + BORDER_LEFT + icon_w + 5 - x), help_text, COL_MENUFOOT, 0, true); // UTF-8
 		
 		// vfd
 		char str[256];
@@ -1068,15 +1067,15 @@ int CMenuOptionChooser::paint( bool selected )
 
 	if (selected)
 	{
-#if 0	  
+#if 1	  
 		//helpbar
-		//int fheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();	// helpbar
 		int icon_foot_w, icon_foot_h;
 		frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &icon_foot_w, &icon_foot_h);
 		int fheight = std::max(icon_foot_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
+		int fposy = HEIGHT - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x, HEIGHT - fheight, dx, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+		frameBuffer->paintBoxRel(x, fposy, dx, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 		
 		// paint help icon
 		int icon_h_w = 0;
@@ -1084,13 +1083,12 @@ int CMenuOptionChooser::paint( bool selected )
 		
 		frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &icon_h_w, &icon_h_h);
 			
-		frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + BORDER_LEFT - 2, HEIGHT - fheight + (fheight - icon_h_h)/2);
+		frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + BORDER_LEFT - 2, fposy + (fheight - icon_h_h)/2);
 			
 		// help text locale
-		const char * help_text = optionNameString.c_str();
-		int HelpTextHeight = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight();
+		const char * help_text = nameString.c_str();
 			
-		g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + icon_h_w + 5, HEIGHT - HelpTextHeight/3, dx - (x + (offx == 0? 0 : offx) + BORDER_LEFT + icon_h_w + 5 - x), help_text, COL_MENUFOOT, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + icon_h_w + 5, fposy + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), dx - (x + (offx == 0? 0 : offx) + BORDER_LEFT + icon_h_w + 5 - x), help_text, COL_MENUFOOT, 0, true); // UTF-8
 #endif		
 		
 		// vfd
@@ -1291,15 +1289,15 @@ int CMenuOptionStringChooser::paint( bool selected )
 	
 	if (selected)
 	{
-#if 0
+#if 1
 		//helpbar
-		//int fheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();	// helpbar
 		int icon_foot_w, icon_foot_h;
 		frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &icon_foot_w, &icon_foot_h);
 		int fheight = std::max(icon_foot_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
+		int fposy = HEIGHT - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x, HEIGHT - fheight, dx, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+		frameBuffer->paintBoxRel(x, HEIGHT - fposy, dx, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 		
 		// paint help icon
 		int icon_h_w = 0;
@@ -1307,13 +1305,12 @@ int CMenuOptionStringChooser::paint( bool selected )
 		
 		frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &icon_h_w, &icon_h_h);
 			
-		frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + BORDER_LEFT - 2, HEIGHT - fheight + (fheight - icon_h_h)/2);
+		frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x + BORDER_LEFT - 2, fposy+ (fheight - icon_h_h)/2);
 			
 		// help text locale
-		const char * help_text = l_optionName;
-		int HelpTextHeight = g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight();
+		const char * help_text = nameString.c_str();
 			
-		g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + icon_h_w + 5, HEIGHT - HelpTextHeight/3, dx - (x + (offx == 0? 0 : offx) + BORDER_LEFT + icon_h_w + 5 - x), help_text, COL_MENUFOOT, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + BORDER_LEFT + icon_h_w + 5, fposy + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), dx - (x + (offx == 0? 0 : offx) + BORDER_LEFT + icon_h_w + 5 - x), help_text, COL_MENUFOOT, 0, true); // UTF-8
 #endif		
 
 		// vfd
