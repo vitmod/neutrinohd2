@@ -61,7 +61,7 @@
 #include <gui/widget/hintbox.h>
 
 
-extern CPlugins       * g_PluginList;    /* neutrino.cpp */
+extern CPlugins * g_PluginList;    /* neutrino.cpp */
 
 bool CPlugins::plugin_exists(const std::string & filename)
 {
@@ -329,7 +329,7 @@ void CPlugins::startPlugin(int number)
 {
 	dprintf(DEBUG_NORMAL, "CPlugins::startPlugin: %s type:%d\n", plugin_list[number].pluginfile.c_str(), plugin_list[number].type);
 	
-	/* export neutrino settings to the environment */
+	// export neutrino settings to the environment
 	char tmp[32];
 	sprintf(tmp, "%d", g_settings.screen_StartX);
 	setenv("SCREEN_OFF_X", tmp, 1);
@@ -339,6 +339,12 @@ void CPlugins::startPlugin(int number)
 	setenv("SCREEN_END_X", tmp, 1);
 	sprintf(tmp, "%d", g_settings.screen_EndY);
 	setenv("SCREEN_END_Y", tmp, 1);
+	
+	//
+	sprintf(tmp, "%d", CONFIGDIR);
+	setenv("CONFIGDIR", tmp, 1);
+	sprintf(tmp, "%d", PLUGINDIR);
+	setenv("PLUGINDIR", tmp, 1);
 	
 	// script type
 	if (plugin_list[number].type == CPlugins::P_TYPE_SCRIPT)

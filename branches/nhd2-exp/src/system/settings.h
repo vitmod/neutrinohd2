@@ -362,13 +362,11 @@ struct SNeutrinoSettings
 
 	// AUDIOPLAYER
 	char network_nfs_audioplayerdir[100];
-
 	int   audioplayer_display;
 	int   audioplayer_follow;
 	int   audioplayer_highprio;
 	int   audioplayer_select_title_by_name;
 	int   audioplayer_repeat_on;
-	int   audioplayer_enable_sc_metadata;
 	int audioplayer_hide_playlist;
 	// END AUDIOPLAYER
 

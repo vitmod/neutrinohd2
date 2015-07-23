@@ -87,6 +87,8 @@ int my_system(const char * cmd)
 {
 	if (!file_exists(cmd))
 		return -1;
+	
+	dprintf(DEBUG_NORMAL, "my_system: execute:%s\n", cmd);
 
 	return my_system(1, cmd);
 }

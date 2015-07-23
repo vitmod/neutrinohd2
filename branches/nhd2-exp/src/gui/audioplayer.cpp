@@ -215,7 +215,6 @@ void CAudioPlayerGui::Init(void)
 		audiofilefilter.addFilter("m2a");
 		audiofilefilter.addFilter("mpa");
 		audiofilefilter.addFilter("mp2");
-		audiofilefilter.addFilter("m3u");
 		audiofilefilter.addFilter("ogg");
 		audiofilefilter.addFilter("wav");
 		audiofilefilter.addFilter("flac");
@@ -1390,7 +1389,7 @@ bool CAudioPlayerGui::openFilebrowser(void)
 				addToPlaylist(audiofile);
 			}
 			
-			if(files->getExtension() == CFile::EXTENSION_URL)
+			if(files->getType() == CFile::FILE_URL)
 			{
 				std::string filename = files->Name;
 				FILE *fd = fopen(filename.c_str(), "r");
@@ -1505,7 +1504,7 @@ bool CAudioPlayerGui::openFilebrowser(void)
 				}
 				infile.close();
 			}
-			else if(files->getExtension() == CFile::EXTENSION_XML)
+			else if(files->getType() == CFile::FILE_XML)
 			{
 				if (!files->Name.empty())
 				{
@@ -2066,7 +2065,8 @@ void CAudioPlayerGui::rev(unsigned int seconds)
 
 void CAudioPlayerGui::play(unsigned int pos)
 {
-	//printf("AudioPlaylist: play %d/%d\n",pos,playlist.size());
+	if(!m_playlist.size())
+		return;
 	
 	unsigned int old_current = m_current;
 	unsigned int old_selected = m_selected;

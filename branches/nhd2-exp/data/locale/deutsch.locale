@@ -44,8 +44,6 @@ audioplayer.defdir Start-Verz.
 audioplayer.delete Löschen
 audioplayer.deleteall Alle löschen
 audioplayer.display_order Anzeige
-audioplayer.enable_sc_metadata Aktiviere Shoutcast Meta-Daten Parsing
-audioplayer.enable_sc_id Shoutcast ID:
 audioplayer.fastforward schneller Vorl.
 audioplayer.follow Selektiere akt. Spur
 audioplayer.head Audio Playlist
@@ -78,7 +76,7 @@ audioplayer.shuffle Shuffle
 audioplayer.spectrum LCD Skala
 audioplayer.stop Stop
 audioplayer.title_artist Titel, Interpret
-audioplayersettings.general Audioplayer
+audioplayersettings.general Audioplayer Einstellugen
 AUDIOSelectMenue.head Auswahl der Tonspur
 AUDIOSelectMenue.no_tracks Keine Tonspuren verfügbar
 bookmarkmanager.delete Löschen
@@ -720,14 +718,14 @@ mainsettings.audio Audio Einstellungen
 mainsettings.head Einstellungen
 mainsettings.keybinding Fernbedienung Einstellungen
 mainsettings.language Sprache
-mainsettings.lcd VFD-Display
+mainsettings.lcd VFD-Display Einstellugen
 mainsettings.misc Diverse Einstellungen
-mainsettings.network Netzwerk
+mainsettings.network Netzwerk Einstellugen
 mainsettings.osd OSD Einstellungen
-mainsettings.recording Aufnahme
+mainsettings.recording Aufnahme Einstellugen
 mainsettings.savesettingsnow Einstellungen jetzt speichern
 mainsettings.savesettingsnow_hint Einstellungen werden jetzt gespeichert,\nbitte warten...
-mainsettings.streaming Movieplayer
+mainsettings.streaming Movieplayer Einstellugen
 mainsettings.timezone Zeitzone
 mainsettings.video Video Einstellungen
 menu.back Zurück
@@ -764,9 +762,9 @@ miscsettings.epg_old_events_hint2 Angabe in Stunden
 miscsettings.epg_save EPG zwischenspeichern?
 miscsettings.epgplus_show_logos Kanal Logo(EPGPlus)
 miscsettings.fb_destination EXPERTE! Boot-Konsole
-miscsettings.general Allgemein
-servicemenu.tuner Tuner Einstellungen
-miscsettings.zapit Start Kanal
+miscsettings.general Allgemein Einstellugen
+miscsettings.filebrowser Dateibrowser Einstellugen
+miscsettings.zapit Start Kanal Einstellugen
 miscsettings.head Diverse Einstellungen
 miscsettings.hwsections HW-Sections verwenden
 miscsettings.infobar_sat_display Infobar Satellitenanzeige
@@ -1069,9 +1067,9 @@ parentallock.lockedchannel Vorgesperrter Sender...
 parentallock.lockedprogram Gesperrtes Programm (FSK ab %d)
 parentallock.never Nie
 parentallock.onsignal Bei gesendeter Vorsperre
-parentallock.parentallock Jugendschutz
+parentallock.parentallock Jugendschutz Einstellugen
 parentallock.prompt PIN-Eingabe
-pictureviewersettings.general Bildbetrachter
+pictureviewersettings.general Bildbetrachter Einstellugen
 pictureviewer.decode_server_ip Dekodiere Server IP
 pictureviewer.decode_server_port Dekodiere Server Port
 pictureviewer.defdir Start-Verz.

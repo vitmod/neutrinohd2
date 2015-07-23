@@ -123,8 +123,8 @@ class CAbstractMenuOptionChooser : public CMenuItem
 {
 	protected:
 		neutrino_locale_t optionName;
-		int               height;
-		int *             optionValue;
+		int height;
+		int * optionValue;
 
 		int getHeight(void) const
 		{
@@ -167,17 +167,17 @@ class CMenuOptionChooser : public CAbstractMenuOptionChooser
 	public:
 		struct keyval
 		{
-			const int               key;
+			const int key;
 			const neutrino_locale_t value;
-			const char *		valname;
+			const char * valname;
 		};
 
 	private:
 		const struct keyval * options;
-		unsigned              number_of_options;
-		CChangeObserver *     observ;
+		unsigned number_of_options;
+		CChangeObserver * observ;
 		std::string optionNameString;
-		bool		      pulldown;
+		bool pulldown;
 
 	public:
 		CMenuOptionChooser(const neutrino_locale_t OptionName, int * const OptionValue, const struct keyval * const Options, const unsigned Number_Of_Options, const bool Active = false, CChangeObserver * const Observ = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const std::string & IconName= "", bool Pulldown = false);
@@ -193,12 +193,13 @@ class CMenuOptionChooser : public CAbstractMenuOptionChooser
 
 class CMenuOptionStringChooser : public CMenuItem
 {
-		neutrino_locale_t        optionName;
-		int                      height;
-		char *                   optionValue;
+		std::string optionName;
+		neutrino_locale_t name;
+		int height;
+		char * optionValue;
 		std::vector<std::string> options;
-		CChangeObserver *        observ;
-		bool			 pulldown;
+		CChangeObserver * observ;
+		bool pulldown;
 
 	public:
 		CMenuOptionStringChooser(const neutrino_locale_t OptionName, char* OptionValue, bool Active = false, CChangeObserver* Observ = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const std::string & IconName= "", bool Pulldown = false);
@@ -221,10 +222,10 @@ class CMenuOptionStringChooser : public CMenuItem
 
 class CMenuOptionLanguageChooser : public CMenuItem
 {
-		int                      height;
-		char *                   optionValue;
+		int height;
+		char * optionValue;
 		std::vector<std::string> options;
-		CChangeObserver *        observ;
+		CChangeObserver * observ;
 
 	public:
 		CMenuOptionLanguageChooser(char *OptionValue, CChangeObserver *Observ = NULL, const char *const IconName = NULL);
@@ -253,7 +254,8 @@ class CMenuForwarder : public CMenuItem
 	std::string actionKey;
 
 	protected:
-		std::string text;
+		neutrino_locale_t text;
+		std::string optionText;
 
 		virtual const char * getOption(void);
 		virtual const char * getName(void);
@@ -449,7 +451,7 @@ class CMenuWidget : public CMenuTarget
 
 	public:
 		CMenuWidget();
-		CMenuWidget(const char *Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT );
+		CMenuWidget(const char * const Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT );
 		CMenuWidget(const neutrino_locale_t Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT );
 		
 		~CMenuWidget();

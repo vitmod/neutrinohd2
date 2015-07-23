@@ -44,8 +44,6 @@ audioplayer.defdir start dir.
 audioplayer.delete Delete
 audioplayer.deleteall delete all
 audioplayer.display_order display order
-audioplayer.enable_sc_metadata enable shoutcast meta data parsing
-audioplayer.enable_sc_id Shoutcast ID:
 audioplayer.fastforward fast forw.
 audioplayer.follow auto select current
 audioplayer.head Audio Playlist
@@ -78,7 +76,7 @@ audioplayer.shuffle shuffle
 audioplayer.spectrum lcd a-spectrum
 audioplayer.stop Stop
 audioplayer.title_artist Title, Artist
-audioplayersettings.general Audioplayer
+audioplayersettings.general Audioplayer settings
 AUDIOSelectMenue.head Audio Selection
 AUDIOSelectMenue.no_tracks No Audio Tracks available
 bookmarkmanager.delete delete
@@ -715,12 +713,12 @@ mainmenu.settings Settings
 mainmenu.shutdown Shutdown
 mainmenu.sleeptimer SleepTimer
 mainmenu.tvmode TV-Mode
-mainmenu.webtvmode WebTV-Modus
-mainsettings.audio Audio Setup
+mainmenu.webtvmode WebTV-Mode
+mainsettings.audio Audio settings
 mainsettings.head Settings
 mainsettings.keybinding Remote-Control settings
 mainsettings.language Language
-mainsettings.lcd VFD-Display
+mainsettings.lcd VFD-Display settings
 mainsettings.misc Misc settings
 mainsettings.network Network settings
 mainsettings.osd OSD settings
@@ -764,9 +762,9 @@ miscsettings.epg_old_events_hint2 Set in hours
 miscsettings.epg_save Save/Restore epg on reboot
 miscsettings.epgplus_show_logos Channel Logo(EPGPlus)
 miscsettings.fb_destination Expert! Boot-Console
-miscsettings.general General
-servicemenu.tuner Tuner Setup
-miscsettings.zapit Start Channel
+miscsettings.general General settings
+miscsettings.filebrowser Filebrowser settings
+miscsettings.zapit Start Channel settings
 miscsettings.head Misc settings
 miscsettings.hwsections use hardware sections
 miscsettings.infobar_sat_display Satellite display on infobar
@@ -1069,9 +1067,9 @@ parentallock.lockedchannel Locked sender...
 parentallock.lockedprogram Locked program (from %d years up)
 parentallock.never never
 parentallock.onsignal on broadcasted lock
-parentallock.parentallock Youth protection
+parentallock.parentallock Youth protection settings
 parentallock.prompt prompt for PIN
-pictureviewersettings.general Picviewer
+pictureviewersettings.general Pictureviewer settings
 pictureviewer.decode_server_ip decode server ip
 pictureviewer.decode_server_port decode server port
 pictureviewer.defdir start dir.
@@ -1445,7 +1443,7 @@ videomenu.head Video Settings
 videomenu.osd OSD
 videomenu.rgb_centering RGB centering
 videomenu.scart Scart
-videomenu.screensetup Screen Setup
+videomenu.screensetup Screen settings
 videomenu.tv-scart Video
 videomenu.vcr-scart VCR Scart
 videomenu.vcrsignal VCR Output Signal Type
