@@ -54,6 +54,9 @@ class CTestMenu : CMenuTarget
 		void testCListBox();
 		void testCListBoxDetails();
 		void testCListBoxDetailsTitleInfo();
+		void testCProgressBar();
+		void testCProgressWindow();
+		void testCButtons();
 		//
 		void testCallAudioPlayer();
 		void testCallInternetRadio();
@@ -361,6 +364,100 @@ void CTestMenu::testCListBoxDetailsTitleInfo()
 	
 	listBox->exec(NULL, "");
 	delete listBox;
+}
+
+void CTestMenu::testCProgressBar()
+{
+	CProgressBar *timescale = NULL;
+	
+	CBox Box;
+	
+	Box.iX = g_settings.screen_StartX + 10;
+	Box.iY = g_settings.screen_StartY + 10;
+	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
+	Box.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20)/20;
+	
+	timescale = new CProgressBar(Box.iWidth, Box.iHeight, 30, 100, 70, true);
+	timescale->reset();
+	
+	timescale->paint(Box.iX, Box.iY, 10);
+	usleep(1000000);
+	timescale->paint(Box.iX, Box.iY, 20);
+	usleep(1000000);
+	timescale->paint(Box.iX, Box.iY, 30);
+	usleep(1000000);
+	timescale->paint(Box.iX, Box.iY, 40);
+	usleep(1000000);
+	timescale->paint(Box.iX, Box.iY, 50);
+	usleep(1000000);
+	timescale->paint(Box.iX, Box.iY, 60);
+	usleep(1000000);
+	timescale->paint(Box.iX, Box.iY, 70);
+	usleep(1000000);
+	timescale->paint(Box.iX, Box.iY, 80);
+	usleep(1000000);
+	timescale->paint(Box.iX, Box.iY, 90);
+	usleep(1000000);
+	timescale->paint(Box.iX, Box.iY, 100);
+	
+	delete timescale;
+	timescale = NULL;
+	//
+	hide();
+}
+
+void CTestMenu::testCProgressWindow()
+{
+	CProgressWindow * progress;
+	
+	progress = new CProgressWindow();
+	progress->setTitle("CProgressWindow");
+	progress->exec(NULL, "");
+	
+	progress->showStatusMessageUTF("testing CProgressWindow");
+	progress->showGlobalStatus(0);
+	usleep(1000000);
+	progress->showGlobalStatus(10);
+	usleep(1000000);
+	progress->showGlobalStatus(20);
+	usleep(1000000);
+	progress->showGlobalStatus(30);
+	usleep(1000000);
+	progress->showGlobalStatus(40);
+	usleep(1000000);
+	progress->showGlobalStatus(50);
+	usleep(1000000);
+	progress->showGlobalStatus(60);
+	usleep(1000000);
+	progress->showGlobalStatus(70);
+	usleep(1000000);
+	progress->showGlobalStatus(80);
+	usleep(1000000);
+	progress->showGlobalStatus(90);
+	usleep(1000000);
+	progress->showGlobalStatus(100);
+	usleep(1000000);
+	
+	progress->hide();
+	delete progress;
+	progress = NULL;
+        
+}
+
+const struct button_label Buttons[4] =
+{
+	{ NEUTRINO_ICON_BUTTON_RED, NONEXISTANT_LOCALE },
+	{ NEUTRINO_ICON_BUTTON_GREEN, NONEXISTANT_LOCALE },
+	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE },
+	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE },
+	
+};
+
+void CTestMenu::testCButtons()
+{
+	::paintButtons(CFrameBuffer::getInstance(), g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, g_settings.screen_StartX + 50 + BORDER_LEFT, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, 4, Buttons);
+	usleep(1000000);
+	hide();
 }
 
 void CTestMenu::testCallAudioPlayer()
@@ -858,6 +955,18 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testCListBoxDetailsTitleInfo();
 	}
+	else if(actionKey == "progressbar")
+	{
+		testCProgressBar();
+	}
+	else if(actionKey == "progresswindow")
+	{
+		testCProgressWindow();
+	}
+	else if(actionKey == "buttons")
+	{
+		testCButtons();
+	}
 	else if(actionKey == "audioplayer")
 	{
 		testCallAudioPlayer();
@@ -945,6 +1054,9 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("CListBox", true, NULL, this, "listbox"));
 	mainMenu->addItem(new CMenuForwarder("CListBoxInfoDetails", true, NULL, this, "listboxdetails"));
 	mainMenu->addItem(new CMenuForwarder("CListBoxDetailsTitleInfo", true, NULL, this, "listboxdetailstitleinfo"));
+	mainMenu->addItem(new CMenuForwarder("CProgressBar", true, NULL, this, "progressbar"));
+	mainMenu->addItem(new CMenuForwarder("CProgressWindow", true, NULL, this, "progresswindow"));
+	mainMenu->addItem(new CMenuForwarder("CButtons", true, NULL, this, "buttons"));
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("AudioPlayer", true, NULL, this, "audioplayer"));
 	mainMenu->addItem(new CMenuForwarder("InternetRadio", true, NULL, this, "internetradio"));
