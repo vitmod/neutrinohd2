@@ -1399,6 +1399,7 @@ static void commandPauseScanning(int connfd, char *data, const unsigned dataLeng
 		messaging_got_CN = 0x00;
 		unlockMessaging();
 		scanning = 1;
+		
 		if (!bTimeCorrect && !ntpenable)
 		{
 			pthread_mutex_lock(&timeThreadSleepMutex);
@@ -3887,7 +3888,7 @@ static void *timeThread(void *)
 				pthread_cond_broadcast(&timeIsSetCond);
 				pthread_mutex_unlock(&timeIsSetMutex );
 				eventServer->sendEvent(CSectionsdClient::EVT_TIMESET, CEventServer::INITID_SECTIONSD, &actTime, sizeof(actTime) );
-				printf("[timeThread] Time is already set by system, no further timeThread work!\n");
+				dprintf(DEBUG_NORMAL, "timeThread: Time is already set by system, no further timeThread work!\n");
 				break;
 			}
 		}
@@ -3902,6 +3903,7 @@ static void *timeThread(void *)
 			pthread_cond_broadcast(&timeIsSetCond);
 			pthread_mutex_unlock(&timeIsSetMutex );
 			eventServer->sendEvent(CSectionsdClient::EVT_TIMESET, CEventServer::INITID_SECTIONSD, &actTime, sizeof(actTime) );
+			dprintf(DEBUG_NORMAL, "timeThread: Time is already set by system\n");
 		} 
 		else 
 		{
@@ -3940,6 +3942,7 @@ static void *timeThread(void *)
 					pthread_cond_broadcast(&timeIsSetCond);
 					pthread_mutex_unlock(&timeIsSetMutex );
 					eventServer->sendEvent(CSectionsdClient::EVT_TIMESET, CEventServer::INITID_SECTIONSD, &tim, sizeof(tim));
+					dprintf(DEBUG_NORMAL, "timeThread: Time is already set by DVB\n");
 				}
 			}
 		}

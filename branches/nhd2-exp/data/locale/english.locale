@@ -667,7 +667,7 @@ lcdcontroler.contrast Contrast
 lcdmenu.autodimm Auto dimm
 lcdmenu.dim_brightness Brightness after dim timeout
 lcdmenu.dim_time Dim timeout
-lcdmenu.head VFD Settings
+lcdmenu.head Display Settings
 lcdmenu.inverse Invert
 lcdmenu.lcdcontroler Contrast / Brightness
 lcdmenu.power LED-Power
@@ -676,7 +676,7 @@ lcdmenu.statusline.both volume / playtime
 lcdmenu.statusline.playtime playtime
 lcdmenu.statusline.volume volume
 lcdmenu.scrolltext Service Name Scroll-Text
-lcdmenu.setfptime Set VFD Time
+lcdmenu.setfptime Set Display Time
 lcdmenu.epg LCD EPG
 lcdmenu.epg.name default (Channel)
 lcdmenu.epg.name.sepline.title Channel / Sep.-Line / Title
@@ -700,7 +700,7 @@ mainmenu.games Games
 mainmenu.head Main Menu
 mainmenu.movieplayer Movieplayer
 mainmenu.pausesectionsd Read EPG
-mainmenu.pictureviewer Picture viewer
+mainmenu.pictureviewer Picture Viewer
 mainmenu.radiomode Radio-Mode
 mainmenu.reboot Reboot
 mainmenu.recording Recording
@@ -718,7 +718,7 @@ mainsettings.audio Audio settings
 mainsettings.head Settings
 mainsettings.keybinding Remote-Control settings
 mainsettings.language Language
-mainsettings.lcd VFD-Display settings
+mainsettings.lcd Display settings
 mainsettings.misc Misc settings
 mainsettings.network Network settings
 mainsettings.osd OSD settings
@@ -1554,7 +1554,7 @@ psisetup.tint Tint
 
 colormenu.helptxt Help text
 colormenu.helpbar Help bar
-lcdmenu.menutitlevfd Menu title on VFD
+lcdmenu.menutitlevfd show Menu title on Display
 
 scansetup.tunermode Tuner mode
 scansetup.tunermode_connected direct connected

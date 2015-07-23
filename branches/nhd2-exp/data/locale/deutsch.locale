@@ -667,7 +667,7 @@ lcdcontroler.contrast Kontrast
 lcdmenu.autodimm Automatisch dimmen
 lcdmenu.dim_brightness Helligkeit nach Dimm-Timeout
 lcdmenu.dim_time Dimm-Timeout
-lcdmenu.head VFD Einstellungen
+lcdmenu.head Display Einstellungen
 lcdmenu.inverse Invertieren
 lcdmenu.lcdcontroler Kontrast / Helligkeit
 lcdmenu.power LED-Power
@@ -676,7 +676,7 @@ lcdmenu.statusline.both Lautstärke / Fortschritt
 lcdmenu.statusline.playtime Sendungsfortschritt
 lcdmenu.statusline.volume Lautstärke
 lcdmenu.scrolltext Service Name Scroll-Text
-lcdmenu.setfptime Set VFD Time
+lcdmenu.setfptime Display Uhr einstellen
 lcdmenu.epg EPG-Anzeige
 lcdmenu.epg.name Standard (Kanal)
 lcdmenu.epg.name.sepline.title Kanal / Trennl. / Sendung
@@ -718,7 +718,7 @@ mainsettings.audio Audio Einstellungen
 mainsettings.head Einstellungen
 mainsettings.keybinding Fernbedienung Einstellungen
 mainsettings.language Sprache
-mainsettings.lcd VFD-Display Einstellugen
+mainsettings.lcd Display Einstellugen
 mainsettings.misc Diverse Einstellungen
 mainsettings.network Netzwerk Einstellugen
 mainsettings.osd OSD Einstellungen
@@ -1556,7 +1556,7 @@ psisetup.tint Tint
 
 colormenu.helptxt Hilfe Fußnoten
 colormenu.helpbar Hilfe Leiste
-lcdmenu.menutitlevfd Menu Title in VFD
+lcdmenu.menutitlevfd Menu Title in Display zeigen
 
 scansetup.tunermode Tuner Mode
 scansetup.tunermode_connected Direkt angeschlossen

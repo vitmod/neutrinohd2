@@ -35,6 +35,7 @@
 #include <global.h>
 #include <neutrino.h>
 #include <system/settings.h>
+#include <system/debug.h>
 
 #include <liblcddisplay/lcddisplay.h>
 #include <gui/widget/icons.h>
@@ -172,13 +173,13 @@ void CLCD::init(const char * fontfile, const char * fontname, const char * fontf
 {
 	if (!lcdInit(fontfile, fontname, fontfile2, fontname2, fontfile3, fontname3 ))
 	{
-		printf("[lcdd] LCD-Init failed!\n");
+		dprintf(DEBUG_NORMAL, "CLCD::init: LCD-Init failed!\n");
 		has_lcd = false;
 	}
 
 	if (pthread_create (&thrTime, NULL, TimeThread, NULL) != 0 )
 	{
-		perror("[lcdd]: pthread_create(TimeThread)");
+		perror("CLCD::init: pthread_create(TimeThread)");
 		return ;
 	}
 }
@@ -242,7 +243,7 @@ bool CLCD::lcdInit(const char * fontfile, const char * fontname, const char * fo
 
 	if (!display.isAvailable())
 	{
-		printf("[lcdd] exit...(no lcd-support)\n");
+		dprintf(DEBUG_NORMAL, "CLCD::lcdInit: exit...(no lcd-support)\n");
 		return false;
 	}
  
@@ -265,8 +266,8 @@ bool CLCD::lcdInit(const char * fontfile, const char * fontname, const char * fo
 			if (bgfound)
 				break;
 		}
-		if (!bgfound)
-			printf("[neutrino/lcd] no valid %s element.\n", element_name[i]);
+		//if (!bgfound)
+		//	printf("[neutrino/lcd] no valid %s element.\n", element_name[i]);
 	}	
 
 	setMode(MODE_TVRADIO);
@@ -1385,7 +1386,7 @@ void CLCD::showFilelist(int flist_pos,CFileList* flist,const char * const mainDi
 		unsigned int lcd_width  = display.xres;
 		unsigned int lcd_height = display.yres;
 
-		printf("[lcdd] FileList:OK\n");
+		dprintf(DEBUG_NORMAL, "CLCD::showFilelist: FileList:OK\n");
 		int size = m_fileList->size();
 		
 		display.draw_fill_rect(-1, -1, lcd_width, lcd_height-12, CLCDDisplay::PIXEL_OFF); // clear lcd

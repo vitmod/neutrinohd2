@@ -86,7 +86,8 @@ int CSleepTimerWidget::exec(CMenuTarget* parent, const std::string &)
 	if(shutdown_min != new_val) 
 	{
 		shutdown_min = new_val;
-		dprintf(DEBUG_NORMAL, "sleeptimer min: %d\n", shutdown_min);
+		
+		dprintf(DEBUG_NORMAL, "CSleepTimerWidget::exec: sleeptimer min: %d\n", shutdown_min);
 		
 		if (shutdown_min == 0)	// if set to zero remove existing sleeptimer 
 		{
@@ -96,7 +97,7 @@ int CSleepTimerWidget::exec(CMenuTarget* parent, const std::string &)
 			}
 		}
 		else	// set the sleeptimer to actual time + shutdown mins and announce 1 min before
-			g_Timerd->setSleeptimer(time(NULL) + ((shutdown_min -1) * 60), time(NULL) + shutdown_min * 60, 0);
+			g_Timerd->setSleeptimer(time(NULL) + ((shutdown_min - 1) * 60), time(NULL) + shutdown_min * 60, 0);
 	}
 	
 	return res;

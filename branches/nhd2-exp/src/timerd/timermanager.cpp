@@ -40,7 +40,7 @@
 #include <system/debug.h>
 
 
-extern bool timeset;
+extern bool timeset; // from
 
 static pthread_mutex_t tm_eventsMutex = PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP;
 
@@ -115,14 +115,14 @@ void* CTimerManager::timerThread(void *arg)
 			// time not set yet
 			if (timeset)
 			{
-				dprintf(DEBUG_DEBUG, "[timermanager] sectionsd says \"time ok\"\n");
+				dprintf(DEBUG_DEBUG, "CTimerManager::timerThread: sectionsd says \"time ok\"\n");
 				
 				timerManager->m_isTimeSet = true;
 				timerManager->loadEventsFromConfig();
 			}
 			else
 			{
-				dprintf(DEBUG_DEBUG, "[timermanager] waiting for time to be set\n");
+				dprintf(DEBUG_DEBUG, "CTimerManager::timerThread: waiting for time to be set\n");
 				
 				wait.tv_sec = time(NULL) + 5 ;
 				wait.tv_nsec = 0;
@@ -143,7 +143,7 @@ void* CTimerManager::timerThread(void *arg)
 			for(;pos != timerManager->events.end(); pos++)
 			{
 				event = pos->second;
-				dprintf(DEBUG_DEBUG, "[timermanager] checking event: %03d\n", event->eventID);
+				dprintf(DEBUG_DEBUG, "CTimerManager::timerThread: checking event: %03d\n", event->eventID);
 				
 				event->printEvent();
 
@@ -152,7 +152,7 @@ void* CTimerManager::timerThread(void *arg)
 					if( event->announceTime <= now )	// check if event announcetime has come
 					{
 						event->setState(CTimerd::TIMERSTATE_PREANNOUNCE);
-						dprintf(DEBUG_DEBUG, "[timermanager] announcing event\n");
+						dprintf(DEBUG_DEBUG, "CTimerManager::timerThread: announcing event\n");
 						event->announceEvent();							// event specific announce handler
 						timerManager->m_saveEvents = true;
 					}
@@ -163,7 +163,7 @@ void* CTimerManager::timerThread(void *arg)
 					if( event->alarmTime <= now )	// check if event alarmtime has come
 					{
 						event->setState(CTimerd::TIMERSTATE_ISRUNNING);
-						dprintf(DEBUG_DEBUG, "[timermanager] firing event\n");
+						dprintf(DEBUG_DEBUG, "CTimerManager::timerThread: firing event\n");
 						event->fireEvent();										// fire event specific handler
 						if(event->stopTime == 0)					// if event needs no stop event
 							event->setState(CTimerd::TIMERSTATE_HASFINISHED);
@@ -175,7 +175,7 @@ void* CTimerManager::timerThread(void *arg)
 				{
 					if( event->stopTime <= now ) // check if event stoptime has come
 					{
-						dprintf(DEBUG_DEBUG, "[timermanager] stopping event\n");
+						dprintf(DEBUG_DEBUG, "CTimerManager::timerThread: stopping event\n");
 						event->stopEvent();							//  event specific stop handler
 						event->setState(CTimerd::TIMERSTATE_HASFINISHED); 
 						timerManager->m_saveEvents = true;
@@ -186,12 +186,12 @@ void* CTimerManager::timerThread(void *arg)
 				{
 					if((event->eventRepeat != CTimerd::TIMERREPEAT_ONCE) && (event->repeatCount != 1))
 					{
-						dprintf(DEBUG_DEBUG, "[timermanager] rescheduling event\n");
+						dprintf(DEBUG_DEBUG, "CTimerManager::timerThread: rescheduling event\n");
 						event->Reschedule();
 					} 
 					else 
 					{
-						dprintf(DEBUG_DEBUG, "[timermanager] event terminated\n");
+						dprintf(DEBUG_DEBUG, "CTimerManager::timerThread: event terminated\n");
 						event->setState(CTimerd::TIMERSTATE_TERMINATED);
 					}
 					timerManager->m_saveEvents = true;
@@ -199,7 +199,7 @@ void* CTimerManager::timerThread(void *arg)
 				
 				if(event->eventState == CTimerd::TIMERSTATE_TERMINATED)				// event is terminated, so delete it
 				{
-					dprintf(DEBUG_DEBUG, "[timermanager] deleting event\n");
+					dprintf(DEBUG_DEBUG, "CTimerManager::timerThread: deleting event\n");
 					
 					pos->second->printEvent();
 					dprintf(DEBUG_DEBUG, "\n");
@@ -254,7 +254,7 @@ int CTimerManager::addEvent(CTimerEvent* evt, bool save)
 	events[eventID] = evt;			// insert into events
 	m_saveEvents = m_saveEvents || save;
 	
-	dprintf(DEBUG_DEBUG, "[timermanager] adding event:\n");
+	dprintf(DEBUG_DEBUG, "CTimerManager::addEvent: adding event:\n");
 	evt->printEvent();
 	dprintf(DEBUG_DEBUG, "\n");
 	
@@ -382,7 +382,7 @@ int CTimerManager::modifyEvent(int leventID, time_t announceTime, time_t alarmTi
 
 int CTimerManager::modifyEvent(int leventID, unsigned char apids)
 {
-	dprintf(DEBUG_NORMAL, "[timermanager] Modify Event %d apid 0x%X\n", leventID, apids);
+	dprintf(DEBUG_NORMAL, "CTimerManager::modifyEvent: Modify Event %d apid 0x%X\n", leventID, apids);
 	
 	int res = 0;
 	pthread_mutex_lock(&tm_eventsMutex);
@@ -440,14 +440,14 @@ void CTimerManager::loadEventsFromConfig()
 	if(!config.loadConfig(TIMERD_CONFIGFILE))
 	{
 		/* set defaults if no configuration file exists */
-		dprintf(DEBUG_NORMAL, "[timermanager] %s not found\n", TIMERD_CONFIGFILE);
+		dprintf(DEBUG_NORMAL, "CTimerManager::loadEventsFromConfig: %s not found\n", TIMERD_CONFIGFILE);
 	}
 	else
 	{
 		std::vector<int> savedIDs;
 		savedIDs = config.getInt32Vector ("IDS");
 		
-		dprintf(DEBUG_DEBUG, "[timermanager] %d timer(s) in config\n", savedIDs.size());
+		dprintf(DEBUG_DEBUG, "CTimerManager::loadEventsFromConfig: %d timer(s) in config\n", savedIDs.size());
 		
 		for(unsigned int i=0; i < savedIDs.size(); i++)
 		{
@@ -455,7 +455,7 @@ void CTimerManager::loadEventsFromConfig()
 			ostr << savedIDs[i];
 			std::string id=ostr.str();
 			CTimerd::CTimerEventTypes type=(CTimerd::CTimerEventTypes)config.getInt32 ("EVENT_TYPE_"+id,0);
-			dprintf(DEBUG_DEBUG, "[timermanager] loading timer %d, id %s, EVENT_TYPE %d\n", i, id.c_str(), type);
+			dprintf(DEBUG_DEBUG, "CTimerManager::loadEventsFromConfig: loading timer %d, id %s, EVENT_TYPE %d\n", i, id.c_str(), type);
 			time_t now = time(NULL);
 			
 			switch(type)
@@ -476,7 +476,7 @@ void CTimerManager::loadEventsFromConfig()
 						}
 						else
 						{
-							dprintf(DEBUG_DEBUG, "[timermanager] shutdown timer (%d) too old %d/%d\n", i, (int)now, (int) event->alarmTime);
+							dprintf(DEBUG_DEBUG, "CTimerManager::loadEventsFromConfig: shutdown timer (%d) too old %d/%d\n", i, (int)now, (int) event->alarmTime);
 							delete event;
 						}
 						break;
@@ -497,7 +497,7 @@ void CTimerManager::loadEventsFromConfig()
 						}
 						else
 						{
-							dprintf(DEBUG_DEBUG, "[timermanager] next program timer (%d) too old %d/%d\n", i, (int)now, (int) event->alarmTime);
+							dprintf(DEBUG_DEBUG, "CTimerManager::loadEventsFromConfig: next program timer (%d) too old %d/%d\n", i, (int)now, (int) event->alarmTime);
 							delete event;
 						}
 						break;
@@ -518,7 +518,7 @@ void CTimerManager::loadEventsFromConfig()
 						}
 						else
 						{
-							dprintf(DEBUG_DEBUG, "[timermanager] zapto timer (%d) too old %d/%d\n", i, (int)now, (int) event->alarmTime);
+							dprintf(DEBUG_DEBUG, "CTimerManager::loadEventsFromConfig: zapto timer (%d) too old %d/%d\n", i, (int)now, (int) event->alarmTime);
 							delete event;
 						}
 						break;
@@ -539,7 +539,7 @@ void CTimerManager::loadEventsFromConfig()
 						}
 						else
 						{
-							dprintf(DEBUG_DEBUG, "[timermanager] standby timer (%d) too old %d/%d\n", i, (int)now, (int) event->alarmTime);
+							dprintf(DEBUG_DEBUG, "CTimerManager::loadEventsFromConfig: standby timer (%d) too old %d/%d\n", i, (int)now, (int) event->alarmTime);
 							delete event;
 						}
 						break;
@@ -560,7 +560,7 @@ void CTimerManager::loadEventsFromConfig()
 						}
 						else
 						{
-							dprintf(DEBUG_DEBUG, "[timermanager] record timer (%d) too old %d/%d\n", i, (int)now, (int) event->alarmTime);
+							dprintf(DEBUG_DEBUG, "CTimerManager::loadEventsFromConfig: record timer (%d) too old %d/%d\n", i, (int)now, (int) event->alarmTime);
 							delete event;
 						}
 						break;
@@ -581,7 +581,7 @@ void CTimerManager::loadEventsFromConfig()
 						}
 						else
 						{
-							dprintf(DEBUG_DEBUG, "[timermanager] sleep timer (%d) too old %d/%d\n", i, (int)now, (int) event->alarmTime);
+							dprintf(DEBUG_DEBUG, "CTimerManager::loadEventsFromConfig: sleep timer (%d) too old %d/%d\n", i, (int)now, (int) event->alarmTime);
 							delete event;
 						}
 						break;
@@ -602,7 +602,7 @@ void CTimerManager::loadEventsFromConfig()
 						}
 						else
 						{
-							dprintf(DEBUG_DEBUG, "[timermanager] remind timer (%d) too old %d/%d\n", i, (int)now, (int) event->alarmTime);
+							dprintf(DEBUG_DEBUG, "CTimerManager::loadEventsFromConfig: remind timer (%d) too old %d/%d\n", i, (int)now, (int) event->alarmTime);
 							delete event;
 						}
 						break;
@@ -623,7 +623,7 @@ void CTimerManager::loadEventsFromConfig()
 						}
 						else
 						{
-							dprintf(DEBUG_DEBUG, "[timermanager] exec plugin timer (%d) too old %d/%d\n", i, (int)now, (int) event->alarmTime);
+							dprintf(DEBUG_DEBUG, "CTimerManager::loadEventsFromConfig: exec plugin timer (%d) too old %d/%d\n", i, (int)now, (int) event->alarmTime);
 							delete event;
 						}
 						break;
@@ -644,7 +644,7 @@ void CTimerManager::loadRecordingSafety()
 	if(!config.loadConfig(TIMERD_CONFIGFILE))
 	{
 		/* set defaults if no configuration file exists */
-		dprintf(DEBUG_NORMAL, "[timermanager] %s not found\n", TIMERD_CONFIGFILE);
+		dprintf(DEBUG_NORMAL, "CTimerManager::loadRecordingSafety: %s not found\n", TIMERD_CONFIGFILE);
 		
 		m_extraTimeStart = 0;
 		m_extraTimeEnd  = 0;
@@ -664,7 +664,7 @@ void CTimerManager::saveEventsToConfig()
 	CConfigFile config(',');
 	config.clear();
 	
-	dprintf(DEBUG_INFO, "[timermanager] save %d events to config ...\n", events.size());
+	dprintf(DEBUG_INFO, "CTimerManager::saveEventsToConfig: save %d events to config ...\n", events.size());
 	
 	CTimerEventMap::iterator pos = events.begin();
 	for(;pos != events.end();pos++)
@@ -681,7 +681,9 @@ void CTimerManager::saveEventsToConfig()
 	dprintf(DEBUG_DEBUG, "[timermanager] setting EXTRA_TIME_END to %d\n",m_extraTimeEnd);
 	dprintf(DEBUG_DEBUG, "[timermanager] now saving config to %s...\n", TIMERD_CONFIGFILE);
 	config.saveConfig(TIMERD_CONFIGFILE);
-	dprintf(DEBUG_DEBUG, "[timermanager] config saved!\n");
+	
+	dprintf(DEBUG_DEBUG, "CTimerManager::saveEventsToConfig: config saved!\n");
+	
 	m_saveEvents=false;			
 
 	// Freigeben !!!
@@ -693,26 +695,26 @@ bool CTimerManager::shutdown()
 	time_t nextAnnounceTime = 0;
 	bool status = false;
 	
-	dprintf(DEBUG_NORMAL, "[timermanager] stopping timermanager thread ...\n");
+	dprintf(DEBUG_NORMAL, "CTimerManager::shutdown: stopping timermanager thread ...\n");
 	
-	dprintf(DEBUG_NORMAL, "[timermanager] Waiting for timermanager thread to terminate ...\n");
+	dprintf(DEBUG_NORMAL, "CTimerManager::shutdown: Waiting for timermanager thread to terminate ...\n");
 	
 	pthread_cancel(thrTimer);
 	pthread_join(thrTimer,NULL);
 	
-	dprintf(DEBUG_NORMAL, "[timermanager] Timermanager thread terminated\n");
+	dprintf(DEBUG_NORMAL, "CTimerManager::shutdown: Timermanager thread terminated\n");
 
 	if(m_saveEvents)
 	{
-		dprintf(DEBUG_NORMAL, "[timermanager] shutdown: saving config\n");
+		dprintf(DEBUG_NORMAL, "CTimerManager::shutdown: shutdown: saving config\n");
 		
 		saveEventsToConfig();
-		dprintf(DEBUG_NORMAL, "[timermanager] shutdown: saved config\n");
+		dprintf(DEBUG_NORMAL, "CTimerManager::shutdown: shutdown: saved config\n");
 	}
 
 	if (pthread_mutex_trylock(&tm_eventsMutex) == EBUSY) 
 	{
-		dprintf(DEBUG_NORMAL, "[timermanager] error: mutex is still LOCKED\n");
+		dprintf(DEBUG_NORMAL, "CTimerManager::shutdown: error: mutex is still LOCKED\n");
 		return false;
 	}
 
@@ -750,20 +752,20 @@ bool CTimerManager::shutdown()
 		if ( ret < 0)
 		{
 			// Wakeup not supported
-			dprintf(DEBUG_NORMAL, "[timermanager]  failed to set wakeup timer");
+			dprintf(DEBUG_NORMAL, "CTimerManager::shutdown:  failed to set wakeup timer");
 		}
 		else
 		{
-			dprintf(DEBUG_NORMAL, "[timermanager]  wakeup in %d . min programmed\n", minutes);
+			dprintf(DEBUG_NORMAL, "CTimerManager::shutdown:  wakeup in %d . min programmed\n", minutes);
 
 			//Set Wakeup Timer reason
 			FILE *fd = fopen("/proc/stb/fp/was_timer_wakeup", "w");
 	
 			if(fd == NULL)
-				dprintf(DEBUG_NORMAL, "[timermanager]  failed to open /proc/stb/fp/was_timer_wakeup\n");
+				dprintf(DEBUG_NORMAL, "CTimerManager::shutdown: failed to open /proc/stb/fp/was_timer_wakeup\n");
 	
 			if(fwrite("1\n", 2, 1, fd) != 1)
-				printf("[timermanager]  failed to write to /proc/stb/fp/was_timer_wakeup\n");
+				printf("CTimerManager::shutdown: failed to write to /proc/stb/fp/was_timer_wakeup\n");
 
 			fclose(fd);
 			
@@ -811,7 +813,8 @@ void CTimerManager::shutdownOnWakeup(int currEventID)
 	if((nextAnnounceTime - now) > 600 || nextAnnounceTime == 0)
 	{ 	
 		// in den naechsten 10 min steht nix an
-		dprintf(DEBUG_NORMAL, "[timermanager]  Programming shutdown event\n");
+		dprintf(DEBUG_NORMAL, "CTimerManager::shutdownOnWakeup: Programming shutdown event\n");
+		
 		CTimerEvent_Shutdown *event = new CTimerEvent_Shutdown(now + 120, now + 180);
 		addEvent(event);
 	}
@@ -856,28 +859,28 @@ CTimerEvent::CTimerEvent( CTimerd::CTimerEventTypes evtype, int mon, int day, in
 
 CTimerEvent::CTimerEvent(CTimerd::CTimerEventTypes evtype,CConfigFile *config, int iId)
 {
-	dprintf(DEBUG_DEBUG, "[timermanager] CTimerEvent: constructor with config\n");
+	dprintf(DEBUG_DEBUG, "CTimerEvent::CTimerEvent: CTimerEvent: constructor with config\n");
 	
 	std::stringstream ostr;
 	ostr << iId;
 	std::string id = ostr.str();
 	
-	dprintf(DEBUG_DEBUG, "[timermanager] timer id: int %d string %s\n",iId,id.c_str());
+	dprintf(DEBUG_DEBUG, "CTimerEvent::CTimerEvent: timer id: int %d string %s\n",iId,id.c_str());
 	
 	time_t announcetime=config->getInt32("ANNOUNCE_TIME_"+id);
-	dprintf(DEBUG_DEBUG, "[timermanager] read ANNOUNCE_TIME_%s %ld\n",id.c_str(),(long)announcetime);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::CTimerEvent: read ANNOUNCE_TIME_%s %ld\n",id.c_str(),(long)announcetime);
 	
 	time_t alarmtime=config->getInt32("ALARM_TIME_"+id);
-	dprintf(DEBUG_DEBUG, "[timermanager] read ALARM_TIME_%s %ld\n",id.c_str(),(long)alarmtime);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::CTimerEvent: read ALARM_TIME_%s %ld\n",id.c_str(),(long)alarmtime);
 	
 	time_t stoptime=config->getInt32("STOP_TIME_"+id);
-	dprintf(DEBUG_DEBUG, "[timermanager] read STOP_TIME_%s %ld\n",id.c_str(),(long)stoptime);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::CTimerEvent: read STOP_TIME_%s %ld\n",id.c_str(),(long)stoptime);
 	
 	CTimerd::CTimerEventRepeat evrepeat=(CTimerd::CTimerEventRepeat)config->getInt32("EVENT_REPEAT_"+id);
-	dprintf(DEBUG_DEBUG, "[timermanager] read EVENT_REPEAT_%s %d\n",id.c_str(),evrepeat);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::CTimerEvent: read EVENT_REPEAT_%s %d\n",id.c_str(),evrepeat);
 	
 	uint32_t repeatcount = config->getInt32("REPEAT_COUNT_"+id);
-	dprintf(DEBUG_DEBUG, "[timermanager] read REPEAT_COUNT_%s %d\n",id.c_str(),repeatcount);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::CTimerEvent: read REPEAT_COUNT_%s %d\n",id.c_str(),repeatcount);
 	
 	eventRepeat = evrepeat;
 	eventState = CTimerd::TIMERSTATE_SCHEDULED; 
@@ -887,11 +890,11 @@ CTimerEvent::CTimerEvent(CTimerd::CTimerEventTypes evtype,CConfigFile *config, i
 	stopTime = stoptime;
 	repeatCount = repeatcount;
 	eventState = (CTimerd::CTimerEventStates ) config->getInt32 ("EVENT_STATE_"+id);
-	dprintf(DEBUG_DEBUG, "[timermanager] read EVENT_STATE_%s %d\n",id.c_str(),eventState);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::CTimerEvent: read EVENT_STATE_%s %d\n",id.c_str(),eventState);
 	
 
 	previousState = (CTimerd::CTimerEventStates) config->getInt32("PREVIOUS_STATE_"+id);
-	dprintf(DEBUG_DEBUG, "[timermanager] read PREVIOUS_STATE_%s %d\n",id.c_str(),previousState);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::CTimerEvent: read PREVIOUS_STATE_%s %d\n",id.c_str(),previousState);
 }
 
 void CTimerEvent::Reschedule()
@@ -899,7 +902,7 @@ void CTimerEvent::Reschedule()
 	if(eventRepeat == CTimerd::TIMERREPEAT_ONCE)
 	{
 		eventState = CTimerd::TIMERSTATE_TERMINATED;
-		dprintf(DEBUG_NORMAL, "[timermanager] event %d not rescheduled, event will be terminated\n",eventID);
+		dprintf(DEBUG_NORMAL, "CTimerEvent::CTimerEvent: event %d not rescheduled, event will be terminated\n",eventID);
 	}
 	else
 	{
@@ -977,24 +980,24 @@ void CTimerEvent::Reschedule()
 		if (repeatCount > 0)
 			repeatCount -= 1;
 		
-		dprintf(DEBUG_NORMAL, "[timermanager] event %d rescheduled\n",eventID);
+		dprintf(DEBUG_NORMAL, "CTimerEvent::CTimerEvent: event %d rescheduled\n",eventID);
 	}
 }
 
 void CTimerEvent::printEvent(void)
 {
 	struct tm *alarmtime, *announcetime;
-	dprintf(DEBUG_DEBUG, "[timermanager] eventID: %03d type: %d state: %d repeat: %d ,repeatCount %d\n",eventID,eventType,eventState,((int)eventRepeat)&0x1FF,repeatCount);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::printEvent: eventID: %03d type: %d state: %d repeat: %d ,repeatCount %d\n",eventID,eventType,eventState,((int)eventRepeat)&0x1FF,repeatCount);
 	
 	announcetime = localtime(&announceTime);
-	dprintf(DEBUG_DEBUG, " [timermanager] announce: %u %02d.%02d. %02d:%02d:%02d\n",(uint) announceTime,announcetime->tm_mday,announcetime->tm_mon+1,announcetime->tm_hour,announcetime->tm_min,announcetime->tm_sec);
+	dprintf(DEBUG_DEBUG, " CTimerEvent::printEvent: announce: %u %02d.%02d. %02d:%02d:%02d\n",(uint) announceTime,announcetime->tm_mday,announcetime->tm_mon+1,announcetime->tm_hour,announcetime->tm_min,announcetime->tm_sec);
 	alarmtime = localtime(&alarmTime);
-	dprintf(DEBUG_DEBUG, " [timermanager] alarm: %u %02d.%02d. %02d:%02d:%02d\n",(uint) alarmTime,alarmtime->tm_mday,alarmtime->tm_mon+1,alarmtime->tm_hour,alarmtime->tm_min,alarmtime->tm_sec);
+	dprintf(DEBUG_DEBUG, " CTimerEvent::printEvent: alarm: %u %02d.%02d. %02d:%02d:%02d\n",(uint) alarmTime,alarmtime->tm_mday,alarmtime->tm_mon+1,alarmtime->tm_hour,alarmtime->tm_min,alarmtime->tm_sec);
 	
 	switch(eventType)
 	{
 		case CTimerd::TIMER_ZAPTO :
-			dprintf(DEBUG_DEBUG, " [timermanager] Zapto: "
+			dprintf(DEBUG_DEBUG, " CTimerEvent::printEvent: Zapto: "
 				PRINTF_CHANNEL_ID_TYPE
 				" epg: %llx\n",
 				static_cast<CTimerEvent_Zapto*>(this)->eventInfo.channel_id,
@@ -1002,7 +1005,7 @@ void CTimerEvent::printEvent(void)
 			break;
 
 		case CTimerd::TIMER_RECORD :
-			dprintf(DEBUG_DEBUG, " [timermanager] Record: "
+			dprintf(DEBUG_DEBUG, " CTimerEvent::printEvent: Record: "
 				PRINTF_CHANNEL_ID_TYPE
 				" epg: %s(%llx) apids: 0x%X\n dir: %s\n",
 					  static_cast<CTimerEvent_Record*>(this)->eventInfo.channel_id,
@@ -1013,7 +1016,7 @@ void CTimerEvent::printEvent(void)
 			break;
 
 		case CTimerd::TIMER_STANDBY :
-			dprintf(DEBUG_DEBUG, " [timermanager] standby: %s\n",(static_cast<CTimerEvent_Standby*>(this)->standby_on == 1)?"on":"off");
+			dprintf(DEBUG_DEBUG, " CTimerEvent::printEvent: standby: %s\n",(static_cast<CTimerEvent_Standby*>(this)->standby_on == 1)?"on":"off");
 			break;
 
 		default:
@@ -1024,7 +1027,7 @@ void CTimerEvent::printEvent(void)
 
 void CTimerEvent::saveToConfig(CConfigFile *config)
 {
-	dprintf(DEBUG_DEBUG, "[timermanager] CTimerEvent::saveToConfig\n");
+	dprintf(DEBUG_DEBUG, "CTimerEvent::saveToConfig: CTimerEvent::saveToConfig\n");
 	
 	std::vector<int> allIDs;
 	allIDs.clear();
@@ -1035,7 +1038,7 @@ void CTimerEvent::saveToConfig(CConfigFile *config)
 	}
 
 	allIDs.push_back(eventID);
-	dprintf(DEBUG_DEBUG, "[timermanager] adding %d to IDS\n",eventID);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::saveToConfig: adding %d to IDS\n",eventID);
 	//SetInt-Vector haengt komischerweise nur an, deswegen erst loeschen
 	config->setString("IDS","");
 	config->setInt32Vector ("IDS",allIDs);
@@ -1044,28 +1047,28 @@ void CTimerEvent::saveToConfig(CConfigFile *config)
 	ostr << eventID;
 	std::string id=ostr.str();
 	config->setInt32("EVENT_TYPE_"+id, eventType);
-	dprintf(DEBUG_DEBUG, "[timermanager] set EVENT_TYPE_%s to %d\n",id.c_str(),eventType);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::saveToConfig: set EVENT_TYPE_%s to %d\n",id.c_str(),eventType);
 
 	config->setInt32("EVENT_STATE_"+id, eventState);
-	dprintf(DEBUG_DEBUG, "[timermanager] set EVENT_STATE_%s to %d\n",id.c_str(),eventState);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::saveToConfig: set EVENT_STATE_%s to %d\n",id.c_str(),eventState);
 
 	config->setInt32("PREVIOUS_STATE_"+id, previousState);
-	dprintf(DEBUG_DEBUG, "[timermanager] set PREVIOUS_STATE_%s to %d\n",id.c_str(),previousState);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::saveToConfig: set PREVIOUS_STATE_%s to %d\n",id.c_str(),previousState);
 
 	config->setInt32("EVENT_REPEAT_"+id, eventRepeat);
-	dprintf(DEBUG_DEBUG, "[timermanager] set EVENT_REPEAT_%s to %d\n",id.c_str(),eventRepeat);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::saveToConfig: set EVENT_REPEAT_%s to %d\n",id.c_str(),eventRepeat);
 
 	config->setInt32("ANNOUNCE_TIME_"+id, announceTime);
-	dprintf(DEBUG_DEBUG, "[timermanager] set ANNOUNCE_TIME_%s to %ld\n",id.c_str(),(long)announceTime);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::saveToConfig: set ANNOUNCE_TIME_%s to %ld\n",id.c_str(),(long)announceTime);
 
 	config->setInt32("ALARM_TIME_"+id, alarmTime);
-	dprintf(DEBUG_DEBUG, "[timermanager] set ALARM_TIME_%s to %ld\n",id.c_str(),(long)alarmTime);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::saveToConfig: set ALARM_TIME_%s to %ld\n",id.c_str(),(long)alarmTime);
 
 	config->setInt32("STOP_TIME_"+id, stopTime);
-	dprintf(DEBUG_DEBUG, "[timermanager] set STOP_TIME_%s to %ld\n",id.c_str(),(long)stopTime);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::saveToConfig: set STOP_TIME_%s to %ld\n",id.c_str(),(long)stopTime);
 
 	config->setInt32("REPEAT_COUNT_"+id,repeatCount);
-	dprintf(DEBUG_DEBUG, "[timermanager] set REPEAT_COUNT_%s to %d\n",id.c_str(),repeatCount);
+	dprintf(DEBUG_DEBUG, "CTimerEvent::saveToConfig: set REPEAT_COUNT_%s to %d\n",id.c_str(),repeatCount);
 }
 
 // event shutdown
@@ -1076,7 +1079,7 @@ void CTimerEvent_Shutdown::announceEvent()
 
 void CTimerEvent_Shutdown::fireEvent()
 {
-	dprintf(DEBUG_NORMAL, "[timermanager] Shutdown Timer fired\n");
+	dprintf(DEBUG_NORMAL, "CTimerEvent_Shutdown::fireEvent: Shutdown Timer fired\n");
 	//event in neutrinos remoteq. schreiben
 	CTimerManager::getInstance()->getEventServer()->sendEvent(CTimerdClient::EVT_SHUTDOWN, CEventServer::INITID_TIMERD);
 }
@@ -1089,7 +1092,7 @@ void CTimerEvent_Sleeptimer::announceEvent()
 
 void CTimerEvent_Sleeptimer::fireEvent()
 {
-	dprintf(DEBUG_NORMAL, "[timermanager] Sleeptimer Timer fired\n");
+	dprintf(DEBUG_NORMAL, "CTimerEvent_Sleeptimer::fireEven: Sleeptimer Timer fired\n");
 	//event in neutrinos remoteq. schreiben
 	CTimerManager::getInstance()->getEventServer()->sendEvent(CTimerdClient::EVT_SLEEPTIMER, CEventServer::INITID_TIMERD);
 }
@@ -1111,12 +1114,14 @@ CTimerEvent(CTimerd::TIMER_STANDBY, config, iId)
 	ostr << iId;
 	std::string id = ostr.str();
 	standby_on = config->getBool("STANDBY_ON_"+id);
-	dprintf(DEBUG_NORMAL, "[timermanager] read STANDBY_ON_%s %d\n",id.c_str(),standby_on);
+	
+	dprintf(DEBUG_NORMAL, "CTimerEvent_Standby::CTimerEvent_Standby: read STANDBY_ON_%s %d\n",id.c_str(),standby_on);
 }
 
 void CTimerEvent_Standby::fireEvent()
 {
-	dprintf(DEBUG_NORMAL, "[timermanager] Standby Timer fired: %s\n",standby_on?"on":"off");
+	dprintf(DEBUG_NORMAL, "CTimerEvent_Standby::fireEvent Standby Timer fired: %s\n",standby_on?"on":"off");
+	
 	CTimerManager::getInstance()->getEventServer()->sendEvent(
 		(standby_on)?CTimerdClient::EVT_STANDBY_ON:CTimerdClient::EVT_STANDBY_OFF,
 		CEventServer::INITID_TIMERD);
@@ -1129,7 +1134,8 @@ void CTimerEvent_Standby::saveToConfig(CConfigFile *config)
 	ostr << eventID;
 	std::string id = ostr.str();
 	config->setBool("STANDBY_ON_"+id,standby_on);
-	dprintf(DEBUG_NORMAL, "[timermanager] set STANDBY_ON_%s to %d\n",id.c_str(),standby_on);
+	
+	dprintf(DEBUG_NORMAL, "CTimerEvent_Standby::saveToConfig: set STANDBY_ON_%s to %d\n",id.c_str(),standby_on);
 }
 
 // event record
@@ -1160,22 +1166,24 @@ CTimerEvent_Record::CTimerEvent_Record(CConfigFile *config, int iId):
 	ostr << iId;
 	std::string id = ostr.str();
 	eventInfo.epgID = config->getInt64("EVENT_INFO_EPG_ID_"+id);
-	dprintf(DEBUG_DEBUG, "[timermanager] read EVENT_INFO_EPG_ID_%s %ld\n",id.c_str(),(long)eventInfo.epgID);
+	
+	dprintf(DEBUG_DEBUG, "CTimerEvent_Record::CTimerEvent_Record: read EVENT_INFO_EPG_ID_%s %ld\n",id.c_str(),(long)eventInfo.epgID);
 
 	eventInfo.epg_starttime = config->getInt64("EVENT_INFO_EPG_STARTTIME_"+id);
-	dprintf(DEBUG_DEBUG, "[timermanager] read EVENT_INFO_EPG_STARTTIME_%s %ld\n",id.c_str(),(long)eventInfo.epg_starttime);
+	
+	dprintf(DEBUG_DEBUG, "CTimerEvent_Record::CTimerEvent_Record: read EVENT_INFO_EPG_STARTTIME_%s %ld\n",id.c_str(),(long)eventInfo.epg_starttime);
 
 	eventInfo.channel_id = config->getInt64("EVENT_INFO_CHANNEL_ID_"+id);
-	dprintf(DEBUG_DEBUG, "[timermanager] read EVENT_INFO_CHANNEL_ID_%s %ld\n",id.c_str(),(long)eventInfo.channel_id);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_Record::CTimerEvent_Record: read EVENT_INFO_CHANNEL_ID_%s %ld\n",id.c_str(),(long)eventInfo.channel_id);
 
 	eventInfo.apids = config->getInt32("EVENT_INFO_APIDS_"+id);
-	dprintf(DEBUG_DEBUG, "[timermanager] read EVENT_INFO_APIDS_%s 0x%X (%p)\n",id.c_str(),eventInfo.apids,&eventInfo.apids);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_Record::CTimerEvent_Record: read EVENT_INFO_APIDS_%s 0x%X (%p)\n",id.c_str(),eventInfo.apids,&eventInfo.apids);
 
 	recordingDir = config->getString("REC_DIR_"+id);
-	dprintf(DEBUG_DEBUG, "[timermanager] read REC_DIR_%s %s (%p)\n",id.c_str(),recordingDir.c_str(),&recordingDir);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_Record::CTimerEvent_Record: read REC_DIR_%s %s (%p)\n",id.c_str(),recordingDir.c_str(),&recordingDir);
 
 	epgTitle = config->getString("EPG_TITLE_"+id);
-	dprintf(DEBUG_DEBUG, "[timermanager] read EPG_TITLE_%s %s (%p)\n",id.c_str(),epgTitle.c_str(),&epgTitle);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_Record::CTimerEvent_Record: read EPG_TITLE_%s %s (%p)\n",id.c_str(),epgTitle.c_str(),&epgTitle);
 }
 
 void CTimerEvent_Record::fireEvent()
@@ -1188,7 +1196,7 @@ void CTimerEvent_Record::fireEvent()
 								  CEventServer::INITID_TIMERD,
 								  &ri,
 								  sizeof(CTimerd::RecordingInfo));
-	dprintf(DEBUG_NORMAL, "[timermanager] Record Timer fired\n"); 
+	dprintf(DEBUG_NORMAL, "CTimerEvent_Record::fireEvent: Record Timer fired\n"); 
 }
 
 void CTimerEvent_Record::announceEvent()
@@ -1200,7 +1208,7 @@ void CTimerEvent_Record::announceEvent()
 	strcpy(ri.epgTitle, epgTitle.substr(0, sizeof(ri.epgTitle)-1).c_str());						
 	CTimerManager::getInstance()->getEventServer()->sendEvent(CTimerdClient::EVT_ANNOUNCE_RECORD, CEventServer::INITID_TIMERD,
 								  &ri,sizeof(CTimerd::RecordingInfo));
-	dprintf(DEBUG_NORMAL, "[timermanager] Record announcement\n"); 
+	dprintf(DEBUG_NORMAL, "CTimerEvent_Record::announceEvent: Record announcement\n"); 
 }
 
 void CTimerEvent_Record::stopEvent()
@@ -1214,7 +1222,8 @@ void CTimerEvent_Record::stopEvent()
 								  sizeof(CTimerd::RecordingStopInfo));
 	// Programmiere shutdown timer, wenn in wakeup state und kein record/zapto timer in 10 min
 	CTimerManager::getInstance()->shutdownOnWakeup(eventID);
-	dprintf(DEBUG_NORMAL, "[timermanager] Recording stopped\n"); 
+	
+	dprintf(DEBUG_NORMAL, "CTimerEvent_Record::stopEvent: Recording stopped\n"); 
 }
 
 void CTimerEvent_Record::saveToConfig(CConfigFile *config)
@@ -1224,22 +1233,22 @@ void CTimerEvent_Record::saveToConfig(CConfigFile *config)
 	ostr << eventID;
 	std::string id = ostr.str();
 	config->setInt64("EVENT_INFO_EPG_ID_" + id, eventInfo.epgID);
-	dprintf(DEBUG_DEBUG, "[timermanager] set EVENT_INFO_EPG_ID_%s to %ld\n",id.c_str(), (long)eventInfo.epgID);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_Record::saveToConfig: set EVENT_INFO_EPG_ID_%s to %ld\n",id.c_str(), (long)eventInfo.epgID);
 
 	config->setInt64("EVENT_INFO_EPG_STARTTIME_"+id, eventInfo.epg_starttime);
-	dprintf(DEBUG_DEBUG, "[timermanager] set EVENT_INFO_EPG_STARTTIME_%s to %ld\n",id.c_str(),(long)eventInfo.epg_starttime);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_Record::saveToConfig: set EVENT_INFO_EPG_STARTTIME_%s to %ld\n",id.c_str(),(long)eventInfo.epg_starttime);
 
 	config->setInt64("EVENT_INFO_CHANNEL_ID_" + id, eventInfo.channel_id);
-	dprintf(DEBUG_DEBUG, "[timermanager] set EVENT_INFO_CHANNEL_ID_%s to %ld\n",id.c_str(),(long)eventInfo.channel_id);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_Record::saveToConfig: set EVENT_INFO_CHANNEL_ID_%s to %ld\n",id.c_str(),(long)eventInfo.channel_id);
 
 	config->setInt64("EVENT_INFO_APIDS_" + id, eventInfo.apids);
-	dprintf(DEBUG_DEBUG, "[timermanager] set EVENT_INFO_APIDS_%s to 0x%X (%p)\n",id.c_str(), eventInfo.apids, &eventInfo.apids);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_Record::saveToConfig: set EVENT_INFO_APIDS_%s to 0x%X (%p)\n",id.c_str(), eventInfo.apids, &eventInfo.apids);
 
 	config->setString("REC_DIR_" + id, recordingDir);
-	dprintf(DEBUG_DEBUG, "[timermanager] set REC_DIR_%s to %s (%p)\n",id.c_str(), recordingDir.c_str(), &recordingDir);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_Record::saveToConfig: set REC_DIR_%s to %s (%p)\n",id.c_str(), recordingDir.c_str(), &recordingDir);
 
 	config->setString("EPG_TITLE_" + id, epgTitle);
-	dprintf(DEBUG_DEBUG, "[timermanager] set EPG_TITLE_%s to %s (%p)\n",id.c_str(), epgTitle.c_str(), &epgTitle);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_Record::saveToConfig: set EPG_TITLE_%s to %s (%p)\n",id.c_str(), epgTitle.c_str(), &epgTitle);
 }
 
 void CTimerEvent_Record::Reschedule()
@@ -1332,17 +1341,17 @@ CTimerEvent(CTimerd::TIMER_NEXTPROGRAM, config, iId)
 	ostr << iId;
 	std::string id = ostr.str();
 	eventInfo.epgID = config->getInt64("EVENT_INFO_EPG_ID_" + id);
-	dprintf(DEBUG_DEBUG, "[timermanager] read EVENT_INFO_EPG_ID_%s %ld\n", id.c_str(), (long)eventInfo.epgID);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_NextProgram::CTimerEvent_NextProgram: read EVENT_INFO_EPG_ID_%s %ld\n", id.c_str(), (long)eventInfo.epgID);
 
 	eventInfo.epg_starttime = config->getInt64("EVENT_INFO_EPG_STARTTIME_" + id);
-	dprintf(DEBUG_DEBUG, "[timermanager] read EVENT_INFO_EPG_STARTTIME_%s %ld\n", id.c_str(), (long)eventInfo.epg_starttime);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_NextProgram::CTimerEvent_NextProgram: read EVENT_INFO_EPG_STARTTIME_%s %ld\n", id.c_str(), (long)eventInfo.epg_starttime);
 
 	eventInfo.channel_id = config->getInt64("EVENT_INFO_CHANNEL_ID_" + id);
-	dprintf(DEBUG_DEBUG, "[timermanager] read EVENT_INFO_CHANNEL_ID_%s %ld\n", id.c_str(), (long)eventInfo.channel_id);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_NextProgram::CTimerEvent_NextProgram: read EVENT_INFO_CHANNEL_ID_%s %ld\n", id.c_str(), (long)eventInfo.channel_id);
 
 	eventInfo.apids = config->getInt32("EVENT_INFO_APIDS_" + id);
 
-	dprintf(DEBUG_DEBUG, "[timermanager] read EVENT_INFO_APIDS_%s 0x%X (%p)\n", id.c_str(), eventInfo.apids, &eventInfo.apids);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_NextProgram::CTimerEvent_NextProgram: read EVENT_INFO_APIDS_%s 0x%X (%p)\n", id.c_str(), eventInfo.apids, &eventInfo.apids);
 }
 
 void CTimerEvent_NextProgram::announceEvent()
@@ -1368,16 +1377,16 @@ void CTimerEvent_NextProgram::saveToConfig(CConfigFile *config)
 	ostr << eventID;
 	std::string id = ostr.str();
 	config->setInt64("EVENT_INFO_EPG_ID_" + id, eventInfo.epgID);
-	dprintf(DEBUG_DEBUG, "[timermanager] set EVENT_INFO_EPG_ID_%s to %ld\n", id.c_str(), (long)eventInfo.epgID);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_NextProgram::saveToConfig: set EVENT_INFO_EPG_ID_%s to %ld\n", id.c_str(), (long)eventInfo.epgID);
 
 	config->setInt64("EVENT_INFO_EPG_STARTTIME_" + id, eventInfo.epg_starttime);
-	dprintf(DEBUG_DEBUG, "[timermanager] set EVENT_INFO_EPG_STARTTIME_%s to %ld\n", id.c_str(), (long)eventInfo.epg_starttime);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_NextProgram::saveToConfig: set EVENT_INFO_EPG_STARTTIME_%s to %ld\n", id.c_str(), (long)eventInfo.epg_starttime);
 
 	config->setInt64("EVENT_INFO_CHANNEL_ID_" + id, eventInfo.channel_id);
-	dprintf(DEBUG_DEBUG, "[timermanager] set EVENT_INFO_CHANNEL_ID_%s to %ld\n", id.c_str(), (long)eventInfo.channel_id);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_NextProgram::saveToConfig: set EVENT_INFO_CHANNEL_ID_%s to %ld\n", id.c_str(), (long)eventInfo.channel_id);
 
 	config->setInt32("EVENT_INFO_APIDS_" + id, eventInfo.apids);
-	dprintf(DEBUG_DEBUG, "[timermanager] set EVENT_INFO_APIDS_%s to 0x%X (%p)\n", id.c_str(), eventInfo.apids, &eventInfo.apids);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_NextProgram::saveToConfig: set EVENT_INFO_APIDS_%s to 0x%X (%p)\n", id.c_str(), eventInfo.apids, &eventInfo.apids);
 }
 
 void CTimerEvent_NextProgram::Reschedule()
@@ -1407,7 +1416,7 @@ CTimerEvent(CTimerd::TIMER_REMIND, config, iId)
 	ostr << iId;
 	std::string id = ostr.str();
 	strcpy(message, config->getString("MESSAGE_" + id).c_str());
-	dprintf(DEBUG_DEBUG, "[timermanager] read MESSAGE_%s %s (%p)\n",id.c_str(),message,message);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_Remind::CTimerEvent_Remind: read MESSAGE_%s %s (%p)\n",id.c_str(),message,message);
 }
 
 void CTimerEvent_Remind::fireEvent()
@@ -1425,7 +1434,7 @@ void CTimerEvent_Remind::saveToConfig(CConfigFile *config)
 	ostr << eventID;
 	std::string id = ostr.str();
 	config->setString("MESSAGE_" + id, message);
-	dprintf(DEBUG_DEBUG, "[timermanager] set MESSAGE_%s to %s (%p)\n", id.c_str(), message,message);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_Remind::saveToConfig: set MESSAGE_%s to %s (%p)\n", id.c_str(), message,message);
 
 }
 
@@ -1448,7 +1457,7 @@ CTimerEvent(CTimerd::TIMER_EXEC_PLUGIN, config, iId)
 	ostr << iId;
 	std::string id = ostr.str();
 	strcpy(name, config->getString("NAME_" + id).c_str());
-	dprintf(DEBUG_DEBUG, "[timermanager] read NAME_%s %s (%p)\n", id.c_str(), name,name);
+	dprintf(DEBUG_DEBUG, "CTimerEvent_ExecPlugin::CTimerEvent_ExecPlugin: read NAME_%s %s (%p)\n", id.c_str(), name,name);
 }
 
 void CTimerEvent_ExecPlugin::fireEvent()
@@ -1466,6 +1475,5 @@ void CTimerEvent_ExecPlugin::saveToConfig(CConfigFile *config)
 	ostr << eventID;
 	std::string id = ostr.str();
 	config->setString("NAME_" + id, name);
-	dprintf(DEBUG_DEBUG, "[timermanager] set NAME_%s to %s (%p)\n",id.c_str(),name,name);
-
+	dprintf(DEBUG_DEBUG, "CTimerEvent_ExecPlugin::saveToConfig: set NAME_%s to %s (%p)\n",id.c_str(),name,name);
 }

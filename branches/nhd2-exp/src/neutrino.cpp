@@ -4670,32 +4670,37 @@ void CNeutrinoApp::radioMode( bool rezap)
 // Scart Mode
 void CNeutrinoApp::scartMode( bool bOnOff )
 {
-	printf( ( bOnOff ) ? "CNeutrinoApp::scartMode: scart on\n" : "mode: scart off\n" );
+	printf( ( bOnOff ) ? "CNeutrinoApp::scartMode: scart on\n" : "CNeutrinoApp::scartMode: mode: scart off\n" );
 
 	if( bOnOff ) 
 	{
 		frameBuffer->useBackground(false);
 		frameBuffer->paintBackground();
-
 		frameBuffer->blit();
 
 		CVFD::getInstance()->setMode(CVFD::MODE_SCART);
+		
+		// FIXME:modes?
+		if(mode == mode_iptv)
+		{
+			if(webtv)
+				webtv->stopPlayBack();
+		}
 
 		lastMode = mode;
 		mode = mode_scart;
 		
 #if !defined (PLATFORM_COOLSTREAM)	  
-		//if(videoDecoder)
-		//	videoDecoder->SetInput(INPUT_SCART);
+		if(videoDecoder)
+			videoDecoder->SetInput(INPUT_SCART);
 #endif		
 	} 
 	else 
 	{
-//#if !defined (PLATFORM_COOLSTREAM)	  
-//		if(videoDecoder)
-//			videoDecoder->SetInput(INPUT_ENCODER);
-//#endif		
-		
+#if !defined (PLATFORM_COOLSTREAM)	  
+		if(videoDecoder)
+			videoDecoder->SetInput(INPUT_ENCODER);
+#endif
 		mode = mode_unknown;
 		
 		//re-set mode
@@ -4711,9 +4716,9 @@ void CNeutrinoApp::scartMode( bool bOnOff )
 		{
 			standbyMode( true );
 		}
-		else if(mode == mode_iptv)
+		else if(lastMode == mode_iptv)
 		{
-			webtvMode(false);
+			webtvMode(true);
 		}
 	}
 }
@@ -4750,7 +4755,6 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 
 		frameBuffer->useBackground(false);
 		frameBuffer->paintBackground();
-
 		frameBuffer->blit();
 	
 #if defined (PLATFORM_COOLSTREAM)
@@ -4759,9 +4763,6 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 		
 		// show time in vfd
 		CVFD::getInstance()->setMode(CVFD::MODE_STANDBY);
-		
-		//if(videoDecoder)
-		//	videoDecoder->SetInput(INPUT_ENCODER);
 		
 		if(mode == mode_iptv)
 		{
@@ -4824,7 +4825,7 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 #endif		
 
 		// set fb active
-		frameBuffer->setActive(true);
+		//frameBuffer->setActive(true);
 
 		puts("CNeutrinoApp::standbyMode: executing " NEUTRINO_LEAVE_STANDBY_SCRIPT ".");
 		if (system(NEUTRINO_LEAVE_STANDBY_SCRIPT) != 0)
@@ -4835,10 +4836,6 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 				
 		if (CVFD::getInstance()->is4digits)
 			CVFD::getInstance()->LCDshowText(channelList->getActiveChannelNumber());
-		
-		// video wake up
-		//if(videoDecoder)
-		//	videoDecoder->SetInput(INPUT_SCART);
 		
 		// setmode?radio:tv/iptv
 		mode = mode_unknown;
@@ -4966,7 +4963,6 @@ void CNeutrinoApp::webtvMode( bool rezap)
 	
 	frameBuffer->useBackground(false);
 	frameBuffer->paintBackground();
-
 	frameBuffer->blit();
 
 	// pause epg scanning
@@ -5325,6 +5321,22 @@ bool CNeutrinoApp::changeNotify(const neutrino_locale_t OptionName, void */*data
 	{
 		dprintf(DEBUG_NORMAL, "CNeutrinoApp::changeNotify: %s\n", g_settings.language);
 		
+		// setup font first
+		if(strstr(g_settings.language, "arabic"))
+		{
+			// check for nsmbd font
+			if(!access(FONTDIR "/nmsbd.ttf", F_OK))
+			{
+				strcpy(g_settings.font_file, FONTDIR "/nmsbd.ttf");
+				printf("CNeutrinoApp::changeNotify:new font file %s\n", g_settings.font_file);
+				CNeutrinoApp::getInstance()->SetupFonts();
+			}
+			else
+			{
+				HintBox(LOCALE_MESSAGEBOX_INFO, "install a font supporting your language (e.g nmsbd.ttf)");
+			}
+		}
+		
 		g_Locale->loadLocale(g_settings.language);
 		return true;
 	}
@@ -5357,7 +5369,6 @@ bool CNeutrinoApp::changeNotify(const neutrino_locale_t OptionName, void */*data
 				frameBuffer->restoreBackgroundImage();
 				frameBuffer->useBackground(true);
 				frameBuffer->paintBackground();
-
 				frameBuffer->blit();
 			}
 			

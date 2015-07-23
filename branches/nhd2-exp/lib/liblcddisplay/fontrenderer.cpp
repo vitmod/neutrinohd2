@@ -32,6 +32,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <system/debug.h>
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -39,6 +41,12 @@
 #if FREETYPE_MAJOR >= 2 && FREETYPE_MINOR >= 3
 #define FT_NEW_CACHE_API
 #endif
+
+// fribidi
+#if defined (ENABLE_FRIBIDI)
+#include <fribidi/fribidi.h>
+#endif
+
 
 FT_Error LcdFontRenderClass::myFTC_Face_Requester(FTC_FaceID  face_id,
                             FT_Library  library,
@@ -52,14 +60,16 @@ FT_Error LcdFontRenderClass::myFTC_Face_Requester(FTC_FaceID  face_id,
 LcdFontRenderClass::LcdFontRenderClass(CLCDDisplay * fb)
 {
 	framebuffer = fb;
-	printf("[LCDFONT] initializing core...");
+	
+	dprintf(DEBUG_NORMAL, "LcdFontRenderClass::LcdFontRenderClass: initializing core...\n");
+	
 	fflush(stdout);
 	if (FT_Init_FreeType(&library))
 	{
-		printf("failed.\n");
+		dprintf(DEBUG_NORMAL, "LcdFontRenderClass::LcdFontRenderClass: failed.\n");
 		return;
 	}
-	printf("\n");
+	dprintf(DEBUG_NORMAL, "\n");
 	font = 0;
 	pthread_mutex_init(&render_mutex, NULL);
 }
@@ -72,26 +82,27 @@ LcdFontRenderClass::~LcdFontRenderClass()
 
 void LcdFontRenderClass::InitFontCache()
 {
-	printf("[LCDFONT] Intializing font cache...");
+	dprintf(DEBUG_NORMAL, "LcdFontRenderClass::InitFontCache: Intializing font cache...\n");
+	
 	fflush(stdout);
 	if (FTC_Manager_New(library, 3, 0, 0, myFTC_Face_Requester, this, &cacheManager))
 	{
-		printf(" manager failed!\n");
+		dprintf(DEBUG_NORMAL, "LcdFontRenderClass::InitFontCache: manager failed!\n");
 		return;
 	}
 	if (!cacheManager)
 	{
-		printf(" error.\n");
+		dprintf(DEBUG_NORMAL, "LcdFontRenderClass::InitFontCache: error.\n");
 		return;
 	}
 	if (FTC_SBitCache_New(cacheManager, &sbitsCache))
 	{
-		printf(" sbit failed!\n");
+		dprintf(DEBUG_NORMAL, "LcdFontRenderClass::InitFontCache: sbit failed!\n");
 		return;
 	}
 	if (FTC_ImageCache_New(cacheManager, &imageCache))
 	{
-		printf(" imagecache failed!\n");
+		dprintf(DEBUG_NORMAL, "LcdFontRenderClass::InitFontCache: imagecache failed!\n");
 	}
 	printf("\n");
 }
@@ -101,12 +112,13 @@ FT_Error LcdFontRenderClass::FTC_Face_Requester(FTC_FaceID  face_id, FT_Face*   
 	fontListEntry *font=(fontListEntry *)face_id;
 	if (!font)
 		return -1;
-	printf("[LCDFONT] FTC_Face_Requester (%s/%s)\n", font->family, font->style);
+	
+	dprintf(DEBUG_NORMAL, "LcdFontRenderClass::FTC_Face_Requester: FTC_Face_Requester (%s/%s)\n", font->family, font->style);
 
 	int error;
 	if ((error = FT_New_Face(library, font->filename, 0, aface)))
 	{
-		printf(" failed: %i\n", error);
+		dprintf(DEBUG_NORMAL, "LcdFontRenderClass::FTC_Face_Requester: failed: %i\n", error);
 		return error;
 	}
 	return 0;
@@ -141,7 +153,8 @@ FT_Error LcdFontRenderClass::getGlyphBitmap(FTC_Image_Desc *font, FT_ULong glyph
 
 const char * LcdFontRenderClass::AddFont(const char * const filename)
 {
-	printf("[LCDFONT] adding font %s...", filename);
+	dprintf(DEBUG_NORMAL, "LcdFontRenderClass::AddFont: adding font %s...\n", filename);
+	
 	fflush(stdout);
 	int error;
 	fontListEntry *n;
@@ -149,7 +162,7 @@ const char * LcdFontRenderClass::AddFont(const char * const filename)
 	FT_Face face;
 	if ((error = FT_New_Face(library, filename, 0, &face)))
 	{
-		printf(" failed: %i\n", error);
+		dprintf(DEBUG_NORMAL, "LcdFontRenderClass::AddFont: failed: %i\n", error);
 		return NULL;
 	}
 	
@@ -161,7 +174,7 @@ const char * LcdFontRenderClass::AddFont(const char * const filename)
 	FT_Done_Face(face);
 
 	n->next=font;
-	printf("OK (%s/%s)\n", n->family, n->style);
+	dprintf(DEBUG_NORMAL, "LcdFontRenderClass::AddFont: OK (%s/%s)\n", n->family, n->style);
 	font=n;
 	
 	return n->style;
@@ -206,11 +219,20 @@ FT_Error LcdFont::getGlyphBitmap(FT_ULong glyph_index, FTC_SBit *sbit)
 }
 
 extern int UTF8ToUnicode(const char * &text, const bool utf8_encoded);	//defined in src/driver/fontrenderer.cpp
+#if defined (ENABLE_FRIBIDI)
+std::string fribidiShapeChar(const char * text);
+#endif
 
 void LcdFont::RenderString(int x, int y, const int width, const char * text, const int color, const int selected, const bool utf8_encoded)
 {
 	int err;
 	pthread_mutex_lock(&renderer->render_mutex);
+	
+// fribidi
+#if defined (ENABLE_FRIBIDI)
+	std::string Text = fribidiShapeChar(text);
+	text = Text.c_str();
+#endif		
 
 #ifdef FT_NEW_CACHE_API
 	FTC_ScalerRec scaler;
@@ -225,11 +247,11 @@ void LcdFont::RenderString(int x, int y, const int width, const char * text, con
 	if ((err=FTC_Manager_Lookup_Size(renderer->cacheManager, &font.font, &face, &size))!=0)
 #endif
 	{ 
-		printf("FTC_Manager_Lookup_Size failed! (%d)\n",err);
+		dprintf(DEBUG_NORMAL, "LcdFont::RenderString: FTC_Manager_Lookup_Size failed! (%d)\n",err);
 		pthread_mutex_unlock(&renderer->render_mutex);
 		return;
 	}
-	int left=x, step_y=(size->metrics.height >> 6 )*3/4 + 4;
+	int left = x, step_y = (size->metrics.height >> 6 )*3/4 + 4;
 
 	int pos =0;
 	for (; *text; text++)
@@ -262,8 +284,8 @@ void LcdFont::RenderString(int x, int y, const int width, const char * text, con
 		  continue;
 		if (getGlyphBitmap(index, &glyph))
 		{
-		  printf("failed to get glyph bitmap.\n");
-		  continue;
+			dprintf(DEBUG_NORMAL, "LcdFont::RenderString: failed to get glyph bitmap.\n");
+			continue;
 		}
     
 		int rx=x+glyph->left;
@@ -296,6 +318,13 @@ void LcdFont::RenderString(int x, int y, const int width, const char * text, con
 int LcdFont::getRenderWidth(const char * text, const bool utf8_encoded)
 {
 	pthread_mutex_lock(&renderer->render_mutex);
+	
+// fribidi
+#if defined (ENABLE_FRIBIDI)
+	std::string Text = fribidiShapeChar(text);
+	text = Text.c_str();
+#endif	
+	
 	FT_Error err;
 #ifdef FT_NEW_CACHE_API
 	FTC_ScalerRec scaler;
@@ -310,7 +339,7 @@ int LcdFont::getRenderWidth(const char * text, const bool utf8_encoded)
 #endif
 	if (err != 0)
 	{ 
-		printf("FTC_Manager_Lookup_Size failed! (0x%x)\n", err);
+		dprintf(DEBUG_NORMAL, "LcdFont::getRenderWidth: FTC_Manager_Lookup_Size failed! (0x%x)\n", err);
 		pthread_mutex_unlock(&renderer->render_mutex);
 		return -1;
 	}
@@ -334,7 +363,7 @@ int LcdFont::getRenderWidth(const char * text, const bool utf8_encoded)
 			continue;
 		if (getGlyphBitmap(index, &glyph))
 		{
-			printf("failed to get glyph bitmap.\n");
+			dprintf(DEBUG_NORMAL, "LcdFont::getRenderWidth: failed to get glyph bitmap.\n");
 			continue;
 		}
     
