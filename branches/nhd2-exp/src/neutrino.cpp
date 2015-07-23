@@ -5324,16 +5324,22 @@ bool CNeutrinoApp::changeNotify(const neutrino_locale_t OptionName, void */*data
 		// setup font first
 		if(strstr(g_settings.language, "arabic"))
 		{
-			// check for nsmbd font
-			if(!access(FONTDIR "/nmsbd.ttf", F_OK))
+			//if( !strstr(g_settings.font_file, "nmsbd.ttf") || !strstr(g_settings.font_file, "ae_AlMateen.ttf") )
 			{
-				strcpy(g_settings.font_file, FONTDIR "/nmsbd.ttf");
-				printf("CNeutrinoApp::changeNotify:new font file %s\n", g_settings.font_file);
-				CNeutrinoApp::getInstance()->SetupFonts();
-			}
-			else
-			{
-				HintBox(LOCALE_MESSAGEBOX_INFO, "install a font supporting your language (e.g nmsbd.ttf)");
+				//if(MessageBox(LOCALE_MESSAGEBOX_INFO, "do you want to change your font to nmsbd.ttf\nthis font support your language\n", CMessageBox::mbrYes, CMessageBox::mbYes | CMessageBox::mbNo) == CMessageBox::mbrYes)
+				{
+					// check for nsmbd font
+					if(!access(FONTDIR "/nmsbd.ttf", F_OK))
+					{
+						strcpy(g_settings.font_file, FONTDIR "/nmsbd.ttf");
+						printf("CNeutrinoApp::changeNotify:new font file %s\n", g_settings.font_file);
+						CNeutrinoApp::getInstance()->SetupFonts();
+					}
+					else
+					{
+						HintBox(LOCALE_MESSAGEBOX_INFO, "install a font supporting your language (e.g nmsbd.ttf)");
+					}
+				}
 			}
 		}
 		
