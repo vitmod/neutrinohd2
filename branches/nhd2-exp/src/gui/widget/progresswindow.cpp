@@ -42,6 +42,7 @@
 CProgressWindow::CProgressWindow()
 {
 	caption = NONEXISTANT_LOCALE;
+	captionString = "";
 	
 	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
 	mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
@@ -60,12 +61,22 @@ CProgressWindow::CProgressWindow()
 void CProgressWindow::setTitle(const neutrino_locale_t title)
 {
 	caption = title;
+	captionString = g_Locale->getText(caption);
 
 #ifdef LCD_UPDATE
 	CVFD::getInstance()->showProgressBar2(-1, NULL, -1, g_Locale->getText(caption)); // set global text in VFD
 #endif // VFD_UPDATE
 }
 
+void CProgressWindow::setTitle(const char * const title)
+{
+	caption = NONEXISTANT_LOCALE;
+	captionString = title;
+
+#ifdef LCD_UPDATE
+	CVFD::getInstance()->showProgressBar2(-1, NULL, -1, captionString.c_str()); // set global text in VFD
+#endif // VFD_UPDATE
+}
 
 void CProgressWindow::showGlobalStatus(const unsigned int prog)
 {
@@ -154,8 +165,13 @@ void CProgressWindow::paint()
 	CFrameBuffer::getInstance()->paintIcon(NEUTRINO_ICON_INFO, x + 8, ypos + 8);
 	
 	// caption
+	const char * l_caption;
 	if (caption != NONEXISTANT_LOCALE)
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 8 + icon_w + 5, ypos + hheight, width- 10, g_Locale->getText(caption), COL_MENUHEAD, 0, true); // UTF-8
+		l_caption = g_Locale->getText(caption);
+	else
+		l_caption = captionString.c_str();
+	  
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + 8 + icon_w + 5, ypos + hheight, width- 10, l_caption, COL_MENUHEAD, 0, true); // UTF-8
 		
 	// footer
 	CFrameBuffer::getInstance()->paintBoxRel(x + SHADOW_OFFSET, ypos + hheight + SHADOW_OFFSET, width, height - hheight, COL_INFOBAR_SHADOW_PLUS_0, RADIUS_MID, CORNER_BOTTOM);

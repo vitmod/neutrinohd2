@@ -2198,19 +2198,19 @@ void CInfoViewer::killTitle()
 		if(sigscale)
 		{
 			delete sigscale;
-			sigscale = 0;
+			sigscale = NULL;
 		}
 		
 		if(snrscale)
 		{
 			delete snrscale;
-			snrscale = 0;
+			snrscale = NULL;
 		}
 		
 		if(timescale)
 		{
 			delete timescale;
-			timescale = 0;
+			timescale = NULL;
 		}
   	}
   	
@@ -2225,7 +2225,7 @@ void CInfoViewer::killTitle()
 		if(moviescale)
 		{
 			delete moviescale;
-			moviescale = 0;
+			moviescale = NULL;
 		}
   	}
 }

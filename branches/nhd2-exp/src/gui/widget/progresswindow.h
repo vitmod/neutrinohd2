@@ -43,6 +43,7 @@ class CProgressWindow : public CMenuTarget, public CProgress_StatusViewer
 
 		CFBWindow* frameBuffer;
 		neutrino_locale_t caption;
+		std::string captionString;
 
 		int x;
 		int y;
@@ -64,6 +65,7 @@ class CProgressWindow : public CMenuTarget, public CProgress_StatusViewer
 
 		CProgressWindow();
 		void setTitle(const neutrino_locale_t title);
+		void setTitle(const char * const title);
 		virtual void hide();
 
 		virtual int exec( CMenuTarget* parent, const std::string & actionKey );
