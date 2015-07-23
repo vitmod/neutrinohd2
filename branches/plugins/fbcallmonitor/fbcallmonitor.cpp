@@ -192,13 +192,13 @@ void CFBCallMonitor::doMenu()
 void plugin_init(void)
 {
 	std::string cmd = PLUGINDIR "/fbcallmonitor/fb.sh start";
-	my_system(cmd.c_str());
+	system(cmd.c_str());
 }
 
 void plugin_del(void)
 {
 	std::string cmd = PLUGINDIR "/fbcallmonitor/fb.sh stop";
-	my_system(cmd.c_str());
+	system(cmd.c_str());
 }
 
 void plugin_exec(void)

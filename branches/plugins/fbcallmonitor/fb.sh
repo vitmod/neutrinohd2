@@ -1,10 +1,11 @@
 #!/bin/sh
 
-. /var/tuxbox/plugins/fbcallmonitor/fb.conf
+
+. $PLUGINDIR/fbcallmonitor/fb.conf
 
 # do not change anything below here ----
 Version=v0.5			#Zur Versionsanzeige im telnet
-FBBOOK=/var/tuxbox/plugins/fbcallmonitor/fb.csv	#internal phonebook uses comma sep. values
+FBBOOK=$PLUGINDIR/fbcallmonitor/fb.csv	#internal phonebook uses comma sep. values
 TMPFILE=/tmp/fritzbox.tmp	#stores page from wget command
 
 #

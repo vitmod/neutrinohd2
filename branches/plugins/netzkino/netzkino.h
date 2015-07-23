@@ -148,7 +148,6 @@ class CNetzKinoBrowser : public CMenuTarget
 		void refreshFoot(void);
 		void refreshTitle(void);
 		void refreshInfo(void);
-		void refreshLCD(void);
 		
 		// event
 		bool onButtonPress(neutrino_msg_t msg); 

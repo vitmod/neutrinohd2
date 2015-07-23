@@ -221,8 +221,6 @@ int CNetzKinoBrowser::exec()
 	int returnDefaultOnTimeout = true;
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
-
-	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_NETZKINO));
 	
 	initGlobalSettings();
 	
@@ -351,9 +349,7 @@ void CNetzKinoBrowser::hide(void)
 
 int CNetzKinoBrowser::paint(void)
 {
-	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::paint\n");
-
-	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8, g_Locale->getText(LOCALE_NETZKINO));	
+	dprintf(DEBUG_NORMAL, "CNetzKinoBrowser::paint\n");	
 
 	m_pcBrowser = new CListFrame(&m_browserListLines, NULL, CListFrame::SCROLL, &m_cBoxFrameBrowserList);
 	m_pcInfo = new CTextBox(" ", NULL, CTextBox::SCROLL, &m_cBoxFrameInfo);	
@@ -394,7 +390,6 @@ void CNetzKinoBrowser::refresh(void)
 	}
 		
 	refreshFoot();
-	refreshLCD();
 }
 
 CFile * CNetzKinoBrowser::getSelectedFile(void)
@@ -448,24 +443,6 @@ void CNetzKinoBrowser::refreshMovieInfo(void)
 	}
 	
 	m_pcWindow->blit();
-}
-
-void CNetzKinoBrowser::refreshLCD(void)
-{
-	if(m_vMovieInfo.size() <= 0) 
-		return;
-
-	//CVFD * lcd = CVFD::getInstance();
-	if(m_movieSelectionHandler == NULL)
-	{
-		// There is no selected element, clear LCD
-		//lcd->showMenuText(0, " ", -1, true); // UTF-8
-		//lcd->showMenuText(1, " ", -1, true); // UTF-8
-	}
-	else
-	{
-		CVFD::getInstance()->showMenuText(0, m_movieSelectionHandler->epgTitle.c_str(), -1, true); // UTF-8
-	} 	
 }
 
 void CNetzKinoBrowser::refreshBrowserList(void) //P1
@@ -919,7 +896,6 @@ void CNetzKinoBrowser::updateMovieSelection(void)
 	if(new_selection == true)
 	{
 		refreshMovieInfo();
-		refreshLCD();
 	}
 }
 
