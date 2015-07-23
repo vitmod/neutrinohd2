@@ -451,7 +451,7 @@ class CMenuSelector : public CMenuItem
 		CMenuSelector(const char * OptionName, const bool Active = true, char * OptionValue = NULL, int* ReturnInt = NULL,int ReturnIntValue = 0);
 		CMenuSelector(const char * OptionName, const bool Active , std::string & OptionValue, int* ReturnInt = NULL,int ReturnIntValue = 0);
 		int exec(CMenuTarget* parent);
-		int paint( bool selected );
+		int paint(bool selected, bool AfterPulldown = false);
 		int getHeight(void) const{return height;};
 		bool isSelectable(void) const {	return active;}
 };
@@ -460,7 +460,7 @@ class CMenuSelector : public CMenuItem
 class CMenuWidgetSelection : public CMenuWidget
 {
 	public:
-	CMenuWidgetSelection(const neutrino_locale_t Name, const std::string & Icon = "", const int mwidth = /*550*/MENU_WIDTH, const int mheight = /*576*/MENU_HEIGHT) : CMenuWidget( Name, Icon, mwidth, mheight){;};
+	CMenuWidgetSelection(const neutrino_locale_t Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT) : CMenuWidget( Name, Icon, mwidth, mheight){;};
 	int getSelectedLine(void){return exit_pressed ? -1 : selected;};
 };
 

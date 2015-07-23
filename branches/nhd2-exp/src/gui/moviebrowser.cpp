@@ -3685,26 +3685,26 @@ void CMovieBrowser::autoFindSerie(void)
 
 CMenuSelector::CMenuSelector(const char * OptionName, const bool Active , char * OptionValue, int* ReturnInt ,int ReturnIntValue ) : CMenuItem()
 {
-	height     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-	optionValueString = 	NULL;
-	optionName = 		OptionName;
-	optionValue = 		OptionValue;
-	active = 		Active;
-	returnIntValue =	ReturnIntValue;
-	returnInt = 		ReturnInt;
+	height = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	optionValueString = NULL;
+	optionName = OptionName;
+	optionValue = OptionValue;
+	active = Active;
+	returnIntValue = ReturnIntValue;
+	returnInt = ReturnInt;
 };
 
 CMenuSelector::CMenuSelector(const char * OptionName, const bool Active , std::string& OptionValue, int* ReturnInt ,int ReturnIntValue ) : CMenuItem()
 {
-	height     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	height = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
 	optionValueString = &OptionValue;
 	optionName =        OptionName;
 	strncpy(buffer,OptionValue.c_str(),BUFFER_MAX);
 	buffer[BUFFER_MAX-1] = 0;// terminate string
-	optionValue =       buffer;
-	active =            Active;
-	returnIntValue =    ReturnIntValue;
-	returnInt =         ReturnInt;
+	optionValue = buffer;
+	active = Active;
+	returnIntValue = ReturnIntValue;
+	returnInt = ReturnInt;
 };
 
 int CMenuSelector::exec(CMenuTarget */*parent*/)
@@ -3723,7 +3723,7 @@ int CMenuSelector::exec(CMenuTarget */*parent*/)
 	return menu_return::RETURN_EXIT;
 };
 
-int CMenuSelector::paint( bool selected )
+int CMenuSelector::paint(bool selected, bool /*AfterPulldown*/)
 {
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 

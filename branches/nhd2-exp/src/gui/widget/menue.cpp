@@ -59,8 +59,8 @@
 #define ICON_OFFSET	5	// offset from left border
 #define LOCAL_OFFSET	8	// offset from painted icon at left border
 
-static int HEIGHT;
-static int FULL_HEIGHT;
+unsigned int HEIGHT;
+unsigned FULL_HEIGHT;
 
 // CMenuItem
 void CMenuItem::init(const int X, const int Y, const int DX, const int OFFX)
@@ -755,7 +755,7 @@ int CMenuOptionNumberChooser::exec(CMenuTarget *)
 	return menu_return::RETURN_NONE;
 }
 
-int CMenuOptionNumberChooser::paint(bool selected)
+int CMenuOptionNumberChooser::paint(bool selected, bool /*AfterPulldown*/)
 {
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 
@@ -931,6 +931,7 @@ int CMenuOptionChooser::exec(CMenuTarget *parent)
 		}
 		
 		menu->exec(NULL, "");
+		menu->hide();
 		ret = menu_return::RETURN_REPAINT;
 		
 		if(select >= 0) 
@@ -962,7 +963,7 @@ int CMenuOptionChooser::exec(CMenuTarget *parent)
 	}
 	
 	if(parent)
-		paint(true);
+		paint(true, true);
 	
 	if(observ)
 		wantsRepaint = observ->changeNotify(optionName, optionValue);
@@ -973,7 +974,7 @@ int CMenuOptionChooser::exec(CMenuTarget *parent)
 	return ret;
 }
 
-int CMenuOptionChooser::paint( bool selected )
+int CMenuOptionChooser::paint(bool selected, bool AfterPulldown)
 {
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 
@@ -1065,7 +1066,7 @@ int CMenuOptionChooser::paint( bool selected )
 	// option
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposOption, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - (stringstartposOption - x), l_option, color, 0, true); // UTF-8
 
-	if (selected)
+	if (selected && !AfterPulldown)
 	{
 #if 1	  
 		//helpbar
@@ -1156,6 +1157,7 @@ int CMenuOptionStringChooser::exec(CMenuTarget *parent)
 	if (parent)
 		parent->hide();
 
+	// pulldown
 	if( (!parent || msg == CRCInput::RC_ok) && pulldown ) 
 	{
 		int select = -1;
@@ -1179,11 +1181,11 @@ int CMenuOptionStringChooser::exec(CMenuTarget *parent)
 			menu->addItem(new CMenuForwarder(options[count].c_str(), true, NULL, selector, cnt), selected);
 		}
 		menu->exec(NULL, "");
+		menu->hide();
 		ret = menu_return::RETURN_REPAINT;
 		
 		if(select >= 0)
 			strcpy(optionValue, options[select].c_str());
-		
 		delete menu;
 		delete selector;
 	} 
@@ -1210,7 +1212,7 @@ int CMenuOptionStringChooser::exec(CMenuTarget *parent)
 	}
 
 	if(parent)
-		paint(true);
+		paint(true, true);
 	
 	if(observ) 
 		wantsRepaint = observ->changeNotify(name, optionValue);
@@ -1221,7 +1223,7 @@ int CMenuOptionStringChooser::exec(CMenuTarget *parent)
 	return ret;
 }
 
-int CMenuOptionStringChooser::paint( bool selected )
+int CMenuOptionStringChooser::paint( bool selected, bool afterPulldown)
 {
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 	uint8_t color   = COL_MENUCONTENT;
@@ -1287,7 +1289,7 @@ int CMenuOptionStringChooser::paint( bool selected )
 	
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposOption, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - (stringstartposOption - x),  optionValue, color, 0, true);
 	
-	if (selected)
+	if (selected && !afterPulldown)
 	{
 #if 1
 		//helpbar
@@ -1297,7 +1299,7 @@ int CMenuOptionStringChooser::paint( bool selected )
 		int fposy = HEIGHT - fheight;
 		
 		// refresh
-		frameBuffer->paintBoxRel(x, HEIGHT - fposy, dx, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+		frameBuffer->paintBoxRel(x, fposy, dx, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 		
 		// paint help icon
 		int icon_h_w = 0;
@@ -1378,7 +1380,7 @@ int CMenuOptionLanguageChooser::exec(CMenuTarget*)
 		return menu_return::RETURN_NONE;
 }
 
-int CMenuOptionLanguageChooser::paint( bool selected )
+int CMenuOptionLanguageChooser::paint( bool selected, bool /*AfterPulldown*/)
 {
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 	
@@ -1552,7 +1554,7 @@ const char * CMenuForwarder::getName(void)
 	return l_name;
 }
 
-int CMenuForwarder::paint(bool selected)
+int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 {
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 	int height = getHeight();
@@ -1708,7 +1710,7 @@ const char * CMenuSeparator::getString(void)
 	return text.c_str();
 }
 
-int CMenuSeparator::paint(bool /*selected*/)
+int CMenuSeparator::paint(bool /*selected*/, bool /*AfterPulldown*/)
 {
 	int height;
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
@@ -2002,7 +2004,7 @@ const char * CMenuForwarderExtended::getHelpText(void)
 	return helptext.c_str();
 }
 
-int CMenuForwarderExtended::paint(bool selected)
+int CMenuForwarderExtended::paint(bool selected, bool /*AfterPulldown*/)
 {
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 	int height = getHeight();

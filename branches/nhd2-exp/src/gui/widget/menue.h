@@ -98,7 +98,7 @@ class CMenuItem
 		}
 		virtual ~CMenuItem(){}
 		virtual void init(const int X, const int Y, const int DX, const int OFFX);
-		virtual int paint (bool selected = false ) = 0;
+		virtual int paint (bool selected = false, bool AfterPulldown = false) = 0;
 		virtual int getHeight(void) const = 0;
 		virtual int getWidth(void) const
 		{
@@ -158,7 +158,7 @@ class CMenuOptionNumberChooser : public CAbstractMenuOptionChooser
 		CMenuOptionNumberChooser(const neutrino_locale_t Name, int * const OptionValue, const bool Active, const int min_value, const int max_value, CChangeObserver * const Observ = NULL, const int print_offset = 0, const int special_value = 0, const neutrino_locale_t special_value_name = NONEXISTANT_LOCALE, const char * non_localized_name = NULL);
 		CMenuOptionNumberChooser(const char * const Name, int * const OptionValue, const bool Active, const int min_value, const int max_value, CChangeObserver * const Observ = NULL, const int print_offset = 0, const int special_value = 0, const neutrino_locale_t special_value_name = NONEXISTANT_LOCALE, const char * non_localized_name = NULL);
 		
-		int paint( bool selected );
+		int paint(bool selected, bool AfterPulldown = false);
 
 		int exec(CMenuTarget* parent);
 };
@@ -187,9 +187,7 @@ class CMenuOptionChooser : public CAbstractMenuOptionChooser
 
 		void setOptionValue(const int newvalue);
 		int getOptionValue(void) const;
-
-		int paint( bool selected );
-
+		int paint(bool selected, bool AfterPulldown = false);
 		int exec(CMenuTarget * parent);
 };
 
@@ -209,7 +207,7 @@ class CMenuOptionStringChooser : public CMenuItem
 		~CMenuOptionStringChooser();
 
 		void addOption(const char * value);
-		int paint(bool selected );
+		int paint(bool selected, bool AfterPulldown = false);
 		int getHeight(void) const
 		{
 			return height;
@@ -234,7 +232,7 @@ class CMenuOptionLanguageChooser : public CMenuItem
 		~CMenuOptionLanguageChooser();
 
 		void addOption(const char * value);
-		int paint( bool selected );
+		int paint(bool selected, bool AfterPulldown = false);
 		int getHeight(void) const
 		{
 			return height;
@@ -270,7 +268,7 @@ class CMenuForwarder : public CMenuItem
 		CMenuForwarder(const char * const Text, const bool Active = true, const char * const Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
 		CMenuForwarder(const char * const Text, const bool Active, const std::string &Option, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL);
 		
-		int paint(bool selected = false );
+		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
 		int getWidth(void) const;
 		int exec(CMenuTarget * parent);
@@ -301,7 +299,7 @@ class CMenuSeparator : public CMenuItem
 		CMenuSeparator(const int Type = EMPTY, const neutrino_locale_t Text = NONEXISTANT_LOCALE);
 		//CMenuSeparator(const int Type = EMPTY, const char * const Text = NULL);
 
-		int paint(bool selected = false );
+		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
 		int getWidth(void) const;
 
@@ -385,7 +383,7 @@ class CMenuForwarderExtended : public CMenuItem
 		CMenuForwarderExtended(const char * const Text, const bool Active = true, const char * const Option = NULL, CMenuTarget* Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const char * const ItemIcon = NULL, const char* const HelpText = NULL );
 		CMenuForwarderExtended(const char * const Text, const bool Active, const std::string &Option, CMenuTarget* Target = NULL, const char * const ActionKey = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const char * const ItemIcon = NULL, const char * const HelpText = NULL);
 		
-		int paint(bool selected = false );
+		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
 		int getWidth(void) const;
 		int exec(CMenuTarget * parent);
