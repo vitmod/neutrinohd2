@@ -66,7 +66,7 @@
 #include <driver/screen_max.h>
 #include <driver/audioplay.h>
 #if ENABLE_LCD
-#include "driver/lcdd.h"
+#include <driver/lcdd.h>
 #define CVFD CLCD
 #else
 #if defined (PLATFORM_COOLSTREAM)

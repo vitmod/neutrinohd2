@@ -168,12 +168,8 @@ void* CLCD::TimeThread(void *)
 	return NULL;
 }
 
-void CLCD::init(const char * fontfile, const char * fontname,
-                const char * fontfile2, const char * fontname2,
-                const char * fontfile3, const char * fontname3)
+void CLCD::init(const char * fontfile, const char * fontname, const char * fontfile2, const char * fontname2, const char * fontfile3, const char * fontname3)
 {
-	//InitNewClock(); //FIXME
-
 	if (!lcdInit(fontfile, fontname, fontfile2, fontname2, fontfile3, fontname3 ))
 	{
 		printf("[lcdd] LCD-Init failed!\n");
@@ -213,9 +209,7 @@ const char * const background_path[NUMBER_OF_PATHS] = {
 	DATADIR "/lcdd/icons/"
 };
 
-bool CLCD::lcdInit(const char * fontfile, const char * fontname,
-		   const char * fontfile2, const char * fontname2,
-		   const char * fontfile3, const char * fontname3)
+bool CLCD::lcdInit(const char * fontfile, const char * fontname, const char * fontfile2, const char * fontname2, const char * fontfile3, const char * fontname3)
 {
 	fontRenderer = new LcdFontRenderClass(&display);
 	const char * style_name = fontRenderer->AddFont(fontfile);
