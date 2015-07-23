@@ -5270,25 +5270,6 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 		
 		return menu_return::RETURN_REPAINT;
 	}
-	else if(actionKey == "setfptime")
-	{
-		CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, (char *)"setting fp time..." );
-		hintBox->paint();
-
-#if !defined ENABLE_LCD
-#ifdef __sh__
-		CVFD::getInstance()->setFPTime();
-#endif
-#endif
-		
-		sleep(2);
-		
-		hintBox->hide();
-		delete hintBox;
-		hintBox = NULL;
-
-		return menu_return::RETURN_REPAINT;	
-	}
 	else if(actionKey == "savekeymap")
 	{
 		CHintBox * hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_KEYBINDINGMENU_SAVEKEYMAP_HINT)); // UTF-8

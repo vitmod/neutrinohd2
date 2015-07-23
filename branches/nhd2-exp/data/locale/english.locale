@@ -742,7 +742,7 @@ messagebox.ok OK
 messagebox.yes Yes
 miscsettings.bootinfo Show infos at start
 miscsettings.bootmenu Show boot menu
-miscsettings.channellist Channellist
+miscsettings.channellist Channellist settings
 miscsettings.channellist_epgtext_align Programtext Align
 miscsettings.driver_boot driver and boot options
 miscsettings.epg_cache EPG-Cache (Days)

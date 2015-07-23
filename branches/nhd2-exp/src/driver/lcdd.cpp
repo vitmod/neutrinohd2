@@ -102,12 +102,8 @@ CLCD::CLCD()
 	percentOver = 0;
 	volume = 0;
 	timeout_cnt = 0;
-	icon_dolby = false;
-#if defined (USE_OPENGL)
-	has_lcd = false;
-#else	
+	icon_dolby = false;	
 	has_lcd = true;
-#endif	
 	is4digits = false;
 	clearClock = 0;
 }
