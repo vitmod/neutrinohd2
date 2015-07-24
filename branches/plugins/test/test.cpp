@@ -455,7 +455,7 @@ const struct button_label Buttons[4] =
 
 void CTestMenu::testCButtons()
 {
-	::paintButtons(CFrameBuffer::getInstance(), g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, g_settings.screen_StartX + 50 + BORDER_LEFT, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, 4, Buttons);
+	::paintButtons(CFrameBuffer::getInstance(), g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, g_settings.screen_StartX + 50 + BORDER_LEFT, g_settings.screen_StartY + 50, (g_settings.screen_EndX - g_settings.screen_StartX - 100)/4, 4, Buttons);
 	usleep(1000000);
 	hide();
 }
