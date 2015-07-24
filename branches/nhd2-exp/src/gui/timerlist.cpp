@@ -63,6 +63,7 @@
 
 #include <system/settings.h>
 #include <system/fsmounter.h>
+#include <system/debug.h>
 
 #include <global.h>
 #include <neutrino.h>
@@ -257,7 +258,6 @@ CTimerList::CTimerList()
 	visible = false;
 	selected = 0;
 	liststart = 0;
-	Timer = new CTimerdClient();
 	skipEventID = 0;
 	
 	//
@@ -268,7 +268,6 @@ CTimerList::CTimerList()
 CTimerList::~CTimerList()
 {
 	timerlist.clear();
-	delete Timer;
 }
 
 int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
@@ -279,7 +278,7 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 	{
 		timerlist[selected].announceTime = timerlist[selected].alarmTime -60;
 		if(timerlist[selected].eventRepeat >= CTimerd::TIMERREPEAT_WEEKDAYS)
-			Timer->getWeekdaysFromStr(&timerlist[selected].eventRepeat, m_weekdaysStr);
+			g_Timerd->getWeekdaysFromStr(&timerlist[selected].eventRepeat, m_weekdaysStr);
 		
 		if(timerlist[selected].eventType == CTimerd::TIMER_RECORD)
 		{
@@ -289,15 +288,15 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 			else
 				timerlist[selected].apids = (timer_apids_std * TIMERD_APIDS_STD) | (timer_apids_ac3 * TIMERD_APIDS_AC3) |
 					(timer_apids_alt * TIMERD_APIDS_ALT);
-			Timer->modifyTimerAPid(timerlist[selected].eventID,timerlist[selected].apids);
-			Timer->modifyRecordTimerEvent(timerlist[selected].eventID, timerlist[selected].announceTime,
+			g_Timerd->modifyTimerAPid(timerlist[selected].eventID,timerlist[selected].apids);
+			g_Timerd->modifyRecordTimerEvent(timerlist[selected].eventID, timerlist[selected].announceTime,
 						      timerlist[selected].alarmTime,
 						      timerlist[selected].stopTime, timerlist[selected].eventRepeat,
 						      timerlist[selected].repeatCount,timerlist[selected].recordingDir);
 		} 
 		else
 		{
-			Timer->modifyTimerEvent(timerlist[selected].eventID, timerlist[selected].announceTime,
+			g_Timerd->modifyTimerEvent(timerlist[selected].eventID, timerlist[selected].announceTime,
 						timerlist[selected].alarmTime,
 						timerlist[selected].stopTime, timerlist[selected].eventRepeat,
 						timerlist[selected].repeatCount);
@@ -364,15 +363,15 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 		}
 		
 		if(timerNew.eventRepeat >= CTimerd::TIMERREPEAT_WEEKDAYS)
-			Timer->getWeekdaysFromStr(&timerNew.eventRepeat, m_weekdaysStr);
+			g_Timerd->getWeekdaysFromStr(&timerNew.eventRepeat, m_weekdaysStr);
 
-		if (Timer->addTimerEvent(timerNew.eventType,data,timerNew.announceTime,timerNew.alarmTime, timerNew.stopTime,timerNew.eventRepeat,timerNew.repeatCount,false) == -1)
+		if (g_Timerd->addTimerEvent(timerNew.eventType,data,timerNew.announceTime,timerNew.alarmTime, timerNew.stopTime,timerNew.eventRepeat,timerNew.repeatCount,false) == -1)
 		{
 			bool forceAdd = askUserOnTimerConflict(timerNew.announceTime,timerNew.stopTime);
 
 			if (forceAdd)
 			{
-				Timer->addTimerEvent(timerNew.eventType,data,timerNew.announceTime,timerNew.alarmTime, timerNew.stopTime, timerNew.eventRepeat,timerNew.repeatCount,true);
+				g_Timerd->addTimerEvent(timerNew.eventType,data,timerNew.announceTime,timerNew.alarmTime, timerNew.stopTime, timerNew.eventRepeat,timerNew.repeatCount,true);
 			}
 		}
 		
@@ -390,7 +389,8 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 void CTimerList::updateEvents(void)
 {
 	timerlist.clear();
-	Timer->getTimerList (timerlist);
+	g_Timerd->getTimerList(timerlist);
+	
 	//Remove last deleted event from List
 	CTimerd::TimerList::iterator timer = timerlist.begin();
 	for(; timer != timerlist.end();timer++)
@@ -508,7 +508,7 @@ int CTimerList::show()
 		}
 		else if((msg == CRCInput::RC_red) && !(timerlist.empty()))
 		{
-			Timer->removeTimerEvent(timerlist[selected].eventID);
+			g_Timerd->removeTimerEvent(timerlist[selected].eventID);
 			skipEventID=timerlist[selected].eventID;
 			update = true;
 		}
@@ -976,7 +976,7 @@ int CTimerList::modifyTimer()
 		timerSettings.addItem( m2);
 	}
 
-	Timer->setWeekdaysToStr(timer->eventRepeat, m_weekdaysStr);
+	g_Timerd->setWeekdaysToStr(timer->eventRepeat, m_weekdaysStr);
 	timer->eventRepeat = (CTimerd::CTimerEventRepeat)(((int)timer->eventRepeat) & 0x1FF);
 	CStringInput timerSettings_weekdays(LOCALE_TIMERLIST_WEEKDAYS, m_weekdaysStr, 7, LOCALE_TIMERLIST_WEEKDAYS_HINT_1, LOCALE_TIMERLIST_WEEKDAYS_HINT_2, "-X");
 	CMenuForwarder *m4 = new CMenuForwarder(LOCALE_TIMERLIST_WEEKDAYS, ((int)timer->eventRepeat) >= (int)CTimerd::TIMERREPEAT_WEEKDAYS, m_weekdaysStr, &timerSettings_weekdays );
@@ -996,7 +996,7 @@ int CTimerList::modifyTimer()
 
 	if (!recDirs.hasItem())
 	{
-		printf("[CTimerList] warning: no network devices available\n");
+		dprintf(DEBUG_NORMAL, "CTimerList::modifyTimer: warning: no network devices available\n");
 	}
 	
 	bool recDirEnabled = recDirs.hasItem() && (timer->eventType == CTimerd::TIMER_RECORD) && (recDir != NULL);
@@ -1081,7 +1081,7 @@ int CTimerList::newTimer()
 	CMountChooser recDirs(LOCALE_TIMERLIST_RECORDING_DIR,NEUTRINO_ICON_SETTINGS, NULL, timerNew.recordingDir, g_settings.network_nfs_recordingdir);
 	if (!recDirs.hasItem())
 	{
-		printf("[CTimerList] warning: no network devices available\n");
+		dprintf(DEBUG_NORMAL, "CTimerList::modifyTimer: warning: no network devices available\n");
 	}
 	CMenuForwarder* m7 = new CMenuForwarder(LOCALE_TIMERLIST_RECORDING_DIR, recDirs.hasItem(), timerNew.recordingDir, &recDirs);
 
@@ -1096,7 +1096,7 @@ int CTimerList::newTimer()
 
 
 	CTimerListNewNotifier notifier2((int *)&timerNew.eventType,
-					&timerNew.stopTime,m2,m6,m8,m9,m10,m7,
+					&timerNew.stopTime, m2, m6, m8, m9, m10, m7,
 					timerSettings_stopTime.getValue());
 	CMenuOptionChooser *m0 = new CMenuOptionChooser(LOCALE_TIMERLIST_TYPE, (int *)&timerNew.eventType, TIMERLIST_TYPE_OPTIONS, TIMERLIST_TYPE_OPTION_COUNT, true, &notifier2);
 
@@ -1169,7 +1169,7 @@ bool askUserOnTimerConflict(time_t announceTime, time_t stopTime)
 	// todo: localize message
 	//g_Locale->getText(TIMERLIST_OVERLAPPING_MESSAGE);
 
-	return (MessageBox(LOCALE_MESSAGEBOX_INFO,timerbuf,CMessageBox::mbrNo,CMessageBox::mbNo|CMessageBox::mbYes) == CMessageBox::mbrYes);
+	return (MessageBox(LOCALE_MESSAGEBOX_INFO, timerbuf, CMessageBox::mbrNo, CMessageBox::mbNo|CMessageBox::mbYes) == CMessageBox::mbrYes);
 }
 
 #include "gui/bouquetlist.h"

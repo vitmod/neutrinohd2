@@ -291,7 +291,11 @@ inline void unlockBouquets(void)
 }
 
 bool timeset = false;
+#if USE_OPENGL
+bool bTimeCorrect = true;
+#else
 bool bTimeCorrect = false;
+#endif
 pthread_cond_t timeIsSetCond = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t timeIsSetMutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -5132,7 +5136,7 @@ void sectionsd_main_thread(void */*data*/)
 	if (!ntp_config.loadConfig(CONF_FILE))
 	{
 		/* set defaults if no configuration file exists */
-		printf("[sectionsd] %s not found\n", CONF_FILE);
+		printf("sectionsd_main_thread: %s not found\n", CONF_FILE);
 	}
 
 	ntpserver = ntp_config.getString("network_ntpserver", "de.pool.ntp.org");
@@ -5162,7 +5166,7 @@ void sectionsd_main_thread(void */*data*/)
 
 	if (!sectionsd_server.prepare(SECTIONSD_UDS_NAME)) 
 	{
-		dprintf(DEBUG_NORMAL, "[sectionsd] failed to prepare basic server\n");
+		dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to prepare basic server\n");
 		return;
 	}
 	
@@ -5173,7 +5177,7 @@ void sectionsd_main_thread(void */*data*/)
 
 	if (rc) 
 	{
-		dprintf(DEBUG_NORMAL, "[sectionsd] failed to create time-thread (rc=%d)\n", rc);
+		dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create time-thread (rc=%d)\n", rc);
 		return;
 	}
 
@@ -5182,7 +5186,7 @@ void sectionsd_main_thread(void */*data*/)
 
 	if (rc) 
 	{
-		dprintf(DEBUG_NORMAL, "[sectionsd] failed to create eit-thread (rc=%d)\n", rc);
+		dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create eit-thread (rc=%d)\n", rc);
 		return;
 	}
 
@@ -5191,7 +5195,7 @@ void sectionsd_main_thread(void */*data*/)
 
 	if (rc) 
 	{
-		dprintf(DEBUG_NORMAL, "[sectionsd] failed to create eit-thread (rc=%d)\n", rc);
+		dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create eit-thread (rc=%d)\n", rc);
 		return;
 	}
 
@@ -5201,7 +5205,7 @@ void sectionsd_main_thread(void */*data*/)
 
 	if (rc) 
 	{
-		dprintf(DEBUG_NORMAL, "[sectionsd] failed to create fseit-thread (rc=%d)\n", rc);
+		dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create fseit-thread (rc=%d)\n", rc);
 		return;
 	}
 
@@ -5210,13 +5214,13 @@ void sectionsd_main_thread(void */*data*/)
 
 	if (rc) 
 	{
-		dprintf(DEBUG_NORMAL, "[sectionsd] failed to create housekeeping-thread (rc=%d)\n", rc);
+		dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create housekeeping-thread (rc=%d)\n", rc);
 		return;
 	}
 
 	int policy;
 	rc = pthread_getschedparam(pthread_self(), &policy, &parm);
-	dprintf(DEBUG_DEBUG, "mainloop getschedparam %d policy %d prio %d\n", rc, policy, parm.sched_priority);
+	dprintf(DEBUG_DEBUG, "sectionsd_main_thread: mainloop getschedparam %d policy %d prio %d\n", rc, policy, parm.sched_priority);
 	
 	sectionsd_ready = true;
 
@@ -5261,12 +5265,12 @@ void sectionsd_main_thread(void */*data*/)
 		usleep(20000);
 	}
 
-	dprintf(DEBUG_NORMAL, "[sectionsd] stopping...\n");
+	dprintf(DEBUG_NORMAL, "sectionsd_main_thread: stopping...\n");
 	
 	scanning = 0;
 	timeset = true;
 	
-	dprintf(DEBUG_NORMAL, "broadcasting...\n");
+	dprintf(DEBUG_NORMAL, "sectionsd_main_thread: broadcasting...\n");
 	
 	pthread_mutex_lock(&timeIsSetMutex);
 	pthread_cond_broadcast(&timeIsSetCond);
@@ -5281,7 +5285,7 @@ void sectionsd_main_thread(void */*data*/)
 	pthread_cond_broadcast(&dmxCN.change_cond);
 	pthread_mutex_unlock(&dmxCN.start_stop_mutex);
 
-	dprintf(DEBUG_NORMAL, "pausing...\n");
+	dprintf(DEBUG_NORMAL, "sectionsd_main_thread: pausing...\n");
 	
 	dmxEIT.request_pause();
 	dmxCN.request_pause();
@@ -5317,7 +5321,7 @@ void sectionsd_main_thread(void */*data*/)
 	// close freesatdmx
 	dmxFSEIT.close();
 
-	dprintf(DEBUG_NORMAL, "[sectionsd] ended\n");
+	dprintf(DEBUG_NORMAL, "sectionsd_main_thread: ended\n");
 
 	return;
 }

@@ -65,12 +65,12 @@ void CTimerManager::Init(void)
 	int was_timer_wakeup = atoi((const char*) buffer);
 
 	if(ret < 0)
-		printf("[timerd] can not read was_timer_wakeup\n");
+		printf("CTimerManager::Init: can not read was_timer_wakeup\n");
 	else
 	{
 		wakeup = was_timer_wakeup;
 
-		dprintf(DEBUG_NORMAL, "[timermanager]  wakeup from standby: %s\n", wakeup ? "yes" : "no");
+		dprintf(DEBUG_NORMAL, "CTimerManager::Init: wakeup from standby: %s\n", wakeup ? "yes" : "no");
 
 		if(wakeup)
 			creat("/tmp/.wakeup", 0);
@@ -83,10 +83,10 @@ void CTimerManager::Init(void)
 	/* thread starten */
 	if(pthread_create (&thrTimer, NULL, timerThread, (void *) this) != 0 )
 	{
-		dprintf(DEBUG_NORMAL, "[timermanager]  create timerThread failed\n");
+		dprintf(DEBUG_NORMAL, "CTimerManager::Init: create timerThread failed\n");
 	}
 	
-	dprintf(DEBUG_NORMAL, "[timermanager] timermanager created\n");
+	dprintf(DEBUG_NORMAL, "CTimerManager::Init: timermanager created\n");
 }
 
 CTimerManager * CTimerManager::getInstance()

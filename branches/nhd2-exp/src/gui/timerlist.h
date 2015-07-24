@@ -56,11 +56,9 @@ class CTimerList : public CMenuTarget
 		int               	buttonHeight;
 		bool			visible;			
 
-		CTimerdClient *Timer;
 		CTimerd::TimerList timerlist;             // List of timers		
 		CTimerd::responseGetTimer timerNew;
 		int timerNew_standby_on;
-		//char timerNew_channel_name[30];
 		char m_weekdaysStr[8];
 		
 		int timer_apids_dflt;
@@ -95,9 +93,6 @@ class CTimerList : public CMenuTarget
 		static const char * convertTimerType2String(const CTimerd::CTimerEventTypes type); // UTF-8
 		static std::string convertTimerRepeat2String(const CTimerd::CTimerEventRepeat rep); // UTF-8
 		static std::string convertChannelId2String(const t_channel_id id); // UTF-8
-		
-		//char timerNew_channel_name[30];
-		//std::string timerNew_channel_name;
 };
 
 bool askUserOnTimerConflict(time_t announceTime, time_t stopTime);
@@ -108,12 +103,8 @@ bool askUserOnTimerConflict(time_t announceTime, time_t stopTime);
 class CSelectChannel : public CMenuWidget
 {
 	private:
-		//t_channel_id chan_id;
-	
 		void InitChannelHelper(CZapitClient::channelsMode mode);
 		
-		//friend class CTimerList;
-
 	public:
 		CSelectChannel();
 		~CSelectChannel();

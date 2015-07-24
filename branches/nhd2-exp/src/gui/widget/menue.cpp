@@ -1668,31 +1668,21 @@ CMenuSeparator::CMenuSeparator(const int Type, const neutrino_locale_t Text)
 	directKey = CRCInput::RC_nokey;
 	iconName = "";
 	type     = Type;
-	text     = g_Locale->getText(Text);
-}
-
-/*
-CMenuSeparator::CMenuSeparator(const int Type, const char* const Text)
-{
-	directKey = CRCInput::RC_nokey;
-	iconName = "";
-	type     = Type;
 	text     = Text;
 }
-*/
 
 int CMenuSeparator::getHeight(void) const
 {
 	if ((type & LINE))
 	{
-		return (text == "") ? BORDER_LEFT : g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+		return (text == NONEXISTANT_LOCALE) ? BORDER_LEFT : g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
 	}
 	else
 	{
 		int iconName_w, iconName_h;
 		CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RED, &iconName_w, &iconName_h);
 		
-		return std::max(iconName_h, (text == "") ? BORDER_LEFT : g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight()) + 3;
+		return std::max(iconName_h, (text == NONEXISTANT_LOCALE) ? BORDER_LEFT : g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight()) + 3;
 	}
 }
 
@@ -1703,7 +1693,7 @@ int CMenuSeparator::getWidth(void) const
 
 const char * CMenuSeparator::getString(void)
 {
-	return text.c_str();
+	return g_Locale->getText(text);
 }
 
 int CMenuSeparator::paint(bool /*selected*/, bool /*AfterPulldown*/)
@@ -1723,7 +1713,7 @@ int CMenuSeparator::paint(bool /*selected*/, bool /*AfterPulldown*/)
 	if ((type & STRING))
 	{
 
-		if (text != g_Locale->getText(NONEXISTANT_LOCALE))
+		if (text != NONEXISTANT_LOCALE)
 		{
 			int stringstartposX;
 

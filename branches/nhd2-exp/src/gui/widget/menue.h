@@ -256,7 +256,6 @@ class CMenuForwarder : public CMenuItem
 	protected:
 		neutrino_locale_t text;
 		std::string textString;
-		//std::string optionText;
 
 		virtual const char * getOption(void);
 		virtual const char * getName(void);
@@ -283,7 +282,7 @@ class CMenuSeparator : public CMenuItem
 	int type;
 
 	public:
-		std::string text;
+		neutrino_locale_t text;
 
 		enum
 		{
@@ -297,7 +296,6 @@ class CMenuSeparator : public CMenuItem
 
 
 		CMenuSeparator(const int Type = EMPTY, const neutrino_locale_t Text = NONEXISTANT_LOCALE);
-		//CMenuSeparator(const int Type = EMPTY, const char * const Text = NULL);
 
 		int paint(bool selected = false, bool AfterPulldown = false);
 		int getHeight(void) const;
@@ -337,6 +335,10 @@ class CLockedMenuForwarder : public CMenuForwarder, public CPINProtection
 		virtual CMenuTarget* getParent(){ return Parent;};
 	public:
 		CLockedMenuForwarder(const neutrino_locale_t Text, char * _validPIN, bool alwaysAsk = false, const bool Active = true, char * Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL)
+		: CMenuForwarder(Text, Active, Option, Target, ActionKey, DirectKey, IconName) ,
+		  CPINProtection( _validPIN){AlwaysAsk = alwaysAsk;};
+		  
+		CLockedMenuForwarder(const char * const Text, char * _validPIN, bool alwaysAsk = false, const bool Active = true, char * Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL)
 		: CMenuForwarder(Text, Active, Option, Target, ActionKey, DirectKey, IconName) ,
 		  CPINProtection( _validPIN){AlwaysAsk = alwaysAsk;};
 
@@ -402,6 +404,10 @@ class CLockedMenuForwarderExtended : public CMenuForwarderExtended, public CPINP
 		virtual CMenuTarget* getParent(){ return Parent;};
 	public:
 		CLockedMenuForwarderExtended(const neutrino_locale_t Text, char * _validPIN, bool alwaysAsk = false, const bool Active = true, char * Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const char * const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE )
+		 : CMenuForwarderExtended(Text, Active, Option, Target, ActionKey, DirectKey, IconName, ItemIcon, HelpText) ,
+		   CPINProtection( _validPIN){AlwaysAsk = alwaysAsk;};
+		   
+		CLockedMenuForwarderExtended(const char * const Text, char * _validPIN, bool alwaysAsk = false, const bool Active = true, char * Option = NULL, CMenuTarget * Target = NULL, const char * const ActionKey = NULL, neutrino_msg_t DirectKey = CRCInput::RC_nokey, const char * const IconName = NULL, const char * const ItemIcon = NULL, const neutrino_locale_t HelpText = NONEXISTANT_LOCALE )
 		 : CMenuForwarderExtended(Text, Active, Option, Target, ActionKey, DirectKey, IconName, ItemIcon, HelpText) ,
 		   CPINProtection( _validPIN){AlwaysAsk = alwaysAsk;};
 
