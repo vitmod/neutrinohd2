@@ -453,18 +453,7 @@ bool CWebTV::readChannellist(std::string filename)
 				
 					description = "stream";
 					
-					/*
-					webtv_channels * tmp = new webtv_channels();
-						
-					tmp->title = title.c_str();
-					tmp->url = urlDecode(url).c_str();
-					tmp->description = description.c_str();
-					tmp->locked = false;
-						
-					// fill channelslist
-					channels.push_back(tmp);
-					*/
-					addUrl2Playlist(urlDecode(url).c_str(), title.c_str(), description.c_str());
+					addUrl2Playlist(urlDecode(url).c_str(), title.c_str(), description.c_str()); //urlDecode defined in edvbstring.h
 				}
 			}
 			
@@ -522,22 +511,9 @@ bool CWebTV::readChannellist(std::string filename)
 						
 						processPlaylistUrl(url, title, description) ;
 					}
-					
-					
-					// fill webtv list
-					/*
-					webtv_channels * tmp = new webtv_channels();
-					
-					tmp->title = title;
-					tmp->url = url;
-					tmp->description = description;
-					tmp->locked = locked;
-					
-					// fill channelslist
-					channels.push_back(tmp);
-					*/
 
 					l1 = l1->xmlNextNode;
+					g_RCInput->getMsg(&msg, &data, 0);
 				}
 			}
 			hintBox->hide();
@@ -578,17 +554,6 @@ bool CWebTV::readChannellist(std::string filename)
 					{
 						description = "stream";
 					
-						/*
-						webtv_channels * tmp = new webtv_channels();
-							
-						tmp->title = name;
-						tmp->url = url;
-						tmp->description = description.c_str();
-						tmp->locked = false;
-							
-						// fill channelslist
-						channels.push_back(tmp);
-						*/
 						addUrl2Playlist(url, name, description.c_str());
 					}
 				}
