@@ -166,8 +166,10 @@ void CBEChannelWidget::paint()
 	}
 
 	int ypos = y + theight;
+	
+	// scrollbar
 	int sb = fheight*listmaxshow;
-	frameBuffer->paintBoxRel(x + width - 15, ypos, 15, sb,  COL_MENUCONTENT_PLUS_1);
+	frameBuffer->paintBoxRel(x + width - SCROLLBAR_WIDTH, ypos, SCROLLBAR_WIDTH, sb,  COL_MENUCONTENT_PLUS_1);
 
 	int sbc= ((Channels->size() - 1)/ listmaxshow) + 1;
 	float sbh = (sb - 4)/ sbc;
@@ -229,8 +231,6 @@ void CBEChannelWidget::clearItem2DetailsLine()
 
 void CBEChannelWidget::paintItem2DetailsLine(int pos, int /*ch_index*/)
 {
-#define ConnectLineBox_Width	16
-
 	int xpos  = x - ConnectLineBox_Width;
 	int ypos1 = y + theight + pos*fheight;
 	int ypos2 = y + height + ButtonHeight;

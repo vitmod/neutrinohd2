@@ -242,7 +242,7 @@ class CNeutrinoApp : public CMenuTarget, CChangeObserver
 		
 		void SendSectionsdConfig(void);
 		int GetChannelMode(void) { return g_settings.channel_mode; };
-		void SetChannelMode(int mode);
+		void SetChannelMode(int newmode, int nMode);
 		
 		//dvb/txt subs
 		void quickZap(int msg);

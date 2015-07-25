@@ -1602,12 +1602,12 @@ void CNeutrinoApp::channelsInit(bool /*bOnly*/)
 	
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::channelsInit: got %d RADIO bouquets\n", bnum);
 
-	SetChannelMode( g_settings.channel_mode);
+	SetChannelMode( g_settings.channel_mode, mode);
 
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::channelsInit: All bouquets-channels received\n");
 }
 
-void CNeutrinoApp::SetChannelMode(int newmode)
+void CNeutrinoApp::SetChannelMode(int newmode, int nMode)
 {
 	const char *aLISTMODE[] = {
 		"LIST_MODE_FAV",
@@ -1616,18 +1616,17 @@ void CNeutrinoApp::SetChannelMode(int newmode)
 		"LIST_MODE_ALL"
 	};
 	
-	
-	dprintf(DEBUG_NORMAL, "CNeutrinoApp::SetChannelMode %s\n", aLISTMODE[newmode]);
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::SetChannelMode: ChannelsMode%s\n", aLISTMODE[newmode]);
 
-	if(mode == mode_radio)
+	if(nMode == mode_radio)
 		channelList = RADIOchannelList;
-	else
+	else if(nMode = mode_tv)
 		channelList = TVchannelList;
 
 	switch(newmode) 
 	{
 		case LIST_MODE_FAV:
-			if(mode == mode_radio) 
+			if(nMode == mode_radio) 
 			{
 				bouquetList = RADIOfavList;
 			} 
@@ -1638,7 +1637,7 @@ void CNeutrinoApp::SetChannelMode(int newmode)
 			break;
 
 		case LIST_MODE_SAT:
-			if(mode == mode_radio) 
+			if(nMode == mode_radio) 
 			{
 				bouquetList = RADIOsatList;
 			} 
@@ -1649,7 +1648,7 @@ void CNeutrinoApp::SetChannelMode(int newmode)
 			break;
 
 		case LIST_MODE_ALL:
-			if(mode == mode_radio) 
+			if(nMode == mode_radio) 
 			{
 				bouquetList = RADIOallList;
 			} 
@@ -1661,7 +1660,7 @@ void CNeutrinoApp::SetChannelMode(int newmode)
 
 		default:
 		case LIST_MODE_PROV:
-			if(mode == mode_radio) 
+			if(nMode == mode_radio) 
 			{
 				bouquetList = RADIObouquetList;
 			} 
@@ -3440,12 +3439,12 @@ int CNeutrinoApp::handleMsg(const neutrino_msg_t msg, neutrino_msg_data_t data)
 			}
 			else if(msg == CRCInput::RC_sat) 
 			{
-				SetChannelMode(LIST_MODE_SAT);
+				SetChannelMode(LIST_MODE_SAT, mode);
 				nNewChannel = bouquetList->exec(true);
 			}
 			else if(msg == CRCInput::RC_favorites) 
 			{
-				SetChannelMode(LIST_MODE_FAV);
+				SetChannelMode(LIST_MODE_FAV, mode);
 				nNewChannel = bouquetList->exec(true);
 			}
 _repeat:
@@ -3454,7 +3453,7 @@ _repeat:
 			if(nNewChannel == -1) 
 			{
 				// restore orig. bouquet and selected channel on cancel
-				SetChannelMode(old_mode);
+				SetChannelMode(old_mode, mode);
 				bouquetList->activateBouquet(old_b, false);
 				
 				if(bouquetList->Bouquets.size())
@@ -4577,7 +4576,7 @@ void CNeutrinoApp::tvMode( bool rezap )
 
 	g_RemoteControl->tvMode();
 	
-	SetChannelMode( g_settings.channel_mode);//FIXME needed ?
+	SetChannelMode( g_settings.channel_mode, mode);//FIXME needed ?
 
 	if( rezap ) 
 	{
@@ -4650,7 +4649,7 @@ void CNeutrinoApp::radioMode( bool rezap)
 	}
 
 	g_RemoteControl->radioMode();
-	SetChannelMode( g_settings.channel_mode);//FIXME needed?
+	SetChannelMode( g_settings.channel_mode, mode);//FIXME needed?
 
 	if( rezap ) 
 	{

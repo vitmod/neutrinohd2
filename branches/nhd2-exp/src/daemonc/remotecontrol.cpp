@@ -818,6 +818,8 @@ void CRemoteControl::stopvideo()
 
 void CRemoteControl::radioMode()
 {
+	dprintf(DEBUG_NORMAL, "CRemoteControl::radioMode\n");
+	
 	g_Zapit->setMode( CZapitClient::MODE_RADIO );
 	
 	CVFD::getInstance()->ShowIcon(VFD_ICON_RADIO, true);
@@ -826,6 +828,8 @@ void CRemoteControl::radioMode()
 
 void CRemoteControl::tvMode()
 {
+	dprintf(DEBUG_NORMAL, "CRemoteControl::tvMode\n");
+	
 	g_Zapit->setMode( CZapitClient::MODE_TV );
 	
 	CVFD::getInstance()->ShowIcon(VFD_ICON_RADIO, false);

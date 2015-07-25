@@ -32,7 +32,9 @@
 #include <neutrino.h>
 
 #include <driver/screen_max.h>
-#include "gui/bouquetlist.h"
+#include <gui/bouquetlist.h>
+
+#include <system/debug.h>
 
 
 extern CBouquetList * bouquetList;
@@ -73,7 +75,8 @@ CZapitSetup::~CZapitSetup()
 
 int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 {
-	printf("[neutrino] init zapit menu setup...\n");
+	dprintf(DEBUG_NORMAL, "[neutrino] init zapit menu setup...\n");
+	
 	int   res = menu_return::RETURN_REPAINT;
 	
 	if(actionKey == "save_action") 
@@ -112,8 +115,8 @@ void CZapitSetup::showMenu()
 	//zapit
 	zapit->addItem(new CMenuOptionChooser(LOCALE_MISCSETTINGS_ZAPIT, &g_settings.uselastchannel, OPTIONS_OFF1_ON0_OPTIONS, OPTIONS_OFF1_ON0_OPTION_COUNT, true, this, CRCInput::convertDigitToKey(shortcut++) ));
 	zapit->addItem(zapit1 = new CMenuOptionChooser(LOCALE_ZAPITSETUP_LAST_MODE, &g_settings.lastChannelMode, OPTIONS_LASTMODE_OPTIONS, OPTIONS_LASTMODE_OPTION_COUNT, !g_settings.uselastchannel, this, CRCInput::convertDigitToKey(shortcut++) ));
-	zapit->addItem(zapit2 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_TV, !g_settings.uselastchannel && (mode == NeutrinoMessages::mode_tv), g_settings.StartChannelTV, new CSelectChannelWidget(), "tv", CRCInput::convertDigitToKey(shortcut++) ));
-	zapit->addItem(zapit3 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_RADIO, !g_settings.uselastchannel && (mode == NeutrinoMessages::mode_radio), g_settings.StartChannelRadio, new CSelectChannelWidget(), "radio", CRCInput::convertDigitToKey(shortcut++) ));
+	zapit->addItem(zapit2 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_TV, !g_settings.uselastchannel /*&& (mode == NeutrinoMessages::mode_tv)*/, g_settings.StartChannelTV, new CSelectChannelWidget(), "tv", CRCInput::convertDigitToKey(shortcut++) ));
+	zapit->addItem(zapit3 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_RADIO, !g_settings.uselastchannel /*&& (mode == NeutrinoMessages::mode_radio)*/, g_settings.StartChannelRadio, new CSelectChannelWidget(), "radio", CRCInput::convertDigitToKey(shortcut++) ));
 
 	zapit->exec(NULL, "");
 	zapit->hide();
@@ -127,8 +130,8 @@ bool CZapitSetup::changeNotify(const neutrino_locale_t OptionName, void *)
 	if (ARE_LOCALES_EQUAL(OptionName, LOCALE_MISCSETTINGS_ZAPIT))
 	{
 		zapit1->setActive(!g_settings.uselastchannel);
-		zapit2->setActive(!g_settings.uselastchannel && !(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio) );
-		zapit3->setActive(!g_settings.uselastchannel && !(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_tv) );
+		zapit2->setActive(!g_settings.uselastchannel /*&& !(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio)*/ );
+		zapit3->setActive(!g_settings.uselastchannel /*&& !(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_tv)*/ );
 	}
 
 	return true;
@@ -137,12 +140,10 @@ bool CZapitSetup::changeNotify(const neutrino_locale_t OptionName, void *)
 //select menu
 CSelectChannelWidget::CSelectChannelWidget()
 {
-
 }
 
 CSelectChannelWidget::~CSelectChannelWidget()
 {
-
 }
 
 int CSelectChannelWidget::exec(CMenuTarget *parent, const std::string &actionKey)
@@ -166,10 +167,18 @@ int CSelectChannelWidget::exec(CMenuTarget *parent, const std::string &actionKey
 	return res;
 }
 
+extern CRemoteControl * g_RemoteControl; 		// neutrino.cpp
 void CSelectChannelWidget::InitZapitChannelHelper(CZapitClient::channelsMode mode)
 {
-	if(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_iptv)
-		return;
+	// set channel mode
+	if(mode == CZapitClient::MODE_TV)
+	{
+		CNeutrinoApp::getInstance()->SetChannelMode( g_settings.channel_mode, NeutrinoMessages::mode_tv);
+	}
+	else if(mode == CZapitClient::MODE_RADIO)
+	{
+		CNeutrinoApp::getInstance()->SetChannelMode( g_settings.channel_mode, NeutrinoMessages::mode_radio);
+	}
 	
 	int nNewChannel;
 	int nNewBouquet;
@@ -179,8 +188,6 @@ void CSelectChannelWidget::InitZapitChannelHelper(CZapitClient::channelsMode mod
 	if (nNewBouquet > -1)
 	{
 		nNewChannel = bouquetList->Bouquets[nNewBouquet]->channelList->show();
-		
-		//printf("nNewChannel %d\n",nNewChannel);
 		
 		if (nNewChannel > -1)
 		{
@@ -195,5 +202,15 @@ void CSelectChannelWidget::InitZapitChannelHelper(CZapitClient::channelsMode mod
 				g_settings.StartChannelRadio = g_Zapit->getChannelName(g_settings.startchannelradio_id);
 			}
 		}
+	}
+	
+	// set channel mode
+	if( (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_tv) && (mode == CZapitClient::MODE_RADIO) )
+	{
+		CNeutrinoApp::getInstance()->SetChannelMode( g_settings.channel_mode, NeutrinoMessages::mode_tv);
+	}
+	else if( (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio) && (mode == CZapitClient::MODE_TV) )
+	{
+		CNeutrinoApp::getInstance()->SetChannelMode( g_settings.channel_mode, NeutrinoMessages::mode_radio);
 	}
 }

@@ -126,7 +126,7 @@ bool CDHCPNotifier::changeNotify(const neutrino_locale_t, void * data)
 {
 	CNeutrinoApp::getInstance()->networkConfig.inet_static = ((*(int*)(data)) == 0);
 	
-	for(int x=0; x < 5; x++)
+	for(int x = 0; x < 5; x++)
 		toDisable[x]->setActive(CNeutrinoApp::getInstance()->networkConfig.inet_static);
 	
 	return true;

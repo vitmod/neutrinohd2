@@ -302,5 +302,3 @@ void CBEChannelSelectWidget::clearItem2DetailsLine()
 {  
 	  paintItem2DetailsLine(-1, 0);  
 }
-//
-

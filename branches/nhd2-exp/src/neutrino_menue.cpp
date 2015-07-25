@@ -2106,7 +2106,6 @@ void CNeutrinoApp::InitKeySettings(CMenuWidget &keySettings, CMenuWidget &bindSe
 	
 	// save settings
 	keySettings.addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "savesettings", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED/*, CRCInput::convertDigitToKey(shortcutkeysettings++)*/ ));
-	keySettings.addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 
 	keySetupNotifier = new CKeySetupNotifier;
 	

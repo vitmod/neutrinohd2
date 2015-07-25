@@ -98,7 +98,7 @@ class CMenuItem
 		}
 		virtual ~CMenuItem(){}
 		virtual void init(const int X, const int Y, const int DX, const int OFFX);
-		virtual int paint (bool selected = false, bool AfterPulldown = false) = 0;
+		virtual int paint(bool selected = false, bool AfterPulldown = false) = 0;
 		virtual int getHeight(void) const = 0;
 		virtual int getWidth(void) const
 		{
@@ -118,7 +118,7 @@ class CMenuItem
 		virtual void setActive(const bool Active);
 };
 
-// optionchooser
+// Chooser
 class CAbstractMenuOptionChooser : public CMenuItem
 {
 	protected:
@@ -137,32 +137,7 @@ class CAbstractMenuOptionChooser : public CMenuItem
 		}
 };
 
-class CMenuOptionNumberChooser : public CAbstractMenuOptionChooser
-{
-	const char * optionString;
-
-	int lower_bound;
-	int upper_bound;
-
-	int display_offset;
-
-	int localized_value;
-	neutrino_locale_t localized_value_name;
-	std::string nameString;
-	neutrino_locale_t name;
-
-	private:
-		CChangeObserver * observ;
-
-	public:
-		CMenuOptionNumberChooser(const neutrino_locale_t Name, int * const OptionValue, const bool Active, const int min_value, const int max_value, CChangeObserver * const Observ = NULL, const int print_offset = 0, const int special_value = 0, const neutrino_locale_t special_value_name = NONEXISTANT_LOCALE, const char * non_localized_name = NULL);
-		CMenuOptionNumberChooser(const char * const Name, int * const OptionValue, const bool Active, const int min_value, const int max_value, CChangeObserver * const Observ = NULL, const int print_offset = 0, const int special_value = 0, const neutrino_locale_t special_value_name = NONEXISTANT_LOCALE, const char * non_localized_name = NULL);
-		
-		int paint(bool selected, bool AfterPulldown = false);
-
-		int exec(CMenuTarget* parent);
-};
-
+// OptionChooser
 class CMenuOptionChooser : public CAbstractMenuOptionChooser
 {
 	public:
@@ -177,18 +152,47 @@ class CMenuOptionChooser : public CAbstractMenuOptionChooser
 		const struct keyval * options;
 		unsigned number_of_options;
 		CChangeObserver * observ;
-		std::string nameString;
-		neutrino_locale_t name;
+		
+		std::string optionNameString;
+		
 		bool pulldown;
 
 	public:
-		CMenuOptionChooser(const neutrino_locale_t Name, int * const OptionValue, const struct keyval * const Options, const unsigned Number_Of_Options, const bool Active = false, CChangeObserver * const Observ = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const std::string & IconName= "", bool Pulldown = false);
-		CMenuOptionChooser(const char* Name, int * const OptionValue, const struct keyval * const Options, const unsigned Number_Of_Options, const bool Active = false, CChangeObserver * const Observ = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const std::string & IconName= "", bool Pulldown = false); 
+		CMenuOptionChooser(const neutrino_locale_t OptionName, int * const OptionValue, const struct keyval * const Options, const unsigned Number_Of_Options, const bool Active = false, CChangeObserver * const Observ = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const std::string & IconName= "", bool Pulldown = false);
+		CMenuOptionChooser(const char* OptionName, int * const OptionValue, const struct keyval * const Options, const unsigned Number_Of_Options, const bool Active = false, CChangeObserver * const Observ = NULL, const neutrino_msg_t DirectKey = CRCInput::RC_nokey, const std::string & IconName= "", bool Pulldown = false); 
 
 		void setOptionValue(const int newvalue);
 		int getOptionValue(void) const;
 		int paint(bool selected, bool AfterPulldown = false);
 		int exec(CMenuTarget * parent);
+};
+
+// OptionNumberChooser
+class CMenuOptionNumberChooser : public CAbstractMenuOptionChooser
+{
+	const char * optionString;
+
+	int lower_bound;
+	int upper_bound;
+
+	int display_offset;
+
+	int localized_value;
+	neutrino_locale_t localized_value_name;
+	
+	std::string nameString;
+	neutrino_locale_t name;
+
+	private:
+		CChangeObserver * observ;
+
+	public:
+		CMenuOptionNumberChooser(const neutrino_locale_t Name, int * const OptionValue, const bool Active, const int min_value, const int max_value, CChangeObserver * const Observ = NULL, const int print_offset = 0, const int special_value = 0, const neutrino_locale_t special_value_name = NONEXISTANT_LOCALE, const char * non_localized_name = NULL);
+		CMenuOptionNumberChooser(const char * const Name, int * const OptionValue, const bool Active, const int min_value, const int max_value, CChangeObserver * const Observ = NULL, const int print_offset = 0, const int special_value = 0, const neutrino_locale_t special_value_name = NONEXISTANT_LOCALE, const char * non_localized_name = NULL);
+		
+		int paint(bool selected, bool AfterPulldown = false);
+
+		int exec(CMenuTarget* parent);
 };
 
 class CMenuOptionStringChooser : public CMenuItem

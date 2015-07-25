@@ -111,7 +111,6 @@ class CBEChannelWidget : public CMenuWidget
 	public:
 		CBEChannelWidget( const std::string & Caption, unsigned int Bouquet);
 
-		//CZapitClient::BouquetChannelList	Channels;
 		ZapitChannelList * Channels;
 		int exec(CMenuTarget* parent, const std::string & actionKey);
 		bool hasChanged();

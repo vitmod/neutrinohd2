@@ -57,7 +57,6 @@ class CBouquetEditorEvents
 
 class CBEBouquetWidget : public CMenuWidget
 {
-
 	private:
 
 		CFrameBuffer	*frameBuffer;
@@ -123,7 +122,6 @@ class CBEBouquetWidget : public CMenuWidget
 	public:
 		CBEBouquetWidget();
 
-		//CZapitClient::BouquetList Bouquets;
 		BouquetList * Bouquets;
 		int exec(CMenuTarget* parent, const std::string & actionKey);
 };
