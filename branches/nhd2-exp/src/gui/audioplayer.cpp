@@ -1248,6 +1248,7 @@ void CAudioPlayerGui::scanXmlData(xmlDocPtr answer_parser, const char *nametag, 
 			
 			element = element_tmp;
 			long listPos = -1;
+			
 			progress.setTitle(LOCALE_AUDIOPLAYER_LOAD_RADIO_STATIONS);
 			progress.exec(this, "");
 			

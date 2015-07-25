@@ -102,6 +102,8 @@ class CWebTV
 		void paintHead();
 		void paintFoot();
 		void hide();
+		void processPlaylistUrl(const char *url, const char *name, const char * description) ;
+		void addUrl2Playlist(const char * url, const char *name, const char * description, bool locked = false);
 		
 	public:
 		enum state

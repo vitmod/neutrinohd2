@@ -46,6 +46,7 @@
 #include <gui/widget/messagebox.h>
 #include <gui/widget/helpbox.h>
 #include <gui/widget/infobox.h>
+#include <gui/widget/hintbox.h>
 
 #include <gui/filebrowser.h>
 
@@ -61,6 +62,9 @@
 #include <playback_cs.h>
 #include <video_cs.h>
 #include <audio_cs.h>
+
+#include <curl/curl.h>
+#include <curl/easy.h>
 
 
 extern cPlayback *playback;
@@ -228,6 +232,160 @@ void CWebTV::loadChannels(void)
 	strReplace(title, "userbouquet.", "");
 }
 
+struct MemoryStruct {
+	char *memory;
+	size_t size;
+};
+
+static void *myrealloc(void *ptr, size_t size)
+{
+	/* 
+	There might be a realloc() out there that doesn't like reallocing
+	NULL pointers, so we take care of it here 
+	*/
+	if(ptr)
+		return realloc(ptr, size);
+	else
+		return malloc(size);
+}
+
+static size_t WriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void *data)
+{
+	size_t realsize = size * nmemb;
+	struct MemoryStruct *mem = (struct MemoryStruct *)data;
+
+	mem->memory = (char *)myrealloc(mem->memory, mem->size + realsize + 1);
+	if (mem->memory) 
+	{
+		memcpy(&(mem->memory[mem->size]), ptr, realsize);
+		mem->size += realsize;
+		mem->memory[mem->size] = 0;
+	}
+	return realsize;
+}
+
+void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * description) 
+{
+	dprintf(DEBUG_INFO, "CWebTV::processPlaylistUrl\n");
+	
+	CURL *curl_handle;
+	struct MemoryStruct chunk;
+	
+	chunk.memory = NULL; 	/* we expect realloc(NULL, size) to work */
+	chunk.size = 0;    	/* no data at this point */
+
+	curl_global_init(CURL_GLOBAL_ALL);
+
+	/* init the curl session */
+	curl_handle = curl_easy_init();
+
+	/* specify URL to get */
+	curl_easy_setopt(curl_handle, CURLOPT_URL, url);
+
+	/* send all data to this function  */
+	curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
+
+	/* we pass our 'chunk' struct to the callback function */
+	curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
+
+	/* some servers don't like requests that are made without a user-agent field, so we provide one */
+	curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+
+	/* don't use signal for timeout */
+	curl_easy_setopt(curl_handle, CURLOPT_NOSIGNAL, (long)1);
+
+	/* set timeout to 10 seconds */
+	curl_easy_setopt(curl_handle, CURLOPT_TIMEOUT, 10);
+	
+	if(strcmp(g_settings.softupdate_proxyserver, "")!=0)
+	{
+		curl_easy_setopt(curl_handle, CURLOPT_PROXY, g_settings.softupdate_proxyserver);
+		
+		if(strcmp(g_settings.softupdate_proxyusername, "") != 0)
+		{
+			char tmp[200];
+			strcpy(tmp, g_settings.softupdate_proxyusername);
+			strcat(tmp, ":");
+			strcat(tmp, g_settings.softupdate_proxypassword);
+			curl_easy_setopt(curl_handle, CURLOPT_PROXYUSERPWD, tmp);
+		}
+	}
+
+	/* get it! */
+	curl_easy_perform(curl_handle);
+
+	/* cleanup curl stuff */
+	curl_easy_cleanup(curl_handle);
+
+	/*
+	* Now, our chunk.memory points to a memory block that is chunk.size
+	* bytes big and contains the remote file.
+	*
+	* Do something nice with it!
+	*
+	* You should be aware of the fact that at this point we might have an
+	* allocated data block, and nothing has yet deallocated that data. So when
+	* you're done with it, you should free() it as a nice application.
+	*/
+
+	long res_code;
+	if (curl_easy_getinfo(curl_handle, CURLINFO_HTTP_CODE, &res_code ) ==  CURLE_OK) 
+	{
+		if (200 == res_code) 
+		{
+			//printf("\nchunk = %s\n", chunk.memory);
+			std::istringstream iss;
+			iss.str (std::string(chunk.memory, chunk.size));
+			char line[512];
+			char *ptr;
+			
+			while (iss.rdstate() == std::ifstream::goodbit) 
+			{
+				iss.getline(line, 512);
+				if (line[0] != '#') 
+				{
+					//printf("chunk: line = %s\n", line);
+					ptr = strstr(line, "http://");
+					if (ptr != NULL) 
+					{
+						char *tmp;
+						// strip \n and \r characters from url
+						tmp = strchr(line, '\r');
+						if (tmp != NULL)
+							*tmp = '\0';
+						tmp = strchr(line, '\n');
+						if (tmp != NULL)
+							*tmp = '\0';
+						
+						addUrl2Playlist(ptr, name, description);
+					}
+				}
+			}
+		}
+	}
+
+	if(chunk.memory)
+		free(chunk.memory);
+ 
+	/* we're done with libcurl, so clean it up */
+	curl_global_cleanup();
+}
+
+void CWebTV::addUrl2Playlist(const char * url, const char *name, const char * description, bool locked)
+{
+	dprintf(DEBUG_INFO, "CWebTV::processPlaylistUrl\n");
+	
+	webtv_channels * tmp = new webtv_channels();
+						
+	tmp->title = name;
+	tmp->url = url;
+	tmp->description = description;
+	tmp->locked = locked;
+						
+	// fill channelslist
+	channels.push_back(tmp);
+}
+
 // readxml file
 bool CWebTV::readChannellist(std::string filename)
 {
@@ -295,6 +453,7 @@ bool CWebTV::readChannellist(std::string filename)
 				
 					description = "stream";
 					
+					/*
 					webtv_channels * tmp = new webtv_channels();
 						
 					tmp->title = title.c_str();
@@ -304,6 +463,8 @@ bool CWebTV::readChannellist(std::string filename)
 						
 					// fill channelslist
 					channels.push_back(tmp);
+					*/
+					addUrl2Playlist(urlDecode(url).c_str(), title.c_str(), description.c_str());
 				}
 			}
 			
@@ -323,16 +484,48 @@ bool CWebTV::readChannellist(std::string filename)
 			l0 = xmlDocGetRootElement(parser);
 			l1 = l0->xmlChildrenNode;
 			
+			neutrino_msg_t      msg;
+			neutrino_msg_data_t data;
+			
+			CHintBox* hintBox = NULL;
+			hintBox = new CHintBox(LOCALE_MESSAGEBOX_INFO, g_Locale->getText(LOCALE_SERVICEMENU_RELOAD_HINT));
+			
+			g_RCInput->getMsg(&msg, &data, 0);
+			
 			if (l1) 
 			{
-				while ((xmlGetNextOccurence(l1, "webtv"))) 
+				while ( ((xmlGetNextOccurence(l1, "webtv")) || (xmlGetNextOccurence(l1, "station"))) && msg != CRCInput::RC_home) 
 				{
-					char * title = xmlGetAttribute(l1, (char *)"title");
-					char * url = xmlGetAttribute(l1, (char *)"url");
-					char * description = xmlGetAttribute(l1, (char *)"description");
-					bool locked = xmlGetAttribute(l1, (char *)"locked");
+					char * title;
+					char * url;
+					char * description;
+					
+					// title
+					if(xmlGetNextOccurence(l1, "webtv"))
+					{
+						title = xmlGetAttribute(l1, (char *)"title");
+
+						// url
+						url = xmlGetAttribute(l1, (char *)"url");
+						
+						description = xmlGetAttribute(l1, (char *)"description");
+						
+						addUrl2Playlist(url, title, description);
+					}	
+					else if (xmlGetNextOccurence(l1, "station"))
+					{
+						hintBox->paint();
+						
+						title = xmlGetAttribute(l1, (char *)"name");
+						url = xmlGetAttribute(l1, (char *)"url");
+						description = "stream";
+						
+						processPlaylistUrl(url, title, description) ;
+					}
+					
 					
 					// fill webtv list
+					/*
 					webtv_channels * tmp = new webtv_channels();
 					
 					tmp->title = title;
@@ -342,10 +535,14 @@ bool CWebTV::readChannellist(std::string filename)
 					
 					// fill channelslist
 					channels.push_back(tmp);
+					*/
 
 					l1 = l1->xmlNextNode;
 				}
 			}
+			hintBox->hide();
+			delete hintBox;
+			hintBox = NULL;
 			
 			return true;
 		}
@@ -381,6 +578,7 @@ bool CWebTV::readChannellist(std::string filename)
 					{
 						description = "stream";
 					
+						/*
 						webtv_channels * tmp = new webtv_channels();
 							
 						tmp->title = name;
@@ -390,6 +588,8 @@ bool CWebTV::readChannellist(std::string filename)
 							
 						// fill channelslist
 						channels.push_back(tmp);
+						*/
+						addUrl2Playlist(url, name, description.c_str());
 					}
 				}
 			}
