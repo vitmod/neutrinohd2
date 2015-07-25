@@ -76,7 +76,7 @@ audioplayer.shuffle Shuffle
 audioplayer.spectrum LCD Skala
 audioplayer.stop Stop
 audioplayer.title_artist Titel, Interpret
-audioplayersettings.general Audioplayer Einstellugen
+audioplayersettings.general Audioplayer Einstellungen
 AUDIOSelectMenue.head Auswahl der Tonspur
 AUDIOSelectMenue.no_tracks Keine Tonspuren verfügbar
 bookmarkmanager.delete Löschen
@@ -718,14 +718,14 @@ mainsettings.audio Audio Einstellungen
 mainsettings.head Einstellungen
 mainsettings.keybinding Fernbedienung Einstellungen
 mainsettings.language Sprache
-mainsettings.lcd Display Einstellugen
+mainsettings.lcd Display Einstellungen
 mainsettings.misc Diverse Einstellungen
-mainsettings.network Netzwerk Einstellugen
+mainsettings.network Netzwerk Einstellungen
 mainsettings.osd OSD Einstellungen
-mainsettings.recording Aufnahme Einstellugen
+mainsettings.recording Aufnahme Einstellungen
 mainsettings.savesettingsnow Einstellungen jetzt speichern
 mainsettings.savesettingsnow_hint Einstellungen werden jetzt gespeichert,\nbitte warten...
-mainsettings.streaming Movieplayer Einstellugen
+mainsettings.streaming Movieplayer Einstellungen
 mainsettings.timezone Zeitzone
 mainsettings.video Video Einstellungen
 menu.back Zurück
@@ -742,7 +742,7 @@ messagebox.ok OK
 messagebox.yes Ja
 miscsettings.bootinfo Infos beim Booten anzeigen
 miscsettings.bootmenu Bootmenü anzeigen
-miscsettings.channellist Kanalliste Einstellugen
+miscsettings.channellist Kanalliste Einstellungen
 miscsettings.channellist_epgtext_align Ausrichtung des Programmtextes
 miscsettings.driver_boot Treiber- und Bootoptionen
 miscsettings.epg_cache EPG-Cache (Tage)
@@ -762,9 +762,9 @@ miscsettings.epg_old_events_hint2 Angabe in Stunden
 miscsettings.epg_save EPG zwischenspeichern?
 miscsettings.epgplus_show_logos Kanal Logo(EPGPlus)
 miscsettings.fb_destination EXPERTE! Boot-Konsole
-miscsettings.general Allgemein Einstellugen
-miscsettings.filebrowser Dateibrowser Einstellugen
-miscsettings.zapit Start Kanal Einstellugen
+miscsettings.general Allgemein Einstellungen
+miscsettings.filebrowser Dateibrowser Einstellungen
+miscsettings.zapit Start Kanal Einstellungen
 miscsettings.head Diverse Einstellungen
 miscsettings.hwsections HW-Sections verwenden
 miscsettings.infobar_sat_display Infobar Satellitenanzeige
@@ -1067,9 +1067,9 @@ parentallock.lockedchannel Vorgesperrter Sender...
 parentallock.lockedprogram Gesperrtes Programm (FSK ab %d)
 parentallock.never Nie
 parentallock.onsignal Bei gesendeter Vorsperre
-parentallock.parentallock Jugendschutz Einstellugen
+parentallock.parentallock Jugendschutz Einstellungen
 parentallock.prompt PIN-Eingabe
-pictureviewersettings.general Bildbetrachter Einstellugen
+pictureviewersettings.general Bildbetrachter Einstellungen
 pictureviewer.decode_server_ip Dekodiere Server IP
 pictureviewer.decode_server_port Dekodiere Server Port
 pictureviewer.defdir Start-Verz.
@@ -1504,25 +1504,25 @@ helptext.fileplayback Hier können Sie Ihre Media Dateien abspielen.
 helptext.netstream Hier können Sie Streams aus dem Net abspielen.
 helptext.pictureviewer Hier können Sie Ihre Bilder Diashow schauen.
 helptext.upnpbrowser Hier können Sie in den UPNPBrowser schalten.
-helptext.mainsettings Hier können Sie in den Einstellugen schalten.
+helptext.mainsettings Hier können Sie in den Einstellungen schalten.
 helptext.service Hier können Sie in den Service schalten.
 helptext.sleeptimer Hier können Sie den Sleep Timer einstellen.
 helptext.reboot Hier können Sie Ihren STB rebooten.
 helptext.shutdown Hier können Sie Ihren STB ausschalten.
 helptext.boxinfo Hier erhalten Sie Infos über die HW Ihren STB.
-helptext.videosettings Hier können Sie die Video Einstellugen führen.
-helptext.audiosettings Hier können Sie die Audio Einstellugen führen.
+helptext.videosettings Hier können Sie die Video Einstellungen führen.
+helptext.audiosettings Hier können Sie die Audio Einstellungen führen.
 helptext.parentallock Hier können Sie den Parental/Pin einstellen.
-helptext.networksettings Hier können Sie die Network Einstellugen führen.
-helptext.recordingsettings Hier können Sie die Aufnahmen Einstellugen führen.
-helptext.movieplayersettings Hier können Sie die Movieplayer Einstellugen führen.
-helptext.osdsettings Hier können Sie die OSD Einstellugen führen.
-helptext.vfdsettings Hier können Sie die VFD Einstellugen führen.
-helptext.keyssettings Hier können Sie die Fernbedienung Einstellugen führen.
-helptext.audioplayersettings Hier können Sie die Audio Einstellugen führen.
-helptext.pictureviewersettings Hier können Sie die Pictureviewer Einstellugen führen.
-helptext.miscsettings Hier können Sie die diverse Einstellugen führen.
-helptext.hddsettings Hier können Sie die Festplatte Einstellugen führen.
+helptext.networksettings Hier können Sie die Network Einstellungen führen.
+helptext.recordingsettings Hier können Sie die Aufnahmen Einstellungen führen.
+helptext.movieplayersettings Hier können Sie die Movieplayer Einstellungen führen.
+helptext.osdsettings Hier können Sie die OSD Einstellungen führen.
+helptext.vfdsettings Hier können Sie die VFD Einstellungen führen.
+helptext.keyssettings Hier können Sie die Fernbedienung Einstellungen führen.
+helptext.audioplayersettings Hier können Sie die Audio Einstellungen führen.
+helptext.pictureviewersettings Hier können Sie die Pictureviewer Einstellungen führen.
+helptext.miscsettings Hier können Sie die diverse Einstellungen führen.
+helptext.hddsettings Hier können Sie die Festplatte Einstellungen führen.
 helptext.scansetup Hier können Sie einen Kanal Suchlauf führen.
 helptext.reloadchannels Hier können Sie die Kanäle Liste neu laden.
 helptext.bouquteseditor Hier können Sie Ihre Favoriten editieren.
@@ -1548,7 +1548,7 @@ miscsettings.recording_screenshot Screenshot (Aufnahme)
 miscsettings.pref_epg_language bevorzugte EPG Sprachen
 miscsettings.epg_language Sprache
 
-videomenu.psisetup Video fein Einstellugen
+videomenu.psisetup Video fein Einstellungen
 psisetup.contrast Kontrast
 psisetup.saturation Saturation
 psisetup.brightness Brightness
