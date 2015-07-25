@@ -65,12 +65,10 @@ const CMenuOptionChooser::keyval OPTIONS_LASTMODE_OPTIONS[OPTIONS_LASTMODE_OPTIO
 
 CZapitSetup::CZapitSetup()
 {
-	selected = -1;
 }
 
 CZapitSetup::~CZapitSetup()
 {
-
 }
 
 int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
@@ -98,7 +96,6 @@ void CZapitSetup::showMenu()
 {
 	//menue init
 	CMenuWidget * zapit = new CMenuWidget(LOCALE_MISCSETTINGS_ZAPIT, NEUTRINO_ICON_SETTINGS);
-	zapit->setSelected(selected);
 	
 	// intros
 	zapit->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
@@ -120,7 +117,6 @@ void CZapitSetup::showMenu()
 
 	zapit->exec(NULL, "");
 	zapit->hide();
-	selected = zapit->getSelected();
 	
 	delete zapit;
 }

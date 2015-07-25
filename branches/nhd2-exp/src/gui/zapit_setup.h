@@ -36,8 +36,6 @@ class CZapitSetup : public CMenuTarget, CChangeObserver
 		CMenuOptionChooser * zapit1;
 		CMenuForwarder * zapit2, * zapit3;
 
-		int selected;
-
 		void showMenu();
 
 	public:
