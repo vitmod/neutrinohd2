@@ -840,12 +840,14 @@ void CVFD::ShowText(const char * str)
 void CVFD::setFan(bool enable)
 {
 #if defined (__sh__)
-	//openDevice();
+	/*
+	 openDevice();
 	
-	//if( ioctl(fd, VFDSETFAN, enable) < 0)  
-	//	perror("VFDPWRLED");
+	if( ioctl(fd, VFDSETFAN, enable) < 0)  
+		perror("VFDSETFAN");
 	
-	//closeDevice();
+	closeDevice();
+	*/
 #endif	
 }
 

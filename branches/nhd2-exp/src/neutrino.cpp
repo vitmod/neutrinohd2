@@ -4496,7 +4496,7 @@ void CNeutrinoApp::setVolume(const neutrino_msg_t key, const bool bDoPaint, bool
 	}
 }
 
-// TV Mode
+// tv mode
 void CNeutrinoApp::tvMode( bool rezap )
 {
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::tvMode: rezap %s\n", rezap ? "yes" : "no");
@@ -4531,17 +4531,18 @@ void CNeutrinoApp::tvMode( bool rezap )
 	{
 #if !defined (PLATFORM_COOLSTREAM)	  
 		if(videoDecoder)
-			videoDecoder->SetInput(INPUT_SCART);
+			videoDecoder->SetInput(INPUT_ENCODER);
 #endif		
 	}
 	else if( mode == mode_standby ) 
 	{
 		CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 		
-//#if !defined (PLATFORM_COOLSTREAM)		
-//		if(videoDecoder)
-//			videoDecoder->SetInput(INPUT_ENCODER);
-//#endif		
+		// set video standby
+#if !defined (PLATFORM_COOLSTREAM)		
+		if(videoDecoder)
+			videoDecoder->SetInput(STANDBY_OFF);
+#endif		
 	}
 	else if(mode == mode_iptv)
 	{
@@ -4611,17 +4612,18 @@ void CNeutrinoApp::radioMode( bool rezap)
 	{
 #if !defined (PLATFORM_COOLSTREAM)	  
 		if(videoDecoder)
-			videoDecoder->SetInput(INPUT_SCART);
+			videoDecoder->SetInput(INPUT_ENCODER);
 #endif		
 	}
 	else if( mode == mode_standby ) 
 	{	  
 		CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
 
-//#if !defined (PLATFORM_COOLSTREAM)
-//		if(videoDecoder)
-//			videoDecoder->SetInput(INPUT_ENCODER);
-//#endif		
+		// set video standby
+#if !defined (PLATFORM_COOLSTREAM)
+		if(videoDecoder)
+			videoDecoder->SetInput(STANDBY_OFF);
+#endif		
 	}
 	if(mode == mode_iptv)
 	{
@@ -4670,7 +4672,89 @@ void CNeutrinoApp::radioMode( bool rezap)
 	}	
 }
 
-// Scart Mode
+// webtv mode
+void CNeutrinoApp::webtvMode( bool rezap)
+{
+	dprintf(DEBUG_NORMAL, "CNeutrinoApp::webtvMode: rezap %s\n", rezap ? "yes" : "no");
+
+	if(mode == mode_tv ) 
+	{
+#if defined (ENABLE_LCD)	  
+		g_RCInput->killTimer(g_InfoViewer->lcdUpdateTimer);
+		g_InfoViewer->lcdUpdateTimer = g_RCInput->addTimer( LCD_UPDATE_TIME_RADIO_MODE, false );
+#endif		
+
+		StopSubtitles();
+	}
+	else if( mode == mode_radio ) 
+	{  
+		if (g_settings.radiotext_enable && g_Radiotext) 
+		{
+			videoDecoder->finishShowSinglePic();
+			
+			delete g_Radiotext;
+			g_Radiotext = NULL;
+		}	
+
+#if defined (ENABLE_LCD)
+		g_RCInput->killTimer(g_InfoViewer->lcdUpdateTimer);
+		g_InfoViewer->lcdUpdateTimer = g_RCInput->addTimer( LCD_UPDATE_TIME_TV_MODE, false );
+#endif		
+
+		CVFD::getInstance()->ShowIcon(VFD_ICON_RADIO, false);
+
+		StartSubtitles(!rezap);
+	}
+	else if( mode == mode_scart ) 
+	{
+#if !defined (PLATFORM_COOLSTREAM)	  
+		if(videoDecoder)
+			videoDecoder->SetInput(INPUT_ENCODER);
+#endif		
+	}
+	else if( mode == mode_standby ) 
+	{	  
+		CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
+
+		// set video standby
+#if !defined (PLATFORM_COOLSTREAM)
+		if(videoDecoder)
+			videoDecoder->SetInput(STANDBY_OFF);
+#endif		
+	}
+	else if(mode == mode_iptv)
+	{
+		return;
+	}
+
+	if(autoshift) 
+	{
+		dprintf(DEBUG_NORMAL, "CNeutrinoApp::radioMode: standby on: autoshift ! stopping ...\n");
+		stopAutoRecord();
+		recordingstatus = 0;
+		timeshiftstatus = 0;
+	}
+	
+	frameBuffer->useBackground(false);
+	frameBuffer->paintBackground();
+	frameBuffer->blit();
+
+	// pause epg scanning
+	g_Sectionsd->setPauseScanning(true);
+			
+	// lock playback
+	g_Zapit->lockPlayBack();
+	
+	mode = mode_iptv;
+
+	// show streams channel list
+	if(webtv)
+	{
+		webtv->exec(rezap);
+	}
+}
+
+// scart Mode
 void CNeutrinoApp::scartMode( bool bOnOff )
 {
 	printf( ( bOnOff ) ? "CNeutrinoApp::scartMode: scart on\n" : "CNeutrinoApp::scartMode: mode: scart off\n" );
@@ -4767,6 +4851,11 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 		// show time in vfd
 		CVFD::getInstance()->setMode(CVFD::MODE_STANDBY);
 		
+#if !defined (PLATFORM_COOLSTREAM)	  
+		if(videoDecoder)
+			videoDecoder->SetInput(STANDBY_ON);
+#endif		
+		
 		if(mode == mode_iptv)
 		{
 			if(webtv)
@@ -4836,6 +4925,11 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 
 		// vfd mode
 		CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
+		
+#if !defined (PLATFORM_COOLSTREAM)	  
+		if(videoDecoder)
+			videoDecoder->SetInput(STANDBY_OFF);
+#endif		
 				
 		if (CVFD::getInstance()->is4digits)
 			CVFD::getInstance()->LCDshowText(channelList->getActiveChannelNumber());
@@ -4872,12 +4966,10 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 		{
 			tvMode(false);
 		}
-		/*
 		else if(lastMode == mode_iptv)
 		{
 			webtvMode(false);
 		}
-		*/
 
 		// set vol (saved)
 		AudioMute(current_muted, false );
@@ -4898,88 +4990,6 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 		StartSubtitles();
 		
 		g_RCInput->postMsg( NeutrinoMessages::SHOW_INFOBAR, 0 );
-	}
-}
-
-//
-// Radio Mode
-void CNeutrinoApp::webtvMode( bool rezap)
-{
-	dprintf(DEBUG_NORMAL, "CNeutrinoApp::webtvMode: rezap %s\n", rezap ? "yes" : "no");
-
-	if(mode == mode_tv ) 
-	{
-#if defined (ENABLE_LCD)	  
-		g_RCInput->killTimer(g_InfoViewer->lcdUpdateTimer);
-		g_InfoViewer->lcdUpdateTimer = g_RCInput->addTimer( LCD_UPDATE_TIME_RADIO_MODE, false );
-#endif		
-
-		StopSubtitles();
-	}
-	else if( mode == mode_radio ) 
-	{  
-		if (g_settings.radiotext_enable && g_Radiotext) 
-		{
-			videoDecoder->finishShowSinglePic();
-			
-			delete g_Radiotext;
-			g_Radiotext = NULL;
-		}	
-
-#if defined (ENABLE_LCD)
-		g_RCInput->killTimer(g_InfoViewer->lcdUpdateTimer);
-		g_InfoViewer->lcdUpdateTimer = g_RCInput->addTimer( LCD_UPDATE_TIME_TV_MODE, false );
-#endif		
-
-		CVFD::getInstance()->ShowIcon(VFD_ICON_RADIO, false);
-
-		StartSubtitles(!rezap);
-	}
-	else if( mode == mode_scart ) 
-	{
-#if !defined (PLATFORM_COOLSTREAM)	  
-		if(videoDecoder)
-			videoDecoder->SetInput(INPUT_SCART);
-#endif		
-	}
-	else if( mode == mode_standby ) 
-	{	  
-		CVFD::getInstance()->setMode(CVFD::MODE_TVRADIO);
-
-#if !defined (PLATFORM_COOLSTREAM)
-		if(videoDecoder)
-			videoDecoder->SetInput(INPUT_ENCODER);
-#endif		
-	}
-	else if(mode == mode_iptv)
-	{
-		return;
-	}
-
-	if(autoshift) 
-	{
-		dprintf(DEBUG_NORMAL, "CNeutrinoApp::radioMode: standby on: autoshift ! stopping ...\n");
-		stopAutoRecord();
-		recordingstatus = 0;
-		timeshiftstatus = 0;
-	}
-	
-	frameBuffer->useBackground(false);
-	frameBuffer->paintBackground();
-	frameBuffer->blit();
-
-	// pause epg scanning
-	g_Sectionsd->setPauseScanning(true);
-			
-	// lock playback
-	g_Zapit->lockPlayBack();
-	
-	mode = mode_iptv;
-
-	// show streams channel list
-	if(webtv)
-	{
-		webtv->exec(rezap);
 	}
 }
 

@@ -159,6 +159,12 @@ enum {
 	INPUT_AUX
 };
 
+// standby
+enum {
+	STANDBY_OFF,
+	STANDBY_ON
+};
+
 // analoge mode
 #if defined (__sh__)
 enum {
@@ -292,6 +298,7 @@ class cVideo
 		void SetSyncMode(int mode);
 
 		void SetInput(int val);
+		void SetStandby(int val);
 		
 		void Pig(int x, int y, int w, int h, int osd_w = CFrameBuffer::getInstance()->getScreenWidth(true), int osd_h = CFrameBuffer::getInstance()->getScreenHeight(true), int num = 0);
 

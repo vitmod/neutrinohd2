@@ -677,11 +677,11 @@ void cVideo::SetSyncMode(int mode)
 void cVideo::SetInput(int val)
 { 
 	const char *input[] = {"encoder", "scart", "aux"};
-	const char *sb[] = {"on", "off", "off"};
 	
 	printf("cVideo::SetInput: %s\n", input[val]);	
 
-#if !defined (USE_OPENGL)	
+#if !defined (USE_OPENGL)
+	// avs input
 	int fd_avs_input = open("/proc/stb/avs/0/input", O_RDWR);
 
 	if(fd_avs_input > 0)
@@ -689,7 +689,18 @@ void cVideo::SetInput(int val)
 		write(fd_avs_input, input[val], strlen(input[val]));
 		close(fd_avs_input);
 	}
-		
+#endif	
+}
+
+// setInput
+void cVideo::SetStandby(int val)
+{ 
+	const char *sb[] = {"off", "on"};
+	
+	printf("cVideo::SetStandby: %s\n", sb[val]);	
+
+#if !defined (USE_OPENGL)
+	// standby
 	int fd_sb = open("/proc/stb/avs/0/standby", O_RDWR);
 	
 	if(fd_sb > 0)
@@ -697,6 +708,8 @@ void cVideo::SetInput(int val)
 		write(fd_sb, sb[val], strlen(sb[val]));
 		close(fd_sb);
 	}
+	
+	// FIXME:hdmi output
 #endif	
 }
 
