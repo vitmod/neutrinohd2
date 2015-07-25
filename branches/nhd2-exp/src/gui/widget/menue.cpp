@@ -1209,7 +1209,7 @@ int CMenuOptionStringChooser::exec(CMenuTarget *parent)
 	}
 
 	if(parent)
-		paint(true);
+		paint(true, true);
 	
 	if(observ) 
 		wantsRepaint = observ->changeNotify(name, optionValue);
