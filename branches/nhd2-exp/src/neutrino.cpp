@@ -2721,7 +2721,7 @@ int CNeutrinoApp::run(int argc, char **argv)
 	}
 	
 	// zapper
-	if(FrontendCount)
+	//if(FrontendCount)
 		InitZapper();
 	
 	// audio mute

@@ -115,8 +115,8 @@ void CZapitSetup::showMenu()
 	//zapit
 	zapit->addItem(new CMenuOptionChooser(LOCALE_MISCSETTINGS_ZAPIT, &g_settings.uselastchannel, OPTIONS_OFF1_ON0_OPTIONS, OPTIONS_OFF1_ON0_OPTION_COUNT, true, this, CRCInput::convertDigitToKey(shortcut++) ));
 	zapit->addItem(zapit1 = new CMenuOptionChooser(LOCALE_ZAPITSETUP_LAST_MODE, &g_settings.lastChannelMode, OPTIONS_LASTMODE_OPTIONS, OPTIONS_LASTMODE_OPTION_COUNT, !g_settings.uselastchannel, this, CRCInput::convertDigitToKey(shortcut++) ));
-	zapit->addItem(zapit2 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_TV, !g_settings.uselastchannel /*&& (mode == NeutrinoMessages::mode_tv)*/, g_settings.StartChannelTV, new CSelectChannelWidget(), "tv", CRCInput::convertDigitToKey(shortcut++) ));
-	zapit->addItem(zapit3 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_RADIO, !g_settings.uselastchannel /*&& (mode == NeutrinoMessages::mode_radio)*/, g_settings.StartChannelRadio, new CSelectChannelWidget(), "radio", CRCInput::convertDigitToKey(shortcut++) ));
+	zapit->addItem(zapit2 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_TV, !g_settings.uselastchannel, g_settings.StartChannelTV, new CSelectChannelWidget(), "tv", CRCInput::convertDigitToKey(shortcut++) ));
+	zapit->addItem(zapit3 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_RADIO, !g_settings.uselastchannel, g_settings.StartChannelRadio, new CSelectChannelWidget(), "radio", CRCInput::convertDigitToKey(shortcut++) ));
 
 	zapit->exec(NULL, "");
 	zapit->hide();
@@ -130,8 +130,8 @@ bool CZapitSetup::changeNotify(const neutrino_locale_t OptionName, void *)
 	if (ARE_LOCALES_EQUAL(OptionName, LOCALE_MISCSETTINGS_ZAPIT))
 	{
 		zapit1->setActive(!g_settings.uselastchannel);
-		zapit2->setActive(!g_settings.uselastchannel /*&& !(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio)*/ );
-		zapit3->setActive(!g_settings.uselastchannel /*&& !(CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_tv)*/ );
+		zapit2->setActive(!g_settings.uselastchannel);
+		zapit3->setActive(!g_settings.uselastchannel);
 	}
 
 	return true;
