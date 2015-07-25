@@ -65,31 +65,31 @@ class CInfoViewer
 		int BoxHeight;
 		int BoxWidth;
 
-		// channel Name
+		// channel number
 		int ChanNumberX;
 		int ChanNumberY;
-		//int ChanNumberWidth;
-		//int ChanNumberHeight;
+		
+		// channel name
 		int ChanNameX;
 		int ChanNameY;
 		int ChanNameWidth;
-		//int ChanNameHeight;
+		int ChanNameHeight;
 		
 		// channel info
 		int ChanInfoX;
 		int ChanInfoY;
 		int ChanInfoHeight;
 		
-		// sta info
+		// sat info
 		int satNameWidth;
 		int SatNameHeight;
 		int freqStartX;
 		int freqWidth;
 		
 		// buttonbar
-		int buttonBarHeight;
 		int buttonBarStartX;
 		int buttonBarStartY;
+		int buttonBarHeight;
 		
 		// icons
 		int icon_w_subt, icon_h_subt;
@@ -122,6 +122,8 @@ class CInfoViewer
 		int logo_w; 
 		int logo_h;
 		int logo_bpp;
+		int PIC_X;
+		int PIC_Y;
 		
 		// date
 		int dateWidth;
@@ -140,9 +142,6 @@ class CInfoViewer
 
 		int		asize;
 
-		int PIC_X;
-		int PIC_Y;
-
 		CSectionsdClient::CurrentNextInfo info_CurrentNext;
 		t_channel_id   channel_id;
 
@@ -154,7 +153,7 @@ class CInfoViewer
 		CChannelEventList::iterator     eli;
 
 		void show_Data( bool calledFromEvent = false );
-		void paintTime( bool show_dot, bool firstPaint, int posx, int posy );
+		void paintTime( bool show_dot, bool firstPaint, int posx, int posy, CFont * timeFont );
 		
 		void showButton_Audio();
 		void showButton_SubServices();
