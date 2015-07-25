@@ -4779,14 +4779,20 @@ void CNeutrinoApp::scartMode( bool bOnOff )
 		
 #if !defined (PLATFORM_COOLSTREAM)	  
 		if(videoDecoder)
+		{
 			videoDecoder->SetInput(INPUT_SCART);
+			videoDecoder->SetStandby(STANDBY_ON);
+		}
 #endif		
 	} 
 	else 
 	{
 #if !defined (PLATFORM_COOLSTREAM)	  
 		if(videoDecoder)
+		{
 			videoDecoder->SetInput(INPUT_ENCODER);
+			videoDecoder->SetStandby(STANDBY_OFF);
+		}
 #endif
 		mode = mode_unknown;
 		
@@ -4810,7 +4816,7 @@ void CNeutrinoApp::scartMode( bool bOnOff )
 	}
 }
 
-// Standby Mode
+// standby mode
 void CNeutrinoApp::standbyMode( bool bOnOff )
 {
 	static bool wasshift = false;
