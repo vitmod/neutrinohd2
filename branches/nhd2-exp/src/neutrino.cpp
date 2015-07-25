@@ -4828,7 +4828,7 @@ void CNeutrinoApp::standbyMode( bool bOnOff )
 #endif		
 
 		// set fb active
-		//frameBuffer->setActive(true);
+		frameBuffer->setActive(true);
 
 		puts("CNeutrinoApp::standbyMode: executing " NEUTRINO_LEAVE_STANDBY_SCRIPT ".");
 		if (system(NEUTRINO_LEAVE_STANDBY_SCRIPT) != 0)
