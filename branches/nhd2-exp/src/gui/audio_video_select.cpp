@@ -63,7 +63,8 @@ unsigned short vpid = 0;
 unsigned short vtype = 0;
 std::string    language[10];
 
-unsigned int currentapid = 0, currentac3 = 0;
+unsigned int currentapid = 0;
+unsigned int currentac3 = 0;
 
 unsigned int ac3state = CInfoViewer::NO_AC3;
 
@@ -180,7 +181,6 @@ void CAVPIDSelectWidget::showAudioDialog(void)
 	if (numpida > 0) 
 	{
 		bool enabled;
-		bool defpid;
 
 		for (unsigned int count = 0; count < numpida; count++) 
 		{
@@ -188,7 +188,7 @@ void CAVPIDSelectWidget::showAudioDialog(void)
 			char apidnumber[10];
 			sprintf(apidnumber, "%d", count);
 			enabled = true;
-			defpid = currentapid ? (currentapid == apids[count]) : (count == 0);
+			
 			std::string apidtitle = "Stream ";
 
 			// language
@@ -249,7 +249,7 @@ void CAVPIDSelectWidget::showAudioDialog(void)
 			if (!name_ok)
 				apidtitle.append(apidnumber);
 
-			AVPIDSelector->addItem(new CMenuForwarder(apidtitle.c_str(), enabled, NULL, &AVPIDChanger, apidnumber, CRCInput::convertDigitToKey(count + 1)), defpid /*(count == apids[currentapid])*/ );
+			AVPIDSelector->addItem(new CMenuForwarder(apidtitle.c_str(), enabled, NULL, &AVPIDChanger, apidnumber, CRCInput::convertDigitToKey(count + 1)), (count == currentapid) );
 		}
 		
 		AVPIDSelector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
