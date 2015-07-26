@@ -150,10 +150,4 @@ class CWebTV
 		unsigned int hasChannels() { return channels.size();};
 };
 
-class CWebTVAPIDSelectExec : public CMenuTarget
-{
-	public:
-		int exec(CMenuTarget * parent, const std::string & actionKey);
-};
-
 #endif

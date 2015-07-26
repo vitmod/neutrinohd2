@@ -58,8 +58,12 @@
 
 #include <linux/fs.h>
 
-#include "global.h"
-#include "neutrino.h"
+#include <string.h>
+#include <linux/reboot.h>
+#include <sys/reboot.h>
+
+#include <global.h>
+#include <neutrino.h>
 
 #include <daemonc/remotecontrol.h>
 
@@ -74,49 +78,52 @@
 #include <gui/epgplus.h>
 #include <gui/streaminfo2.h>
 
-#include "gui/widget/colorchooser.h"
-#include "gui/widget/menue.h"
-#include "gui/widget/messagebox.h"
-#include "gui/widget/hintbox.h"
-#include "gui/widget/icons.h"
-#include "gui/widget/vfdcontroler.h"
-#include "gui/widget/keychooser.h"
-#include "gui/widget/stringinput.h"
-#include "gui/widget/stringinput_ext.h"
-#include "gui/widget/mountchooser.h"
+#include <gui/widget/colorchooser.h>
+#include <gui/widget/menue.h>
+#include <gui/widget/messagebox.h>
+#include <gui/widget/hintbox.h>
+#include <gui/widget/icons.h>
+#include <gui/widget/vfdcontroler.h>
+#include <gui/widget/keychooser.h>
+#include <gui/widget/stringinput.h>
+#include <gui/widget/stringinput_ext.h>
+#include <gui/widget/mountchooser.h>
 
-#include "gui/color.h"
+#include <gui/color.h>
 
-#include "gui/bedit/bouqueteditor_bouquets.h"
-#include "gui/bouquetlist.h"
-#include "gui/eventlist.h"
-#include "gui/channellist.h"
-#include "gui/screensetup.h"
-#include "gui/pluginlist.h"
-#include "gui/plugins.h"
-#include "gui/infoviewer.h"
-#include "gui/epgview.h"
-#include "gui/epg_menu.h"
-#include "gui/update.h"
-#include "gui/scan.h"
-#include "gui/sleeptimer.h"
-#include "gui/rc_lock.h"
-#include "gui/timerlist.h"
-#include "gui/alphasetup.h"
-#include "gui/audioplayer.h"
-#include "gui/imageinfo.h"
-#include "gui/movieplayer.h"
-#include "gui/nfs.h"
-#include "gui/pictureviewer.h"
-#include "gui/motorcontrol.h"
-#include "gui/filebrowser.h"
-#include "gui/widget/progressbar.h"
-
+#include <gui/bedit/bouqueteditor_bouquets.h>
+#include <gui/bouquetlist.h>
+#include <gui/eventlist.h>
+#include <gui/channellist.h>
+#include <gui/screensetup.h>
+#include <gui/pluginlist.h>
+#include <gui/plugins.h>
+#include <gui/infoviewer.h>
+#include <gui/epgview.h>
+#include <gui/epg_menu.h>
+#include <gui/update.h>
+#include <gui/scan.h>
+#include <gui/sleeptimer.h>
+#include <gui/rc_lock.h>
+#include <gui/timerlist.h>
+#include <gui/alphasetup.h>
+#include <gui/audioplayer.h>
+#include <gui/imageinfo.h>
+#include <gui/movieplayer.h>
+#include <gui/nfs.h>
+#include <gui/pictureviewer.h>
+#include <gui/motorcontrol.h>
+#include <gui/filebrowser.h>
+#include <gui/widget/progressbar.h>
 #if !defined (PLATFORM_COOLSTREAM)
-#include "gui/cam_menu.h"
+#include <gui/cam_menu.h>
 #endif
-
-#include "gui/hdd_menu.h"
+#include <gui/hdd_menu.h>
+#include <gui/dboxinfo.h>
+#include <gui/audio_select.h>
+#include <gui/scan_setup.h>
+#include <gui/webtv.h>
+#include <gui/audio_video_select.h>
 
 #include <system/setting_helpers.h>
 #include <system/settings.h>
@@ -131,17 +138,6 @@
 #include <frontend_c.h>
 #include <getservices.h>
 #include <satconfig.h>
-
-#include <string.h>
-#include <linux/reboot.h>
-#include <sys/reboot.h>
-
-#include "gui/dboxinfo.h"
-#include "gui/audio_select.h"
-
-#include "gui/scan_setup.h"
-
-#include <gui/webtv.h>
 
 // libdvbapi
 #include <video_cs.h>
@@ -3087,8 +3083,11 @@ void CNeutrinoApp::RealRun(CMenuWidget &mainMenu)
 			{
 				if(mode == mode_iptv)
 				{
-					if(webtv)
-						webtv->showAudioDialog();
+					CAVPIDSelectWidget * AVSelectHandler = new CAVPIDSelectWidget();
+					AVSelectHandler->exec(NULL, "");
+							
+					delete AVSelectHandler;
+					AVSelectHandler = NULL;
 				}
 				else
 				{

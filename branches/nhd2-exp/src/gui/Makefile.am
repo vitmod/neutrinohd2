@@ -78,7 +78,8 @@ libneutrino_gui2_a_SOURCES = \
 	psisetup.cpp \
 	opkg_manager.cpp \
 	webtv.cpp \
-	channel_select.cpp
+	channel_select.cpp \
+	audio_video_select.cpp
 
 if ENABLE_CI
 libneutrino_gui2_a_SOURCES += cam_menu.cpp

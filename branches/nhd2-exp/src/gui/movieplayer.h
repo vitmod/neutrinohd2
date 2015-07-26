@@ -90,20 +90,13 @@ class CMoviePlayerGui : public CMenuTarget
 		int g_jumpseconds;
 
 		unsigned short g_apids[10];
-		unsigned short m_apids[10]; // needed to get language from mb
 		unsigned short g_ac3flags[10];
 		unsigned short g_numpida;
 		unsigned short g_vpid;
 		unsigned short g_vtype;
-		std::string    g_language[10];
 
 		unsigned int g_currentapid;
 		unsigned int g_currentac3;
-		unsigned int apidchanged;
-
-		unsigned int ac3state;
-
-		bool showaudioselectdialog;
 		
 		// multi select
 		CFileList filelist;
@@ -167,12 +160,6 @@ class CMoviePlayerGui : public CMenuTarget
 		
 		// show infos
 		void showFileInfo();
-};
-
-class CAPIDSelectExec : public CMoviePlayerGui
-{
-	public:
-		int exec(CMenuTarget * parent, const std::string & actionKey);
 };
 
 #endif

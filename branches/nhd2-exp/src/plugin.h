@@ -133,6 +133,7 @@
 #include <gui/timeosd.h>
 #include <gui/upnpbrowser.h>
 #include <gui/channel_select.h>
+#include <gui/audio_video_select.h>
 
 #include <system/localize.h>
 #include <system/settings.h>

@@ -49,6 +49,7 @@
 #include <gui/widget/hintbox.h>
 
 #include <gui/filebrowser.h>
+#include <gui/audio_video_select.h>
 
 #include <xmlinterface.h>
 
@@ -68,102 +69,7 @@
 
 
 extern cPlayback *playback;
-extern cVideo * videoDecoder;
 extern CPictureViewer * g_PicViewer;
-
-//
-unsigned short w_apids[10];
-unsigned short w_ac3flags[10];
-unsigned short w_numpida = 0;
-unsigned short w_vpid = 0;
-unsigned short w_vtype = 0;
-std::string    w_language[10];
-
-unsigned int w_currentapid = 0, w_currentac3 = 0, w_apidchanged = 0;
-
-unsigned int w_ac3state = CInfoViewer::NO_AC3;
-
-extern CVideoSetupNotifier * videoSetupNotifier;	/* defined neutrino.cpp */
-// aspect ratio
-#if defined (__sh__)
-#define VIDEOMENU_VIDEORATIO_OPTION_COUNT 2
-const CMenuOptionChooser::keyval VIDEOMENU_VIDEORATIO_OPTIONS[VIDEOMENU_VIDEORATIO_OPTION_COUNT] =
-{
-	{ ASPECTRATIO_43, LOCALE_VIDEOMENU_VIDEORATIO_43, NULL },
-	{ ASPECTRATIO_169, LOCALE_VIDEOMENU_VIDEORATIO_169, NULL }
-};
-#else
-#define VIDEOMENU_VIDEORATIO_OPTION_COUNT 3
-const CMenuOptionChooser::keyval VIDEOMENU_VIDEORATIO_OPTIONS[VIDEOMENU_VIDEORATIO_OPTION_COUNT] =
-{
-	{ ASPECTRATIO_43, LOCALE_VIDEOMENU_VIDEORATIO_43, NULL },
-	{ ASPECTRATIO_169, LOCALE_VIDEOMENU_VIDEORATIO_169, NULL },
-	{ ASPECTRATIO_AUTO, NONEXISTANT_LOCALE, "Auto" }
-};
-#endif
-
-// policy
-#if defined (__sh__)
-/*
-letterbox 
-panscan 
-non 
-bestfit
-*/
-#define VIDEOMENU_VIDEOFORMAT_OPTION_COUNT 4
-const CMenuOptionChooser::keyval VIDEOMENU_VIDEOFORMAT_OPTIONS[VIDEOMENU_VIDEOFORMAT_OPTION_COUNT] = 
-{
-	{ VIDEOFORMAT_LETTERBOX, LOCALE_VIDEOMENU_LETTERBOX, NULL },
-	{ VIDEOFORMAT_PANSCAN, LOCALE_VIDEOMENU_PANSCAN, NULL },
-	{ VIDEOFORMAT_FULLSCREEN, LOCALE_VIDEOMENU_FULLSCREEN, NULL },
-	{ VIDEOFORMAT_PANSCAN2, LOCALE_VIDEOMENU_PANSCAN2, NULL }
-};
-#else
-// giga/generic
-/*
-letterbox 
-panscan 
-bestfit 
-nonlinear
-*/
-#define VIDEOMENU_VIDEOFORMAT_OPTION_COUNT 4
-const CMenuOptionChooser::keyval VIDEOMENU_VIDEOFORMAT_OPTIONS[VIDEOMENU_VIDEOFORMAT_OPTION_COUNT] = 
-{
-	{ VIDEOFORMAT_LETTERBOX, LOCALE_VIDEOMENU_LETTERBOX, NULL },
-	{ VIDEOFORMAT_PANSCAN, LOCALE_VIDEOMENU_PANSCAN, NULL },
-	{ VIDEOFORMAT_PANSCAN2, LOCALE_VIDEOMENU_PANSCAN2, NULL },
-	{ VIDEOFORMAT_FULLSCREEN, LOCALE_VIDEOMENU_FULLSCREEN, NULL }
-};
-#endif
-
-// ac3
-extern CAudioSetupNotifier * audioSetupNotifier;	/* defined neutrino.cpp */
-
-#if !defined (PLATFORM_COOLSTREAM)
-#define AC3_OPTION_COUNT 2
-const CMenuOptionChooser::keyval AC3_OPTIONS[AC3_OPTION_COUNT] =
-{
-	{ AC3_PASSTHROUGH, NONEXISTANT_LOCALE, "passthrough" },
-	{ AC3_DOWNMIX, NONEXISTANT_LOCALE, "downmix" }
-};
-#endif
-
-int CWebTVAPIDSelectExec::exec(CMenuTarget */*parent*/, const std::string & actionKey)
-{
-	w_apidchanged = 0;
-	unsigned int sel = atoi(actionKey.c_str());
-
-	if (w_currentapid != w_apids[sel - 1]) 
-	{
-		w_currentapid = w_apids[sel - 1];
-		w_currentac3 = w_ac3flags[sel - 1];
-		w_apidchanged = 1;
-		
-		dprintf(DEBUG_NORMAL, "[movieplayer] apid changed to %d\n", w_apids[sel - 1]);
-	}
-
-	return menu_return::RETURN_EXIT;
-}
 
 CWebTV::CWebTV()
 {
@@ -570,136 +476,6 @@ void CWebTV::showUserBouquet(void)
 	addUserBouquet();
 }
 
-void CWebTV::showAudioDialog(void)
-{
-	CMenuWidget APIDSelector(LOCALE_APIDSELECTOR_HEAD, NEUTRINO_ICON_AUDIO);
-
-	// g_apids will be rewritten for mb
-	playback->FindAllPids(w_apids, w_ac3flags, &w_numpida, w_language);
-			
-	if (w_numpida > 0) 
-	{
-		CWebTVAPIDSelectExec * APIDChanger = new CWebTVAPIDSelectExec;
-		bool enabled;
-		bool defpid;
-
-		for (unsigned int count = 0; count < w_numpida; count++) 
-		{
-			bool name_ok = false;
-			char apidnumber[10];
-			sprintf(apidnumber, "%d %X", count + 1, w_apids[count]);
-			enabled = true;
-			defpid = w_currentapid ? (w_currentapid == w_apids[count]) : (count == 0);
-			std::string apidtitle = "Stream ";
-
-			// language
-			if (!w_language[count].empty())
-			{
-				apidtitle = w_language[count];
-				name_ok = true;
-			}
-
-			if (!name_ok)
-			{
-				apidtitle = "Stream ";
-				name_ok = true;
-			}
-
-			switch(w_ac3flags[count])
-			{
-				case 1: /*AC3,EAC3*/
-					if (apidtitle.find("AC3") <= 0)
-					{
-						apidtitle.append(" (AC3)");
-								
-						// ac3 state
-						w_ac3state = CInfoViewer::AC3_AVAILABLE;
-					}
-					break;
-
-				case 2: /*teletext*/
-					apidtitle.append(" (Teletext)");
-					enabled = false;
-					break;
-
-				case 3: /*MP2*/
-					apidtitle.append(" (MP2)");
-					break;
-
-				case 4: /*MP3*/
-					apidtitle.append(" (MP3)");
-					break;
-
-				case 5: /*AAC*/
-					apidtitle.append(" (AAC)");
-					break;
-
-				case 6: /*DTS*/
-					apidtitle.append(" (DTS)");
-					break;
-
-				case 7: /*MLP*/
-					apidtitle.append(" (MLP)");
-					break;
-
-				default:
-					break;
-			}
-
-			if (!name_ok)
-				apidtitle.append(apidnumber);
-
-			APIDSelector.addItem(new CMenuForwarder( apidtitle.c_str(), enabled, NULL, APIDChanger, apidnumber, CRCInput::convertDigitToKey(count + 1)), defpid);
-		}
-				
-				// ac3
-#if !defined (PLATFORM_COOLSTREAM)				
-		APIDSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
-		APIDSelector.addItem(new CMenuOptionChooser(LOCALE_AUDIOMENU_HDMI_DD, &g_settings.hdmi_dd, AC3_OPTIONS, AC3_OPTION_COUNT, true, audioSetupNotifier, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED ));
-#endif				
-				
-		// policy/aspect ratio
-		APIDSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
-				
-		// video aspect ratio 4:3/16:9
-		APIDSelector.addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEORATIO, &g_settings.video_Ratio, VIDEOMENU_VIDEORATIO_OPTIONS, VIDEOMENU_VIDEORATIO_OPTION_COUNT, true, videoSetupNotifier, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, true ));
-	
-		// video format bestfit/letterbox/panscan/non
-		APIDSelector.addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEOFORMAT, &g_settings.video_Format, VIDEOMENU_VIDEOFORMAT_OPTIONS, VIDEOMENU_VIDEOFORMAT_OPTION_COUNT, true, videoSetupNotifier, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, true ));
-
-		w_apidchanged = 0;
-		APIDSelector.exec(NULL, "");
-
-		if (w_apidchanged) 
-		{
-			if (w_currentapid == 0) 
-			{
-				w_currentapid = w_apids[0];
-				w_currentac3 = w_ac3flags[0];
-
-				if(w_currentac3)
-					w_ac3state = CInfoViewer::AC3_ACTIVE;
-			}
-
-#if defined (PLATFORM_COOLSTREAM)
-			playback->SetAPid(w_currentapid, w_currentac3);
-#else					
-			playback->SetAPid(w_currentapid);
-#endif					
-			w_apidchanged = 0;
-		}
-				
-		delete APIDChanger;
-				
-		//CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);
-
-	} 
-	else 
-	{
-		MessageBox(LOCALE_MESSAGEBOX_ERROR, g_Locale->getText(LOCALE_AUDIOSELECTMENUE_NO_TRACKS), CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
-	}
-}
-
 bool CWebTV::startPlayBack(int pos)
 {
 	playback->Open();
@@ -800,7 +576,7 @@ void CWebTV::zapTo(int pos, bool rezap)
 		CVFD::getInstance()->showServicename(channels[pos]->title); // UTF-8		
 	
 	//infoviewer
-	g_InfoViewer->showMovieInfo(channels[pos]->title, channels[pos]->description, file_prozent, duration, w_ac3state, speed, playstate, false, false);
+	g_InfoViewer->showMovieInfo(channels[pos]->title, channels[pos]->description, file_prozent, duration, ac3state, speed, playstate, false, false);
 }
 
 void CWebTV::quickZap(int key)
@@ -824,7 +600,7 @@ void CWebTV::showInfo()
 {
 	//infoviewer
 	if(tuned > -1)
-		g_InfoViewer->showMovieInfo(channels[tuned]->title, channels[tuned]->description, file_prozent, duration, w_ac3state, speed, playstate, false, false);
+		g_InfoViewer->showMovieInfo(channels[tuned]->title, channels[tuned]->description, file_prozent, duration, ac3state, speed, playstate, false, false);
 }
 
 void CWebTV::getInfos()
