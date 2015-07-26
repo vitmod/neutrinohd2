@@ -51,7 +51,6 @@ extern CAudioSetupNotifier * audioSetupNotifier;	/* defined neutrino.cpp */
 
 // volume conf
 extern CAudioSetupNotifierVolPercent * audioSetupNotifierVolPercent;
-//
 
 // dvbsub
 extern int dvbsub_getpid();				// defined in libdvbsub

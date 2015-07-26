@@ -59,17 +59,21 @@ class CTimerList : public CMenuTarget
 		CTimerd::TimerList timerlist;             // List of timers		
 		CTimerd::responseGetTimer timerNew;
 		int timerNew_standby_on;
-		char m_weekdaysStr[8];
+		//char m_weekdaysStr[8];
+		std::string m_weekdaysStr;
+		
+		t_channel_id timerNew_chan_id;
+		std::string timerNew_channel_name;
 		
 		int timer_apids_dflt;
 		int timer_apids_std;
 		int timer_apids_ac3;
 		int timer_apids_alt;
 
-		int 			width;
-		int 			height;
-		int 			x;
-		int 			y;
+		int width;
+		int height;
+		int x;
+		int y;
 		
 		int icon_foot_w;
 		int icon_foot_h;
@@ -96,19 +100,5 @@ class CTimerList : public CMenuTarget
 };
 
 bool askUserOnTimerConflict(time_t announceTime, time_t stopTime);
-
-/* zapit includes */
-#include <client/zapitclient.h>
-
-class CSelectChannel : public CMenuWidget
-{
-	private:
-		void InitChannelHelper(CZapitClient::channelsMode mode);
-		
-	public:
-		CSelectChannel();
-		~CSelectChannel();
-		int exec(CMenuTarget *parent, const std::string &actionKey);
-};
 
 #endif

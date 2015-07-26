@@ -825,7 +825,7 @@ int CChannelList::show()
 				do {
 					smsKey = c_SMSKeyInput->handleMsg(msg);
 					//printf("SMS new key: %c\n", smsKey);
-					g_RCInput->getMsg_ms(&msg, &data, CHANNEL_SMSKEY_TIMEOUT-100);
+					g_RCInput->getMsg_ms(&msg, &data, CHANNEL_SMSKEY_TIMEOUT - 100);
 				} while ((msg >= CRCInput::RC_1) && (msg <= CRCInput::RC_9));
 
 				if (msg == CRCInput::RC_timeout || msg == CRCInput::RC_nokey) 

@@ -1,7 +1,5 @@
 /*
-	Neutrino-GUI  -   DBoxII-Project
-
-	$Id: audio_select.h 2013/10/12 mohousch Exp $
+	* $Id: channel_select.h 2015/07/ 11:23:30 mohousch Exp $
 
 	License: GPL
 
@@ -18,29 +16,34 @@
 	You should have received a copy of the GNU General Public License
 	along with this program; if not, write to the Free Software
 	Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 */
 
+#ifndef __CHANNEL_SELECT__
+#define __CHANNEL_SELECT__
 
-#ifndef __audio_selector__
-#define __audio_selector__
+#include <gui/widget/menue.h>
 
-//
-// -- Audio Channel Selector Menue
-// -- 2005-08-31 rasc
-//
+#include <string>
 
-#include "widget/menue.h"
+/*zapit includes*/
+#include <client/zapitclient.h>
 
 
-using namespace std;
+extern t_channel_id CSelectChannelWidget_TVChanID;
+extern std::string CSelectChannelWidget_TVChanName;
+extern t_channel_id CSelectChannelWidget_RadioChanID;
+extern std::string CSelectChannelWidget_RadioChanName;
+		
+class CSelectChannelWidget : public CMenuWidget
+{	
+	private:
+		void InitZapitChannelHelper(CZapitClient::channelsMode mode);
 
-class CAudioSelectMenuHandler : public CMenuTarget
-{
 	public:
-		int  exec( CMenuTarget * parent, const std::string &actionkey);
-		int  doMenu();
+		CSelectChannelWidget();
+		~CSelectChannelWidget();
+		int exec(CMenuTarget *parent, const std::string & actionKey);
 };
 
-
 #endif
-

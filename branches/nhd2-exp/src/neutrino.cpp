@@ -2371,8 +2371,6 @@ int CNeutrinoApp::run(int argc, char **argv)
 	while(!zapit_ready)
 		usleep(0);
 	
-	dprintf(DEBUG_NORMAL, "CNeutrinoApp::run: zapit ready\n\n");
-	
 	// dvbsub thread
 	if(FrontendCount)
 		dvbsub_init();

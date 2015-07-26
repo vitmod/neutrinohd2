@@ -32,13 +32,10 @@
 #include <neutrino.h>
 
 #include <driver/screen_max.h>
-#include <gui/bouquetlist.h>
+//#include <gui/bouquetlist.h>
+#include <gui/channel_select.h>
 
 #include <system/debug.h>
-
-
-extern CBouquetList * bouquetList;
-extern CBouquetManager * g_bouquetManager;
 
 //option off0_on1
 #define OPTIONS_OFF0_ON1_OPTION_COUNT 2
@@ -65,6 +62,7 @@ const CMenuOptionChooser::keyval OPTIONS_LASTMODE_OPTIONS[OPTIONS_LASTMODE_OPTIO
 
 CZapitSetup::CZapitSetup()
 {
+	selected = -1;
 }
 
 CZapitSetup::~CZapitSetup()
@@ -73,19 +71,46 @@ CZapitSetup::~CZapitSetup()
 
 int CZapitSetup::exec(CMenuTarget * parent, const std::string &actionKey)
 {
-	dprintf(DEBUG_NORMAL, "[neutrino] init zapit menu setup...\n");
+	dprintf(DEBUG_NORMAL, "CZapitSetup::exec: actionKey:%s\n", actionKey.c_str());
 	
 	int   res = menu_return::RETURN_REPAINT;
+	CSelectChannelWidget*  CSelectChannelWidgetHandler;
 	
-	if(actionKey == "save_action") 
+	if (parent)
+		parent->hide();
+	
+	if(actionKey == "save") 
 	{
 		CNeutrinoApp::getInstance()->exec(NULL, "savesettings");
 		showMenu();
 		return menu_return::RETURN_EXIT;
 	}
-	
-	if (parent)
-		parent->hide();
+	else if(actionKey == "tv")
+	{
+		CSelectChannelWidgetHandler = new CSelectChannelWidget();
+		CSelectChannelWidgetHandler->exec(NULL, "tv");
+		
+		g_settings.startchanneltv_id = CSelectChannelWidget_TVChanID;
+		g_settings.StartChannelTV = CSelectChannelWidget_TVChanName.c_str();
+		
+		delete CSelectChannelWidgetHandler;
+		CSelectChannelWidgetHandler = NULL;
+		
+		menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "radio")
+	{
+		CSelectChannelWidgetHandler = new CSelectChannelWidget();
+		CSelectChannelWidgetHandler->exec(NULL, "radio");
+		
+		g_settings.startchannelradio_id = CSelectChannelWidget_RadioChanID;
+		g_settings.StartChannelRadio = CSelectChannelWidget_RadioChanName.c_str();
+		
+		delete CSelectChannelWidgetHandler;
+		CSelectChannelWidgetHandler = NULL;
+		
+		menu_return::RETURN_REPAINT;
+	}
 
 	showMenu();
 
@@ -97,26 +122,27 @@ void CZapitSetup::showMenu()
 	//menue init
 	CMenuWidget * zapit = new CMenuWidget(LOCALE_MISCSETTINGS_ZAPIT, NEUTRINO_ICON_SETTINGS);
 	
+	zapit->setSelected(selected);
+	
 	// intros
 	zapit->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
 	zapit->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	// save settings
-	zapit->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "save_action", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	zapit->addItem(new CMenuForwarder(LOCALE_MAINSETTINGS_SAVESETTINGSNOW, true, NULL, this, "save", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	zapit->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	
 	int shortcut = 1;
-	
-	int mode = CNeutrinoApp::getInstance()->getMode();
 
 	//zapit
 	zapit->addItem(new CMenuOptionChooser(LOCALE_MISCSETTINGS_ZAPIT, &g_settings.uselastchannel, OPTIONS_OFF1_ON0_OPTIONS, OPTIONS_OFF1_ON0_OPTION_COUNT, true, this, CRCInput::convertDigitToKey(shortcut++) ));
 	zapit->addItem(zapit1 = new CMenuOptionChooser(LOCALE_ZAPITSETUP_LAST_MODE, &g_settings.lastChannelMode, OPTIONS_LASTMODE_OPTIONS, OPTIONS_LASTMODE_OPTION_COUNT, !g_settings.uselastchannel, this, CRCInput::convertDigitToKey(shortcut++) ));
-	zapit->addItem(zapit2 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_TV, !g_settings.uselastchannel, g_settings.StartChannelTV, new CSelectChannelWidget(), "tv", CRCInput::convertDigitToKey(shortcut++) ));
-	zapit->addItem(zapit3 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_RADIO, !g_settings.uselastchannel, g_settings.StartChannelRadio, new CSelectChannelWidget(), "radio", CRCInput::convertDigitToKey(shortcut++) ));
+	zapit->addItem(zapit2 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_TV, !g_settings.uselastchannel, g_settings.StartChannelTV, /*new CSelectChannelWidget(CZapitClient::MODE_TV)*/ this, "tv", CRCInput::convertDigitToKey(shortcut++) ));
+	zapit->addItem(zapit3 = new CMenuForwarder(LOCALE_ZAPITSETUP_LAST_RADIO, !g_settings.uselastchannel, g_settings.StartChannelRadio, /*new CSelectChannelWidget(CZapitClient::MODE_RADIO)*/ this, "radio", CRCInput::convertDigitToKey(shortcut++) ));
 
 	zapit->exec(NULL, "");
 	zapit->hide();
+	selected = zapit->getSelected();
 	
 	delete zapit;
 }
@@ -133,7 +159,7 @@ bool CZapitSetup::changeNotify(const neutrino_locale_t OptionName, void *)
 	return true;
 }
 
-//select menu
+/*
 CSelectChannelWidget::CSelectChannelWidget()
 {
 }
@@ -163,7 +189,6 @@ int CSelectChannelWidget::exec(CMenuTarget *parent, const std::string &actionKey
 	return res;
 }
 
-extern CRemoteControl * g_RemoteControl; 		// neutrino.cpp
 void CSelectChannelWidget::InitZapitChannelHelper(CZapitClient::channelsMode mode)
 {
 	// set channel mode
@@ -210,3 +235,4 @@ void CSelectChannelWidget::InitZapitChannelHelper(CZapitClient::channelsMode mod
 		CNeutrinoApp::getInstance()->SetChannelMode( g_settings.channel_mode, NeutrinoMessages::mode_radio);
 	}
 }
+*/

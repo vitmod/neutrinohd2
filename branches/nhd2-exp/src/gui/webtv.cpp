@@ -266,7 +266,7 @@ static size_t WriteMemoryCallback(void *ptr, size_t size, size_t nmemb, void *da
 
 void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * description) 
 {
-	dprintf(DEBUG_INFO, "CWebTV::processPlaylistUrl\n");
+	dprintf(DEBUG_DEBUG, "CWebTV::processPlaylistUrl\n");
 	
 	CURL *curl_handle;
 	struct MemoryStruct chunk;
@@ -373,7 +373,7 @@ void CWebTV::processPlaylistUrl(const char *url, const char *name, const char * 
 
 void CWebTV::addUrl2Playlist(const char * url, const char *name, const char * description, bool locked)
 {
-	dprintf(DEBUG_INFO, "CWebTV::processPlaylistUrl\n");
+	dprintf(DEBUG_DEBUG, "CWebTV::addUrl2Playlist\n");
 	
 	webtv_channels * tmp = new webtv_channels();
 						

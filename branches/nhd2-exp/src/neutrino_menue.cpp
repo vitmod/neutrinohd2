@@ -2273,7 +2273,7 @@ bool CNeutrinoApp::getNVODMenu(CMenuWidget * menu)
         int count = 0;
         char nvod_id[5];
 
-        for( CSubServiceListSorted::iterator e=g_RemoteControl->subChannels.begin(); e!=g_RemoteControl->subChannels.end(); ++e)
+        for( CSubServiceListSorted::iterator e = g_RemoteControl->subChannels.begin(); e != g_RemoteControl->subChannels.end(); ++e)
         {
                 sprintf(nvod_id, "%d", count);
 

@@ -39,19 +39,46 @@ endif
 noinst_LIBRARIES = libtimerlist.a libneutrino_gui.a libneutrino_gui2.a
 
 libneutrino_gui_a_SOURCES = \
-	bouquetlist.cpp channellist.cpp eventlist.cpp pluginlist.cpp \
-	sleeptimer.cpp screensetup.cpp \
-	epgview.cpp infoviewer.cpp scan.cpp update.cpp \
-	filebrowser.cpp audioplayer.cpp nfs.cpp pictureviewer.cpp \
-	movieplayer.cpp rc_lock.cpp \
-	timeosd.cpp epgplus.cpp epg_menu.cpp \
-	streaminfo2.cpp dboxinfo.cpp \
-	plugins.cpp imageinfo.cpp audio_select.cpp moviebrowser.cpp movieinfo.cpp \
-	scan_setup.cpp zapit_setup.cpp proxyserver_setup.cpp themes.cpp
+	bouquetlist.cpp \
+	channellist.cpp \
+	eventlist.cpp \
+	pluginlist.cpp \
+	sleeptimer.cpp \
+	screensetup.cpp \
+	epgview.cpp \
+	infoviewer.cpp \
+	scan.cpp \
+	update.cpp \
+	filebrowser.cpp \
+	audioplayer.cpp \
+	nfs.cpp \
+	pictureviewer.cpp \
+	movieplayer.cpp \
+	rc_lock.cpp \
+	timeosd.cpp \
+	epgplus.cpp \
+	epg_menu.cpp \
+	streaminfo2.cpp \
+	dboxinfo.cpp \
+	plugins.cpp \
+	imageinfo.cpp \
+	audio_select.cpp \
+	moviebrowser.cpp \
+	movieinfo.cpp \
+	scan_setup.cpp \
+	zapit_setup.cpp \
+	proxyserver_setup.cpp \
+	themes.cpp
 
 libneutrino_gui2_a_SOURCES = \
-	color.cpp motorcontrol.cpp hdd_menu.cpp \
-	alphasetup.cpp dvbsub_select.cpp psisetup.cpp opkg_manager.cpp webtv.cpp upnpbrowser.cpp
+	color.cpp motorcontrol.cpp upnpbrowser.cpp \
+	hdd_menu.cpp \
+	alphasetup.cpp \
+	dvbsub_select.cpp \
+	psisetup.cpp \
+	opkg_manager.cpp \
+	webtv.cpp \
+	channel_select.cpp
 
 if ENABLE_CI
 libneutrino_gui2_a_SOURCES += cam_menu.cpp

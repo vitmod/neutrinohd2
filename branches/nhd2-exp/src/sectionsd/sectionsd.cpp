@@ -62,6 +62,8 @@
 #include <sys/wait.h>
 #include <sys/time.h>
 
+#include <syscall.h>
+
 #include <connection/basicsocket.h>
 #include <connection/basicserver.h>
 
@@ -5123,7 +5125,7 @@ void sectionsd_main_thread(void */*data*/)
 
 	struct sched_param parm;
 
-	printf("$Id: sectionsd.cpp,v 1.31 2013/08/18 11:23:30 mohousch Exp Exp $\n");
+	dprintf(DEBUG_NORMAL, "sectionsd_main_thread: startup, tid %ld\n", syscall(__NR_gettid));
 
 	// load languages
 	SIlanguage::loadLanguages();

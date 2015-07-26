@@ -74,16 +74,16 @@
 #include <channel.h>
 #include <bouquets.h>
 
+#include <gui/channel_select.h>
 
-extern CBouquetManager *g_bouquetManager;
+
+//extern CBouquetManager *g_bouquetManager;
 extern char recDir[255];			// defined in neutrino.cpp
 
 #include <string.h>
 
 #define info_height 60
 
-std::string timerNew_channel_name;
-t_channel_id chan_id;
 
 class CTimerListNewNotifier : public CChangeObserver
 {
@@ -273,12 +273,40 @@ CTimerList::~CTimerList()
 int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 {
 	const char * key = actionKey.c_str();
-
-	if (strcmp(key, "modifytimer") == 0)
+	
+	CSelectChannelWidget*  CSelectChannelWidgetHandler;
+	
+	if(actionKey == "tv")
+	{
+		CSelectChannelWidgetHandler = new CSelectChannelWidget();
+		CSelectChannelWidgetHandler->exec(NULL, "tv");
+		
+		timerNew_chan_id = CSelectChannelWidget_TVChanID;
+		timerNew_channel_name = CSelectChannelWidget_TVChanName.c_str();
+		
+		delete CSelectChannelWidgetHandler;
+		CSelectChannelWidgetHandler = NULL;
+		
+		return menu_return::RETURN_REPAINT;
+	}
+	else if(actionKey == "radio")
+	{
+		CSelectChannelWidgetHandler = new CSelectChannelWidget();
+		CSelectChannelWidgetHandler->exec(NULL, "radio");
+		
+		timerNew_chan_id = CSelectChannelWidget_RadioChanID;
+		timerNew_channel_name = CSelectChannelWidget_RadioChanName.c_str();
+		
+		delete CSelectChannelWidgetHandler;
+		CSelectChannelWidgetHandler = NULL;
+		
+		return menu_return::RETURN_REPAINT;
+	}
+	else if (strcmp(key, "modifytimer") == 0)
 	{
 		timerlist[selected].announceTime = timerlist[selected].alarmTime -60;
 		if(timerlist[selected].eventRepeat >= CTimerd::TIMERREPEAT_WEEKDAYS)
-			g_Timerd->getWeekdaysFromStr(&timerlist[selected].eventRepeat, m_weekdaysStr);
+			g_Timerd->getWeekdaysFromStr(&timerlist[selected].eventRepeat, m_weekdaysStr.c_str());
 		
 		if(timerlist[selected].eventType == CTimerd::TIMER_RECORD)
 		{
@@ -324,10 +352,10 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 			timerNew.eventType == CTimerd::TIMER_ZAPTO ||
 			timerNew.eventType == CTimerd::TIMER_RECORD)
 		{
-			if (strcmp((char *)timerNew_channel_name.c_str(), "---") == 0)
+			if(timerNew_channel_name.empty())
 				return menu_return::RETURN_REPAINT;
 			else
-				timerNew.channel_id = chan_id;
+				timerNew.channel_id = timerNew_chan_id;
 			
 			if (timerNew.eventType == CTimerd::TIMER_RECORD)
 			{
@@ -356,14 +384,14 @@ int CTimerList::exec(CMenuTarget *parent, const std::string &actionKey)
 			data = timerNew.message;
 		else if (timerNew.eventType == CTimerd::TIMER_EXEC_PLUGIN)
 		{
-			if (strcmp(timerNew.pluginName, "---") == 0)
+			if (strcmp(timerNew.pluginName, "") == 0)
 				return menu_return::RETURN_REPAINT;
 			
 			data = timerNew.pluginName;
 		}
 		
 		if(timerNew.eventRepeat >= CTimerd::TIMERREPEAT_WEEKDAYS)
-			g_Timerd->getWeekdaysFromStr(&timerNew.eventRepeat, m_weekdaysStr);
+			g_Timerd->getWeekdaysFromStr(&timerNew.eventRepeat, m_weekdaysStr.c_str());
 
 		if (g_Timerd->addTimerEvent(timerNew.eventType,data,timerNew.announceTime,timerNew.alarmTime, timerNew.stopTime,timerNew.eventRepeat,timerNew.repeatCount,false) == -1)
 		{
@@ -864,7 +892,7 @@ std::string CTimerList::convertTimerRepeat2String(const CTimerd::CTimerEventRepe
 			if(rep >=CTimerd::TIMERREPEAT_WEEKDAYS)
 			{
 				int weekdays = (((int)rep) >> 9);
-				std::string weekdayStr="";
+				std::string weekdayStr = "";
 				if(weekdays & 1)
 					weekdayStr+= g_Locale->getText(LOCALE_TIMERLIST_REPEAT_MONDAY);
 				weekdays >>= 1;
@@ -976,10 +1004,10 @@ int CTimerList::modifyTimer()
 		timerSettings.addItem( m2);
 	}
 
-	g_Timerd->setWeekdaysToStr(timer->eventRepeat, m_weekdaysStr);
+	g_Timerd->setWeekdaysToStr(timer->eventRepeat, (char *)m_weekdaysStr.c_str());
 	timer->eventRepeat = (CTimerd::CTimerEventRepeat)(((int)timer->eventRepeat) & 0x1FF);
-	CStringInput timerSettings_weekdays(LOCALE_TIMERLIST_WEEKDAYS, m_weekdaysStr, 7, LOCALE_TIMERLIST_WEEKDAYS_HINT_1, LOCALE_TIMERLIST_WEEKDAYS_HINT_2, "-X");
-	CMenuForwarder *m4 = new CMenuForwarder(LOCALE_TIMERLIST_WEEKDAYS, ((int)timer->eventRepeat) >= (int)CTimerd::TIMERREPEAT_WEEKDAYS, m_weekdaysStr, &timerSettings_weekdays );
+	CStringInput timerSettings_weekdays(LOCALE_TIMERLIST_WEEKDAYS, (char *)m_weekdaysStr.c_str(), 7, LOCALE_TIMERLIST_WEEKDAYS_HINT_1, LOCALE_TIMERLIST_WEEKDAYS_HINT_2, "-X");
+	CMenuForwarder *m4 = new CMenuForwarder(LOCALE_TIMERLIST_WEEKDAYS, ((int)timer->eventRepeat) >= (int)CTimerd::TIMERREPEAT_WEEKDAYS, m_weekdaysStr.c_str(), &timerSettings_weekdays );
 	CIntInput timerSettings_repeatCount(LOCALE_TIMERLIST_REPEATCOUNT, (int&)timer->repeatCount,3, LOCALE_TIMERLIST_REPEATCOUNT_HELP1, LOCALE_TIMERLIST_REPEATCOUNT_HELP2);
 
 	CMenuForwarder *m5 = new CMenuForwarder(LOCALE_TIMERLIST_REPEATCOUNT, timer->eventRepeat != (int)CTimerd::TIMERREPEAT_ONCE ,timerSettings_repeatCount.getValue() , &timerSettings_repeatCount);
@@ -1064,19 +1092,19 @@ int CTimerList::newTimer()
 	CDateInput timerSettings_stopTime(LOCALE_TIMERLIST_STOPTIME, &(timerNew.stopTime) , LOCALE_IPSETUP_HINT_1, LOCALE_IPSETUP_HINT_2);
 	CMenuForwarder *m2 = new CMenuForwarder(LOCALE_TIMERLIST_STOPTIME, true, timerSettings_stopTime.getValue (), &timerSettings_stopTime );
 
-	CStringInput timerSettings_weekdays(LOCALE_TIMERLIST_WEEKDAYS, m_weekdaysStr, 7, LOCALE_TIMERLIST_WEEKDAYS_HINT_1, LOCALE_TIMERLIST_WEEKDAYS_HINT_2, "-X");
-	CMenuForwarder *m4 = new CMenuForwarder(LOCALE_TIMERLIST_WEEKDAYS, false,  m_weekdaysStr, &timerSettings_weekdays);
+	CStringInput timerSettings_weekdays(LOCALE_TIMERLIST_WEEKDAYS, (char *)m_weekdaysStr.c_str(), 7, LOCALE_TIMERLIST_WEEKDAYS_HINT_1, LOCALE_TIMERLIST_WEEKDAYS_HINT_2, "-X");
+	CMenuForwarder *m4 = new CMenuForwarder(LOCALE_TIMERLIST_WEEKDAYS, false,  m_weekdaysStr.c_str(), &timerSettings_weekdays);
 
-	CIntInput timerSettings_repeatCount(LOCALE_TIMERLIST_REPEATCOUNT, (int&)timerNew.repeatCount,3, LOCALE_TIMERLIST_REPEATCOUNT_HELP1, LOCALE_TIMERLIST_REPEATCOUNT_HELP2);
+	CIntInput timerSettings_repeatCount(LOCALE_TIMERLIST_REPEATCOUNT, (int&)timerNew.repeatCount, 3, LOCALE_TIMERLIST_REPEATCOUNT_HELP1, LOCALE_TIMERLIST_REPEATCOUNT_HELP2);
 	CMenuForwarder *m5 = new CMenuForwarder(LOCALE_TIMERLIST_REPEATCOUNT, false,timerSettings_repeatCount.getValue() , &timerSettings_repeatCount);
 
 	CTimerListRepeatNotifier notifier((int *)&timerNew.eventRepeat, m4, m5);
-	strcpy(m_weekdaysStr,"-------");
+	//strcpy(m_weekdaysStr, "-------");
 	CMenuOptionChooser* m3 = new CMenuOptionChooser(LOCALE_TIMERLIST_REPEAT, (int *)&timerNew.eventRepeat, TIMERLIST_REPEAT_OPTIONS, TIMERLIST_REPEAT_OPTION_COUNT, true, &notifier);
 
-	strcpy((char *)timerNew_channel_name.c_str(), "---");
+	//strcpy((char *)timerNew_channel_name.c_str(), "---");
 	
-	CMenuForwarder *m6 = new CMenuForwarder(LOCALE_TIMERLIST_CHANNEL, true, timerNew_channel_name, new CSelectChannel(), CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_tv? "tv" : "radio");
+	CMenuForwarder *m6 = new CMenuForwarder(LOCALE_TIMERLIST_CHANNEL, true, timerNew_channel_name, /*new CSelectChannelWidget()*/this, CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_tv? "tv" : "radio");
 
 	CMountChooser recDirs(LOCALE_TIMERLIST_RECORDING_DIR,NEUTRINO_ICON_SETTINGS, NULL, timerNew.recordingDir, g_settings.network_nfs_recordingdir);
 	if (!recDirs.hasItem())
@@ -1090,7 +1118,7 @@ int CTimerList::newTimer()
 	CStringInputSMS timerSettings_msg(LOCALE_TIMERLIST_MESSAGE, timerNew.message);
 	CMenuForwarder *m9 = new CMenuForwarder(LOCALE_TIMERLIST_MESSAGE, false, timerNew.message, &timerSettings_msg );
 
-	strcpy(timerNew.pluginName, "---");
+	//strcpy(timerNew.pluginName, "---");
 	CPluginChooser plugin_chooser(LOCALE_TIMERLIST_PLUGIN, CPlugins::P_TYPE_SCRIPT | CPlugins::P_TYPE_TOOL | CPlugins::P_TYPE_NEUTRINO, timerNew.pluginName);
 	CMenuForwarder *m10 = new CMenuForwarder(LOCALE_TIMERLIST_PLUGIN, false, timerNew.pluginName, &plugin_chooser);
 
@@ -1162,6 +1190,7 @@ bool askUserOnTimerConflict(time_t announceTime, time_t stopTime)
 		strftime(st,20,"%d.%m. %H:%M",sTime);
 		timerbuf += st;
 		timerbuf += "\n";
+		
 		//printf("%d\t%d\t%d\n",it->announceTime,it->alarmTime,it->stopTime);
 	}
 	
@@ -1171,82 +1200,3 @@ bool askUserOnTimerConflict(time_t announceTime, time_t stopTime)
 
 	return (MessageBox(LOCALE_MESSAGEBOX_INFO, timerbuf, CMessageBox::mbrNo, CMessageBox::mbNo|CMessageBox::mbYes) == CMessageBox::mbrYes);
 }
-
-#include "gui/bouquetlist.h"
-extern CBouquetList * bouquetList;
-//CSelectChannelmenu
-CSelectChannel::CSelectChannel()
-{
-
-}
-
-CSelectChannel::~CSelectChannel()
-{
-
-}
-
-int CSelectChannel::exec(CMenuTarget * parent, const std::string& actionKey)
-{
-	int res = menu_return::RETURN_REPAINT;
-
-	if (parent)
-		parent->hide();
-
-	if(actionKey == "tv")
-	{
-		// set tv mode
-		InitChannelHelper(CZapitClient::MODE_TV);
-		return res;
-	}
-	else if(actionKey == "radio")
-	{
-		// set radio mode
-		InitChannelHelper(CZapitClient::MODE_RADIO);
-		return res;
-	}
-
-	return res;
-}
-
-void CSelectChannel::InitChannelHelper(CZapitClient::channelsMode mode)
-{
-	// set channel mode
-	if(mode == CZapitClient::MODE_TV)
-	{
-		CNeutrinoApp::getInstance()->SetChannelMode( g_settings.channel_mode, NeutrinoMessages::mode_tv);
-	}
-	else if(mode == CZapitClient::MODE_RADIO)
-	{
-		CNeutrinoApp::getInstance()->SetChannelMode( g_settings.channel_mode, NeutrinoMessages::mode_radio);
-	}
-		  
-	int nNewChannel;
-	int nNewBouquet;
-	
-	nNewBouquet = bouquetList->show();
-			
-	if (nNewBouquet > -1)
-	{
-		nNewChannel = bouquetList->Bouquets[nNewBouquet]->channelList->show();
-		
-		//printf("nNewChannel %d\n",nNewChannel);
-		
-		if (nNewChannel > -1)
-		{
-			chan_id = bouquetList->Bouquets[nNewBouquet]->channelList->getActiveChannel_ChannelID();
-			timerNew_channel_name = g_Zapit->getChannelName(chan_id);
-		}
-	}
-	
-	// set channel mode
-	if( (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_tv) && (mode == CZapitClient::MODE_RADIO) )
-	{
-		CNeutrinoApp::getInstance()->SetChannelMode( g_settings.channel_mode, NeutrinoMessages::mode_tv);
-	}
-	else if( (CNeutrinoApp::getInstance()->getMode() == NeutrinoMessages::mode_radio) && (mode == CZapitClient::MODE_TV) )
-	{
-		CNeutrinoApp::getInstance()->SetChannelMode( g_settings.channel_mode, NeutrinoMessages::mode_radio);
-	}
-}
-
-

@@ -26,8 +26,8 @@
 
 #include <string>
 
-/*zapit includes*/
-#include <client/zapitclient.h>
+
+//#include <client/zapitclient.h>
 
 
 class CZapitSetup : public CMenuTarget, CChangeObserver
@@ -35,6 +35,8 @@ class CZapitSetup : public CMenuTarget, CChangeObserver
 	private:
 		CMenuOptionChooser * zapit1;
 		CMenuForwarder * zapit2, * zapit3;
+		
+		int selected;
 
 		void showMenu();
 
@@ -45,15 +47,5 @@ class CZapitSetup : public CMenuTarget, CChangeObserver
 		virtual bool changeNotify(const neutrino_locale_t , void *);
 };
 
-class CSelectChannelWidget : public CMenuWidget
-{
-	private:
-		void InitZapitChannelHelper(CZapitClient::channelsMode mode);
-
-	public:
-		CSelectChannelWidget();
-		~CSelectChannelWidget();
-		int exec(CMenuTarget *parent, const std::string & actionKey);
-};
 
 #endif

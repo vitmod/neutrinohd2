@@ -1239,7 +1239,6 @@ void CInfoViewer::showSubchan()
 		}
 
 		frameBuffer->RestoreScreen(x - borderwidth, y - borderwidth, dx + 2 * borderwidth, dy + 2 * borderwidth, pixbuf);
-		
 		frameBuffer->blit();	
   		
 	} 
