@@ -63,7 +63,7 @@ unsigned short vpid = 0;
 unsigned short vtype = 0;
 std::string    language[10];
 
-unsigned int currentapid = 0, currentac3 = 0, apidchanged = 0;
+unsigned int currentapid = 0, currentac3 = 0;
 
 unsigned int ac3state = CInfoViewer::NO_AC3;
 
@@ -132,19 +132,48 @@ const CMenuOptionChooser::keyval AC3_OPTIONS[AC3_OPTION_COUNT] =
 };
 #endif
 
-CAVPIDSelectWidget::CAVPIDSelectWidget()
+int CAVPIDChangeExec::exec(CMenuTarget */*parent*/, const std::string & actionKey)
 {
-  
+	dprintf(DEBUG_NORMAL, "CAVPIDSelectWidget::exec: %s (currentapid:%d)\n", actionKey.c_str(), currentapid);
+	
+	unsigned int sel = atoi(actionKey.c_str());
+
+	if (currentapid != apids[sel]) 
+	{
+		currentapid = apids[sel];
+		currentac3 = ac3flags[sel];
+		
+		playback->SetAPid(currentapid, currentac3);
+		
+		if(currentac3)
+			ac3state = CInfoViewer::AC3_ACTIVE;
+		
+		dprintf(DEBUG_NORMAL, "CAPIDSelect::exec: apid changed to %d\n", currentapid);
+	}
+	
+	return menu_return::RETURN_EXIT;
 }
 
-CAVPIDSelectWidget::~CAVPIDSelectWidget()
+//
+int CAVPIDSelectWidget::exec(CMenuTarget * parent, const std::string & actionKey)
 {
-  
+	dprintf(DEBUG_NORMAL, "CAVPIDSelectWidget::exec: %s\n", actionKey.c_str());
+	
+	int res = menu_return::RETURN_REPAINT;
+
+	if (parent) 
+		parent->hide();
+
+	showAudioDialog();
+
+	return res;
 }
 
 void CAVPIDSelectWidget::showAudioDialog(void)
 {
-	CMenuWidget AVPIDSelector(LOCALE_APIDSELECTOR_HEAD, NEUTRINO_ICON_AUDIO);
+	CMenuWidget * AVPIDSelector = new CMenuWidget(LOCALE_APIDSELECTOR_HEAD, NEUTRINO_ICON_AUDIO);
+	
+	CAVPIDChangeExec AVPIDChanger;
 
 	playback->FindAllPids(apids, ac3flags, &numpida, language);
 			
@@ -157,7 +186,7 @@ void CAVPIDSelectWidget::showAudioDialog(void)
 		{
 			bool name_ok = false;
 			char apidnumber[10];
-			sprintf(apidnumber, "%d %X", count + 1, apids[count]);
+			sprintf(apidnumber, "%d", count);
 			enabled = true;
 			defpid = currentapid ? (currentapid == apids[count]) : (count == 0);
 			std::string apidtitle = "Stream ";
@@ -175,6 +204,7 @@ void CAVPIDSelectWidget::showAudioDialog(void)
 				name_ok = true;
 			}
 
+			// title (name)
 			switch(ac3flags[count])
 			{
 				case 1: /*AC3,EAC3*/
@@ -219,75 +249,28 @@ void CAVPIDSelectWidget::showAudioDialog(void)
 			if (!name_ok)
 				apidtitle.append(apidnumber);
 
-			AVPIDSelector.addItem(new CMenuForwarder( apidtitle.c_str(), enabled, NULL, this, apidnumber, CRCInput::convertDigitToKey(count + 1)), defpid);
-		}
-
-		apidchanged = 0;
-
-		if (apidchanged) 
-		{
-			if (currentapid == 0) 
-			{
-				currentapid = apids[0];
-				currentac3 = ac3flags[0];
-
-				if(currentac3)
-					ac3state = CInfoViewer::AC3_ACTIVE;
-			}
-
-#if defined (PLATFORM_COOLSTREAM)
-			playback->SetAPid(currentapid, currentac3);
-#else					
-			playback->SetAPid(currentapid);
-#endif					
-			apidchanged = 0;
+			AVPIDSelector->addItem(new CMenuForwarder(apidtitle.c_str(), enabled, NULL, &AVPIDChanger, apidnumber, CRCInput::convertDigitToKey(count + 1)), defpid /*(count == apids[currentapid])*/ );
 		}
 		
-		AVPIDSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+		AVPIDSelector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	} 
 	
 	//ac3
 #if !defined (PLATFORM_COOLSTREAM)				
-	AVPIDSelector.addItem(new CMenuOptionChooser(LOCALE_AUDIOMENU_HDMI_DD, &g_settings.hdmi_dd, AC3_OPTIONS, AC3_OPTION_COUNT, true, audioSetupNotifier, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED ));
+	AVPIDSelector->addItem(new CMenuOptionChooser(LOCALE_AUDIOMENU_HDMI_DD, &g_settings.hdmi_dd, AC3_OPTIONS, AC3_OPTION_COUNT, true, audioSetupNotifier, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED ));
 #endif				
 				
 	// policy/aspect ratio
-	AVPIDSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	AVPIDSelector->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 				
 	// video aspect ratio 4:3/16:9
-	AVPIDSelector.addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEORATIO, &g_settings.video_Ratio, VIDEOMENU_VIDEORATIO_OPTIONS, VIDEOMENU_VIDEORATIO_OPTION_COUNT, true, videoSetupNotifier, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, true ));
+	AVPIDSelector->addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEORATIO, &g_settings.video_Ratio, VIDEOMENU_VIDEORATIO_OPTIONS, VIDEOMENU_VIDEORATIO_OPTION_COUNT, true, videoSetupNotifier, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN, true ));
 	
 	// video format bestfit/letterbox/panscan/non
-	AVPIDSelector.addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEOFORMAT, &g_settings.video_Format, VIDEOMENU_VIDEOFORMAT_OPTIONS, VIDEOMENU_VIDEOFORMAT_OPTION_COUNT, true, videoSetupNotifier, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, true ));
+	AVPIDSelector->addItem(new CMenuOptionChooser(LOCALE_VIDEOMENU_VIDEOFORMAT, &g_settings.video_Format, VIDEOMENU_VIDEOFORMAT_OPTIONS, VIDEOMENU_VIDEOFORMAT_OPTION_COUNT, true, videoSetupNotifier, CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW, true ));
 	
-	AVPIDSelector.exec(NULL, "");
+	AVPIDSelector->exec(NULL, "");
+	AVPIDSelector->hide();
+	delete AVPIDSelector;
+	AVPIDSelector = NULL;
 }
-
-int CAVPIDSelectWidget::exec(CMenuTarget * parent, const std::string & actionKey)
-{
-	dprintf(DEBUG_NORMAL, "CAVPIDSelectWidget::exec: %s\n", actionKey.c_str());
-	
-	if(parent)
-		hide();
-	
-	apidchanged = 0;
-	unsigned int sel = atoi(actionKey.c_str());
-
-	if (currentapid != apids[sel - 1]) 
-	{
-		currentapid = apids[sel - 1];
-		currentac3 = ac3flags[sel - 1];
-		apidchanged = 1;
-		
-		dprintf(DEBUG_NORMAL, "CAPIDSelect::exec: apid changed to %d\n", apids[sel - 1]);
-		
-		return menu_return::RETURN_EXIT;
-	}
-
-	showAudioDialog();
-	
-	return menu_return::RETURN_REPAINT;
-}
-
-
-

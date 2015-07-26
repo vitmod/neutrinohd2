@@ -151,13 +151,6 @@ class CRecAPIDSettingsNotifier : public CChangeObserver
 		bool changeNotify(const neutrino_locale_t OptionName, void*);
 };
 
-// apids change notifier
-class CAPIDChangeExec : public CMenuTarget
-{
-	public:
-		int exec(CMenuTarget* parent, const std::string & actionKey);
-};
-
 // subtitle change notifier
 class CSubtitleChangeExec : public CMenuTarget
 {

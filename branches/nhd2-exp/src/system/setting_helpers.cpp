@@ -493,21 +493,6 @@ bool CRecAPIDSettingsNotifier::changeNotify(const neutrino_locale_t, void *)
 	return true;
 }
 
-// apid changer exec
-int CAPIDChangeExec::exec(CMenuTarget */*parent*/, const std::string & actionKey)
-{
-	dprintf(DEBUG_INFO, "CAPIDChangeExec exec: %s\n", actionKey.c_str());
-
-	unsigned int sel = atoi(actionKey.c_str());
-	
-	if (g_RemoteControl->current_PIDs.PIDs.selected_apid != sel )
-	{
-		g_RemoteControl->setAPID(sel);
-	}
-
-	return menu_return::RETURN_EXIT;
-}
-
 // txt/dvb sub change exec
 int CSubtitleChangeExec::exec(CMenuTarget */*parent*/, const std::string & actionKey)
 {

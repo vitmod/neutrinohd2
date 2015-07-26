@@ -243,8 +243,7 @@ extern cAudio 		* audioDecoder;		//libcoolstream (audio_cs.cpp)
 int prev_video_Mode;
 
 void stop_daemons();
-
-CAPIDChangeExec		* APIDChanger;			
+			
 CVideoSetupNotifier	* videoSetupNotifier;
 CAudioSetupNotifier	* audioSetupNotifier;
 
@@ -2454,8 +2453,6 @@ int CNeutrinoApp::run(int argc, char **argv)
 
 	// load Pluginlist before main menu (only show script menu if at least one script is available
 	g_PluginList->loadPlugins();
-
-	APIDChanger = new CAPIDChangeExec;
 	
 	// init nvod changer
 	NVODChanger = new CNVODChangeExec;

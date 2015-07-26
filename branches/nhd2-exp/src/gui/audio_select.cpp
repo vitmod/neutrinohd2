@@ -42,11 +42,12 @@
 
 #include <gui/audio_select.h>
 
+#include <system/debug.h>
+
 #include <audio_cs.h>
 
 
 extern CRemoteControl * g_RemoteControl; 		/* defined neutrino.cpp */
-extern CAPIDChangeExec * APIDChanger;			/* defined neutrino.cpp */
 extern CAudioSetupNotifier * audioSetupNotifier;	/* defined neutrino.cpp */
 
 // volume conf
@@ -87,6 +88,22 @@ const CMenuOptionChooser::keyval AC3_OPTIONS[AC3_OPTION_COUNT] =
 };
 #endif
 
+//
+int CAPIDChangeExec::exec(CMenuTarget */*parent*/, const std::string & actionKey)
+{
+	dprintf(DEBUG_INFO, "CAPIDChangeExec exec: %s\n", actionKey.c_str());
+
+	unsigned int sel = atoi(actionKey.c_str());
+	
+	if (g_RemoteControl->current_PIDs.PIDs.selected_apid != sel )
+	{
+		g_RemoteControl->setAPID(sel);
+	}
+
+	return menu_return::RETURN_EXIT;
+}
+
+//
 int CAudioSelectMenuHandler::exec(CMenuTarget * parent, const std::string &/*actionKey*/)
 {
 	int res = menu_return::RETURN_REPAINT;
@@ -99,11 +116,14 @@ int CAudioSelectMenuHandler::exec(CMenuTarget * parent, const std::string &/*act
 	return res;
 }
 
+//
 int CAudioSelectMenuHandler::doMenu()
 {
 	CMenuWidget AudioSelector(LOCALE_APIDSELECTOR_HEAD, NEUTRINO_ICON_AUDIO);
 	
 	unsigned int count;
+	
+	CAPIDChangeExec APIDChanger;
 	CSubtitleChangeExec SubtitleChanger;
 	
 	// audio pids
@@ -111,7 +131,7 @@ int CAudioSelectMenuHandler::doMenu()
 	{
 		char apid[5];
 		sprintf(apid, "%d", count);
-		AudioSelector.addItem(new CMenuForwarder(g_RemoteControl->current_PIDs.APIDs[count].desc, true, NULL, APIDChanger, apid, CRCInput::convertDigitToKey(count + 1)), (count == g_RemoteControl->current_PIDs.PIDs.selected_apid));
+		AudioSelector.addItem(new CMenuForwarder(g_RemoteControl->current_PIDs.APIDs[count].desc, true, NULL, &APIDChanger, apid, CRCInput::convertDigitToKey(count + 1)), (count == g_RemoteControl->current_PIDs.PIDs.selected_apid));
 	}
 
 	// subs

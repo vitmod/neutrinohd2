@@ -42,11 +42,14 @@ extern unsigned int ac3state;
 class CAVPIDSelectWidget : public CMenuTarget
 {
 	public:
-		CAVPIDSelectWidget();
-		~CAVPIDSelectWidget();
-		
 		void showAudioDialog(void);
 		int exec(CMenuTarget * parent, const std::string & actionKey);
+};
+
+class CAVPIDChangeExec : public CMenuTarget
+{
+	public:
+		int exec(CMenuTarget* parent, const std::string & actionKey);
 };
 
 #endif
