@@ -75,6 +75,7 @@ class CTestMenu : CMenuTarget
 		void testStartPlugin();
 		//
 		void testShowActuellEPG();
+		void testCallChannel();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -106,6 +107,7 @@ void CTestMenu::testCStringInput()
 	stringInput->hide();
 	delete stringInput;
 	stringInput = NULL;
+	value.clear();
 }
 void CTestMenu::testCStringInputSMS()
 {
@@ -115,6 +117,7 @@ void CTestMenu::testCStringInputSMS()
 	stringInputSMS->exec(NULL, "");
 	stringInputSMS->hide();
 	delete stringInputSMS;
+	value.clear();
 }
 
 void CTestMenu::testCPINInput()
@@ -125,6 +128,7 @@ void CTestMenu::testCPINInput()
 	pinInput->exec(NULL, "");
 	pinInput->hide();
 	delete pinInput;
+	value.clear();
 }
 
 void CTestMenu::testCIPInput()
@@ -135,6 +139,7 @@ void CTestMenu::testCIPInput()
 	ipInput->exec(NULL, "");
 	ipInput->hide();
 	delete ipInput;
+	value.clear();
 }
 
 void CTestMenu::testCMACInput()
@@ -145,6 +150,7 @@ void CTestMenu::testCMACInput()
 	macInput->exec(NULL, "");
 	macInput->hide();
 	delete macInput;
+	value.clear();
 }
 
 void CTestMenu::testCDateInput()
@@ -165,6 +171,7 @@ void CTestMenu::testCTimeInput()
 	timeInput->exec(NULL, "");
 	timeInput->hide();
 	delete timeInput;
+	value.clear();
 }
 
 void CTestMenu::testCIntInput()
@@ -860,6 +867,20 @@ void CTestMenu::testShowActuellEPG()
 		MessageBox(LOCALE_MESSAGEBOX_ERROR, "No EPG found!", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 }
 
+void CTestMenu::testCallChannel()
+{
+	CSelectChannelWidget* CSelectChannelWidgetHandler = new CSelectChannelWidget();
+	CSelectChannelWidgetHandler->exec(NULL, "tv");
+		
+	//CSelectChannelWidget_TVChanID;
+	//CSelectChannelWidget_TVChanName.c_str();
+		
+	delete CSelectChannelWidgetHandler;
+	CSelectChannelWidgetHandler = NULL;
+		
+	menu_return::RETURN_REPAINT;
+}
+
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 {
 	dprintf(DEBUG_NORMAL, "\nCTestMenu::exec: actionKey:%s\n", actionKey.c_str());
@@ -1023,6 +1044,10 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testShowActuellEPG();
 	}
+	else if(actionKey == "channelselect")
+	{
+		testCallChannel();
+	}
 	
 	return menu_return::RETURN_REPAINT;
 }
@@ -1075,6 +1100,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("ShowActuellEPG", true, NULL, this, "showepg"));
+	mainMenu->addItem(new CMenuForwarder("CallChannelSelectWidget", true, NULL, this, "channelselect"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
