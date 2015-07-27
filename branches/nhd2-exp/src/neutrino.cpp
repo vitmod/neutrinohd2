@@ -3451,7 +3451,7 @@ _repeat:
 				bouquetList->activateBouquet(old_b, false);
 				
 				if(bouquetList->Bouquets.size())
-					bouquetList->Bouquets[old_b]->channelList->setSelected(old_num-1);
+					bouquetList->Bouquets[old_b]->channelList->setSelected(old_num - 1);
 				
 				StartSubtitles(mode == mode_tv);
 			}
