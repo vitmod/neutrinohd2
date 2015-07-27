@@ -27,25 +27,25 @@
 #include <string>
 
 
-//#include <client/zapitclient.h>
-
-
-class CZapitSetup : public CMenuTarget, CChangeObserver
+class CZapitSetup : public CMenuTarget
 {
 	private:
-		CMenuOptionChooser * zapit1;
-		CMenuForwarder * zapit2, * zapit3;
-		
-		int selected;
-
 		void showMenu();
 
 	public:
 		CZapitSetup();
 		~CZapitSetup();
 		int exec(CMenuTarget* parent, const std::string & actionKey);
-		virtual bool changeNotify(const neutrino_locale_t , void *);
 };
 
+class CZapitSetupNotifier : public CChangeObserver
+{
+	private:
+		CMenuOptionChooser * zapit1;
+		CMenuForwarder * zapit2, * zapit3;
+	public:
+		CZapitSetupNotifier(CMenuOptionChooser* m1, CMenuForwarder* m2, CMenuForwarder* m3);
+		bool changeNotify(const neutrino_locale_t, void * data);
+};
 
 #endif

@@ -136,11 +136,11 @@ bool CDHCPNotifier::changeNotify(const neutrino_locale_t, void * data)
 COnOffNotifier::COnOffNotifier( CMenuItem* a1,CMenuItem* a2,CMenuItem* a3,CMenuItem* a4,CMenuItem* a5)
 {
         number = 0;
-        if(a1 != NULL){ toDisable[0] =a1;number++;};
-        if(a2 != NULL){ toDisable[1] =a2;number++;};
-        if(a3 != NULL){ toDisable[2] =a3;number++;};
-        if(a4 != NULL){ toDisable[3] =a4;number++;};
-        if(a5 != NULL){ toDisable[4] =a5;number++;};
+        if(a1 != NULL){ toDisable[0] = a1; number++;};
+        if(a2 != NULL){ toDisable[1] = a2; number++;};
+        if(a3 != NULL){ toDisable[2] = a3; number++;};
+        if(a4 != NULL){ toDisable[3] = a4; number++;};
+        if(a5 != NULL){ toDisable[4] = a5; number++;};
 }
 
 COnOffNotifier::COnOffNotifier(int /*OffValue*/)
