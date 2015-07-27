@@ -537,11 +537,8 @@ int CChannelList::show()
 	new_mode_active = 0;
 	
 	// windows size
-	width = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
-	height = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
-
-	if (chanlist.empty()) 
-		return res;
+	width = w_max( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
+	height = h_max( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
 
 	// display channame in vfd	
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8 );	
@@ -1561,6 +1558,12 @@ void CChannelList::quickZap(int key, bool cycle)
 
 void CChannelList::paintDetails(int index)
 {
+	// itembox refresh
+	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
+	
+	if (chanlist.empty()) 
+		return;
+	
 	CChannelEvent * p_event;
 
 	if (displayNext) 
@@ -1571,9 +1574,6 @@ void CChannelList::paintDetails(int index)
 	{
 		p_event = &chanlist[index]->currentEvent;
 	}
-
-	// itembox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
 
 	if (!p_event->description.empty()) 
 	{

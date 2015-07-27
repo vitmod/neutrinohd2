@@ -323,9 +323,6 @@ int CBouquetList::show(bool bShowChannelList)
 	neutrino_msg_t      msg;
 	neutrino_msg_data_t data;
 	int res = -1;
-
-	//if(Bouquets.size() == 0)
-	//	return res;
 	
 	CVFD::getInstance()->setMode(CVFD::MODE_MENU_UTF8);	
 	
