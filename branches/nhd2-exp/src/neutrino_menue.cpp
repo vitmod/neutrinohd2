@@ -201,9 +201,10 @@ void CNeutrinoApp::InitMainMenu(CMenuWidget &mainMenu, CMenuWidget &mainSettings
 
 	dprintf(DEBUG_NORMAL, "CNeutrinoApp::InitMainMenu\n");
 
-	// tv modus
+#if !defined (USE_OPENGL)  // needed for testing/debugging
 	if(FrontendCount)
-	{
+#endif	  
+	{	  
 		// tv modus
 		mainMenu.addItem(new CMenuForwarderExtended(LOCALE_MAINMENU_TVMODE, true, NULL, this, "tv", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED, NEUTRINO_ICON_MENUITEM_TV, LOCALE_HELPTEXT_TVMODE ), true);
 
