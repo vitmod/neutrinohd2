@@ -26,6 +26,11 @@ extern "C" void plugin_exec(void);
 extern "C" void plugin_init(void);
 extern "C" void plugin_del(void);
 
+#define ONOFF_OPTION_COUNT 2
+static const CMenuOptionChooser::keyval ONOFF_OPTIONS[ONOFF_OPTION_COUNT] = {
+	{ 0, LOCALE_OPTIONS_OFF, NULL},
+	{ 1, LOCALE_OPTIONS_ON, NULL}
+};
 
 // config
 int		glcd_enable;
@@ -184,10 +189,11 @@ uint32_t GLCD_Menu::index2color(int i)
 
 GLCD_Menu::GLCD_Menu()
 {
-	width = w_max (MENU_WIDTH, 10);
-	selected = -1;
-
 	notifier = new GLCD_Menu_Notifier();
+}
+
+void GLCD_Menu::hide()
+{
 }
 
 int GLCD_Menu::exec(CMenuTarget* parent, const std::string & actionKey)
@@ -237,8 +243,85 @@ int GLCD_Menu::exec(CMenuTarget* parent, const std::string & actionKey)
 	return res;
 }
 
-void GLCD_Menu::hide()
+//
+void GLCD_Menu::ReadSettings() 
 {
+	CConfigFile *configfile = new CConfigFile(',');
+	configfile->clear();
+	configfile->loadConfig(CONFIG_FILE);
+	
+	glcd_enable = configfile->getInt32("glcd_enable", 0);
+	glcd_color_fg = configfile->getInt32("glcd_color_fg", GLCD::cColor::White);
+	glcd_color_bg = configfile->getInt32("glcd_color_bg", GLCD::cColor::Blue);
+	glcd_color_bar = configfile->getInt32("glcd_color_bar", GLCD::cColor::Red);
+	glcd_percent_channel = configfile->getInt32("glcd_percent_channel", 18);
+	glcd_percent_epg = configfile->getInt32("glcd_percent_epg", 8);
+	glcd_percent_bar = configfile->getInt32("glcd_percent_bar", 6);
+	glcd_percent_time = configfile->getInt32("glcd_percent_time", 22);
+	glcd_mirror_osd = configfile->getInt32("glcd_mirror_osd", 0);
+	glcd_time_in_standby = configfile->getInt32("glcd_time_in_standby", 0);
+	glcd_font = configfile->getString("glcd_font", FONTDIR "/micron.ttf");
+}
+
+bool GLCD_Menu::SaveSettings() 
+{
+	CConfigFile *configfile = new CConfigFile(',');
+	
+	configfile->setInt32("glcd_enable", glcd_enable);
+	configfile->setInt32("glcd_color_fg", glcd_color_fg);
+	configfile->setInt32("glcd_color_bg", glcd_color_bg);
+	configfile->setInt32("glcd_color_bar", glcd_color_bar);
+	configfile->setInt32("glcd_percent_channel", glcd_percent_channel);
+	configfile->setInt32("glcd_percent_epg", glcd_percent_epg);
+	configfile->setInt32("glcd_percent_bar", glcd_percent_bar);
+	configfile->setInt32("glcd_percent_time", glcd_percent_time);
+	configfile->setInt32("glcd_mirror_osd", glcd_mirror_osd);
+	configfile->setInt32("glcd_time_in_standby", glcd_time_in_standby);
+	configfile->setString("glcd_font", glcd_font);
+	
+	configfile->saveConfig(CONFIG_FILE);
+	
+	return true;
+}
+
+void GLCD_Menu::GLCD_Menu_Settings()
+{
+	// read settings
+	ReadSettings();
+	
+	//
+	int color_bg = color2index(glcd_color_bg);
+	int color_fg = color2index(glcd_color_fg);
+	int color_bar = color2index(glcd_color_bar);
+
+	CMenuWidget * m = new CMenuWidget(LOCALE_GLCD_HEAD, NEUTRINO_ICON_SETTINGS);
+	
+	m->addItem(new CMenuForwarder(LOCALE_MENU_BACK, true, NULL, NULL, NULL, CRCInput::RC_nokey, NEUTRINO_ICON_BUTTON_LEFT));
+	m->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	m->addItem(new CMenuForwarder("Einstellungen speichern", true, NULL, this, "save", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
+	m->addItem(new CMenuSeparator(CMenuSeparator::LINE));
+
+	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_ENABLE, &glcd_enable, ONOFF_OPTIONS, ONOFF_OPTION_COUNT, true, notifier));
+	int shortcut = 1;
+	m->addItem(GenericMenuSeparatorLine);
+	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_SELECT_FG, &color_fg, GLCD_COLOR_OPTIONS, GLCD_COLOR_OPTION_COUNT, true, notifier, CRCInput::convertDigitToKey(shortcut++)));
+	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_SELECT_BG, &color_bg, GLCD_COLOR_OPTIONS, GLCD_COLOR_OPTION_COUNT, true, notifier, CRCInput::convertDigitToKey(shortcut++)));
+	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_SELECT_BAR, &color_bar, GLCD_COLOR_OPTIONS, GLCD_COLOR_OPTION_COUNT, true, notifier, CRCInput::convertDigitToKey(shortcut++)));
+	m->addItem(new CMenuForwarder(LOCALE_GLCD_FONT, true, glcd_font, this, "select_font", CRCInput::convertDigitToKey(shortcut++)));
+	m->addItem(new CMenuOptionNumberChooser(LOCALE_GLCD_SIZE_CHANNEL, &glcd_percent_channel, true, 0, 100, notifier));
+	m->addItem(new CMenuOptionNumberChooser(LOCALE_GLCD_SIZE_EPG, &glcd_percent_epg, true, 0, 100, notifier));
+	m->addItem(new CMenuOptionNumberChooser(LOCALE_GLCD_SIZE_BAR, &glcd_percent_bar, true, 0, 100, notifier));
+	m->addItem(new CMenuOptionNumberChooser(LOCALE_GLCD_SIZE_TIME, &glcd_percent_time, true, 0, 100, notifier));
+	m->addItem(GenericMenuSeparatorLine);
+	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_TIME_IN_STANDBY, &glcd_time_in_standby, ONOFF_OPTIONS, ONOFF_OPTION_COUNT, true, notifier, CRCInput::convertDigitToKey(shortcut++)));
+	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_MIRROR_OSD, &glcd_mirror_osd, ONOFF_OPTIONS, ONOFF_OPTION_COUNT, true, notifier, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
+	m->addItem(GenericMenuSeparatorLine);
+	m->addItem(new CMenuForwarder(LOCALE_GLCD_RESTART, true, "", this, "rescan", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
+	
+	m->exec(NULL, "");
+	m->hide();
+	
+	delete m;
 }
 
 GLCD_Menu_Notifier::GLCD_Menu_Notifier()
@@ -290,95 +373,6 @@ bool GLCD_Menu_Notifier::changeNotify(const neutrino_locale_t OptionName, void *
 	}
 
 	nglcd->Update();
-	return true;
-}
-
-#define ONOFF_OPTION_COUNT 2
-static const CMenuOptionChooser::keyval ONOFF_OPTIONS[ONOFF_OPTION_COUNT] = {
-	{ 0, LOCALE_OPTIONS_OFF, NULL},
-	{ 1, LOCALE_OPTIONS_ON, NULL}
-};
-
-void GLCD_Menu::GLCD_Menu_Settings()
-{
-	// read settings
-	ReadSettings();
-	
-	//
-	int color_bg = color2index(glcd_color_bg);
-	int color_fg = color2index(glcd_color_fg);
-	int color_bar = color2index(glcd_color_bar);
-
-	CMenuWidget * m = new CMenuWidget(LOCALE_GLCD_HEAD, NEUTRINO_ICON_SETTINGS);
-	
-	m->setSelected(selected);
-	m->addItem(GenericMenuSeparator);
-	m->addItem(GenericMenuBack);
-	m->addItem(GenericMenuSeparatorLine);
-	m->addItem(new CMenuForwarderNonLocalized("Einstellungen speichern", true, NULL, this, "save", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
-	m->addItem(GenericMenuSeparatorLine);
-
-	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_ENABLE, &glcd_enable, ONOFF_OPTIONS, ONOFF_OPTION_COUNT, true, notifier));
-	int shortcut = 1;
-	m->addItem(GenericMenuSeparatorLine);
-	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_SELECT_FG, &color_fg, GLCD_COLOR_OPTIONS, GLCD_COLOR_OPTION_COUNT, true, notifier, CRCInput::convertDigitToKey(shortcut++)));
-	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_SELECT_BG, &color_bg, GLCD_COLOR_OPTIONS, GLCD_COLOR_OPTION_COUNT, true, notifier, CRCInput::convertDigitToKey(shortcut++)));
-	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_SELECT_BAR, &color_bar, GLCD_COLOR_OPTIONS, GLCD_COLOR_OPTION_COUNT, true, notifier, CRCInput::convertDigitToKey(shortcut++)));
-	m->addItem(new CMenuForwarder(LOCALE_GLCD_FONT, true, glcd_font, this, "select_font", CRCInput::convertDigitToKey(shortcut++)));
-	m->addItem(new CMenuOptionNumberChooser(LOCALE_GLCD_SIZE_CHANNEL, &glcd_percent_channel, true, 0, 100, notifier));
-	m->addItem(new CMenuOptionNumberChooser(LOCALE_GLCD_SIZE_EPG, &glcd_percent_epg, true, 0, 100, notifier));
-	m->addItem(new CMenuOptionNumberChooser(LOCALE_GLCD_SIZE_BAR, &glcd_percent_bar, true, 0, 100, notifier));
-	m->addItem(new CMenuOptionNumberChooser(LOCALE_GLCD_SIZE_TIME, &glcd_percent_time, true, 0, 100, notifier));
-	m->addItem(GenericMenuSeparatorLine);
-	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_TIME_IN_STANDBY, &glcd_time_in_standby, ONOFF_OPTIONS, ONOFF_OPTION_COUNT, true, notifier, CRCInput::convertDigitToKey(shortcut++)));
-	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_MIRROR_OSD, &glcd_mirror_osd, ONOFF_OPTIONS, ONOFF_OPTION_COUNT, true, notifier, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
-	m->addItem(GenericMenuSeparatorLine);
-	m->addItem(new CMenuForwarder(LOCALE_GLCD_RESTART, true, "", this, "rescan", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
-	
-	m->exec(NULL, "");
-	m->hide();
-	
-	delete m;
-}
-
-//
-void GLCD_Menu::ReadSettings() 
-{
-	CConfigFile *configfile = new CConfigFile(',');
-	configfile->clear();
-	configfile->loadConfig(CONFIG_FILE);
-	
-	glcd_enable = configfile->getInt32("glcd_enable", 0);
-	glcd_color_fg = configfile->getInt32("glcd_color_fg", GLCD::cColor::White);
-	glcd_color_bg = configfile->getInt32("glcd_color_bg", GLCD::cColor::Blue);
-	glcd_color_bar = configfile->getInt32("glcd_color_bar", GLCD::cColor::Red);
-	glcd_percent_channel = configfile->getInt32("glcd_percent_channel", 18);
-	glcd_percent_epg = configfile->getInt32("glcd_percent_epg", 8);
-	glcd_percent_bar = configfile->getInt32("glcd_percent_bar", 6);
-	glcd_percent_time = configfile->getInt32("glcd_percent_time", 22);
-	glcd_mirror_osd = configfile->getInt32("glcd_mirror_osd", 0);
-	glcd_time_in_standby = configfile->getInt32("glcd_time_in_standby", 0);
-	glcd_font = configfile->getString("glcd_font", FONTDIR "/micron.ttf");
-}
-
-bool GLCD_Menu::SaveSettings() 
-{
-	CConfigFile *configfile = new CConfigFile(',');
-	
-	configfile->setInt32("glcd_enable", glcd_enable);
-	configfile->setInt32("glcd_color_fg", glcd_color_fg);
-	configfile->setInt32("glcd_color_bg", glcd_color_bg);
-	configfile->setInt32("glcd_color_bar", glcd_color_bar);
-	configfile->setInt32("glcd_percent_channel", glcd_percent_channel);
-	configfile->setInt32("glcd_percent_epg", glcd_percent_epg);
-	configfile->setInt32("glcd_percent_bar", glcd_percent_bar);
-	configfile->setInt32("glcd_percent_time", glcd_percent_time);
-	configfile->setInt32("glcd_mirror_osd", glcd_mirror_osd);
-	configfile->setInt32("glcd_time_in_standby", glcd_time_in_standby);
-	configfile->setString("glcd_font", glcd_font);
-	
-	configfile->saveConfig(CONFIG_FILE);
-	
 	return true;
 }
 

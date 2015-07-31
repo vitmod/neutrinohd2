@@ -47,8 +47,6 @@ class GLCD_Menu_Notifier : public CChangeObserver
 class GLCD_Menu : public CMenuTarget
 {
 	private:
-		int width;
-		int selected;
 		static int color2index(uint32_t color);
 		GLCD_Menu_Notifier *notifier;
 	public:

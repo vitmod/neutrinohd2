@@ -75,10 +75,10 @@ class CTestMenu : CMenuTarget
 		void testStartPlugin();
 		//
 		void testShowActuellEPG();
-		void testCallChannel();
+		void testCallChannelSelectWidget();
 		
 		//
-		void testCallAVSelect();
+		void testCallAVSelectWidget();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -870,7 +870,7 @@ void CTestMenu::testShowActuellEPG()
 		MessageBox(LOCALE_MESSAGEBOX_ERROR, "No EPG found!", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 }
 
-void CTestMenu::testCallChannel()
+void CTestMenu::testCallChannelSelectWidget()
 {
 	CSelectChannelWidget * CSelectChannelWidgetHandler = new CSelectChannelWidget();
 	CSelectChannelWidgetHandler->exec(NULL, "tv");
@@ -882,7 +882,7 @@ void CTestMenu::testCallChannel()
 	CSelectChannelWidgetHandler = NULL;
 }
 
-void CTestMenu::testCallAVSelect()
+void CTestMenu::testCallAVSelectWidget()
 {
 	CAVPIDSelectWidget * AVSelectHandler = new CAVPIDSelectWidget();
 	AVSelectHandler->exec(NULL, "");
@@ -1057,11 +1057,11 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "channelselect")
 	{
-		testCallChannel();
+		testCallChannelSelectWidget();
 	}
 	else if(actionKey == "avselect")
 	{
-		testCallAVSelect();
+		testCallAVSelectWidget();
 	}
 	
 	return menu_return::RETURN_REPAINT;
