@@ -95,7 +95,7 @@ void CBEChannelWidget::paintItem(int pos)
 
 	if(current == selected) 
 	{
-		color   = COL_MENUCONTENTSELECTED;
+		color = COL_MENUCONTENTSELECTED;
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 		
 		frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, fheight, COL_MENUCONTENT_PLUS_0);

@@ -226,7 +226,7 @@ void CListBox::paintItem(unsigned int itemNr, int paintNr, bool _selected)
 		bgcolor = COL_MENUCONTENT_PLUS_0;
 	}
 
-	frameBuffer->paintBoxRel(x, ypos, width - 15, getItemHeight(), bgcolor);
+	frameBuffer->paintBoxRel(x, ypos, width - SCROLLBAR_WIDTH, getItemHeight(), bgcolor);
 	g_Font[SNeutrinoSettings::FONT_TYPE_CHANNELLIST]->RenderString(x + BORDER_LEFT, ypos + fheight, width - (BORDER_LEFT + BORDER_RIGHT), "demo", color);
 }
 

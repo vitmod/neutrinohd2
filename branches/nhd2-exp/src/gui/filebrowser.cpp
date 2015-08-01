@@ -363,13 +363,16 @@ void CFileBrowser::commonInit()
 
 	theight = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_TITLE]->getHeight();
 	fheight = g_Font[SNeutrinoSettings::FONT_TYPE_FILEBROWSER_ITEM]->getHeight();
-	foheight = 30;
+	//foheight = 30;
+	int ih, iw;
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &iw, &ih);
+	foheight = 2*(std::max(g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ih)) + 10;
 
 	liststart = 0;
-	listmaxshow = std::max(1,(int)(height - theight - 2 * foheight)/fheight);
+	listmaxshow = (height - theight - foheight)/fheight;
 
 	//recalc height
-	height = theight + listmaxshow * fheight + 2 * foheight;
+	height = theight + listmaxshow*fheight + foheight;
 
 	m_SMSKeyInput.setTimeout(SMSKEY_TIMEOUT);
 }
@@ -1063,20 +1066,20 @@ void CFileBrowser::paintFoot()
 {
 	int dx = (width - (BORDER_RIGHT + BORDER_LEFT)) / 4;
 	//Second Line (bottom, top)
-	int by2 = y + height - (foheight - 4);
+	int by2 = y + height - (foheight/2 - 4);
 	int ty2 = by2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 
 	// foot
-	frameBuffer->paintBoxRel(x, y + height - 2*foheight, width, 2*foheight, COL_INFOBAR_SHADOW_PLUS_1, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, y + height - foheight, width, foheight, COL_INFOBAR_SHADOW_PLUS_1, RADIUS_MID, CORNER_BOTTOM);
 
 	if (!(filelist.empty()))
 	{
-		int by = y + height - 2*foheight;
+		int by = y + height - foheight;
 
-		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, by, dx, Multi_Select ? 3 : 2, FileBrowserButtons, foheight);
+		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, by, dx, Multi_Select ? 3 : 2, FileBrowserButtons, foheight/2);
 
 		if(Filter != NULL)
-			::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT + (3 * dx), by, dx, 1, &(FileBrowserFilterButton[use_filter? 0 : 1]), foheight);
+			::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT + (3 * dx), by, dx, 1, &(FileBrowserFilterButton[use_filter? 0 : 1]), foheight/2);
 
 		//OK-Button
 		if( (filelist[selected].getType() != CFile::FILE_UNKNOWN) || (S_ISDIR(filelist[selected].Mode)) )

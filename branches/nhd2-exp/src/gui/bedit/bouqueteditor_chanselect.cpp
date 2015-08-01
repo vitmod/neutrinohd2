@@ -231,6 +231,9 @@ void CBEChannelSelectWidget::paintFoot()
 //
 void CBEChannelSelectWidget::paintDetails(int index)
 {
+	// infobox refresh
+	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
+	
 	if(Channels.empty())
 		return;
 	
@@ -238,9 +241,6 @@ void CBEChannelSelectWidget::paintDetails(int index)
 	transponder_id_t ct = Channels[index]->getTransponderId();
 	transponder_list_t::iterator tpI = transponders.find(ct);
 	int len = snprintf(buf, sizeof(buf), "%d ", Channels[index]->getFreqId());
-	
-	// infobox refresh
-	frameBuffer->paintBoxRel(x + 2, y + height + 2, width - 4, info_height - 4, COL_MENUCONTENTDARK_PLUS_0);
 
 	// satname
 	sat_iterator_t sit = satellitePositions.find(Channels[index]->getSatellitePosition());

@@ -1506,7 +1506,7 @@ int CMenuForwarder::getWidth(void) const
 		option_text = option_string->c_str();
 	
         if (option_text != NULL)
-                tw += BORDER_LEFT + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(option_text, true);
+                tw += g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(option_text, true);
 
 	return tw;
 }
@@ -1644,15 +1644,15 @@ int CMenuForwarder::paint(bool selected, bool /*AfterPulldown*/)
 	
 	// locale text
 	stringstartposX = x + ICON_OFFSET + (icon_w? icon_w + LOCAL_OFFSET : 0);
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - BORDER_LEFT - ICON_OFFSET - (stringstartposX - x), l_text, color, 0, true); // UTF-8
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - ICON_OFFSET - (stringstartposX - x), l_text, color, 0, true); // UTF-8
 
 	//option-text
 	if (option_text != NULL)
 	{
 		int stringwidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(option_text, true);
-		int stringstartposOption = std::max(stringstartposX + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_text, true) + BORDER_LEFT + BORDER_LEFT/2, x + dx - stringwidth - BORDER_RIGHT - BORDER_RIGHT/2); //+ offx
+		int stringstartposOption = std::max(stringstartposX + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_text, true), x + dx - (stringwidth + ICON_OFFSET)); //+ offx
 		
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposOption, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - BORDER_LEFT - (stringstartposOption- x),  option_text, color, 0, true);
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposOption, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), dx - (stringstartposOption- x),  option_text, color, 0, true);
 	}
 	
 	return y + height;
@@ -1800,124 +1800,36 @@ int CMenuSelectorTarget::exec(CMenuTarget*/*parent*/, const std::string & action
 }
 
 // CMenuForwarderExtended
-CMenuForwarderExtended::CMenuForwarderExtended(const neutrino_locale_t Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText )
+CMenuForwarderExtended::CMenuForwarderExtended(const neutrino_locale_t Text, const bool Active, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText )
 {
-	option = Option;
-	option_string = NULL;
 	textString = g_Locale->getText(Text);
 	text = Text;
+	
 	active = Active;
 	jumpTarget = Target;
 	actionKey = ActionKey ? ActionKey : "";
 	directKey = DirectKey;
+	
 	iconName = IconName ? IconName : "";
+	
 	itemIcon = ItemIcon ? ItemIcon : "";
 	helptext = g_Locale->getText(HelpText);
 }
 
-CMenuForwarderExtended::CMenuForwarderExtended(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText)
+CMenuForwarderExtended::CMenuForwarderExtended(const char * const Text, const bool Active, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText )
 {
-	option = NULL;
-	option_string = &Option;
-	textString = g_Locale->getText(Text);
-	text = Text;
+	textString = Text;
+	text = NONEXISTANT_LOCALE;
+	
 	active = Active;
 	jumpTarget = Target;
 	actionKey = ActionKey ? ActionKey : "";
 	directKey = DirectKey;
+	
 	iconName = IconName ? IconName : "";
+	
 	itemIcon = ItemIcon ? ItemIcon : "";
 	helptext = g_Locale->getText(HelpText);
-}
-
-CMenuForwarderExtended::CMenuForwarderExtended(const neutrino_locale_t Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const char * const HelpText )
-{
-	option = Option;
-	option_string = NULL;
-	textString = g_Locale->getText(Text);
-	text = Text;
-	active = Active;
-	jumpTarget = Target;
-	actionKey = ActionKey ? ActionKey : "";
-	directKey = DirectKey;
-	iconName = IconName ? IconName : "";
-	itemIcon = ItemIcon ? ItemIcon : "";
-	helptext = HelpText;
-}
-
-CMenuForwarderExtended::CMenuForwarderExtended(const neutrino_locale_t Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const char * const HelpText)
-{
-	option = NULL;
-	option_string = &Option;
-	textString = g_Locale->getText(Text);
-	text = Text;
-	active = Active;
-	jumpTarget = Target;
-	actionKey = ActionKey ? ActionKey : "";
-	directKey = DirectKey;
-	iconName = IconName ? IconName : "";
-	itemIcon = ItemIcon ? ItemIcon : "";
-	helptext = HelpText;
-}
-
-CMenuForwarderExtended::CMenuForwarderExtended(const char * const Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText )
-{
-	option = Option;
-	option_string = NULL;
-	textString = Text;
-	text = NONEXISTANT_LOCALE;
-	active = Active;
-	jumpTarget = Target;
-	actionKey = ActionKey ? ActionKey : "";
-	directKey = DirectKey;
-	iconName = IconName ? IconName : "";
-	itemIcon = ItemIcon ? ItemIcon : "";
-	helptext = g_Locale->getText(HelpText);
-}
-
-CMenuForwarderExtended::CMenuForwarderExtended(const char * const Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const neutrino_locale_t HelpText)
-{
-	option = NULL;
-	option_string = &Option;
-	textString = Text;
-	text = NONEXISTANT_LOCALE;
-	active = Active;
-	jumpTarget = Target;
-	actionKey = ActionKey ? ActionKey : "";
-	directKey = DirectKey;
-	iconName = IconName ? IconName : "";
-	itemIcon = ItemIcon ? ItemIcon : "";
-	helptext = g_Locale->getText(HelpText);
-}
-
-CMenuForwarderExtended::CMenuForwarderExtended(const char * const Text, const bool Active, const char * const Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const char * const HelpText )
-{
-	option = Option;
-	option_string = NULL;
-	textString = Text;
-	text = NONEXISTANT_LOCALE;
-	active = Active;
-	jumpTarget = Target;
-	actionKey = ActionKey ? ActionKey : "";
-	directKey = DirectKey;
-	iconName = IconName ? IconName : "";
-	itemIcon = ItemIcon ? ItemIcon : "";
-	helptext = HelpText;
-}
-
-CMenuForwarderExtended::CMenuForwarderExtended(const char * const Text, const bool Active, const std::string &Option, CMenuTarget* Target, const char * const ActionKey, neutrino_msg_t DirectKey, const char * const IconName, const char * const ItemIcon, const char * const HelpText)
-{
-	option = NULL;
-	option_string = &Option;
-	textString = Text;
-	text = NONEXISTANT_LOCALE;
-	active = Active;
-	jumpTarget = Target;
-	actionKey = ActionKey ? ActionKey : "";
-	directKey = DirectKey;
-	iconName = IconName ? IconName : "";
-	itemIcon = ItemIcon ? ItemIcon : "";
-	helptext = HelpText;
 }
 
 int CMenuForwarderExtended::getHeight(void) const
@@ -1931,15 +1843,6 @@ int CMenuForwarderExtended::getHeight(void) const
 int CMenuForwarderExtended::getWidth(void) const
 {
 	int tw = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(textString);
-	const char * option_text = NULL;
-
-	if (option)
-		option_text = option;
-	else if (option_string)
-		option_text = option_string->c_str();
-	
-        if (option_text != NULL)
-                tw += BORDER_LEFT + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(option_text, true);
 
 	return tw;
 }
@@ -1950,19 +1853,6 @@ int CMenuForwarderExtended::exec(CMenuTarget* parent)
 		return jumpTarget->exec(parent, actionKey);
 	else
 		return menu_return::RETURN_EXIT;
-}
-
-const char * CMenuForwarderExtended::getOption(void)
-{
-	if (option)
-		return option;
-	else
-	{
-		if (option_string)
-			return option_string->c_str();
-		else
-			return NULL;
-	}
 }
 
 const char * CMenuForwarderExtended::getName(void)
@@ -1987,8 +1877,8 @@ int CMenuForwarderExtended::paint(bool selected, bool /*AfterPulldown*/)
 	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
 	int height = getHeight();
 	const char * l_text = getName();
-	int stringstartposX = x + (offx == 0? 0: offx);
-	const char * option_text = getOption();	
+	int stringstartposX = x + (offx == 0? 0: offx);	
+	
 	uint8_t color = COL_MENUCONTENT;
 	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
 
@@ -2058,16 +1948,7 @@ int CMenuForwarderExtended::paint(bool selected, bool /*AfterPulldown*/)
 		// menutitle on VFD
 		char str[256];
 
-		if (option_text != NULL) 
-		{
-			snprintf(str, 255, "%s %s", l_text, option_text);
-
-			CVFD::getInstance()->showMenuText(0, str, -1, true);
-		} 
-		else
-		{
-			CVFD::getInstance()->showMenuText(0, l_text, -1, true);
-		}
+		CVFD::getInstance()->showMenuText(0, l_text, -1, true);
 	}
 	
 	// paint item
@@ -2104,15 +1985,6 @@ int CMenuForwarderExtended::paint(bool selected, bool /*AfterPulldown*/)
 	//local-text
 	stringstartposX = x + ICON_OFFSET + (icon_w? icon_w + LOCAL_OFFSET : 0);
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposX, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), (dx/3)*2 - (stringstartposX - x), l_text, color, 0, true); // UTF-8
-	
-	//option-text
-	if (option_text != NULL)
-	{
-		int stringwidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(option_text, true);
-		int stringstartposOption = std::max(stringstartposX + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getRenderWidth(l_text, true) + BORDER_LEFT + BORDER_LEFT/2, x + (dx/3)*2 - stringwidth - BORDER_RIGHT ); //+ offx
-		
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposOption, y + (height - g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight(), (dx/3)*2 - (stringstartposOption- x),  option_text, color, 0, true);
-	}
 
 	return y + height;
 }
