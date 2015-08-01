@@ -76,7 +76,7 @@ class CTestMenu : CMenuTarget
 		//
 		void testShowActuellEPG();
 		void testChannelSelectWidget();
-		
+		void testBEChannelSelectWidget();
 		//
 		void testCallAVSelectWidget();
 	public:
@@ -874,7 +874,6 @@ void CTestMenu::testShowActuellEPG()
 
 void CTestMenu::testChannelSelectWidget()
 {
-#if 0
 	CSelectChannelWidget * CSelectChannelWidgetHandler = new CSelectChannelWidget();
 	CSelectChannelWidgetHandler->exec(NULL, "tv");
 		
@@ -883,8 +882,10 @@ void CTestMenu::testChannelSelectWidget()
 		
 	delete CSelectChannelWidgetHandler;
 	CSelectChannelWidgetHandler = NULL;
-#endif
-	
+}
+
+void CTestMenu::testBEChannelSelectWidget()
+{	
 #if 0	
 	CBEChannelSelectWidget * channelSelectWidget = new CBEChannelSelectWidget("ChannelSelectWidget", 1, CZapitClient::MODE_TV);
 
@@ -1072,6 +1073,10 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	{
 		testChannelSelectWidget();
 	}
+	else if(actionKey == "bechannelselect")
+	{
+		testBEChannelSelectWidget();
+	}
 	else if(actionKey == "avselect")
 	{
 		testCallAVSelectWidget();
@@ -1129,6 +1134,7 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("ShowActuellEPG", true, NULL, this, "showepg"));
 	mainMenu->addItem(new CMenuForwarder("ChannelSelectWidget", true, NULL, this, "channelselect"));
+	mainMenu->addItem(new CMenuForwarder("BEChannelSelectWidget", true, NULL, this, "bechannelselect"));
 	mainMenu->addItem(new CMenuForwarder("AudioVideoSelectWidget", true, NULL, this, "avselect"));
 	
 	mainMenu->exec(NULL, "");
