@@ -469,6 +469,9 @@ bool CPictureViewer::DisplayImage(const std::string & name, int posx, int posy, 
 {
 	dprintf(DEBUG_NORMAL, "CPictureViewer::DisplayImage %s\n", name.c_str());
 	
+	if(!CFrameBuffer::getInstance()->getActive())
+		return false;
+	
 	bool isPNG = false;
 	
 	if( name.find(".png") == (name.length() - 4) )

@@ -259,7 +259,7 @@ void CInfoViewer::paintTime(bool show_dot, bool firstPaint, int posx, int posy, 
 	int time_width = 2*time_left_width + time_dot_width;
 	int time_height = timeFont->getHeight();
 	
-	if (gotTime) 
+	if (gotTime && (is_visible || m_visible)) 
 	{
 		char timestr[10];
 		struct timeb tm;
