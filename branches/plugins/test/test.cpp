@@ -892,7 +892,7 @@ void CTestMenu::testBEChannelSelectWidget()
 	channelSelectWidget->exec(this, "");
 #endif
 
-	CBEChannelWidget* channelWidget = new CBEChannelWidget("ChannelWidget", true);
+	CBEChannelWidget* channelWidget = new CBEChannelWidget("BEChannelSelectWidget", true);
 	channelWidget->exec( this, "");
 }
 
