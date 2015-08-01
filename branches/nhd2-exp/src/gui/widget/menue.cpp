@@ -56,9 +56,6 @@
 #define ITEM_ICON_W	128	// min=100, max=128
 #define ITEM_ICON_H	128	// min=100, max=128
 
-#define ICON_OFFSET	5	// offset from left border
-#define LOCAL_OFFSET	8	// offset from painted icon at left border
-
 unsigned int HEIGHT_Y;
 unsigned int FULL_HEIGHT;
 

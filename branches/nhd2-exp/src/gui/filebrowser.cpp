@@ -1064,7 +1064,7 @@ const struct button_label FileBrowserFilterButton[2] =
 
 void CFileBrowser::paintFoot()
 {
-	int dx = (width - (BORDER_RIGHT + BORDER_LEFT)) / 4;
+	int dx = (width - (2*ICON_OFFSET)) / 4;
 	//Second Line (bottom, top)
 	int by2 = y + height - (foheight/2 - 4);
 	int ty2 = by2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
@@ -1082,26 +1082,30 @@ void CFileBrowser::paintFoot()
 			::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT + (3 * dx), by, dx, 1, &(FileBrowserFilterButton[use_filter? 0 : 1]), foheight/2);
 
 		//OK-Button
+		int iw, ih;
 		if( (filelist[selected].getType() != CFile::FILE_UNKNOWN) || (S_ISDIR(filelist[selected].Mode)) )
 		{
-			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + 3 , by2 - 3);
+			frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &iw, &ih);
+			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, x + ICON_OFFSET, by2 - ICON_OFFSET);
 
-			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + 35, ty2, dx - 35, g_Locale->getText(LOCALE_FILEBROWSER_SELECT), COL_INFOBAR, 0, true); // UTF-8
+			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + 2*ICON_OFFSET + iw, ty2, dx - 2*ICON_OFFSET - iw, g_Locale->getText(LOCALE_FILEBROWSER_SELECT), COL_INFOBAR, 0, true); // UTF-8
 
 		}
 
 		// help-button
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, x + (1 * dx), by2 - 3);
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + 35 + (1 * dx), ty2, dx - 35, g_Locale->getText(sortByNames[g_settings.filebrowser_sortmethod]), COL_INFOBAR, 0, true); // UTF-8
+		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &iw, &ih);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, x + dx + ICON_OFFSET, by2 - ICON_OFFSET);
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + 2*ICON_OFFSET + iw + dx, ty2, dx - 2*ICON_OFFSET - iw, g_Locale->getText(sortByNames[g_settings.filebrowser_sortmethod]), COL_INFOBAR, 0, true); // UTF-8
 
 		// mute button
-		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_MUTE_SMALL, x + (2 * dx), by2 - 3);
+		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_OKAY, &iw, &ih);
+		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_MUTE_SMALL, x + 2 *dx, by2 - ICON_OFFSET);
 
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + 35 + (2 * dx), ty2, dx - 35, g_Locale->getText(LOCALE_FILEBROWSER_DELETE), COL_INFOBAR, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + 2*ICON_OFFSET + iw + 2*dx, ty2, dx - 2*ICON_OFFSET - iw, g_Locale->getText(LOCALE_FILEBROWSER_DELETE), COL_INFOBAR, 0, true); // UTF-8
 
 		if(m_SMSKeyInput.getOldKey() !=0)
 		{
-			char cKey[2]={m_SMSKeyInput.getOldKey(),0};
+			char cKey[2] = {m_SMSKeyInput.getOldKey(), 0};
 			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + width - 16, by2 , 16, cKey, COL_MENUHEAD, 0, true); // UTF-8
 	
 			frameBuffer->blit();	
