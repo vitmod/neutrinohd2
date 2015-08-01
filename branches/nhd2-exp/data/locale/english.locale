@@ -43,9 +43,9 @@ audioplayer.button_select_title_by_name search by name
 audioplayer.defdir Start dir.
 audioplayer.delete Delete
 audioplayer.deleteall delete all
-audioplayer.display_order display order
+audioplayer.display_order Display order
 audioplayer.fastforward fast forw.
-audioplayer.follow auto select current
+audioplayer.follow Auto select current
 audioplayer.head Audio Playlist
 audioplayer.highprio High decode priority
 audioplayer.jump_backwards jump backwards
@@ -54,7 +54,7 @@ audioplayer.jump_dialog_hint2 (relative, in seconds)
 audioplayer.jump_dialog_title Enter jump target
 audioplayer.jump_forwards jump forwards
 audioplayer.keylevel key level
-audioplayer.hide_playlist hide Playlist
+audioplayer.hide_playlist Hide Playlist
 audioplayer.load_radio_stations Load internet radios
 audioplayer.name Audioplayer
 audioplayer.pause pause
@@ -63,15 +63,15 @@ audioplayer.playing Current Track
 audioplayer.playlist_fileerror_msg File could not be created:
 audioplayer.playlist_fileoverwrite_msg Do you want to overwrite this file:
 audioplayer.playlist_fileoverwrite_title Overwrite?
-audioplayer.playlist_name filename of the play list
+audioplayer.playlist_name Filename of the play list
 audioplayer.playlist_name_hint1 Please enter the filename of the playlist
 audioplayer.playlist_name_hint2 The extension .m3u will be added automatically
-audioplayer.reading_files reading files
+audioplayer.reading_files Reading files
 audioplayer.receiving_list Receiving list, please wait
-audioplayer.repeat_on enable repeat mode
+audioplayer.repeat_on Enable repeat mode
 audioplayer.rewind rewind
 audioplayer.save_playlist save play list
-audioplayer.select_title_by_name search title by name (SMS)
+audioplayer.select_title_by_name Search title by name (SMS)
 audioplayer.shuffle shuffle
 audioplayer.spectrum lcd a-spectrum
 audioplayer.stop Stop
@@ -625,40 +625,40 @@ infoviewer.subservice Subservices
 infoviewer.waittime Waiting for time...
 ipsetup.hint_1 Use 0..9, or use Up/Down,
 ipsetup.hint_2 OK saves, HOME! aborts
-keybindingmenu.addrecord add record timer
-keybindingmenu.addremind add zapto timer
+keybindingmenu.addrecord Add record timer
+keybindingmenu.addremind Add zapto timer
 keybindingmenu.allchannels_on_ok all-services
 keybindingmenu.bouquetchannels_on_ok current bouquet
-keybindingmenu.bouquetdown bouquet back
+keybindingmenu.bouquetdown Bouquet back
 keybindingmenu.bouquethandling Bouquet-control
 keybindingmenu.bouquetlist_on_ok bouquet-list
-keybindingmenu.bouquetup next bouquet
-keybindingmenu.cancel close channellist
-keybindingmenu.channeldown channel down
+keybindingmenu.bouquetup Next bouquet
+keybindingmenu.cancel Close Channellist
+keybindingmenu.channeldown Channel down
 keybindingmenu.channellist Channellist
-keybindingmenu.channelup channel up
+keybindingmenu.channelup Channel up
 keybindingmenu.head Keybinding Setup
-keybindingmenu.lastchannel last Channel
-keybindingmenu.pip same TP
+keybindingmenu.lastchannel Last Channel
+keybindingmenu.pip Same TP
 keybindingmenu.modechange Modechange
-keybindingmenu.pagedown page down
-keybindingmenu.pageup page up
+keybindingmenu.pagedown Page down
+keybindingmenu.pageup Page up
 keybindingmenu.quickzap Quickzap
-keybindingmenu.RC Key repeat-blocker
+keybindingmenu.RC Key Repeat-blocker
 keybindingmenu.repeatblock Repeat delay
 keybindingmenu.repeatblockgeneric Generic delay
 keybindingmenu.sort EPG change sort order
 keybindingmenu.search EPG Search
-keybindingmenu.subchanneldown subchannel down
-keybindingmenu.subchannelup subchannel up
+keybindingmenu.subchanneldown Subchannel down
+keybindingmenu.subchannelup Subchannel up
 keybindingmenu.tvradiomode TV/Radio-mode
 keybindingmenu.zaphistory Zapping History Bouquet
-keychooser.head Setup new Key
+keychooser.head Setup New Key
 keychooser.text1 Please press the new key
-keychooser.text2 wait a few seconds for abort
-keychoosermenu.currentkey current key
-keychoosermenu.setnew setup new key
-keychoosermenu.setnone no key
+keychooser.text2 Wait a few seconds for abort
+keychoosermenu.currentkey Current key
+keychoosermenu.setnew Setup new key
+keychoosermenu.setnone No key
 languagesetup.head Language Setup
 languagesetup.select Language
 lcdcontroler.brightness normal Brightness
@@ -938,7 +938,7 @@ movieplayer.bookmarkname Bookmarkname
 movieplayer.bookmarkname_hint1 Enter a name for your new bookmark
 movieplayer.bookmarkname_hint2  
 movieplayer.buffering Buffering...
-movieplayer.defdir start dir.
+movieplayer.defdir Start dir.
 movieplayer.defplugin Start-Plugin
 movieplayer.vlcplayback VLC Player
 movieplayer.vlcdvdplayback VLC (DVD) Player
@@ -986,7 +986,7 @@ movieplayer.vlchelp8 approx. 5 minutes back
 movieplayer.vlchelp9 skip approx. 5 minutes
 movieplayer.wrongvlcversion This feature is not support by your current version of VLC
 mpkey.audio Audio track
-mpkey.bookmark save bookmark
+mpkey.bookmark Save bookmark
 mpkey.forward Forward
 mpkey.pause Pause
 mpkey.play Play
@@ -1055,7 +1055,7 @@ options.off off
 options.on on
 options.on.without_messages Without msg
 options.serial serial
-parentallock.changepin change PIN code
+parentallock.changepin Change PIN code
 parentallock.changepin_hint1 Enter your new youth protection pin code here!
 parentallock.changetolocked on locked bouquets
 parentallock.head Enter Parental Lock PIN code
@@ -1072,7 +1072,7 @@ parentallock.prompt Prompt for PIN
 pictureviewersettings.general Pictureviewer settings
 pictureviewer.decode_server_ip decode server ip
 pictureviewer.decode_server_port decode server port
-pictureviewer.defdir start dir.
+pictureviewer.defdir Start dir.
 pictureviewer.head Picture viewer
 pictureviewer.help1 Menu mode
 pictureviewer.help10 Show mode
@@ -1099,13 +1099,13 @@ pictureviewer.help9 Exit
 pictureviewer.resize.color_average advanced
 pictureviewer.resize.none none
 pictureviewer.resize.simple simple
-pictureviewer.scaling scaling
-pictureviewer.show show
-pictureviewer.slide_time slideshow display time
-pictureviewer.slideshow slideshow
-pictureviewer.sortorder change sort order
-pictureviewer.sortorder.date (date)
-pictureviewer.sortorder.filename (filename)
+pictureviewer.scaling Scaling
+pictureviewer.show Show
+pictureviewer.slide_time Slideshow display time
+pictureviewer.slideshow Slideshow
+pictureviewer.sortorder Change sort order
+pictureviewer.sortorder.date (Date)
+pictureviewer.sortorder.filename (Filename)
 pictureviewer.background Background
 pictureviewer.picaudiofile Audio Music File
 ping.ok is reachable (ping)
@@ -1228,7 +1228,7 @@ scants.numberoftotalservices Total
 scants.numberoftvservices TV
 scants.provider Provider:
 scants.select_tp Select transponder
-scants.startnow start scan
+scants.startnow Start scan
 scants.test Test signal
 scants.transponders Transponders:
 scrambled_channel Scrambled channel
@@ -1461,11 +1461,11 @@ videomenu.panscan2 Bestfit
 videomenu.letterbox Letterbox
 videomenu.fullscreen Vollbild
 videomenu.videomode Video Resolution
-zapit.scantype scan for services
-zapit.scantype.all all services
-zapit.scantype.radio only radio
-zapit.scantype.tv only tv
-zapit.scantype.tvradio tv & radio
+zapit.scantype Scan for services
+zapit.scantype.all All services
+zapit.scantype.radio Only radio
+zapit.scantype.tv Only tv
+zapit.scantype.tvradio TV & Radio
 zaptotimer.announce Zapto timer in one minute
 hddmenu.hddmount HDD (Re)Mount
 hddmenu.hddmounted HDD Mounted
@@ -1486,7 +1486,7 @@ zapitsetup.lastuse from last Channel
 zapitsetup.lastmode Start Mode
 zapitsetup.lasttv TV Channel
 zapitsetup.lastradio Radio Channel
-keybindingmenu.reload refresh EPG
+keybindingmenu.reload Refresh EPG
 screenshot.announce create screenshot?
 screenshot.token creating screenshot...
 screenshot.remove remove screenshot?
@@ -1574,10 +1574,10 @@ keybinding.key_pictureviewer PictureViewer
 keybinding.key_timerlist Timerlist
 keybinding.key_inetradio Internet Radio
 keybinding.key_moviebrowser Movies Browser
-keybinding.key_filebrowser files Browser
+keybinding.key_filebrowser Files Browser
 keybinding.key_webtv WebTV
 keybinding.key_screenshot Screenshot
-keybinding.savekeymap save Keymap
+keybinding.savekeymap Save Keymap
 keybinding.savekeymap_hint Saving keymap, please wait...
 
 keybinding.mb_copy_jump MB copy jump key
