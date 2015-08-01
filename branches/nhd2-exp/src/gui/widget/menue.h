@@ -455,12 +455,10 @@ class CMenuWidget : public CMenuTarget
 		int items_height;
 		int items_width;
 		
-		//bool extended;
-
 	public:
 		CMenuWidget();
-		CMenuWidget(const char * const Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT );
-		CMenuWidget(const neutrino_locale_t Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT );
+		CMenuWidget(const char * const Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
+		CMenuWidget(const neutrino_locale_t Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT);
 		
 		~CMenuWidget();
 

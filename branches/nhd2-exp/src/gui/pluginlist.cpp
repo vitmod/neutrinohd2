@@ -161,7 +161,7 @@ reload:
 		}
 		else if ( msg == (neutrino_msg_t)g_settings.key_channelList_pageup )
 		{
-			if ((int(selected)-int(listmaxshow)) < 0)
+			if ((int(selected) - int(listmaxshow)) < 0)
 				selected = 0;
 			else
 				selected -= listmaxshow;
@@ -200,7 +200,8 @@ reload:
 		else if ( msg == CRCInput::RC_down )
 		{
 			int prevselected = selected;
-			selected = (selected + 1)%pluginlist.size();
+			if(pluginlist.size())
+				selected = (selected + 1)%pluginlist.size();
 			paintItem(prevselected - liststart);
 			unsigned int oldliststart = liststart;
 			liststart = (selected/listmaxshow)*listmaxshow;
@@ -215,28 +216,22 @@ reload:
 		}
 		else if ( msg == CRCInput::RC_ok || msg == CRCInput::RC_green)
 		{
-			if(selected == 0)
+			//exec the plugin :))
+			if (pluginSelected() == close)
 			{
 				loop = false;
-			}
-			else
-			{
-				//exec the plugin :))
-				if (pluginSelected() == close)
-				{
-					loop = false;
-				}
 			}
 		}
 		else if ( msg == CRCInput::RC_red)
 		{
 			// delete selected plugin
-			g_PluginList->removePlugin(pluginlist[selected]->number);
+			if(pluginlist.size())
+				g_PluginList->removePlugin(pluginlist[selected]->number);
 			
 			hide();
 			goto reload;
 		}
-		else if( (msg==CRCInput::RC_yellow) || (msg==CRCInput::RC_blue)  || (CRCInput::isNumeric(msg)) )
+		else if( (msg == CRCInput::RC_yellow) || (msg == CRCInput::RC_blue)  || (CRCInput::isNumeric(msg)) )
 		{
 			g_RCInput->postMsg(msg, data);
 			loop = false;

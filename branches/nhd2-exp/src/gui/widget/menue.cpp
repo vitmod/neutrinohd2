@@ -94,7 +94,7 @@ CMenuWidget::CMenuWidget()
 	background	= NULL;
 }
 
-CMenuWidget::CMenuWidget(const neutrino_locale_t Name, const std::string & Icon, const int mwidth, const int mheight )
+CMenuWidget::CMenuWidget(const neutrino_locale_t Name, const std::string & Icon, const int mwidth, const int mheight)
 {
 	name = Name;
         nameString = g_Locale->getText(NONEXISTANT_LOCALE);
@@ -553,9 +553,8 @@ void CMenuWidget::paint()
 	//paint icon
 	frameBuffer->paintIcon(iconfile, x + BORDER_LEFT, y + (hheight - icon_head_h)/2);
 	
-	// head title (centered)
-	int stringstartposX = x + ((full_width)>> 1) - ( neededWidth >> 1) - BORDER_LEFT;
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - BORDER_RIGHT - (stringstartposX - x), l_name, COL_MENUHEAD, 0, true); // UTF-8
+	// head title
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(x + BORDER_LEFT + icon_head_w + 2*ICON_OFFSET, y + (hheight - g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight(), width - BORDER_RIGHT - BORDER_RIGHT - icon_head_w - 2*ICON_OFFSET, l_name, COL_MENUHEAD, 0, true); // UTF-8
 	
 	// paint head separator
 	frameBuffer->paintBoxRel(x, y + hheight, full_width, sp_height, COL_MENUCONTENTDARK_PLUS_0);
