@@ -586,6 +586,7 @@ void CBEBouquetWidget::discardChanges()
 	hintBox->paint();
 	
 	g_Zapit->restoreBouquets();
+	
 	hintBox->hide();
 	delete hintBox;
 }

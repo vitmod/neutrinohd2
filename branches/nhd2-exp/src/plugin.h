@@ -134,6 +134,9 @@
 #include <gui/upnpbrowser.h>
 #include <gui/channel_select.h>
 #include <gui/audio_video_select.h>
+#include <gui/bedit/bouqueteditor_chanselect.h>
+#include <gui/bedit/bouqueteditor_channels.h>
+#include <gui/bedit/bouqueteditor_bouquets.h>
 
 #include <system/localize.h>
 #include <system/settings.h>
