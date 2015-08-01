@@ -75,7 +75,7 @@ class CTestMenu : CMenuTarget
 		void testStartPlugin();
 		//
 		void testShowActuellEPG();
-		void testCallChannelSelectWidget();
+		void testChannelSelectWidget();
 		
 		//
 		void testCallAVSelectWidget();
@@ -385,29 +385,29 @@ void CTestMenu::testCProgressBar()
 	Box.iX = g_settings.screen_StartX + 10;
 	Box.iY = g_settings.screen_StartY + 10;
 	Box.iWidth = (g_settings.screen_EndX - g_settings.screen_StartX - 20);
-	Box.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20)/20;
+	Box.iHeight = (g_settings.screen_EndY - g_settings.screen_StartY - 20)/40;
 	
 	timescale = new CProgressBar(Box.iWidth, Box.iHeight, 30, 100, 70, true);
 	timescale->reset();
 	
 	timescale->paint(Box.iX, Box.iY, 10);
-	usleep(1000000);
+	usleep(100000);
 	timescale->paint(Box.iX, Box.iY, 20);
-	usleep(1000000);
+	usleep(100000);
 	timescale->paint(Box.iX, Box.iY, 30);
-	usleep(1000000);
+	usleep(100000);
 	timescale->paint(Box.iX, Box.iY, 40);
-	usleep(1000000);
+	usleep(100000);
 	timescale->paint(Box.iX, Box.iY, 50);
-	usleep(1000000);
+	usleep(100000);
 	timescale->paint(Box.iX, Box.iY, 60);
-	usleep(1000000);
+	usleep(100000);
 	timescale->paint(Box.iX, Box.iY, 70);
-	usleep(1000000);
+	usleep(100000);
 	timescale->paint(Box.iX, Box.iY, 80);
-	usleep(1000000);
+	usleep(100000);
 	timescale->paint(Box.iX, Box.iY, 90);
-	usleep(1000000);
+	usleep(100000);
 	timescale->paint(Box.iX, Box.iY, 100);
 	
 	delete timescale;
@@ -872,8 +872,9 @@ void CTestMenu::testShowActuellEPG()
 		MessageBox(LOCALE_MESSAGEBOX_ERROR, "No EPG found!", CMessageBox::mbrCancel, CMessageBox::mbCancel, NEUTRINO_ICON_ERROR);
 }
 
-void CTestMenu::testCallChannelSelectWidget()
+void CTestMenu::testChannelSelectWidget()
 {
+#if 0
 	CSelectChannelWidget * CSelectChannelWidgetHandler = new CSelectChannelWidget();
 	CSelectChannelWidgetHandler->exec(NULL, "tv");
 		
@@ -882,6 +883,16 @@ void CTestMenu::testCallChannelSelectWidget()
 		
 	delete CSelectChannelWidgetHandler;
 	CSelectChannelWidgetHandler = NULL;
+#endif
+	
+#if 0	
+	CBEChannelSelectWidget * channelSelectWidget = new CBEChannelSelectWidget("ChannelSelectWidget", 1, CZapitClient::MODE_TV);
+
+	channelSelectWidget->exec(this, "");
+#endif
+
+	CBEChannelWidget* channelWidget = new CBEChannelWidget("ChannelWidget", true);
+	channelWidget->exec( this, "");
 }
 
 void CTestMenu::testCallAVSelectWidget()
@@ -1059,7 +1070,7 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "channelselect")
 	{
-		testCallChannelSelectWidget();
+		testChannelSelectWidget();
 	}
 	else if(actionKey == "avselect")
 	{
@@ -1117,8 +1128,8 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("StartPlugin(e.g: youtube)", true, NULL, this, "startplugin"));
 	mainMenu->addItem( new CMenuSeparator(CMenuSeparator::LINE) );
 	mainMenu->addItem(new CMenuForwarder("ShowActuellEPG", true, NULL, this, "showepg"));
-	mainMenu->addItem(new CMenuForwarder("CallChannelSelectWidget", true, NULL, this, "channelselect"));
-	mainMenu->addItem(new CMenuForwarder("CallAudioVideoSelectWidget", true, NULL, this, "avselect"));
+	mainMenu->addItem(new CMenuForwarder("ChannelSelectWidget", true, NULL, this, "channelselect"));
+	mainMenu->addItem(new CMenuForwarder("AudioVideoSelectWidget", true, NULL, this, "avselect"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();

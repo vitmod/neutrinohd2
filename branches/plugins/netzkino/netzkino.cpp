@@ -552,54 +552,22 @@ void CNetzKinoBrowser::refreshTitle(void)
 	m_pcFontTitle->RenderString(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX + TEXT_BORDER_WIDTH + icon_w + 10, m_cBoxFrame.iY+m_cBoxFrameTitleRel.iY + m_cBoxFrameTitleRel.iHeight, m_cBoxFrameTitleRel.iWidth - (TEXT_BORDER_WIDTH << 1) - 2*icon_w - 10 - icon_h_w, title.c_str(), TITLE_FONT_COLOR, 0, true); // UTF-8
 }
 
+const struct button_label CNetzKinoBrowserButtons[4] =
+{
+	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_YT_PREV_RESULTS },
+	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_YT_NEXT_RESULTS },
+	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_MOVIEBROWSER_NEXT_FOCUS },
+	{ NEUTRINO_ICON_BUTTON_BLUE, LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES }
+};
+
 void CNetzKinoBrowser::refreshFoot(void) 
 {
 	dprintf(DEBUG_INFO, "CNetzKinoBrowser::refreshFoot\n");
 	
-	uint8_t color = COL_MENUHEAD;
-	
-	// ok (play)
-	std::string next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
-	
-	// draw the background first
+	// footer
 	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameFootRel.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, m_cBoxFrameFootRel.iWidth, m_cBoxFrameFootRel.iHeight + 6, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
-	int width = m_cBoxFrameFootRel.iWidth>>2;
-	int xpos1 = m_cBoxFrameFootRel.iX + 10;
-	int xpos2 = xpos1 + width;
-	int xpos3 = xpos2 + width;
-	int xpos4 = xpos3 + width;
-	
-	int icon_w = 0;
-	int icon_h = 0;
-	
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
-
-	// red
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_RED, m_cBoxFrame.iX + xpos1, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
-
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + 5 + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + m_pcFontFoot->getHeight())/2, width-30, g_Locale->getText(LOCALE_YT_PREV_RESULTS), color, 0, true); // UTF-8
-
-	// green
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_w, &icon_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, m_cBoxFrame.iX + xpos2, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
-
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + m_pcFontFoot->getHeight())/2, width -30, g_Locale->getText(LOCALE_YT_NEXT_RESULTS), color, 0, true); // UTF-8
-
-	// yellow
-	next_text = g_Locale->getText(LOCALE_MOVIEBROWSER_NEXT_FOCUS);
-
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, m_cBoxFrame.iX + xpos3, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2);
-
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos3 + 5 + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + m_pcFontFoot->getHeight())/2, width-30, next_text.c_str(), color, 0, true); // UTF-8
-
-	// blue
-	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
-	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, m_cBoxFrame.iX + xpos4, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2);
-
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + 5 + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + m_pcFontFoot->getHeight())/2, width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES), color, 0, true); // UTF-8
+	::paintButtons(m_pcWindow, m_pcFontFoot, g_Locale, m_cBoxFrame.iX + m_cBoxFrameFootRel.iX + ICON_OFFSET, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, (m_cBoxFrameFootRel.iWidth - 2*ICON_OFFSET)/4, 4, CNetzKinoBrowserButtons, m_cBoxFrameFootRel.iHeight + 6);
 }
 
 bool CNetzKinoBrowser::onButtonPress(neutrino_msg_t msg)
