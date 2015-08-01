@@ -73,7 +73,7 @@ CPluginList::CPluginList(const neutrino_locale_t Name, const uint32_t listtype)
 	if(width > (g_settings.screen_EndX - g_settings.screen_StartX))
 		width = (g_settings.screen_EndX - g_settings.screen_StartX);
 	
-	height = 526;
+	height = MENU_HEIGHT - 50;
 	if((height + 50) > (g_settings.screen_EndY - g_settings.screen_StartY))
 		height = (g_settings.screen_EndY - g_settings.screen_StartY) - 50; // 2*25 pixel frei
 		
@@ -82,8 +82,13 @@ CPluginList::CPluginList(const neutrino_locale_t Name, const uint32_t listtype)
 	fheight2 = g_Font[SNeutrinoSettings::FONT_TYPE_GAMELIST_ITEMSMALL]->getHeight(); // desc
 	fheight = fheight1 + fheight2 + 2; // name + desc + border
 	
-	listmaxshow = (height - 2*theight)/fheight;
-	height = 2*theight + listmaxshow*fheight; // recalc height
+	int icon_w, icon_h;
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
+	footheight = std::max(icon_h, theight);
+	
+	listmaxshow = (height - theight - footheight)/fheight;
+	// recalculate height
+	height = theight + listmaxshow*fheight + footheight;
 	
 	x = frameBuffer->getScreenX() + ((frameBuffer->getScreenWidth() - width) / 2);
 	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height) / 2;
@@ -120,8 +125,6 @@ reload:
 
 	// menu back
 	pluginitem * tmp = new pluginitem();
-	tmp->name = g_Locale->getText(LOCALE_MENU_BACK);
-	pluginlist.push_back(tmp);
 
 	// refill pluginlist items
 	for(unsigned int count = 0; count < (unsigned int)g_PluginList->getNumberOfPlugins(); count++)
@@ -255,16 +258,16 @@ reload:
 void CPluginList::hide()
 {
 	frameBuffer->paintBackgroundBoxRel(x, y, width + SCROLLBAR_WIDTH, height);	//15:sb
-
 	frameBuffer->blit();	
 }
 
 void CPluginList::paintItem(int pos)
 {
-	int ypos = (y + theight) + pos*fheight;
+	int ypos = y + theight + pos*fheight;
 	int itemheight = fheight;
+	int itemwidth;
 
-	uint8_t    color   = COL_MENUCONTENT;
+	uint8_t color = COL_MENUCONTENT;
 	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
 
 	if (liststart + pos == selected)
@@ -272,53 +275,42 @@ void CPluginList::paintItem(int pos)
 		color   = COL_MENUCONTENTSELECTED;
 		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
 	}
-
-	if(liststart + pos == 0)
-	{	//back is half-height...
-		itemheight = (fheight / 2) + 3;
-		
-		//
-		frameBuffer->paintBoxRel(x, ypos + itemheight, width, SCROLLBAR_WIDTH, COL_MENUCONTENT_PLUS_0);
-		
-		//
-		frameBuffer->paintBoxRel(x + 10, ypos + itemheight + 5, width - 20,  1, COL_MENUCONTENT_PLUS_5);
-		frameBuffer->paintBoxRel(x + 10, ypos + itemheight + 6, width - 20,  1, COL_MENUCONTENT_PLUS_2);
-	}
-	else if(liststart == 0)
+	
+	sb_width = 0;
+	
+	if(listmaxshow <= pluginlist.size() + 1)
 	{
-		ypos -= (fheight / 2) - 15;
-		if(pos == (int)listmaxshow-1)
-			frameBuffer->paintBoxRel(x, ypos + itemheight, width, (fheight / 2)-15, COL_MENUCONTENT_PLUS_0);
+		nrOfPages = ((pluginlist.size() - 1) / listmaxshow) + 1; 
+		currPage  = (liststart/listmaxshow) + 1;
 	}
 	
-	frameBuffer->paintBoxRel(x, ypos, width, itemheight, bgcolor );
+	if(nrOfPages > 1)
+		sb_width = SCROLLBAR_WIDTH;
+	
+	itemwidth = width - sb_width;
+	
+	// itemBox
+	frameBuffer->paintBoxRel(x, ypos, itemwidth, itemheight, bgcolor );
 	
 	// name + desc + version + icon???
-	if(liststart + pos <pluginlist.size())
+	if(liststart + pos < pluginlist.size())
 	{
 		pluginitem * actplugin = pluginlist[liststart + pos];
 		
-		bool isback_menu  = !strcmp((const char *)actplugin->name.c_str(), (const char *)g_Locale->getText(LOCALE_MENU_BACK) );
-		
 		// icon
-		int icon_w = 0;
-		int icon_h = 0;
-		if(!isback_menu)
-		{
-			std::string IconName;
-			IconName = PLUGINDIR;
-			IconName += "/";
-			IconName += g_PluginList->getFileName(pluginlist[liststart + pos]->number);
-			IconName += "/";
-			IconName += actplugin->icon;
+		std::string IconName;
+		IconName = PLUGINDIR;
+		IconName += "/";
+		IconName += g_PluginList->getFileName(pluginlist[liststart + pos]->number);
+		IconName += "/";
+		IconName += actplugin->icon;
 			
-			frameBuffer->getIconSize(NEUTRINO_ICON_PLUGIN, &icon_w, &icon_h);
+		frameBuffer->getIconSize(NEUTRINO_ICON_PLUGIN, &icon_w, &icon_h);
 			
-			if (!actplugin->icon.empty() && (!access(IconName.c_str(), F_OK)))
-				frameBuffer->paintIcon(IconName.c_str(), x + 8, ypos + (itemheight - icon_h)/2 );
-			else
-				frameBuffer->paintIcon( NEUTRINO_ICON_PLUGIN, x + 8, ypos + (itemheight - icon_h)/2 );
-		}
+		if (!actplugin->icon.empty() && (!access(IconName.c_str(), F_OK)))
+			frameBuffer->paintIcon(IconName.c_str(), x + 8, ypos + (itemheight - icon_h)/2 );
+		else
+			frameBuffer->paintIcon( NEUTRINO_ICON_PLUGIN, x + 8, ypos + (itemheight - icon_h)/2 );
 		
 		std::string Description;
 		Description = actplugin->desc;
@@ -340,34 +332,28 @@ void CPluginList::paintItem(int pos)
 #define NUM_LIST_BUTTONS 4
 struct button_label CPluginListButtons[NUM_LIST_BUTTONS] =
 {
-	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_PLUGINLIST_REMOVE_PLUGIN},
-	{NEUTRINO_ICON_BUTTON_GREEN, LOCALE_PLUGINLIST_START_PLUGIN},
-	{NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE},
-	{NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE}
+	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_PLUGINLIST_REMOVE_PLUGIN },
+	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_PLUGINLIST_START_PLUGIN },
+	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE },
+	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE }
 };
 
 void CPluginList::paintHead()
 {
-	int sb_width = 0;
-	if(listmaxshow <= pluginlist.size() + 1)
-		sb_width = SCROLLBAR_WIDTH;
-	
 	int iw, ih;
 	
 	// head
-	frameBuffer->paintBoxRel(x, y, width + sb_width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
+	frameBuffer->paintBoxRel(x, y, width, theight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_TOP);
 	
 	// body
-	frameBuffer->paintBoxRel(x, y + theight, width, height - 2*theight, COL_MENUCONTENT_PLUS_0);
+	frameBuffer->paintBoxRel(x, y + theight, width, height - theight - footheight, COL_MENUCONTENT_PLUS_0);
 	
 	// foot
-	frameBuffer->paintBoxRel(x, y + height - theight, width + sb_width, theight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, y + theight + height - theight - footheight, width, footheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 	
 	// foot bottons
-	int icon_w, icon_h;
-	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
-	int ButtonWidth = (width - 20) / 4;
-	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - theight + (theight - icon_h)/2, ButtonWidth, NUM_LIST_BUTTONS, CPluginListButtons);
+	int ButtonWidth = (width - (BORDER_LEFT + BORDER_RIGHT)) / 4;
+	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + theight + height - theight - footheight, ButtonWidth, NUM_LIST_BUTTONS, CPluginListButtons, footheight);
 
 	// title + icon
 	if(pluginlisttype == CPlugins::P_TYPE_GAME)
@@ -377,7 +363,7 @@ void CPluginList::paintHead()
 
 		int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(g_Locale->getText(name), true); // UTF-8
 		int stringstartposX = x + (width >> 1) - (neededWidth >> 1);
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, y + theight, width - (stringstartposX- x) , g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, y + theight, width - (stringstartposX - x) , g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
 	} 
 	else
 	{
@@ -386,7 +372,7 @@ void CPluginList::paintHead()
 
 		int neededWidth = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getRenderWidth(g_Locale->getText(name), true); // UTF-8
 		int stringstartposX = x +(width >> 1) - (neededWidth >> 1);
-		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, y + theight, width - (stringstartposX- x) , g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->RenderString(stringstartposX, y + theight, width - (stringstartposX - x) , g_Locale->getText(name), COL_MENUHEAD, 0, true); // UTF-8
 	}
 }
 
@@ -405,16 +391,25 @@ void CPluginList::paint()
 
 void CPluginList::paintItems()
 {
-	if(listmaxshow <= pluginlist.size()+1)
+	sb_width = 0;
+	
+	if(listmaxshow <= pluginlist.size() + 1)
 	{
-		// Scrollbar
-		int nrOfPages = ((pluginlist.size() - 1) / listmaxshow) + 1; 
-		int currPage  = (liststart/listmaxshow) + 1;
-		
-		frameBuffer->paintBoxRel(x + width, y + theight, SCROLLBAR_WIDTH, height - 2*theight,  COL_MENUCONTENT_PLUS_1);
-		frameBuffer->paintBoxRel(x + width + 2, y + theight + 2 + (currPage - 1)*(height - 2*theight - 4)/nrOfPages, 11, (height - 2*theight - 4)/nrOfPages, COL_MENUCONTENT_PLUS_3 );
+		nrOfPages = ((pluginlist.size() - 1) / listmaxshow) + 1; 
+		currPage  = (liststart/listmaxshow) + 1;
 	}
 	
+	if(nrOfPages > 1)
+		sb_width = SCROLLBAR_WIDTH;
+	
+	//scrollbar
+	if(nrOfPages > 1)
+	{
+		frameBuffer->paintBoxRel(x + width - sb_width, y + theight, SCROLLBAR_WIDTH, height - (theight + footheight),  COL_MENUCONTENT_PLUS_1);
+		frameBuffer->paintBoxRel(x + width - sb_width + 2, y + theight + 2 + (currPage - 1)*(height - theight - footheight - 4)/nrOfPages, SCROLLBAR_WIDTH - 4, (height - 2*theight - 4)/nrOfPages, COL_MENUCONTENT_PLUS_3 );
+	}
+	
+	// items
 	for(unsigned int count = 0; count < listmaxshow; count++)
 	{
 		paintItem(count);

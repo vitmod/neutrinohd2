@@ -1740,11 +1740,11 @@ void CAudioPlayerGui::paintFoot()
 	if (!m_playlist.empty())
 	{
 		// play
-		m_frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, m_x + ButtonWidth2 + 25, top + 2 + (m_buttonHeight/2 - icon_foot_h)/2);
+		m_frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, m_x + ButtonWidth2 + 25, top + (m_buttonHeight/2 - icon_foot_h)/2);
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + ButtonWidth2 + 53, top + 2 + (m_buttonHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth2 - 28, g_Locale->getText(LOCALE_AUDIOPLAYER_PLAY), COL_INFOBAR, 0, true); // UTF-8
 		
 		// keylevel switch
-		m_frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, m_x + ButtonWidth + 25, top + 2 + (m_buttonHeight/2 - icon_foot_h)/2);
+		m_frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_HELP, m_x + ButtonWidth + 25, top + (m_buttonHeight/2 - icon_foot_h)/2);
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + ButtonWidth + 53, top + 2 +(m_buttonHeight/2 - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth2 - 28, g_Locale->getText(LOCALE_AUDIOPLAYER_KEYLEVEL), COL_INFOBAR, 0, true); // UTF-8
 	}
 
@@ -1753,27 +1753,27 @@ void CAudioPlayerGui::paintFoot()
 		if (m_playlist.empty()) 
 		{
 			if (m_inetmode)
-				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + ButtonWidth, top + 2 + m_buttonHeight/2 + (m_buttonHeight/2 - icon_foot_h)/2, ButtonWidth*2, 2, AudioPlayerButtons[7]);
+				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + ButtonWidth, top + m_buttonHeight/2, ButtonWidth*2, 2, AudioPlayerButtons[7], m_buttonHeight/2);
 			else
-				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + ButtonWidth, top + 2 + m_buttonHeight/2 + (m_buttonHeight/2 - icon_foot_h)/2, ButtonWidth, 1, &(AudioPlayerButtons[7][0]));
+				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + ButtonWidth, top + m_buttonHeight/2, ButtonWidth, 1, &(AudioPlayerButtons[7][0]), m_buttonHeight/2);
 		} 
 		else
 		{
 			if (m_inetmode)
-				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top  + 2 + m_buttonHeight/2 + (m_buttonHeight/2 - icon_foot_h)/2, ButtonWidth, 4, AudioPlayerButtons[8]);
+				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top + m_buttonHeight/2, ButtonWidth, 4, AudioPlayerButtons[8], m_buttonHeight/2);
 			else
-				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top  + 2 + m_buttonHeight/2 + (m_buttonHeight/2 - icon_foot_h)/2, ButtonWidth, 4, AudioPlayerButtons[1]);
+				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top + m_buttonHeight/2, ButtonWidth, 4, AudioPlayerButtons[1], m_buttonHeight/2);
 		}
 	}
 	else if (m_key_level == 1)
 	{
 		if (m_curr_audiofile.FileExtension != CFile::EXTENSION_URL)
 		{
-			::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top  + 2 + m_buttonHeight/2 + (m_buttonHeight/2 - icon_foot_h)/2, ButtonWidth, 4, AudioPlayerButtons[0]);
+			::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top + m_buttonHeight/2, ButtonWidth, 4, AudioPlayerButtons[0], m_buttonHeight/2);
 		}
 		else
 		{
-			::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top + 2 + m_buttonHeight/2 + (m_buttonHeight/2 - icon_foot_h)/2, ButtonWidth*2, 2, AudioPlayerButtons[6]);
+			::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top + m_buttonHeight/2, ButtonWidth*2, 2, AudioPlayerButtons[6], m_buttonHeight/2);
 		}
 	} 
 	else 
@@ -1783,22 +1783,22 @@ void CAudioPlayerGui::paintFoot()
 		{
 			if (m_select_title_by_name)
 			{
-				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + ButtonWidth + BORDER_LEFT, top  + 2 + m_buttonHeight/2 + (m_buttonHeight/2 - icon_foot_h)/2, ButtonWidth, 2, AudioPlayerButtons[5]);
+				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + ButtonWidth + BORDER_LEFT, top + m_buttonHeight/2, ButtonWidth, 2, AudioPlayerButtons[5], m_buttonHeight/2);
 			} 
 			else 
 			{
-				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + ButtonWidth + BORDER_LEFT, top + 2 + m_buttonHeight/2 + (m_buttonHeight/2 - icon_foot_h)/2, ButtonWidth, 2, AudioPlayerButtons[4]);
+				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + ButtonWidth + BORDER_LEFT, top + m_buttonHeight/2, ButtonWidth, 2, AudioPlayerButtons[4], m_buttonHeight/2);
 			}
 		} 
 		else 
 		{
 			if (m_select_title_by_name)
 			{
-				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + ButtonWidth + BORDER_LEFT, top  + 2 + m_buttonHeight/2 + (m_buttonHeight/2 - icon_foot_h)/2, ButtonWidth*2, 2, AudioPlayerButtons[3]);
+				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + ButtonWidth + BORDER_LEFT, top + m_buttonHeight/2, ButtonWidth*2, 2, AudioPlayerButtons[3], m_buttonHeight/2);
 			} 
 			else 
 			{
-				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + ButtonWidth + BORDER_LEFT, top + 2 + m_buttonHeight/2 + (m_buttonHeight/2 - icon_foot_h)/2, ButtonWidth *2, 2, AudioPlayerButtons[2]);
+				::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + ButtonWidth + BORDER_LEFT, top + m_buttonHeight/2, ButtonWidth *2, 2, AudioPlayerButtons[2], m_buttonHeight/2);
 			}
 		}
 	}	

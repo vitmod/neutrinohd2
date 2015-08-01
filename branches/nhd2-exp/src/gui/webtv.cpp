@@ -926,7 +926,7 @@ void CWebTV::paintFoot()
 	
 	frameBuffer->paintBoxRel(f_x, f_y, width, buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM); //round
 	
-	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, f_x + BORDER_LEFT, f_y + (buttonHeight - icon_bf_h)/2, ButtonWidth, NUM_LIST_BUTTONS, CWebTVButtons);
+	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, f_x + BORDER_LEFT, f_y, ButtonWidth, NUM_LIST_BUTTONS, CWebTVButtons, buttonHeight);
 }
 
 // infos

@@ -457,7 +457,12 @@ class CMenuWidget : public CMenuTarget
 		int fheight;
 		int sp_height;
 		int item_height;
+		int item_width;
 		int sb_width;
+		int itemHeightTotal;
+		int heightCurrPage;
+		int items_height;
+		int items_width;
 		
 		bool extended;
 

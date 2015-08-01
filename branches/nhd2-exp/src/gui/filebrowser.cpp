@@ -1048,15 +1048,15 @@ void CFileBrowser::paintHead()
 
 const struct button_label FileBrowserButtons[3] =
 {
-	{ NEUTRINO_ICON_BUTTON_RED   , LOCALE_FILEBROWSER_NEXTPAGE        },
-	{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_FILEBROWSER_PREVPAGE        },
-	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_MARK            },
+	{ NEUTRINO_ICON_BUTTON_RED   , LOCALE_FILEBROWSER_NEXTPAGE },
+	{ NEUTRINO_ICON_BUTTON_GREEN , LOCALE_FILEBROWSER_PREVPAGE },
+	{ NEUTRINO_ICON_BUTTON_YELLOW, LOCALE_FILEBROWSER_MARK },
 };
 
 const struct button_label FileBrowserFilterButton[2] =
 {
 	{ NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_FILEBROWSER_FILTER_INACTIVE },
-	{ NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_FILEBROWSER_FILTER_ACTIVE   },
+	{ NEUTRINO_ICON_BUTTON_BLUE  , LOCALE_FILEBROWSER_FILTER_ACTIVE },
 };
 
 void CFileBrowser::paintFoot()
@@ -1067,16 +1067,16 @@ void CFileBrowser::paintFoot()
 	int ty2 = by2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 
 	// foot
-	frameBuffer->paintBoxRel(x, y + height - (2 * foheight ), width, (2 * foheight ), COL_INFOBAR_SHADOW_PLUS_1, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, y + height - 2*foheight, width, 2*foheight, COL_INFOBAR_SHADOW_PLUS_1, RADIUS_MID, CORNER_BOTTOM);
 
 	if (!(filelist.empty()))
 	{
-		int by = y + height - 2 * (foheight - 4);
+		int by = y + height - 2*foheight;
 
-		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, by, dx, Multi_Select ? 3 : 2, FileBrowserButtons);
+		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, by, dx, Multi_Select ? 3 : 2, FileBrowserButtons, foheight);
 
 		if(Filter != NULL)
-			::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT + (3 * dx), by, dx, 1, &(FileBrowserFilterButton[use_filter? 0 : 1]));
+			::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT + (3 * dx), by, dx, 1, &(FileBrowserFilterButton[use_filter? 0 : 1]), foheight);
 
 		//OK-Button
 		if( (filelist[selected].getType() != CFile::FILE_UNKNOWN) || (S_ISDIR(filelist[selected].Mode)) )

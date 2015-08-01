@@ -696,7 +696,7 @@ void CPictureViewerGui::paintFoot()
 	int icon_w, icon_h;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	
-	frameBuffer->paintBoxRel(x, y + (height - 2*buttonHeight), width, 2*buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+	frameBuffer->paintBoxRel(x, y + height - 2*buttonHeight, width, 2*buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
 	if (!playlist.empty())
 	{
@@ -716,10 +716,10 @@ void CPictureViewerGui::paintFoot()
 		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(x + BORDER_LEFT + icon_w + 5 , y + (height - 2*buttonHeight) + buttonHeight + (buttonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth2 - 28, tmp, COL_INFOBAR, 0, true); // UTF-8
 
 		// foot buttons
-		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + (height - 2*buttonHeight) + (buttonHeight - icon_h)/2, ButtonWidth, 4, PictureViewerButtons);
+		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height - 2*buttonHeight, ButtonWidth, 4, PictureViewerButtons, buttonHeight);
 	}
 	else
-		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT + ButtonWidth, y + (height - 2 * buttonHeight) + (buttonHeight - icon_h)/2, ButtonWidth, 1, &(PictureViewerButtons[1]));
+		::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT + ButtonWidth, y + height - 2*buttonHeight, ButtonWidth, 1, &(PictureViewerButtons[1]), buttonHeight);
 }
 
 void CPictureViewerGui::paintInfo()

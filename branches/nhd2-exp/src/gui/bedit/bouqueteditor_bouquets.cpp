@@ -180,7 +180,7 @@ void CBEBouquetWidget::paintFoot()
 			Button[3].locale = LOCALE_BOUQUETEDITOR_LOCK;
 			break;
 	}
-	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height + (ButtonHeight - icon_foot_h)/2, (width - icon_foot_w - BORDER_LEFT) / 4, 4, Button);
+	::paintButtons(frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, x + BORDER_LEFT, y + height, (width - icon_foot_w - BORDER_LEFT) / 4, 4, Button, ButtonHeight);
 	
 	// setup icon
 	int icon_w, icon_h;

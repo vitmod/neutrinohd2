@@ -68,17 +68,24 @@ class CPluginList : public CMenuTarget
 
 		CFrameBuffer * frameBuffer;
 		
-		unsigned int	    liststart;
-		unsigned int	    listmaxshow;
-		int		fheight; // Fonthoehe Channellist-Inhalt
-		int		theight; // Fonthoehe Channellist-Titel
+		unsigned int liststart;
+		unsigned int listmaxshow;
+		
+		int fheight; // Fonthoehe Channellist-Inhalt
+		int theight; // Fonthoehe Channellist-Titel
+		int footheight;
+		int icon_h, icon_w;
 
-		int		fheight1,fheight2;
+		int fheight1,fheight2;
 
-		int 		width;
-		int 		height;
-		int 		x;
-		int 		y;
+		int width;
+		int height;
+		int x;
+		int y;
+		
+		int sb_width;
+		int nrOfPages; 
+		int currPage;
 
 		void paintItem(int pos);
 		void paintItems();

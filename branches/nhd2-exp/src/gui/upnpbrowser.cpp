@@ -1075,7 +1075,7 @@ void CUpnpBrowserGui::paintDevice()
 	int ButtonWidth = (m_width - BORDER_LEFT - BORDER_RIGHT) / 4;
 	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 	//m_frameBuffer->paintHLine(m_x, m_x + m_width, top, COL_INFOBAR_SHADOW_PLUS_0);
-	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + 3*ButtonWidth, top + (m_buttonHeight - icon_foot_h)/2, ButtonWidth, 1, &RescanButton);
+	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + 3*ButtonWidth, top, ButtonWidth, 1, &RescanButton, m_buttonHeight);
 
 	//clearItem2DetailsLine(); // clear it
 }
@@ -1184,9 +1184,9 @@ void CUpnpBrowserGui::paintItem(std::vector<UPnPEntry> *entry, unsigned int sele
 	int ButtonWidth = (m_width - 20) / 4;
 	m_frameBuffer->paintBoxRel(m_x, top, m_width, m_buttonHeight, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 	
-	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top + (m_buttonHeight - icon_foot_h)/2, ButtonWidth, 1, &StopButton);
-	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + ButtonWidth, top + (m_buttonHeight - icon_foot_h)/2, ButtonWidth, 1, &PUpButton);
-	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + 2*ButtonWidth, top + (m_buttonHeight - icon_foot_h)/2, ButtonWidth, 1, &PDownButton);
+	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT, top, ButtonWidth, 1, &StopButton, m_buttonHeight);
+	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + ButtonWidth, top, ButtonWidth, 1, &PUpButton, m_buttonHeight);
+	::paintButtons(m_frameBuffer, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL], g_Locale, m_x + BORDER_LEFT + 2*ButtonWidth, top, ButtonWidth, 1, &PDownButton, m_buttonHeight);
 
 	m_frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_OKAY, m_x + BORDER_LEFT + 3*ButtonWidth, top + (m_buttonHeight - icon_foot_h)/2);
 	g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(m_x + BORDER_LEFT + 3*ButtonWidth + icon_foot_w + 5, top + (m_buttonHeight - g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight(), ButtonWidth - 40, g_Locale->getText(LOCALE_AUDIOPLAYER_PLAY), COL_INFOBAR, 0, true); // UTF-8

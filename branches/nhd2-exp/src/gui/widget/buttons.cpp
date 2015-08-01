@@ -27,7 +27,7 @@
 #include <gui/color.h>
 
 
-void paintButtons(CFrameBuffer * const frameBuffer, CFont * const font, const CLocaleManager * const localemanager, const int x, const int y, const unsigned int buttonwidth, const unsigned int count, const struct button_label * const content)
+void paintButtons(CFrameBuffer * const frameBuffer, CFont * const font, const CLocaleManager * const localemanager, const int x, const int y, const unsigned int buttonwidth, const unsigned int count, const struct button_label * const content, const int dy)
 {
 	int iw, ih;
 	
@@ -36,8 +36,8 @@ void paintButtons(CFrameBuffer * const frameBuffer, CFont * const font, const CL
 		frameBuffer->getIconSize(content[i].button, &iw, &ih);
 		int f_h = font->getHeight();
 		
-		frameBuffer->paintIcon(content[i].button, x + i * buttonwidth, y);
-		font->RenderString(x + iw + 5 + i * buttonwidth, y + (ih - f_h)/2 + f_h, buttonwidth - iw - 5, localemanager->getText(content[i].locale), COL_INFOBAR, 0, true); // UTF-8
+		frameBuffer->paintIcon(content[i].button, x + i * buttonwidth, y + (dy - ih)/2);
+		font->RenderString(x + iw + 5 + i * buttonwidth, y + (dy - f_h)/2 + f_h, buttonwidth - iw - 5, localemanager->getText(content[i].locale), COL_INFOBAR, 0, true); // UTF-8
 	}
 }
 
