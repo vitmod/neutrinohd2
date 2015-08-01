@@ -5266,7 +5266,9 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 	}
 	else if (actionKey == "font_scaling") 
 	{
-		CMenuWidget fontscale(LOCALE_FONTMENU_HEAD, NEUTRINO_ICON_COLORS, MENU_WIDTH - 50);
+		parent->hide();
+		
+		CMenuWidget fontscale(LOCALE_FONTMENU_HEAD, NEUTRINO_ICON_COLORS);
 		
 		fontscale.enableSaveScreen(true);
 
