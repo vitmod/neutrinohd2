@@ -777,7 +777,7 @@ int CNeutrinoApp::loadSetup(const char * fname)
                 "2, 3, 4, 10",                  // RED
                 "5",                            // GREEN
                 "6",                            // YELLOW
-                "8, 9, 12, 11, 13",   		// BLUE
+                "8, 9, 12, 11, 13, 14",   	// BLUE
 #if defined (ENABLE_FUNCTIONKEYS)
 		"0",				// F1
 		"0",				// F2

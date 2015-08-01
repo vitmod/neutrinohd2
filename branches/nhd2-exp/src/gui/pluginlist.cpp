@@ -179,47 +179,58 @@ reload:
 		else if ( msg == CRCInput::RC_up )
 		{
 			int prevselected = selected;
-			if(selected == 0)
+			
+			if(pluginlist.size())
 			{
-				selected = pluginlist.size() - 1;
-			}
-			else
-				selected--;
-			paintItem(prevselected - liststart);
-			unsigned int oldliststart = liststart;
-			liststart = (selected/listmaxshow)*listmaxshow;
-			if(oldliststart!=liststart)
-			{
-				paintItems();
-			}
-			else
-			{
-				paintItem(selected - liststart);
+				if(selected == 0)
+				{
+					selected = pluginlist.size() - 1;
+				}
+				else
+					selected--;
+				
+				paintItem(prevselected - liststart);
+				unsigned int oldliststart = liststart;
+				liststart = (selected/listmaxshow)*listmaxshow;
+				if(oldliststart!=liststart)
+				{
+					paintItems();
+				}
+				else
+				{
+					paintItem(selected - liststart);
+				}
 			}
 		}
 		else if ( msg == CRCInput::RC_down )
 		{
 			int prevselected = selected;
+			
 			if(pluginlist.size())
+			{
 				selected = (selected + 1)%pluginlist.size();
-			paintItem(prevselected - liststart);
-			unsigned int oldliststart = liststart;
-			liststart = (selected/listmaxshow)*listmaxshow;
-			if(oldliststart != liststart)
-			{
-				paintItems();
-			}
-			else
-			{
-				paintItem(selected - liststart);
+				paintItem(prevselected - liststart);
+				unsigned int oldliststart = liststart;
+				liststart = (selected/listmaxshow)*listmaxshow;
+				if(oldliststart != liststart)
+				{
+					paintItems();
+				}
+				else
+				{
+					paintItem(selected - liststart);
+				}
 			}
 		}
 		else if ( msg == CRCInput::RC_ok || msg == CRCInput::RC_green)
 		{
-			//exec the plugin :))
-			if (pluginSelected() == close)
+			if(pluginlist.size())
 			{
-				loop = false;
+				//exec the plugin :))
+				if (pluginSelected() == close)
+				{
+					loop = false;
+				}
 			}
 		}
 		else if ( msg == CRCInput::RC_red)
@@ -230,11 +241,6 @@ reload:
 			
 			hide();
 			goto reload;
-		}
-		else if( (msg == CRCInput::RC_yellow) || (msg == CRCInput::RC_blue)  || (CRCInput::isNumeric(msg)) )
-		{
-			g_RCInput->postMsg(msg, data);
-			loop = false;
 		}
 		else if ( CNeutrinoApp::getInstance()->handleMsg(msg, data) & messages_return::cancel_all )
 		{
@@ -324,13 +330,11 @@ void CPluginList::paintItem(int pos)
 	}
 }
 
-#define NUM_LIST_BUTTONS 4
+#define NUM_LIST_BUTTONS 2
 struct button_label CPluginListButtons[NUM_LIST_BUTTONS] =
 {
 	{ NEUTRINO_ICON_BUTTON_RED, LOCALE_PLUGINLIST_REMOVE_PLUGIN },
-	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_PLUGINLIST_START_PLUGIN },
-	{ NEUTRINO_ICON_BUTTON_YELLOW, NONEXISTANT_LOCALE },
-	{ NEUTRINO_ICON_BUTTON_BLUE, NONEXISTANT_LOCALE }
+	{ NEUTRINO_ICON_BUTTON_GREEN, LOCALE_PLUGINLIST_START_PLUGIN }
 };
 
 void CPluginList::paintHead()

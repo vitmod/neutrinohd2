@@ -1239,7 +1239,7 @@ servicemenu.getplugins_hint Reloading plugins,\nplease be patient.
 servicemenu.head Service
 servicemenu.imageinfo Image info
 servicemenu.reload Reload channel lists
-servicemenu.reload_hint Reloading channel lists,\nplease be patient.
+servicemenu.reload_hint Reloading channel lists, please be patient.
 servicemenu.restart Soft restart
 servicemenu.restart_failed Restart failed
 servicemenu.restart_hint Restarting, please wait
@@ -1249,7 +1249,7 @@ servicemenu.ucodecheck Check ucodes
 servicemenu.update Software Update
 settings.help Help
 settings.missingoptionsconffile The neutrino-settings have been updated.\nNew Options will be set to default.
-settings.noconffile No neutrino-settings found.\nUsing defaults.
+settings.noconffile No neutrino-settings found, Using defaults.
 settings.pos_bottom_left bottom left
 settings.pos_bottom_right bottom right
 settings.pos_default_center top center
