@@ -420,51 +420,7 @@ class CMovieHelp : public CMenuTarget
 		int exec( CMenuTarget* parent, const std::string & actionKey );
 };
 
-// I tried a lot to use the menu.cpp as ListBox selection, and I got three solution which are all garbage. 
-//Might be replaced by somebody who is familiar with this stuff .
-
-// CLass to verifiy a menu was selected by the user. There might be better ways to do so.
-class CSelectedMenu : public CMenuTarget
-{
-	public:
-		bool selected;
-		CSelectedMenu(void){selected = false;};
-		inline	int exec(CMenuTarget */*parent*/, const std::string &/*actionKey*/){selected = true; return menu_return::RETURN_EXIT;};
-};
-
-
-// This Class creates a menue item, which writes its caption to an given string (or an given int value to an given variable). 
-// The programm could use this class to verify, what menu was selected. 
-// A good listbox class might do the same. There might be better ways to do so.
-#define BUFFER_MAX 20
-class CMenuSelector : public CMenuItem
-{
-	private:
-		const char * optionName;
-		char * optionValue;
-		std::string* optionValueString;
-		int  returnIntValue;
-		int* returnInt;
-		int height;
-		char buffer[BUFFER_MAX];
-	public:
-		CMenuSelector(const char * OptionName, const bool Active = true, char * OptionValue = NULL, int* ReturnInt = NULL,int ReturnIntValue = 0);
-		CMenuSelector(const char * OptionName, const bool Active , std::string & OptionValue, int* ReturnInt = NULL,int ReturnIntValue = 0);
-		int exec(CMenuTarget* parent);
-		int paint(bool selected, bool AfterPulldown = false);
-		int getHeight(void) const{return height;};
-		bool isSelectable(void) const {	return active;}
-};
-
-// CLass to get the menu line selected by the user. There might be better ways to do so.
-class CMenuWidgetSelection : public CMenuWidget
-{
-	public:
-	CMenuWidgetSelection(const neutrino_locale_t Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT) : CMenuWidget( Name, Icon, mwidth, mheight){;};
-	int getSelectedLine(void){return exit_pressed ? -1 : selected;};
-};
-
-
+//
 class CFileChooser : public CMenuWidget
 {
 	private:

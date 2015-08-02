@@ -724,7 +724,7 @@ mainsettings.network Network settings
 mainsettings.osd OSD settings
 mainsettings.recording Recording settings
 mainsettings.savesettingsnow Save settings now
-mainsettings.savesettingsnow_hint Saving settings,\nplease wait...
+mainsettings.savesettingsnow_hint Saving settings, please wait...
 mainsettings.streaming Movieplayer settings
 mainsettings.timezone Timezone
 mainsettings.video Video settings

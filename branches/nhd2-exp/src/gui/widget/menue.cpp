@@ -1785,6 +1785,7 @@ int CLockedMenuForwarder::exec(CMenuTarget * parent)
 	return CMenuForwarder::exec(parent);
 }
 
+// selector
 int CMenuSelectorTarget::exec(CMenuTarget*/*parent*/, const std::string & actionKey)
 {
         if (actionKey != "")
@@ -1793,6 +1794,103 @@ int CMenuSelectorTarget::exec(CMenuTarget*/*parent*/, const std::string & action
                 *m_select = -1;
 	
         return menu_return::RETURN_EXIT;
+}
+
+//
+CMenuSelector::CMenuSelector(const char * OptionName, const bool Active , char * OptionValue, int* ReturnInt ,int ReturnIntValue ) : CMenuItem()
+{
+	height = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	optionValueString = NULL;
+	optionName = OptionName;
+	optionValue = OptionValue;
+	active = Active;
+	returnIntValue = ReturnIntValue;
+	returnInt = ReturnInt;
+};
+
+CMenuSelector::CMenuSelector(const char * OptionName, const bool Active , std::string& OptionValue, int* ReturnInt ,int ReturnIntValue ) : CMenuItem()
+{
+	height = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	optionValueString = &OptionValue;
+	optionName = OptionName;
+	strncpy(buffer,OptionValue.c_str(), 20);
+	buffer[19] = 0;// terminate string
+	optionValue = buffer;
+	active = Active;
+	returnIntValue = ReturnIntValue;
+	returnInt = ReturnInt;
+};
+
+int CMenuSelector::exec(CMenuTarget */*parent*/)
+{ 
+	if(returnInt != NULL)
+		*returnInt= returnIntValue;
+		
+	if(optionValue != NULL && optionName != NULL) 
+	{
+		if(optionValueString == NULL)
+			strcpy(optionValue,optionName); 
+		else
+			*optionValueString = optionName;
+	}
+	
+	return menu_return::RETURN_EXIT;
+};
+
+int CMenuSelector::paint(bool selected, bool /*AfterPulldown*/)
+{
+	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
+
+	uint8_t color = COL_MENUCONTENT;
+	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
+
+	if (selected)
+	{
+		color = COL_MENUCONTENTSELECTED;
+		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
+	}
+	
+	if (!active)
+	{
+		color = COL_MENUCONTENTINACTIVE;
+		bgcolor = COL_MENUCONTENTINACTIVE_PLUS_0;
+	}
+
+	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor);
+
+	int stringstartposName = x + offx + BORDER_RIGHT;
+	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposName, y + height, dx - (stringstartposName - x), optionName, color, 0, true); // UTF-8
+
+	//if (selected)
+	//	CVFD::getInstance()->showMenuText(0, optionName, -1, true); // UTF-8	
+	if (selected)
+	{
+		//help bar
+		int icon_foot_w, icon_foot_h;
+		frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &icon_foot_w, &icon_foot_h);
+		int fheight = std::max(icon_foot_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight()) + 6;
+		int fposy = HEIGHT_Y - fheight;
+		
+		// refresh
+		frameBuffer->paintBoxRel(x, fposy, dx, fheight, COL_MENUFOOT_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
+			
+		// paint help icon
+		int icon_w = 0;
+		int icon_h = 0;
+		
+		frameBuffer->getIconSize(NEUTRINO_ICON_INFO, &icon_w, &icon_h);
+		frameBuffer->paintIcon(NEUTRINO_ICON_INFO, x, fposy + (fheight - icon_h)/2);
+			
+		// help text locale
+		const char * help_text = optionName;
+			
+		g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + icon_w + ICON_OFFSET, fposy + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), dx - (x + (offx == 0? 0 : offx) + BORDER_LEFT + icon_w + ICON_OFFSET - x), help_text, COL_MENUFOOT, 0, true); // UTF-8
+		
+		// vfd
+		CVFD::getInstance()->showMenuText(0, optionName, -1, true); // UTF-8
+	}
+
+	return y + height;
 }
 
 // CMenuForwarderExtended

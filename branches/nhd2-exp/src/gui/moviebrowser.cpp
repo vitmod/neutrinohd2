@@ -1689,7 +1689,7 @@ void CMovieBrowser::refreshFoot(void)
 	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameFootRel.iX, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY, m_cBoxFrameFootRel.iWidth, m_cBoxFrameFootRel.iHeight + 6, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
 	int width = m_cBoxFrameFootRel.iWidth>>2;
-	int xpos1 = m_cBoxFrameFootRel.iX + 10;
+	int xpos1 = m_cBoxFrameFootRel.iX + 2*ICON_OFFSET;
 	int xpos2 = xpos1 + width;
 	int xpos3 = xpos2 + width;
 	int xpos4 = xpos3 + width;
@@ -1705,8 +1705,7 @@ void CMovieBrowser::refreshFoot(void)
 		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_RED, m_cBoxFrame.iX + xpos1, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
 
-		//1
-		m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + 5 + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + m_pcFontFoot->getHeight())/2, width-30, sort_text.c_str(), color, 0, true); // UTF-8
+		m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos1 + ICON_OFFSET + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_pcFontFoot->getHeight() + (m_cBoxFrameFootRel.iHeight + 6 - m_pcFontFoot->getHeight())/2, width - ICON_OFFSET - icon_w, sort_text.c_str(), color, 0, true); // UTF-8
 	}
 
 	// green
@@ -1715,8 +1714,7 @@ void CMovieBrowser::refreshFoot(void)
 		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_w, &icon_h);
 		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, m_cBoxFrame.iX + xpos2, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2 );
 
-		//2
-		m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + 5 + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + m_pcFontFoot->getHeight())/2, width -30, filter_text.c_str(), color, 0, true); // UTF-8
+		m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos2 + ICON_OFFSET + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_pcFontFoot->getHeight() + (m_cBoxFrameFootRel.iHeight + 6 - m_pcFontFoot->getHeight())/2, width - ICON_OFFSET - icon_w, filter_text.c_str(), color, 0, true); // UTF-8
 	}
 
 	// yellow
@@ -1733,13 +1731,13 @@ void CMovieBrowser::refreshFoot(void)
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_YELLOW, &icon_w, &icon_h);
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, m_cBoxFrame.iX + xpos3, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2);
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos3 + 5 + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + m_pcFontFoot->getHeight())/2, width-30, next_text.c_str(), color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos3 + ICON_OFFSET + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_pcFontFoot->getHeight() + (m_cBoxFrameFootRel.iHeight + 6 - m_pcFontFoot->getHeight())/2, width - ICON_OFFSET - icon_w, next_text.c_str(), color, 0, true); // UTF-8
 
 	// blue
 	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_BLUE, &icon_w, &icon_h);
 	m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, m_cBoxFrame.iX + xpos4, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + 6 - icon_h)/2);
 
-	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + 5 + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight + m_pcFontFoot->getHeight())/2, width-30, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES), color, 0, true); // UTF-8
+	m_pcFontFoot->RenderString(m_cBoxFrame.iX + xpos4 + ICON_OFFSET + icon_w, m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_pcFontFoot->getHeight() + (m_cBoxFrameFootRel.iHeight + 6 - m_pcFontFoot->getHeight())/2, width - ICON_OFFSET - icon_w, g_Locale->getText(LOCALE_MOVIEBROWSER_SCAN_FOR_MOVIES), color, 0, true); // UTF-8
 }
 
 bool CMovieBrowser::onButtonPress(neutrino_msg_t msg)
@@ -3687,76 +3685,6 @@ void CMovieBrowser::autoFindSerie(void)
 	}
 }
 
-CMenuSelector::CMenuSelector(const char * OptionName, const bool Active , char * OptionValue, int* ReturnInt ,int ReturnIntValue ) : CMenuItem()
-{
-	height = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-	optionValueString = NULL;
-	optionName = OptionName;
-	optionValue = OptionValue;
-	active = Active;
-	returnIntValue = ReturnIntValue;
-	returnInt = ReturnInt;
-};
-
-CMenuSelector::CMenuSelector(const char * OptionName, const bool Active , std::string& OptionValue, int* ReturnInt ,int ReturnIntValue ) : CMenuItem()
-{
-	height = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
-	optionValueString = &OptionValue;
-	optionName =        OptionName;
-	strncpy(buffer,OptionValue.c_str(),BUFFER_MAX);
-	buffer[BUFFER_MAX-1] = 0;// terminate string
-	optionValue = buffer;
-	active = Active;
-	returnIntValue = ReturnIntValue;
-	returnInt = ReturnInt;
-};
-
-int CMenuSelector::exec(CMenuTarget */*parent*/)
-{ 
-	if(returnInt != NULL)
-		*returnInt= returnIntValue;
-		
-	if(optionValue != NULL && optionName != NULL) 
-	{
-		if(optionValueString == NULL)
-			strcpy(optionValue,optionName); 
-		else
-			*optionValueString = optionName;
-	}
-	
-	return menu_return::RETURN_EXIT;
-};
-
-int CMenuSelector::paint(bool selected, bool /*AfterPulldown*/)
-{
-	CFrameBuffer * frameBuffer = CFrameBuffer::getInstance();
-
-	uint8_t color   = COL_MENUCONTENT;
-	fb_pixel_t bgcolor = COL_MENUCONTENT_PLUS_0;
-
-	if (selected)
-	{
-		color   = COL_MENUCONTENTSELECTED;
-		bgcolor = COL_MENUCONTENTSELECTED_PLUS_0;
-	}
-	
-	if (!active)
-	{
-		color   = COL_MENUCONTENTINACTIVE;
-		bgcolor = COL_MENUCONTENTINACTIVE_PLUS_0;
-	}
-
-	frameBuffer->paintBoxRel(x, y, dx, height, bgcolor);
-
-	int stringstartposName = x + offx + BORDER_RIGHT;
-	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposName, y + height, dx- (stringstartposName - x), optionName, color, 0, true); // UTF-8
-
-	if (selected)
-		CVFD::getInstance()->showMenuText(0, optionName, -1, true); // UTF-8	
-
-	return y + height;
-}
-
 int CMovieHelp::exec(CMenuTarget */*parent*/, const std::string &/*actionKey*/)
 {
 	Helpbox helpbox;
@@ -3983,12 +3911,13 @@ void CDirMenu::show(void)
 		tmp[1]=0;
 		dirMenu.addItem( new CMenuForwarder( (*dirList)[i].name.c_str(), (dirState[i] != DIR_STATE_UNKNOWN), dirOptionText[i], this, tmp));
 	}
+	
 	dirMenu.exec(NULL," ");
 	return;
 
 }
 
-//
+// tstool
 off64_t get_full_len(char * startname)
 {
         off64_t fulllength=0;
@@ -4068,7 +3997,9 @@ static off64_t truncate_movie(MI_MOVIE_INFO * minfo)
 			sprintf(spart, "%s.%03d", name, tpart);
 		else
 			sprintf(spart, "%s", name);
+		
 		printf("truncate: part %s to size %lld\n", spart, secoffset);
+		
 		truncate(spart, secoffset);
 		minfo->file.Size = newsize;
 		minfo->length = minfo->bookmarks.end/60;
