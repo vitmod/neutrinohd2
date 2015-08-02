@@ -134,15 +134,13 @@ int CAudioSelectMenuHandler::doMenu()
 		AudioSelector.addItem(new CMenuForwarder(g_RemoteControl->current_PIDs.APIDs[count].desc, true, NULL, &APIDChanger, apid, CRCInput::convertDigitToKey(count + 1)), (count == g_RemoteControl->current_PIDs.PIDs.selected_apid));
 	}
 
-	// subs
 	AudioSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
-	CMenuOptionChooser * oj = new CMenuOptionChooser(LOCALE_AUDIOMENU_ANALOGOUT, &g_settings.audio_AnalogMode, AUDIOMENU_ANALOGOUT_OPTIONS, AUDIOMENU_ANALOGOUT_OPTION_COUNT, true, audioSetupNotifier, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED);
-	AudioSelector.addItem( oj );
+	// analogue output
+	AudioSelector.addItem(new CMenuOptionChooser(LOCALE_AUDIOMENU_ANALOGOUT, &g_settings.audio_AnalogMode, AUDIOMENU_ANALOGOUT_OPTIONS, AUDIOMENU_ANALOGOUT_OPTION_COUNT, true, audioSetupNotifier, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));
 	
 	// ac3
 #if !defined (PLATFORM_COOLSTREAM)	
-	AudioSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	AudioSelector.addItem(new CMenuOptionChooser(LOCALE_AUDIOMENU_HDMI_DD, &g_settings.hdmi_dd, AC3_OPTIONS, AC3_OPTION_COUNT, true, audioSetupNotifier, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN ));
 #endif
 
@@ -206,9 +204,6 @@ int CAudioSelectMenuHandler::doMenu()
 
 	}
 	
-	// volume conf
-	AudioSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_AUDIOMENU_VOLUME_ADJUST));
-	
 	// volume percent
 	int percent[g_RemoteControl->current_PIDs.APIDs.size()];
 	
@@ -216,6 +211,12 @@ int CAudioSelectMenuHandler::doMenu()
 	{
 		g_Zapit->getVolumePercent((unsigned int *) &percent[count], 0, g_RemoteControl->current_PIDs.APIDs[count].pid);
 		int is_active = count == g_RemoteControl->current_PIDs.PIDs.selected_apid;
+		
+		if(!sep_added) 
+		{
+			sep_added = true;
+			AudioSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE | CMenuSeparator::STRING, LOCALE_AUDIOMENU_VOLUME_ADJUST));
+		}
 		
 		AudioSelector.addItem(new CMenuOptionNumberChooser(NONEXISTANT_LOCALE, &percent[count],
 			is_active,

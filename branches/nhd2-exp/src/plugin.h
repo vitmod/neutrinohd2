@@ -88,7 +88,6 @@
 #include <gui/widget/messagebox.h>
 #include <gui/widget/hintbox.h>
 #include <gui/widget/icons.h>
-#include <gui/widget/vfdcontroler.h>
 #include <gui/widget/keychooser.h>
 #include <gui/widget/stringinput.h>
 #include <gui/widget/stringinput_ext.h>
@@ -98,6 +97,7 @@
 #include <gui/widget/infobox.h>
 #include <gui/widget/listbox.h>
 #include <gui/widget/textbox.h>
+#include <gui/widget/vfdcontroler.h>
 #include <gui/color.h>
 #include <gui/bedit/bouqueteditor_bouquets.h>
 #include <gui/bouquetlist.h>
@@ -137,6 +137,8 @@
 #include <gui/bedit/bouqueteditor_chanselect.h>
 #include <gui/bedit/bouqueteditor_channels.h>
 #include <gui/bedit/bouqueteditor_bouquets.h>
+#include <gui/psisetup.h>
+#include <gui/rc_lock.h>
 
 #include <system/localize.h>
 #include <system/settings.h>

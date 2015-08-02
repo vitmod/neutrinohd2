@@ -54,8 +54,8 @@
 #include <fstream>
 #include <string>
 
-#include "global.h"
-#include "neutrino.h"
+#include <global.h>
+#include <neutrino.h>
 
 #include <daemonc/remotecontrol.h>
 
@@ -71,43 +71,43 @@
 #include <gui/epgplus.h>
 #include <gui/streaminfo2.h>
 
-#include "gui/widget/colorchooser.h"
-#include "gui/widget/menue.h"
-#include "gui/widget/messagebox.h"
-#include "gui/widget/hintbox.h"
-#include "gui/widget/icons.h"
-#include "gui/widget/vfdcontroler.h"
-#include "gui/widget/keychooser.h"
-#include "gui/widget/stringinput.h"
-#include "gui/widget/stringinput_ext.h"
-#include "gui/widget/mountchooser.h"
+#include <gui/widget/colorchooser.h>
+#include <gui/widget/menue.h>
+#include <gui/widget/messagebox.h>
+#include <gui/widget/hintbox.h>
+#include <gui/widget/icons.h>
+#include <gui/widget/vfdcontroler.h>
+#include <gui/widget/keychooser.h>
+#include <gui/widget/stringinput.h>
+#include <gui/widget/stringinput_ext.h>
+#include <gui/widget/mountchooser.h>
 
-#include "gui/color.h"
+#include <gui/color.h>
 
-#include "gui/bedit/bouqueteditor_bouquets.h"
-#include "gui/bouquetlist.h"
-#include "gui/eventlist.h"
-#include "gui/channellist.h"
-#include "gui/screensetup.h"
-#include "gui/pluginlist.h"
-#include "gui/plugins.h"
-#include "gui/infoviewer.h"
-#include "gui/epgview.h"
-#include "gui/epg_menu.h"
-#include "gui/update.h"
-#include "gui/scan.h"
-#include "gui/sleeptimer.h"
-#include "gui/rc_lock.h"
-#include "gui/timerlist.h"
-#include "gui/alphasetup.h"
-#include "gui/audioplayer.h"
-#include "gui/imageinfo.h"
-#include "gui/movieplayer.h"
-#include "gui/nfs.h"
-#include "gui/pictureviewer.h"
-#include "gui/motorcontrol.h"
-#include "gui/filebrowser.h"
-#include "gui/psisetup.h"
+#include <gui/bedit/bouqueteditor_bouquets.h>
+#include <gui/bouquetlist.h>
+#include <gui/eventlist.h>
+#include <gui/channellist.h>
+#include <gui/screensetup.h>
+#include <gui/pluginlist.h>
+#include <gui/plugins.h>
+#include <gui/infoviewer.h>
+#include <gui/epgview.h>
+#include <gui/epg_menu.h>
+#include <gui/update.h>
+#include <gui/scan.h>
+#include <gui/sleeptimer.h>
+#include <gui/rc_lock.h>
+#include <gui/timerlist.h>
+#include <gui/alphasetup.h>
+#include <gui/audioplayer.h>
+#include <gui/imageinfo.h>
+#include <gui/movieplayer.h>
+#include <gui/nfs.h>
+#include <gui/pictureviewer.h>
+#include <gui/motorcontrol.h>
+#include <gui/filebrowser.h>
+#include <gui/psisetup.h>
 
 #include <system/setting_helpers.h>
 #include <system/settings.h>
@@ -124,16 +124,16 @@
 
 #include <string.h>
 
-#include "gui/dboxinfo.h"
-#include "gui/hdd_menu.h"
-#include "gui/audio_select.h"
+#include <gui/dboxinfo.h>
+#include <gui/hdd_menu.h>
+#include <gui/audio_select.h>
 
 #if !defined (PLATFORM_COOLSTREAM)
-#include "gui/cam_menu.h"
+#include <gui/cam_menu.h>
 #endif
 
-#include "gui/scan_setup.h"
-#include "gui/zapit_setup.h"
+#include <gui/scan_setup.h>
+#include <gui/zapit_setup.h>
 
 /*zapit includes*/
 #include <getservices.h>
@@ -141,11 +141,11 @@
 #include <client/zapitclient.h>
 #include <frontend_c.h>
 
-#include "gui/proxyserver_setup.h"
-#include "gui/opkg_manager.h"
-#include "gui/themes.h"
-#include "gui/webtv.h"
-#include "gui/upnpbrowser.h"
+#include <gui/proxyserver_setup.h>
+#include <gui/opkg_manager.h>
+#include <gui/themes.h>
+#include <gui/webtv.h>
+#include <gui/upnpbrowser.h>
 
 
 extern CMoviePlayerGui * moviePlayerGui;	// defined in neutrino.cpp
@@ -1295,11 +1295,9 @@ void CNeutrinoApp::InitMiscSettings(CMenuWidget &miscSettings, CMenuWidget &misc
 	// zapit setup (start channel)
 	miscSettings.addItem(new CMenuForwarderExtended(LOCALE_MISCSETTINGS_ZAPIT, true, new CZapitSetup(), NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSZAPITSETUP ));
 	
-	// psi setup
-#if defined (__sh__)	
-	//CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
-	//miscSettings.addItem( new CMenuForwarderExtended(LOCALE_VIDEOMENU_PSISETUP, true, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSPSISETUP ));
-#endif
+	// psi setup	
+	CPSISetup * chPSISetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
+	miscSettings.addItem( new CMenuForwarderExtended(LOCALE_VIDEOMENU_PSISETUP, true, chPSISetup, NULL, CRCInput::convertDigitToKey(shortcutMiscSettings++), NULL, NEUTRINO_ICON_MENUITEM_MAINSETTINGS, LOCALE_HELPTEXT_MISCSETTINGSPSISETUP ));
 }
 
 // Init Language Settings
@@ -1725,13 +1723,11 @@ void CNeutrinoApp::InitColorSettings(CMenuWidget &colorSettings)
 	// sceensetup
 	colorSettings.addItem(new CMenuForwarder(LOCALE_VIDEOMENU_SCREENSETUP, true, NULL, new CScreenSetup(), NULL, CRCInput::convertDigitToKey(shortcutOSD++) ));
 	
-#if defined (__sh__)
 	colorSettings.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	// alpha setup
 	CAlphaSetup * chAlphaSetup = new CAlphaSetup(LOCALE_COLORMENU_GTX_ALPHA, &g_settings.gtx_alpha);
 	colorSettings.addItem( new CMenuForwarder(LOCALE_COLORMENU_GTX_ALPHA, true, NULL, chAlphaSetup, NULL, CRCInput::convertDigitToKey(shortcutOSD++)));
-#endif
 }
 
 void CNeutrinoApp::InitColorSettingsMenuColors(CMenuWidget &colorSettings_menuColors)
@@ -1887,6 +1883,8 @@ void CNeutrinoApp::InitLcdSettings(CMenuWidget &lcdSettings)
 	
 	CLcdNotifier * lcdnotifier = new CLcdNotifier();
 	
+	CVfdControler * lcdsliders = new CVfdControler(LOCALE_LCDMENU_HEAD, NULL);
+	
 	// LCD
 #if defined (ENABLE_LCD)
 	//option invert
@@ -1909,14 +1907,9 @@ void CNeutrinoApp::InitLcdSettings(CMenuWidget &lcdSettings)
 	CMenuOptionChooser* oj_dumppng = new CMenuOptionChooser(LOCALE_LCDMENU_DUMP_PNG, &g_settings.lcd_setting[SNeutrinoSettings::LCD_DUMP_PNG], OPTIONS_OFF0_ON1_OPTIONS, OPTIONS_OFF0_ON1_OPTION_COUNT, true);
 	lcdSettings.addItem(oj_dumppng);
 	
-	//
-	CVfdControler * lcdsliders = new CVfdControler(LOCALE_LCDMENU_HEAD, NULL);
-
 	// lcd controller
 	lcdSettings.addItem(new CMenuForwarder(LOCALE_LCDMENU_LCDCONTROLER, true, NULL, lcdsliders, NULL, CRCInput::convertDigitToKey(shortcutVFD++) ));
 #else	
-	CVfdControler * lcdsliders = new CVfdControler(LOCALE_LCDMENU_HEAD, NULL);
-	
 #if defined (PLATFORM_GIGABLUE)	
 	// led color
 	lcdSettings.addItem(new CMenuOptionChooser(LOCALE_LCDMENU_LEDCOLOR, &g_settings.lcd_ledcolor, LCDMENU_LEDCOLOR_OPTIONS, LCDMENU_LEDCOLOR_OPTION_COUNT, true, lcdnotifier, CRCInput::convertDigitToKey(shortcutVFD++) ));	

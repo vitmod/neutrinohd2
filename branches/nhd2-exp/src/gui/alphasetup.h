@@ -67,6 +67,7 @@ class CAlphaSetup : public CMenuTarget
 
 	public:
 		CAlphaSetup(const neutrino_locale_t Name, unsigned char * Alpha, CChangeObserver * Observer = NULL);
+		~CAlphaSetup();
 
 		void hide();
 		int exec(CMenuTarget* parent, const std::string & actionKey);

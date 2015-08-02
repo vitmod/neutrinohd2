@@ -32,8 +32,12 @@ libneutrino_gui_widget_a_SOURCES = \
 	listframe.cpp
 
 libneutrino_gui_widget2_a_SOURCES = \
-	colorchooser.cpp keychooser.cpp mountchooser.cpp vfdcontroler.cpp \
-	progresswindow.cpp progressbar.cpp
+	colorchooser.cpp \
+	keychooser.cpp \
+	mountchooser.cpp \
+	vfdcontroler.cpp \
+	progresswindow.cpp \
+	progressbar.cpp
 
 
 

@@ -458,11 +458,12 @@ class CMenuWidget : public CMenuTarget
 		int x;
 		int y;
 		int offx, offy;
-		int selected;
 		int iconOffset;
 		unsigned int item_start_y;
 		unsigned int current_page;
 		unsigned int total_pages;
+		
+		int selected;
 		bool exit_pressed;
 		
 		fb_pixel_t * background;

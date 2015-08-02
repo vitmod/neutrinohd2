@@ -3301,11 +3301,11 @@ bool CMovieBrowser::showMenu(MI_MOVIE_INFO */*movie_info*/)
 
 int CMovieBrowser::showStartPosSelectionMenu(void) // P2
 {
-	dprintf(DEBUG_INFO, "[mb]->showStartPosSelectionMenu\r\n");
+	dprintf(DEBUG_INFO, "CMovieBrowser::showStartPosSelectionMenu\r\n");
 	
 	int pos = -1;
 	int result = 0;
-	int menu_nr= 0;
+	int menu_nr = 0;
 	int position[MAX_NUMBER_OF_BOOKMARK_ITEMS];
 	
 	if(m_movieSelectionHandler == NULL) 
@@ -3323,7 +3323,8 @@ int CMovieBrowser::showStartPosSelectionMenu(void) // P2
 	startPosSelectionMenu.enableSaveScreen(true);
 	
 	// intros
-	startPosSelectionMenu.addItem(new CMenuSeparator(CMenuSeparator::EMPTY)); //FIXME: dont delete this line , without getselected line return line - 1
+	//WARNING: dont delete this line , without getselected line return line - 1
+	startPosSelectionMenu.addItem(new CMenuSeparator(CMenuSeparator::EMPTY));
 	
 	// bookmark start
 	if(m_movieSelectionHandler->bookmarks.start != 0)
@@ -3364,22 +3365,25 @@ int CMovieBrowser::showStartPosSelectionMenu(void) // P2
 	}
 
 	startPosSelectionMenu.exec(NULL, "12345");
-	/* check what menu item was ok'd  and set the appropriate play offset*/
-	//result = startPosSelectionMenu.getSelected();
+	
+	// check what menu item was ok'd  and set the appropriate play offset*/
 	result = startPosSelectionMenu.getSelectedLine();
-	printf("startPosSelectionMenu result %d\n", result);
+	
+	dprintf(DEBUG_NORMAL, "startPosSelectionMenu result %d\n", result);
+	
 	if(result < 0)
 		return -1;
 	
-	//dprintf(DEBUG_NORMAL, "[mb] selected bookmark %d\n", result);
 	if(result != 0 && result <= MAX_NUMBER_OF_BOOKMARK_ITEMS)
 	{
 		result--;
 		if(result > sep_pos) 
 			result--;
+		
 		pos = position[result];
 	}
-	dprintf(DEBUG_NORMAL, "[mb] selected bookmark %d position %d \n", result, pos);
+	
+	dprintf(DEBUG_NORMAL, "[mb] selected bookmark %d position %d\n", result, pos);
 	
 	return(pos) ;
 }

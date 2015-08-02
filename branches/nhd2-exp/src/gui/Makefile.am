@@ -71,7 +71,9 @@ libneutrino_gui_a_SOURCES = \
 	themes.cpp
 
 libneutrino_gui2_a_SOURCES = \
-	color.cpp motorcontrol.cpp upnpbrowser.cpp \
+	color.cpp \
+	motorcontrol.cpp \
+	upnpbrowser.cpp \
 	hdd_menu.cpp \
 	alphasetup.cpp \
 	dvbsub_select.cpp \

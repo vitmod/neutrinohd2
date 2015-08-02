@@ -24,13 +24,6 @@
 #ifndef __dvbsub_selector__
 #define __dvbsub_selector__
 
-//
-// -- DVBSUB Channel Selector Menue
-// -- 2011-11-22 mohousch
-// -- based on the audio_selct menue from rasc
-// -- it make sence only for boxes with dvbsub key
-//
-
 #include "widget/menue.h"
 
 
@@ -42,7 +35,6 @@ class CDVBSubSelectMenuHandler : public CMenuTarget
 		int  exec( CMenuTarget* parent,  const std::string &actionKey);
 		int  doMenu();
 };
-
 
 #endif
 

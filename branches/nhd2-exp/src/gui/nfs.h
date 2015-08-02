@@ -44,8 +44,8 @@ class CNFSMountGui : public CMenuTarget
 		int menu();
 		int menuEntry(int nr);
 
-		char       m_entry[NETWORK_NFS_NR_OF_ENTRIES][200];
-		char       ISO_8859_1_entry[NETWORK_NFS_NR_OF_ENTRIES][200];
+		char m_entry[NETWORK_NFS_NR_OF_ENTRIES][200];
+		char ISO_8859_1_entry[NETWORK_NFS_NR_OF_ENTRIES][200];
 
 		CFSMounter::FS_Support m_nfs_sup;
 		CFSMounter::FS_Support m_cifs_sup;
@@ -65,7 +65,7 @@ class CNFSUmountGui : public CMenuTarget
 	public:
 		CNFSUmountGui(){};
 		~CNFSUmountGui(){};
-		int  exec(CMenuTarget* parent, const std::string & actionKey);
+		int exec(CMenuTarget* parent, const std::string & actionKey);
 };
 
 class CNFSSmallMenu : public CMenuTarget

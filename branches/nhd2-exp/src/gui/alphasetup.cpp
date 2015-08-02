@@ -71,6 +71,10 @@ CAlphaSetup::CAlphaSetup(const neutrino_locale_t Name, unsigned char * Alpha, CC
 	frameBuffer->setBlendLevel(*alpha);
 }
 
+CAlphaSetup::~CAlphaSetup()
+{
+}
+
 int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 {
 	neutrino_msg_t      msg;
@@ -96,12 +100,10 @@ int CAlphaSetup::exec(CMenuTarget * parent, const std::string &)
 	frameBuffer->setBlendLevel(*alpha);
 	
 	paint();
-	
-	// blit
 	frameBuffer->blit();
 
 	int selected = 0;
-	int max = 1;
+	int max = 0;
 
 	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd(g_settings.timing[SNeutrinoSettings::TIMING_MENU] == 0 ? 0xFFFF : g_settings.timing[SNeutrinoSettings::TIMING_MENU]);
 

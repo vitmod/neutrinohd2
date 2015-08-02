@@ -35,7 +35,7 @@
 #include <config.h>
 #endif
 
-#include <gui/widget/vfdcontroler.h>
+#include <vfdcontroler.h>
 
 #include <driver/fontrenderer.h>
 #include <driver/rcinput.h>
@@ -59,8 +59,8 @@
 CVfdControler::CVfdControler(const neutrino_locale_t Name, CChangeObserver* Observer)
 {
 	frameBuffer = CFrameBuffer::getInstance();
-	hheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
-	mheight     = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
+	hheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE]->getHeight();
+	mheight = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
 	observer = Observer;
 	name = Name;
 	width = w_max(MENU_WIDTH, 0);
@@ -227,9 +227,9 @@ int CVfdControler::exec(CMenuTarget* parent, const std::string &)
 			case CRCInput::RC_ok:
 				if (selected == 2) 
 				{
-					brightness		= DEFAULT_LCD_BRIGHTNESS;
-					brightnessstandby	= DEFAULT_LCD_STANDBYBRIGHTNESS;
-					selected		= 0;
+					brightness = DEFAULT_LCD_BRIGHTNESS;
+					brightnessstandby = DEFAULT_LCD_STANDBYBRIGHTNESS;
+					selected = 0;
 					setVfd();
 					paint();
 					break;

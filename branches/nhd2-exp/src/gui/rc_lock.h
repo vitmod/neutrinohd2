@@ -29,11 +29,6 @@
 #include <string>
 
 
-//
-// -- Implements RemoteControl Locking...
-// -- ... usefull, if you want to protect your box against unintented zapping
-// -- 2003-12-01 rasc
-//
 class CRCLock: public CMenuTarget
 {
 	public:

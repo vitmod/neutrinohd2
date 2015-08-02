@@ -1,7 +1,7 @@
 /*
 	Neutrino-GUI  -   DBoxII-Project
 
-	$Id: audio_select.h 2013/10/12 mohousch Exp $
+	$Id: audio_select.h 2015/08/01 mohousch Exp $
 
 	License: GPL
 
@@ -23,11 +23,6 @@
 
 #ifndef __audio_selector__
 #define __audio_selector__
-
-//
-// -- Audio Channel Selector Menue
-// -- 2005-08-31 rasc
-//
 
 #include "widget/menue.h"
 

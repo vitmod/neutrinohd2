@@ -230,7 +230,7 @@ int CMenuWidget::exec(CMenuTarget * parent, const std::string &)
 						if(current_page) 
 						{
 							pos = (int) page_start[current_page] - 1;
-							for (unsigned int count=pos ; count > 0; count--) 
+							for (unsigned int count = pos ; count > 0; count--) 
 							{
 								CMenuItem * item = items[pos];
 								if ( item->isSelectable() ) 
@@ -243,7 +243,7 @@ int CMenuWidget::exec(CMenuTarget * parent, const std::string &)
 									} 
 									else 
 									{
-										selected=pos;
+										selected = pos;
 										paintItems();
 									}
 									break;

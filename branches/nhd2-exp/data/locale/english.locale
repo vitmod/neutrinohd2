@@ -671,14 +671,14 @@ lcdmenu.head Display Settings
 lcdmenu.inverse Invert
 lcdmenu.lcdcontroler Contrast / Brightness
 lcdmenu.power LED-Power
-lcdmenu.statusline status line
-lcdmenu.statusline.both volume / playtime
-lcdmenu.statusline.playtime playtime
-lcdmenu.statusline.volume volume
+lcdmenu.statusline Status line
+lcdmenu.statusline.both Volume / Playtime
+lcdmenu.statusline.playtime Playtime
+lcdmenu.statusline.volume Volume
 lcdmenu.scrolltext Service Name Scroll-Text
 lcdmenu.setfptime Set Display Time
 lcdmenu.epg LCD EPG
-lcdmenu.epg.name default (Channel)
+lcdmenu.epg.name Default (Channel)
 lcdmenu.epg.name.sepline.title Channel / Sep.-Line / Title
 lcdmenu.epg.name.title Channel / Title
 lcdmenu.epg.nameshort.sepline.title Channel (short) / Sep.-Line / Title
@@ -1546,7 +1546,7 @@ miscsettings.recording_screenshot Screenshot (record)
 miscsettings.pref_epg_language Preferred EPG language
 miscsettings.epg_language Language
 
-videomenu.psisetup Video fine Setup
+videomenu.psisetup Video fine settings
 psisetup.contrast Contrast
 psisetup.saturation Saturation
 psisetup.brightness Brightness

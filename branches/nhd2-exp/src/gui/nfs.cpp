@@ -126,7 +126,8 @@ int CNFSMountGui::exec( CMenuTarget *parent, const std::string &actionKey )
 
 	if (actionKey.empty())
 	{
-		parent->hide();
+		if(parent)
+			parent->hide();
 		
 		for(int i = 0 ; i < NETWORK_NFS_NR_OF_ENTRIES; i++)
 		{
@@ -141,7 +142,8 @@ int CNFSMountGui::exec( CMenuTarget *parent, const std::string &actionKey )
 	}
 	else if(actionKey.substr(0,10) == "mountentry")
 	{
-		parent->hide();
+		if(parent)
+			parent->hide();
 		
 		returnval = menuEntry(actionKey[10]-'0');
 		
@@ -168,7 +170,9 @@ int CNFSMountGui::exec( CMenuTarget *parent, const std::string &actionKey )
 	}
 	else if(actionKey.substr(0,3) == "dir")
 	{
-		parent->hide();
+		if(parent)
+			parent->hide();
+		
 		int nr = atoi(actionKey.substr(3,1).c_str());
 		CFileBrowser b;
 		b.Dir_Mode = true;
@@ -308,16 +312,16 @@ int CNFSMountGui::menuEntry(int nr)
 	CNFSMountGuiNotifier notifier(username_fwd, password_fwd, type);
 
 	mountMenuEntryW.addItem(new CMenuOptionChooser(LOCALE_NFS_TYPE, type, NFS_TYPE_OPTIONS, NFS_TYPE_OPTION_COUNT, typeEnabled, &notifier));
-	mountMenuEntryW.addItem(new CMenuForwarder(LOCALE_NFS_IP      , true, g_settings.network_nfs_ip[nr], &ipInput       ));
-	mountMenuEntryW.addItem(new CMenuForwarder(LOCALE_NFS_DIR     , true, dir                          , &dirInput      ));
-	mountMenuEntryW.addItem(new CMenuForwarder(LOCALE_NFS_LOCALDIR, true, local_dir                    , this     , cmd2));
+	mountMenuEntryW.addItem(new CMenuForwarder(LOCALE_NFS_IP, true, g_settings.network_nfs_ip[nr], &ipInput));
+	mountMenuEntryW.addItem(new CMenuForwarder(LOCALE_NFS_DIR, true, dir, &dirInput));
+	mountMenuEntryW.addItem(new CMenuForwarder(LOCALE_NFS_LOCALDIR, true, local_dir, this     , cmd2));
 	mountMenuEntryW.addItem(automountInput);
 	mountMenuEntryW.addItem(options1_fwd);
 	mountMenuEntryW.addItem(options2_fwd);
 	mountMenuEntryW.addItem(username_fwd);
 	mountMenuEntryW.addItem(password_fwd);
 	mountMenuEntryW.addItem(macInput_fwd);
-	mountMenuEntryW.addItem(new CMenuForwarder(LOCALE_NFS_MOUNTNOW, true, NULL                         , this     , cmd ));
+	mountMenuEntryW.addItem(new CMenuForwarder(LOCALE_NFS_MOUNTNOW, true, NULL, this, cmd ));
 
 	int ret = mountMenuEntryW.exec(this, "");
 	return ret;
@@ -325,13 +329,13 @@ int CNFSMountGui::menuEntry(int nr)
 
 int CNFSUmountGui::exec( CMenuTarget *parent, const std::string &actionKey )
 {
-	//printf("ac: %s\n", actionKey.c_str());
-	
 	int returnval;
 
 	if (actionKey.empty())
 	{
-		parent->hide();
+		if(parent)
+			parent->hide();
+		
 		returnval = menu();
 	}
 	else if(actionKey.substr(0,8) == "doumount")
@@ -390,11 +394,11 @@ int CNFSSmallMenu::exec( CMenuTarget* parent, const std::string & actionKey )
 		menu.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 		
 		menu.addItem(new CMenuForwarder(LOCALE_NFS_REMOUNT, true, NULL, this, "remount"));
-		menu.addItem(new CMenuForwarder(LOCALE_NFS_MOUNT , true, NULL, & mountGui));
+		menu.addItem(new CMenuForwarder(LOCALE_NFS_MOUNT , true, NULL, &mountGui));
 		menu.addItem(new CMenuForwarder(LOCALE_NFS_UMOUNT, true, NULL, &umountGui));
 		return menu.exec(parent, actionKey);
 	}
-	else if(actionKey.substr(0,7) == "remount")
+	else if(actionKey.substr(0, 7) == "remount")
 	{
 		//umount automount dirs
 		for(int i = 0; i < NETWORK_NFS_NR_OF_ENTRIES; i++)
