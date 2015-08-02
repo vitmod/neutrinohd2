@@ -251,13 +251,13 @@ int CExtendedInput::exec( CMenuTarget* parent, const std::string & )
 			inputFields[selectedChar]->keyPressed(msg);
 			inputFields[selectedChar]->paint( x+20, y+hheight +20, true );
 		}
-		else if (msg==CRCInput::RC_ok)
+		else if (msg == CRCInput::RC_ok)
 		{
 			loop=false;
 			if(cancel != NULL)
 				*cancel = false;
 		}
-		else if ( (msg==CRCInput::RC_home) || (msg==CRCInput::RC_timeout) )
+		else if ( (msg == CRCInput::RC_home) || (msg == CRCInput::RC_timeout) )
 		{
 			if(strcmp(value, oldval)!= 0)
 			{

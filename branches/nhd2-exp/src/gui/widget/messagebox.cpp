@@ -281,9 +281,7 @@ int CMessageBox::exec(int timeout)
 			// return default
 			loop = false;
 		}
-		else if (((msg == CRCInput::RC_timeout) ||
-			  (msg  == (neutrino_msg_t)g_settings.key_channelList_cancel)) &&
-			 (showbuttons & (mbCancel | mbBack | mbOk)))
+		else if (((msg == CRCInput::RC_timeout) || (msg == CRCInput::RC_home)) && (showbuttons & (mbCancel | mbBack | mbOk)))
 		{
 			result = (showbuttons & mbCancel) ? mbrCancel : (showbuttons & mbOk) ? mbrOk: mbrBack;
 			loop   = false;
@@ -309,9 +307,9 @@ int CMessageBox::exec(int timeout)
 
 			paintButtons();
 		}
-		else if (has_scrollbar() && ((msg == CRCInput::RC_up) || (msg == CRCInput::RC_down)))
+		else if (has_scrollbar() && ((msg == CRCInput::RC_up) || (msg == CRCInput::RC_down) || (msg == CRCInput::RC_page_up) || (msg == CRCInput::RC_page_down)))
 		{
-			if (msg == CRCInput::RC_up)
+			if ( (msg == CRCInput::RC_up) || (msg == CRCInput::RC_page_up))
 				scroll_up();
 			else
 				scroll_down();

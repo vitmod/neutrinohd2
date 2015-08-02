@@ -222,7 +222,7 @@ EPGPlus.header_font header font
 EPGPlus.horgap1_height height1
 EPGPlus.horgap2_height height2
 EPGPlus.next_bouquet next bouquet
-EPGPlus.options options
+EPGPlus.options Options
 EPGPlus.page_down page down
 EPGPlus.page_up page up
 EPGPlus.prev_bouquet prev bouquet
@@ -1026,7 +1026,7 @@ nfs.dir directory/share
 nfs.ip Server IP
 nfs.localdir local dir
 nfs.mount Mount Network volume
-nfs.mount_options mount options
+nfs.mount_options Mount options
 nfs.mounterror mount error
 nfs.mounterror_notsup filesystem type not supported
 nfs.mountnow mount now

@@ -627,18 +627,15 @@ int CInfoBox::exec( int timeout, int returnDefaultOnTimeout)
 
 	// show infobox
 	paint();
+	m_pcWindow->blit();
 	
 	if (m_pcWindow == NULL)
-	{
 		return res; /* out of memory */
-	}
 
 	if ( timeout == -1 )
 		timeout = g_settings.timing[SNeutrinoSettings::TIMING_EPG];
 
 	unsigned long long timeoutEnd = CRCInput::calcTimeoutEnd( timeout );
-	
-	m_pcWindow->blit();
 
 	bool loop = true;
 	while (loop)
@@ -650,7 +647,7 @@ int CInfoBox::exec( int timeout, int returnDefaultOnTimeout)
 			// return default 
 			loop = false;
 		}
-		else if (((msg == CRCInput::RC_timeout) || (msg  == (neutrino_msg_t)g_settings.key_channelList_cancel)) && (return_button & (mbCancel | mbBack)))
+		else if (((msg == CRCInput::RC_timeout) || (msg == CRCInput::RC_home)) && (return_button & (mbCancel | mbBack)))
 		{
 			m_nResult = (return_button & mbCancel) ? mbrCancel : mbrBack;
 			loop = false;

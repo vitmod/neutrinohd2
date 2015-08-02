@@ -344,7 +344,6 @@ int CStringInput::exec( CMenuTarget* parent, const std::string & )
 		{
 			keyLeftPressed();
 		}
-		//else if (msg == CRCInput::RC_right)
 		else if ((msg == CRCInput::RC_right) || (msg == NeutrinoMessages::EVT_TIMER && data == smstimer))
 		{
 			keyRightPressed();
