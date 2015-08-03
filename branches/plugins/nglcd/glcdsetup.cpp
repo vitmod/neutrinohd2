@@ -230,9 +230,9 @@ int GLCD_Menu::exec(CMenuTarget* parent, const std::string & actionKey)
 	{
 		//SaveSettings();
 		if(this->SaveSettings())
-		 	ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "Einstellungen werden gespeichert !", 450, 2 );
+		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen werden gespeichert !", 450, 2 );
 		else
-		 	ShowHintUTF(LOCALE_MESSAGEBOX_INFO, "Einstellungen NICHT gespeichert !", 450, 2 );
+		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen NICHT gespeichert !", 450, 2 );
 	}
 
 	if (parent)
@@ -303,7 +303,7 @@ void GLCD_Menu::GLCD_Menu_Settings()
 
 	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_ENABLE, &glcd_enable, ONOFF_OPTIONS, ONOFF_OPTION_COUNT, true, notifier));
 	int shortcut = 1;
-	m->addItem(GenericMenuSeparatorLine);
+	m->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_SELECT_FG, &color_fg, GLCD_COLOR_OPTIONS, GLCD_COLOR_OPTION_COUNT, true, notifier, CRCInput::convertDigitToKey(shortcut++)));
 	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_SELECT_BG, &color_bg, GLCD_COLOR_OPTIONS, GLCD_COLOR_OPTION_COUNT, true, notifier, CRCInput::convertDigitToKey(shortcut++)));
 	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_SELECT_BAR, &color_bar, GLCD_COLOR_OPTIONS, GLCD_COLOR_OPTION_COUNT, true, notifier, CRCInput::convertDigitToKey(shortcut++)));
@@ -312,10 +312,10 @@ void GLCD_Menu::GLCD_Menu_Settings()
 	m->addItem(new CMenuOptionNumberChooser(LOCALE_GLCD_SIZE_EPG, &glcd_percent_epg, true, 0, 100, notifier));
 	m->addItem(new CMenuOptionNumberChooser(LOCALE_GLCD_SIZE_BAR, &glcd_percent_bar, true, 0, 100, notifier));
 	m->addItem(new CMenuOptionNumberChooser(LOCALE_GLCD_SIZE_TIME, &glcd_percent_time, true, 0, 100, notifier));
-	m->addItem(GenericMenuSeparatorLine);
+	m->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_TIME_IN_STANDBY, &glcd_time_in_standby, ONOFF_OPTIONS, ONOFF_OPTION_COUNT, true, notifier, CRCInput::convertDigitToKey(shortcut++)));
 	m->addItem(new CMenuOptionChooser(LOCALE_GLCD_MIRROR_OSD, &glcd_mirror_osd, ONOFF_OPTIONS, ONOFF_OPTION_COUNT, true, notifier, CRCInput::RC_green, NEUTRINO_ICON_BUTTON_GREEN));
-	m->addItem(GenericMenuSeparatorLine);
+	m->addItem(new CMenuSeparator(CMenuSeparator::LINE));
 	m->addItem(new CMenuForwarder(LOCALE_GLCD_RESTART, true, "", this, "rescan", CRCInput::RC_yellow, NEUTRINO_ICON_BUTTON_YELLOW));
 	
 	m->exec(NULL, "");
