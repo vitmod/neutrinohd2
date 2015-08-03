@@ -58,13 +58,13 @@ class CTestMenu : CMenuTarget
 		void testCProgressWindow();
 		void testCButtons();
 		//
-		void testCallAudioPlayer();
-		void testCallInternetRadio();
-		void testCallTSMovieBrowser();
-		void testCallMovieBrowser();
-		void testCallFilePlayBack();
-		void testCallPictureViewer();
-		void testCallUPNPBrowser();
+		void testAudioPlayer();
+		void testInternetRadio();
+		void testTSMovieBrowser();
+		void testMovieBrowser();
+		void testFilePlayBack();
+		void testPictureViewer();
+		void testUPNPBrowser();
 		//
 		void testPlayMovieURL();
 		void testPlayAudioURL();
@@ -78,7 +78,17 @@ class CTestMenu : CMenuTarget
 		void testChannelSelectWidget();
 		void testBEChannelSelectWidget();
 		//
-		void testCallAVSelectWidget();
+		void testAVSelectWidget();
+		void testAudioSelectWidget();
+		void testDVBSubSelectWidget();
+		void testAlphaSetupWidget();
+		void testPSISetup();
+		void testRCLock();
+		void testSleepTimerWidget();
+		void testMountGUI();
+		void testUmountGUI();
+		void testMountSmallMenu();
+		void testVFDController();
 	public:
 		CTestMenu();
 		~CTestMenu();
@@ -472,40 +482,40 @@ void CTestMenu::testCButtons()
 	hide();
 }
 
-void CTestMenu::testCallAudioPlayer()
+void CTestMenu::testAudioPlayer()
 {
 	CAudioPlayerGui tmpAudioPlayerGui;
 	tmpAudioPlayerGui.exec(NULL, "");
 }
 
-void CTestMenu::testCallInternetRadio()
+void CTestMenu::testInternetRadio()
 {
 	CAudioPlayerGui tmpAudioPlayerGui(true);
 	tmpAudioPlayerGui.exec(NULL, "");
 }
 
-void CTestMenu::testCallTSMovieBrowser()
+void CTestMenu::testTSMovieBrowser()
 {
 	moviePlayerGui->exec(NULL, "tsmoviebrowser");
 }
 
-void CTestMenu::testCallMovieBrowser()
+void CTestMenu::testMovieBrowser()
 {
 	moviePlayerGui->exec(NULL, "moviebrowser");
 }
 
-void CTestMenu::testCallFilePlayBack()
+void CTestMenu::testFilePlayBack()
 {
 	moviePlayerGui->exec(NULL, "fileplayback");
 }
 
-void CTestMenu::testCallPictureViewer()
+void CTestMenu::testPictureViewer()
 {
 	CPictureViewerGui tmpPictureViewerGui;
 	tmpPictureViewerGui.exec(NULL, "");
 }
 
-void CTestMenu::testCallUPNPBrowser()
+void CTestMenu::testUPNPBrowser()
 {
 	CUpnpBrowserGui tmpUPNPBrowserGui;
 	tmpUPNPBrowserGui.exec(NULL, "");
@@ -887,7 +897,7 @@ void CTestMenu::testChannelSelectWidget()
 void CTestMenu::testBEChannelSelectWidget()
 {	
 #if 0	
-	CBEChannelSelectWidget * channelSelectWidget = new CBEChannelSelectWidget("ChannelSelectWidget", 1, CZapitClient::MODE_TV);
+	CBEChannelSelectWidget * channelSelectWidget = new CBEChannelSelectWidget("BEChannelSelectWidget", 1, CZapitClient::MODE_TV);
 
 	channelSelectWidget->exec(this, "");
 #endif
@@ -896,14 +906,93 @@ void CTestMenu::testBEChannelSelectWidget()
 	channelWidget->exec( this, "");
 }
 
-void CTestMenu::testCallAVSelectWidget()
+void CTestMenu::testAVSelectWidget()
 {
 	CAVPIDSelectWidget * AVSelectHandler = new CAVPIDSelectWidget();
 	AVSelectHandler->exec(NULL, "");
-	//AVSelectHandler->showAudioDialog();
 		
 	delete AVSelectHandler;
 	AVSelectHandler = NULL;
+}
+
+void CTestMenu::testAudioSelectWidget()
+{
+	CAudioSelectMenuHandler * ASelectHandler = new CAudioSelectMenuHandler();
+	ASelectHandler->exec(NULL, "");
+	delete ASelectHandler;
+	ASelectHandler = NULL;
+}
+
+void CTestMenu::testDVBSubSelectWidget()
+{
+	CDVBSubSelectMenuHandler * dvbSubSelectHandler = new CDVBSubSelectMenuHandler();
+	dvbSubSelectHandler->exec(NULL, "");
+	delete dvbSubSelectHandler;
+	dvbSubSelectHandler = NULL;
+}
+
+void CTestMenu::testAlphaSetupWidget()
+{
+	CAlphaSetup * alphaSetup = new CAlphaSetup(LOCALE_COLORMENU_GTX_ALPHA, &g_settings.gtx_alpha);
+	alphaSetup->exec(NULL, "");
+	delete alphaSetup;
+	alphaSetup = NULL;
+}
+
+void CTestMenu::testPSISetup()
+{
+	CPSISetup * psiSetup = new CPSISetup(LOCALE_VIDEOMENU_PSISETUP, &g_settings.contrast, &g_settings.saturation, &g_settings.brightness, &g_settings.tint);
+	psiSetup->exec(NULL, "");
+	delete psiSetup;
+	psiSetup = NULL;
+}
+
+void CTestMenu::testRCLock()
+{
+	CRCLock * rcLock = new CRCLock();
+	rcLock->exec(NULL, CRCLock::NO_USER_INPUT);
+	delete rcLock;
+	rcLock = NULL;
+}
+
+void CTestMenu::testSleepTimerWidget()
+{
+	CSleepTimerWidget * sleepTimerHandler = new CSleepTimerWidget();
+	sleepTimerHandler->exec(NULL, "");
+	delete sleepTimerHandler;
+	sleepTimerHandler = NULL;
+}
+
+void CTestMenu::testMountGUI()
+{
+	CNFSMountGui * mountGUI = new CNFSMountGui();
+	mountGUI->exec(NULL, "");
+	delete mountGUI;
+	mountGUI = NULL;
+}
+
+void CTestMenu::testUmountGUI()
+{
+	CNFSUmountGui * umountGUI = new CNFSUmountGui();
+	umountGUI->exec(NULL, "");
+	delete umountGUI;
+	umountGUI = NULL;
+}
+
+void CTestMenu::testMountSmallMenu()
+{
+	CNFSSmallMenu * mountSmallMenu = new CNFSSmallMenu();
+	mountSmallMenu->exec(NULL, "");
+	delete mountSmallMenu;
+	mountSmallMenu = NULL;
+}
+
+void CTestMenu::testVFDController()
+{
+	CVfdControler * vfdControllerHandler = new CVfdControler(LOCALE_LCDMENU_HEAD, NULL);
+	vfdControllerHandler->exec(NULL, "");
+	delete vfdControllerHandler;
+	vfdControllerHandler = NULL;
 }
 
 int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
@@ -1015,31 +1104,31 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "audioplayer")
 	{
-		testCallAudioPlayer();
+		testAudioPlayer();
 	}
 	else if(actionKey == "internetradio")
 	{
-		testCallInternetRadio();
+		testInternetRadio();
 	}
 	else if(actionKey == "tsmoviebrowser")
 	{
-		testCallTSMovieBrowser();
+		testTSMovieBrowser();
 	}
 	else if(actionKey == "moviebrowser")
 	{
-		testCallMovieBrowser();
+		testMovieBrowser();
 	}
 	else if(actionKey == "fileplayback")
 	{
-		testCallFilePlayBack();
+		testFilePlayBack();
 	}
 	else if(actionKey == "pictureviewer")
 	{
-		testCallPictureViewer();
+		testPictureViewer();
 	}
 	else if(actionKey == "upnpbrowser")
 	{
-		testCallUPNPBrowser();
+		testUPNPBrowser();
 	}
 	else if(actionKey == "playmovieurl")
 	{
@@ -1079,7 +1168,47 @@ int CTestMenu::exec(CMenuTarget* parent, const std::string& actionKey)
 	}
 	else if(actionKey == "avselect")
 	{
-		testCallAVSelectWidget();
+		testAVSelectWidget();
+	}
+	else if(actionKey == "aselect")
+	{
+		testAudioSelectWidget();
+	}
+	else if(actionKey == "dvbsubselect")
+	{
+		testDVBSubSelectWidget();
+	}
+	else if(actionKey == "alphasetup")
+	{
+		testAlphaSetupWidget();
+	}
+	else if(actionKey == "psisetup")
+	{
+		testPSISetup();
+	}
+	else if(actionKey == "rclock")
+	{
+		testRCLock();
+	}
+	else if(actionKey == "sleeptimer")
+	{
+		testSleepTimerWidget();
+	}
+	else if(actionKey == "mountgui")
+	{
+		testMountGUI();
+	}
+	else if(actionKey == "umountgui")
+	{
+		testUmountGUI();
+	}
+	else if(actionKey == "mountsmallmenu")
+	{
+		testMountSmallMenu();
+	}
+	else if(actionKey == "vfdcontroller")
+	{
+		testVFDController();
 	}
 	
 	return menu_return::RETURN_REPAINT;
@@ -1136,6 +1265,16 @@ void CTestMenu::showTestMenu()
 	mainMenu->addItem(new CMenuForwarder("ChannelSelectWidget", true, NULL, this, "channelselect"));
 	mainMenu->addItem(new CMenuForwarder("BEChannelSelectWidget", true, NULL, this, "bechannelselect"));
 	mainMenu->addItem(new CMenuForwarder("AudioVideoSelectWidget", true, NULL, this, "avselect"));
+	mainMenu->addItem(new CMenuForwarder("AudioSelectWidget", true, NULL, this, "aselect"));
+	mainMenu->addItem(new CMenuForwarder("DVBSubSelectWidget", true, NULL, this, "dvbsubselect"));
+	mainMenu->addItem(new CMenuForwarder("AlphaSetup", true, NULL, this, "alphasetup"));
+	mainMenu->addItem(new CMenuForwarder("PSISetup", true, NULL, this, "psisetup"));
+	mainMenu->addItem(new CMenuForwarder("RCLock", true, NULL, this, "rclock"));
+	mainMenu->addItem(new CMenuForwarder("SleepTimerWidget", true, NULL, this, "sleeptimer"));
+	mainMenu->addItem(new CMenuForwarder("MountGUI", true, NULL, this, "mountgui"));
+	mainMenu->addItem(new CMenuForwarder("UmountGUI", true, NULL, this, "umountgui"));
+	mainMenu->addItem(new CMenuForwarder("MountSmallMenu", true, NULL, this, "mountsmallmenu"));
+	mainMenu->addItem(new CMenuForwarder("VFDController", true, NULL, this, "vfdcontroller"));
 	
 	mainMenu->exec(NULL, "");
 	mainMenu->hide();
