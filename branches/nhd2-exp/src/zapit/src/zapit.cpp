@@ -1316,7 +1316,8 @@ tune_again:
 	
 	// ci cam
 #if defined (ENABLE_CI)	
-	ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
+	if(live_fe != NULL)
+		ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
 #endif		
 	
 	// send caid
@@ -1380,7 +1381,8 @@ int zapTo_RecordID(const t_channel_id channel_id)
 	
 	// ci cam
 #if defined (ENABLE_CI)	
-	ci->SendCaPMT(rec_channel->getCaPmt(), record_fe->fenumber);
+	if(live_fe != NULL)
+		ci->SendCaPMT(rec_channel->getCaPmt(), record_fe->fenumber);
 #endif		
 	
 	dprintf(DEBUG_NORMAL, "%s: zapped to %s (%llx) fe(%d,%d)\n", __FUNCTION__, rec_channel->getName().c_str(), rec_channel_id, record_fe->fe_adapter, record_fe->fenumber);
@@ -2649,7 +2651,8 @@ bool zapit_parse_command(CBasicMessage::Header &rmsg, int connfd)
 			
 			// ci cam
 #if defined (ENABLE_CI)	
-			ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
+			if(live_fe != NULL)
+				ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
 #endif				
 			
 // opengl liveplayback
@@ -4256,8 +4259,9 @@ int zapit_main_thread(void *data)
 						sendCaPmtPlayBackStart(live_channel, live_fe);
 						
 						// ci cam
-#if defined (ENABLE_CI)	
-						ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
+#if defined (ENABLE_CI)
+						if(live_fe != NULL)
+							ci->SendCaPMT(live_channel->getCaPmt(), live_fe->fenumber);
 #endif	
 
 						pmt_set_update_filter(live_channel, &pmt_update_fd, live_fe);
