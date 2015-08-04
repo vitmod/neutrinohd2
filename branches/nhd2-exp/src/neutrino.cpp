@@ -5119,7 +5119,8 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 	}
 	else if(actionKey == "audioplayerdir") 
 	{
-		parent->hide();
+		if(parent)
+			parent->hide();
 		
 		CFileBrowser b;
 		b.Dir_Mode = true;
@@ -5131,7 +5132,8 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 	}
 	else if(actionKey == "picturedir") 
 	{
-		parent->hide();
+		if(parent)
+			parent->hide();
 		
 		CFileBrowser b;
 		b.Dir_Mode = true;
@@ -5143,7 +5145,8 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 	}
 	else if(actionKey == "moviedir") 
 	{
-		parent->hide();
+		if(parent)
+			parent->hide();
 		
 		CFileBrowser b;
 		b.Dir_Mode = true;
@@ -5155,7 +5158,8 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 	}
 	else if(actionKey == "recordingdir") 
 	{
-		parent->hide();
+		if(parent)
+			parent->hide();
 		
 		CFileBrowser b;
 		b.Dir_Mode = true;
@@ -5183,7 +5187,8 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 	}
 	else if(actionKey == "update_dir") 
 	{
-		parent->hide();
+		if(parent)
+			parent->hide();
 		
 		CFileBrowser fileBrowser;
 		fileBrowser.Dir_Mode = true;
@@ -5203,7 +5208,8 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 	}
 	else if(actionKey == "epgdir") 
 	{
-		parent->hide();
+		if(parent)
+			parent->hide();
 		
 		CFileBrowser b;
 		b.Dir_Mode = true;
@@ -5224,7 +5230,8 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 	}
 	else if(actionKey == "logos_dir") 
 	{
-		parent->hide();
+		if(parent)
+			parent->hide();
 		
 		CFileBrowser b;
 		b.Dir_Mode = true;
@@ -5266,7 +5273,8 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 	}
 	else if (actionKey == "font_scaling") 
 	{
-		parent->hide();
+		if(parent)
+			parent->hide();
 		
 		CMenuWidget fontscale(LOCALE_FONTMENU_HEAD, NEUTRINO_ICON_COLORS);
 		
@@ -5299,7 +5307,8 @@ int CNeutrinoApp::exec(CMenuTarget * parent, const std::string & actionKey)
 	}
 	else if(actionKey == "features")
 	{
-		parent->hide();
+		if(parent)
+			parent->hide();
 		
 		StopSubtitles();
 		showUserMenu(SNeutrinoSettings::BUTTON_BLUE);

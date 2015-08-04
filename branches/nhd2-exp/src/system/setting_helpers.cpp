@@ -555,7 +555,9 @@ int CNVODChangeExec::exec(CMenuTarget* parent, const std::string &actionKey)
 	unsigned int sel = atoi(actionKey.c_str());
 	g_RemoteControl->setSubChannel(sel);
 
-	parent->hide();
+	if(parent)
+		parent->hide();
+	
 	g_InfoViewer->showSubchan();
 
 	return menu_return::RETURN_EXIT;
@@ -617,7 +619,7 @@ const CMenuOptionChooser::keyval USERMENU_ITEM_OPTIONS[USERMENU_ITEM_OPTION_COUN
 
 int CUserMenuMenu::exec(CMenuTarget *parent, const std::string &/*actionKey*/)
 {
-        if(parent != NULL)
+        if(parent)
                 parent->hide();
 
         CMenuWidget menu(local , NEUTRINO_ICON_KEYBINDING);

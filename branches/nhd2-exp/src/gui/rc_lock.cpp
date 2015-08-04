@@ -40,10 +40,6 @@
 
 const std::string CRCLock::NO_USER_INPUT = "noUserInput";
 
-// -- Menue Handler Interface
-// -- Infinite Loop to lock remote control (until release lock key pressed)
-// -- 2003-12-01 rasc
-
 int CRCLock::exec(CMenuTarget* parent, const std::string &actionKey)
 {
 	if (parent)
