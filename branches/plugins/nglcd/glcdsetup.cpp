@@ -230,9 +230,9 @@ int GLCD_Menu::exec(CMenuTarget* parent, const std::string & actionKey)
 	{
 		//SaveSettings();
 		if(this->SaveSettings())
-		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen werden gespeichert !", 450, 2 );
+		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen werden gespeichert !");
 		else
-		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen NICHT gespeichert !", 450, 2 );
+		 	HintBox(LOCALE_MESSAGEBOX_INFO, "Einstellungen NICHT gespeichert !");
 	}
 
 	if (parent)
@@ -381,27 +381,21 @@ void plugin_init(void)
 {
 	//FIXME
 	nGLCD::getInstance();
-	
-	//if (glcd_enable)
-	//	nGLCD::getInstance()->Resume();
 }
 
 void plugin_del(void)
 {
 	//FIXME
-	//if (glcd_enable)
-	//	nGLCD::getInstance()->Suspend();
 	nGLCD::Exit();
 }
 
 void plugin_exec(void)
 {
-	GLCD_Menu * glcdMenu = new GLCD_Menu();;
+	GLCD_Menu * glcdMenu = new GLCD_Menu();
 	
 	glcdMenu->exec(NULL, "");
 	glcdMenu->hide();
 	
 	delete glcdMenu;
-	//nGLCD::Exit();
 }
 
