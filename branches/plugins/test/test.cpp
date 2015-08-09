@@ -237,10 +237,10 @@ void CTestMenu::testCInfoBoxInfoBox()
 	int mode =  CInfoBox::SCROLL | CInfoBox::TITLE | CInfoBox::FOOT | CInfoBox::BORDER;// | //CInfoBox::NO_AUTO_LINEBREAK | //CInfoBox::CENTER | //CInfoBox::AUTO_WIDTH | //CInfoBox::AUTO_HIGH;
 	CBox position(g_settings.screen_StartX + 50, g_settings.screen_StartY + 50, g_settings.screen_EndX - g_settings.screen_StartX - 100, g_settings.screen_EndY - g_settings.screen_StartY - 100); 
 	
-	CInfoBox * msgBox = new CInfoBox("CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, "CInfoBoxInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_BUTTON_SETUP, CInfoBox::mbCancel, CInfoBox::mbrCancel);
-	msgBox->setText(&buffer, thumbnail, lx, ly, picw, pich);
-	msgBox->exec();
-	delete msgBox;
+	CInfoBox * infoBox = new CInfoBox("CInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU], mode, &position, "CInfoBoxInfoBox", g_Font[SNeutrinoSettings::FONT_TYPE_MENU_TITLE], NEUTRINO_ICON_BUTTON_SETUP, CInfoBox::mbCancel, CInfoBox::mbrCancel);
+	infoBox->setText(&buffer, thumbnail, lx, ly, picw, pich);
+	infoBox->exec();
+	delete infoBox;
 }
 
 void CTestMenu::testCMessageBox()
