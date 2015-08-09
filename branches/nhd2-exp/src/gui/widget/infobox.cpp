@@ -52,7 +52,7 @@
 #include <config.h>
 #endif
 
-#include "infobox.h"
+#include <infobox.h>
 
 #include <gui/widget/icons.h>
 #include <neutrino.h>
@@ -303,7 +303,6 @@ void CInfoBox::refreshFoot(void)
 	if(!(m_nMode & FOOT)) 
 		return;
 
-	// draw the background first
 	m_pcWindow->paintBoxRel(m_cBoxFrameFootRel.iX + m_cBoxFrame.iX, 
 								m_cBoxFrameFootRel.iY + m_cBoxFrame.iY, 
 								m_cBoxFrameFootRel.iWidth, 
@@ -311,11 +310,12 @@ void CInfoBox::refreshFoot(void)
 								COL_MENUHEAD_PLUS_0,
 								RADIUS_MID, CORNER_BOTTOM);
 
-	int MaxButtonTextWidth = m_pcFontFoot->getRenderWidth(g_Locale->getText(LOCALE_MESSAGEBOX_CANCEL), true); // UTF-8
-	int ButtonWidth = 20 + 33 + MaxButtonTextWidth;
-	int ButtonSpacing = (m_cBoxFrameFootRel.iWidth - 20 - (ButtonWidth*3) ) / 2;
-	int xpos = m_cBoxFrameFootRel.iX;
 	int iw, ih;
+	m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
+	int MaxButtonTextWidth = m_pcFontFoot->getRenderWidth(g_Locale->getText(LOCALE_MESSAGEBOX_CANCEL), true); // UTF-8
+	int ButtonWidth = BORDER_LEFT + BORDER_RIGHT + iw + MaxButtonTextWidth;
+	int ButtonSpacing = (m_cBoxFrameFootRel.iWidth - BORDER_LEFT - BORDER_RIGHT - (ButtonWidth*3) ) / 2;
+	int xpos = m_cBoxFrameFootRel.iX;
 
 	// draw Button mbYes
 	if (m_nFootButtons & mbYes)
@@ -339,12 +339,12 @@ void CInfoBox::refreshFoot(void)
 		
 		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_RED, &iw, &ih);
 		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_RED, 
-						xpos + 14 + m_cBoxFrame.iX, 
+						xpos + BORDER_LEFT + 4 + m_cBoxFrame.iX, 
 						m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - ih)/2);
 						
-		m_pcFontFoot->RenderString(xpos + 43 + m_cBoxFrame.iX, 
+		m_pcFontFoot->RenderString(xpos + BORDER_LEFT + iw + m_cBoxFrame.iX, 
 						m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_nFontFootHeight + (m_cBoxFrameFootRel.iHeight - m_nFontFootHeight)/2, 
-						ButtonWidth - 53, 
+						ButtonWidth - ( BORDER_LEFT + BORDER_RIGHT + iw), 
 						g_Locale->getText(LOCALE_MESSAGEBOX_YES), 
 						color, 
 						0, true); // UTF-8
@@ -374,12 +374,12 @@ void CInfoBox::refreshFoot(void)
 		
 		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &iw, &ih);
 		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, 
-						xpos + 14 + m_cBoxFrame.iX, 
+						xpos + BORDER_LEFT + 4 + m_cBoxFrame.iX, 
 						m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - ih)/2);
 						
-		m_pcFontFoot->RenderString(xpos + 43 + m_cBoxFrame.iX, 
+		m_pcFontFoot->RenderString(xpos + ( BORDER_LEFT + iw) + m_cBoxFrame.iX, 
 						m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_nFontFootHeight + (m_cBoxFrameFootRel.iHeight - m_nFontFootHeight)/2, 
-						ButtonWidth - 53, 
+						ButtonWidth - ( BORDER_LEFT + BORDER_RIGHT + iw), 
 						g_Locale->getText(LOCALE_MESSAGEBOX_NO), 
 						color, 
 						0, true); // UTF-8
@@ -409,12 +409,12 @@ void CInfoBox::refreshFoot(void)
 		
 		m_pcWindow->getIconSize(NEUTRINO_ICON_BUTTON_HOME, &iw, &ih);
 		m_pcWindow->paintIcon(NEUTRINO_ICON_BUTTON_HOME, 
-						xpos + 10 + m_cBoxFrame.iX, 
+						xpos + BORDER_LEFT + m_cBoxFrame.iX, 
 						m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + (m_cBoxFrameFootRel.iHeight - ih)/2);
 						
-		m_pcFontFoot->RenderString(xpos + 43 + m_cBoxFrame.iX, 
+		m_pcFontFoot->RenderString(xpos + ( BORDER_LEFT + iw) + m_cBoxFrame.iX, 
 						m_cBoxFrame.iY + m_cBoxFrameFootRel.iY + m_nFontFootHeight + (m_cBoxFrameFootRel.iHeight - m_nFontFootHeight)/2, 
-						ButtonWidth - 53, 
+						ButtonWidth - ( BORDER_LEFT + BORDER_RIGHT + iw), 
 						g_Locale->getText((m_nFootButtons & mbCancel) ? LOCALE_MESSAGEBOX_CANCEL : LOCALE_MESSAGEBOX_BACK), 
 						color, 
 						0, true); // UTF-8
@@ -435,7 +435,6 @@ void CInfoBox::refreshTitle(void)
 	if(!(m_nMode & TITLE)) 
 		return;
 
-	// draw the background
 	m_pcWindow->paintBoxRel(m_cBoxFrame.iX + m_cBoxFrameTitleRel.iX, 
 					m_cBoxFrame.iY + m_cBoxFrameTitleRel.iY, 
 					m_cBoxFrameTitleRel.iWidth, 
