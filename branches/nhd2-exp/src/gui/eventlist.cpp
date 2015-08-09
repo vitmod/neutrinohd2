@@ -213,7 +213,14 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 	width  = w_max ( (frameBuffer->getScreenWidth() / 20 * 17), (frameBuffer->getScreenWidth() / 20 ));
 	height = h_max ( (frameBuffer->getScreenHeight() / 20 * 16), (frameBuffer->getScreenHeight() / 20));
 
-	iheight = 30;	// FIXME: info bar height (see below, hard coded at this time)
+	//iheight = 30;	// FIXME: info bar height (see below, hard coded at this time)
+	int icon_w;
+	int icon_h;
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
+	
+	iheight = std::max(icon_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 6;;
+	
+	//
 	theight  = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_TITLE]->getHeight();
 
 	fheight1 = g_Font[SNeutrinoSettings::FONT_TYPE_EVENTLIST_ITEMLARGE]->getHeight();
@@ -236,8 +243,6 @@ int EventList::exec(const t_channel_id channel_id, const std::string& channelnam
 	y = frameBuffer->getScreenY() + (frameBuffer->getScreenHeight() - height) / 2;
 
 	int res = menu_return::RETURN_REPAINT;
-	
-	//printf("EventList::exec: channel_id %llx\n", channel_id);
 	
 	if(m_search_list == SEARCH_LIST_NONE) // init globals once only
 	{
@@ -738,8 +743,12 @@ void EventList::paint(t_channel_id channel_id)
 // footer
 void  EventList::showFunctionBar(bool show)
 {
-	int bx = x + 8;
-	int bw = width - 16;
+	int icon_w;
+	int icon_h;
+	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
+	
+	int bx = x + ICON_OFFSET;
+	int bw = width - 2*ICON_OFFSET;
 	int bh = iheight;
 	int by = y + height - iheight;
 	int cellwidth = bw / 5;// 5 cells
@@ -749,30 +758,25 @@ void  EventList::showFunctionBar(bool show)
 	if (! show)
 	{
 		frameBuffer->paintBackgroundBoxRel(x, by, width, bh);
-
-		frameBuffer->blit(); //FIXME:???
+		frameBuffer->blit();
 		
 		return;
 	}
-
-	int icon_w = 0;
-	int icon_h = 0;
 	
 	int fh = g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight();
 
+	//
 	frameBuffer->paintBoxRel(x, by, width, bh, COL_MENUHEAD_PLUS_0, RADIUS_MID, CORNER_BOTTOM);
 
 	// -- Button Red: Timer Record & Channelswitch
 	if ( (recDir != NULL) && ((unsigned int) g_settings.key_channelList_addrecord != CRCInput::RC_nokey))	  
 	{
 		pos = 0;
-		// FIXME : display other icons depending on g_settings.key_channelList_addrecord
-		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_w, &icon_h);
 	
 		if ( g_settings.key_channelList_addrecord == CRCInput::RC_red ) 		  
 		{
 			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_RED, bx + cellwidth*pos, by + (bh - icon_h)/2);
-			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(bx + icon_w + 8 + cellwidth*pos, by + (bh - fh)/2 + fh, cellwidth - icon_w - 8, g_Locale->getText(LOCALE_EVENTLISTBAR_RECORDEVENT), COL_INFOBAR, 0, true); // UTF-8
+			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(bx + icon_w + ICON_OFFSET + cellwidth*pos, by + (bh - fh)/2 + fh, cellwidth - icon_w - ICON_OFFSET, g_Locale->getText(LOCALE_EVENTLISTBAR_RECORDEVENT), COL_INFOBAR, 0, true); // UTF-8
 		}
 	}
 	
@@ -782,7 +786,7 @@ void  EventList::showFunctionBar(bool show)
 		pos = 1;
 		frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_GREEN, &icon_w, &icon_h);
 		frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_GREEN, bx + cellwidth*pos, by + (bh - icon_h)/2);
-		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(bx + icon_w + 8 + cellwidth*pos, by + (bh - fh)/2 + fh, cellwidth - icon_w - 8, g_Locale->getText(LOCALE_EVENTFINDER_SEARCH), COL_INFOBAR, 0, true); // UTF-8
+		g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(bx + icon_w + ICON_OFFSET + cellwidth*pos, by + (bh - fh)/2 + fh, cellwidth - icon_w - ICON_OFFSET, g_Locale->getText(LOCALE_EVENTFINDER_SEARCH), COL_INFOBAR, 0, true); // UTF-8
 	}
 
 	// Button: Timer Channelswitch	
@@ -795,7 +799,7 @@ void  EventList::showFunctionBar(bool show)
 		if (g_settings.key_channelList_addremind == CRCInput::RC_yellow) 		  
 		{
 			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_YELLOW, bx + cellwidth*pos, by + (bh - icon_h)/2);
-			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(bx + icon_w + 8 + cellwidth*pos, by + (bh - fh)/2 + fh, cellwidth - icon_w - 8, g_Locale->getText(LOCALE_EVENTLISTBAR_CHANNELSWITCH), COL_INFOBAR, 0, true); // UTF-8
+			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(bx + icon_w + ICON_OFFSET + cellwidth*pos, by + (bh - fh)/2 + fh, cellwidth - icon_w - ICON_OFFSET, g_Locale->getText(LOCALE_EVENTLISTBAR_CHANNELSWITCH), COL_INFOBAR, 0, true); // UTF-8
 		}
 	}
 
@@ -809,7 +813,7 @@ void  EventList::showFunctionBar(bool show)
 		if (g_settings.key_channelList_sort == CRCInput::RC_blue) 
 		{
 			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_BLUE, bx + cellwidth*pos, by + (bh - icon_h)/2);
-			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(bx + icon_w + 8 + cellwidth*pos, by + (bh - fh)/2 + fh, cellwidth - icon_w - 8, (sort_mode == SORT_DESCRIPTION)?g_Locale->getText(LOCALE_EVENTLISTBAR_EVENTSORTALPHA) : g_Locale->getText(LOCALE_EVENTLISTBAR_EVENTSORTTIME), COL_INFOBAR, 0, true); // UTF-8
+			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(bx + icon_w + ICON_OFFSET + cellwidth*pos, by + (bh - fh)/2 + fh, cellwidth - icon_w - ICON_OFFSET, (sort_mode == SORT_DESCRIPTION)?g_Locale->getText(LOCALE_EVENTLISTBAR_EVENTSORTALPHA) : g_Locale->getText(LOCALE_EVENTLISTBAR_EVENTSORTTIME), COL_INFOBAR, 0, true); // UTF-8
 		}
 	}
 	
@@ -822,7 +826,7 @@ void  EventList::showFunctionBar(bool show)
 		if (g_settings.key_channelList_reload == CRCInput::RC_setup) 
 		{
 			frameBuffer->paintIcon(NEUTRINO_ICON_BUTTON_SETUP_SMALL, bx + cellwidth*pos, by + (bh - icon_h)/2);
-			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(bx + icon_w + 8 + cellwidth*pos, by + (bh - fh)/2 + fh, cellwidth - icon_w - 8, g_Locale->getText(LOCALE_KEYBINDINGMENU_RELOAD), COL_INFOBAR, 0, true); // UTF-8
+			g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->RenderString(bx + icon_w + ICON_OFFSET + cellwidth*pos, by + (bh - fh)/2 + fh, cellwidth - icon_w - ICON_OFFSET, g_Locale->getText(LOCALE_KEYBINDINGMENU_RELOAD), COL_INFOBAR, 0, true); // UTF-8
 		}
 	}
 }

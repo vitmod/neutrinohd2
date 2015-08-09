@@ -505,7 +505,8 @@ void CMenuWidget::paint()
 		itemHeightTotal += item_height;
 		heightCurrPage += item_height;
 
-		if(heightCurrPage > height - (hheight + sp_height + sp_height + fheight))
+		//FIXME: wrong calculation
+		if(heightCurrPage > height - (hheight + 2*sp_height + fheight))
 		{
 			page_start.push_back(i);
 			total_pages++;
@@ -528,6 +529,7 @@ void CMenuWidget::paint()
 	}
 
 	// shrink menu if less items
+	//FIXME: wrong calculation
 	if(hheight + sp_height + itemHeightTotal + sp_height + fheight < height)
 		height = hheight + sp_height + heightCurrPage + sp_height + fheight;
 
@@ -1669,7 +1671,7 @@ int CMenuSeparator::getHeight(void) const
 	CFrameBuffer::getInstance()->getIconSize(NEUTRINO_ICON_BUTTON_RED, &iconName_w, &iconName_h);
 	int Height = std::max(iconName_h, g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight()) + 3;
 	
-	return (text == NONEXISTANT_LOCALE) ? Height/10 : Height;
+	return (text == NONEXISTANT_LOCALE) ? (Height >> 1) : Height;
 }
 
 int CMenuSeparator::getWidth(void) const
@@ -2040,8 +2042,6 @@ int CMenuForwarderExtended::paint(bool selected, bool /*AfterPulldown*/)
 		g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->RenderString(x + icon_w + ICON_OFFSET, fposy + (fheight - g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight())/2 + g_Font[SNeutrinoSettings::FONT_TYPE_EPG_INFO1]->getHeight(), dx - (x + (offx == 0? 0 : offx) + BORDER_LEFT + icon_w + ICON_OFFSET - x), help_text, COL_MENUFOOT, 0, true); // UTF-8
 	
 		// menutitle on VFD
-		char str[256];
-
 		CVFD::getInstance()->showMenuText(0, l_text, -1, true);
 	}
 	

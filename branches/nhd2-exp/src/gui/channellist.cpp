@@ -122,49 +122,32 @@ CChannelList::CChannelList(const char * const Name, bool _historyMode, bool _vli
 	vlist = _vlist;
 	
 	//buttonHeight icons (red)
-	icon_footer_w = 16;
-	icon_footer_h = 16;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_footer_w, &icon_footer_h);
 	
 	// head icons (zap_mute)
-	icon_head_w = 16;
-	icon_head_h = 16;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_MUTE_ZAP_INACTIVE, &icon_head_w, &icon_head_h);
 	
 	// scrambled
-	icon_ca_w = 16;
-	icon_ca_h = 16;
 	frameBuffer->getIconSize(NEUTRINO_ICON_SCRAMBLED, &icon_ca_w, &icon_ca_h);
 	
 	// hd
-	icon_hd_w = 16;
-	icon_hd_h = 16;
 	frameBuffer->getIconSize(NEUTRINO_ICON_RESOLUTION_HD, &icon_hd_w, &icon_hd_h);
 	
 	// icon help
-	icon_help_w = 16;
-	icon_help_h = 16;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_HELP, &icon_help_w, &icon_help_h);
 	
 	// icon setup
-	icon_setup_w = 16;
 	icon_setup_h = 16;
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_setup_w, &icon_setup_h);
-	
-	//printf("CChannelList::CChannelList: add %s : %x\n", name.c_str(), this);fflush(stdout);
 }
 
 CChannelList::~CChannelList()
 {
-	//printf("DELETE LIST %s : %x\n", name.c_str(), this);fflush(stdout);
-	
 	chanlist.clear();
 }
 
 void CChannelList::ClearList(void)
 {
-	//printf("CLEAR LIST %s : %x\n", name.c_str(), this);fflush(stdout);
-	
 	chanlist.clear();
 	chanlist.resize(1);
 }
@@ -176,8 +159,6 @@ void CChannelList::setSize(int newsize)
 
 void CChannelList::addChannel(CZapitChannel * channel, int num)
 {
-	//printf("CChannelList::addChannel: %s %s\n", name.c_str(), channel->getName().c_str());fflush(stdout);
-	
 	if(num)
 		channel->number = num;
 	
@@ -190,7 +171,6 @@ void CChannelList::putChannel(CZapitChannel * channel)
 	
 	if(num < 0) 
 	{
-		//printf("CChannelList::addChannel error inserting at %d\n", num);
 		return;
 	}
 	

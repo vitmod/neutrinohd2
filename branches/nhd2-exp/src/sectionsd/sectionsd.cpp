@@ -204,6 +204,7 @@ static pthread_mutex_t timeThreadSleepMutex = PTHREAD_MUTEX_INITIALIZER;
 #include <gui/scan_setup.h>
 extern CFrontend * live_fe;
 extern CScanSettings * scanSettings;			// defined in scan_setup.cpp
+extern int FrontendCount;
 
 
 static DMX dmxEIT(0x12, 3000 );
@@ -5116,10 +5117,7 @@ extern cDemux * dmxUTC;
 
 void sectionsd_main_thread(void */*data*/)
 {
-	pthread_t threadTOT, threadEIT, threadCN, threadHouseKeeping;
-
-	// freesat
-	pthread_t threadFSEIT;
+	pthread_t threadTOT, threadEIT, threadCN, threadHouseKeeping, threadFSEIT;
 
 	int rc;
 
@@ -5183,32 +5181,34 @@ void sectionsd_main_thread(void */*data*/)
 		return;
 	}
 
-	// EIT-Thread starten
-	rc = pthread_create(&threadEIT, 0, eitThread, 0);
-
-	if (rc) 
+	if(FrontendCount)
 	{
-		dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create eit-thread (rc=%d)\n", rc);
-		return;
-	}
+		// EIT-Thread starten
+		rc = pthread_create(&threadEIT, 0, eitThread, 0);
 
-	// EIT-Thread2 starten
-	rc = pthread_create(&threadCN, 0, cnThread, 0);
+		if (rc) 
+		{
+			dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create eit-thread (rc=%d)\n", rc);
+			return;
+		}
 
-	if (rc) 
-	{
-		dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create eit-thread (rc=%d)\n", rc);
-		return;
-	}
+		// EIT-Thread2 starten
+		rc = pthread_create(&threadCN, 0, cnThread, 0);
 
-	// freesat
-	// EIT-Thread3 starten
-	rc = pthread_create(&threadFSEIT, 0, fseitThread, 0);
+		if (rc) 
+		{
+			dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create eit-thread (rc=%d)\n", rc);
+			return;
+		}
 
-	if (rc) 
-	{
-		dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create fseit-thread (rc=%d)\n", rc);
-		return;
+		// freesat
+		rc = pthread_create(&threadFSEIT, 0, fseitThread, 0);
+
+		if (rc) 
+		{
+			dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create fseit-thread (rc=%d)\n", rc);
+			return;
+		}
 	}
 
 	// housekeeping-Thread starten
@@ -5225,6 +5225,9 @@ void sectionsd_main_thread(void */*data*/)
 	dprintf(DEBUG_DEBUG, "sectionsd_main_thread: mainloop getschedparam %d policy %d prio %d\n", rc, policy, parm.sched_priority);
 	
 	sectionsd_ready = true;
+	
+	if(FrontendCount)
+		eit_update_fd = -1;
 
 	while (sectionsd_server.run(sectionsd_parse_command, sectionsd::ACTVERSION, true)) 
 	{
@@ -5260,6 +5263,7 @@ void sectionsd_main_thread(void */*data*/)
 			break;
 
 		sched_yield();
+		
 		/* 
 		10 ms is the minimal timeslice anyway (HZ = 100), so let's
 		wait 20 ms at least to lower the CPU load 
@@ -5277,51 +5281,64 @@ void sectionsd_main_thread(void */*data*/)
 	pthread_mutex_lock(&timeIsSetMutex);
 	pthread_cond_broadcast(&timeIsSetCond);
 	pthread_mutex_unlock(&timeIsSetMutex);
-	pthread_mutex_lock(&timeThreadSleepMutex);
-	pthread_cond_broadcast(&timeThreadSleepCond);
-	pthread_mutex_unlock(&timeThreadSleepMutex);
-	pthread_mutex_lock(&dmxEIT.start_stop_mutex);
-	pthread_cond_broadcast(&dmxEIT.change_cond);
-	pthread_mutex_unlock(&dmxEIT.start_stop_mutex);
-	pthread_mutex_lock(&dmxCN.start_stop_mutex);
-	pthread_cond_broadcast(&dmxCN.change_cond);
-	pthread_mutex_unlock(&dmxCN.start_stop_mutex);
+	
+	if(FrontendCount)
+	{
+		pthread_mutex_lock(&timeThreadSleepMutex);
+		pthread_cond_broadcast(&timeThreadSleepCond);
+		pthread_mutex_unlock(&timeThreadSleepMutex);
+		
+		pthread_mutex_lock(&dmxEIT.start_stop_mutex);
+		pthread_cond_broadcast(&dmxEIT.change_cond);
+		pthread_mutex_unlock(&dmxEIT.start_stop_mutex);
+		
+		pthread_mutex_lock(&dmxCN.start_stop_mutex);
+		pthread_cond_broadcast(&dmxCN.change_cond);
+		pthread_mutex_unlock(&dmxCN.start_stop_mutex);
+	}
 
 	dprintf(DEBUG_NORMAL, "sectionsd_main_thread: pausing...\n");
 	
-	dmxEIT.request_pause();
-	dmxCN.request_pause();
-
-	// freesat
-	dmxFSEIT.request_pause();
+	if(FrontendCount)
+	{
+		dmxEIT.request_pause();
+		dmxCN.request_pause();
+		dmxFSEIT.request_pause();
+	}
 
 	pthread_cancel(threadHouseKeeping);
 
-	if(dmxUTC) 
-		dmxUTC->Stop();
+	if(FrontendCount)
+	{
+		if(dmxUTC) 
+			dmxUTC->Stop();
+	}
 
+	// timethread
 	pthread_cancel(threadTOT);
-	
 	pthread_join(threadTOT, NULL);
-	if(dmxUTC) 
-		delete dmxUTC;
 	
-	pthread_join(threadEIT, NULL);
+	if(FrontendCount)
+	{
+		if(dmxUTC) 
+			delete dmxUTC;
 	
-	pthread_join(threadCN, NULL);
+		pthread_join(threadEIT, NULL);
+		pthread_join(threadCN, NULL);
 
-	eit_stop_update_filter(&eit_update_fd);
-	if(eitDmx)
-		delete eitDmx;
+		eit_stop_update_filter(&eit_update_fd);
+		if(eitDmx)
+			delete eitDmx;
 
-	// close eitdmx
-	dmxEIT.close();
-	
-	// close cndmx
-	dmxCN.close();
-	
-	// close freesatdmx
-	dmxFSEIT.close();
+		// close eitdmx
+		dmxEIT.close();
+		
+		// close cndmx
+		dmxCN.close();
+		
+		// close freesatdmx
+		dmxFSEIT.close();
+	}
 
 	dprintf(DEBUG_NORMAL, "sectionsd_main_thread: ended\n");
 
