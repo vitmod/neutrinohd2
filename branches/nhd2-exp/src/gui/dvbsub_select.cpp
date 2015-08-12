@@ -47,14 +47,6 @@ extern int dvbsub_getpid();				// defined in libdvbsub
 // tuxtxt
 extern int tuxtx_subtitle_running(int *pid, int *page, int *running);
 
-
-//
-// -- DVBSUB Channel Selector Menue
-// -- 2011-11-22 mohousch
-// -- based on the audio_selct menue from rasc
-// -- it make sence only for boxes with dvbsub rc-key
-//
-
 int CDVBSubSelectMenuHandler::exec(CMenuTarget * parent, const std::string &/*actionKey*/)
 {
 	int res = menu_return::RETURN_EXIT_ALL;
@@ -129,6 +121,8 @@ int CDVBSubSelectMenuHandler::doMenu ()
 			DVBSubSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 			DVBSubSelector.addItem(new CMenuForwarder(LOCALE_SUBTITLES_STOP, true, NULL, &SubtitleChanger, "off", CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED ));
 		}
+		else
+			DVBSubSelector.addItem(new CMenuForwarder(LOCALE_SUBTITLES_NOTFOUND, false));
 	}
 
 	return DVBSubSelector.exec(NULL, "");

@@ -1312,6 +1312,7 @@ streamingmenu.filebrowser_allow_multiselect Multiselect in Filebrowser
 stringinput.caps caps / no caps
 stringinput.clear clear all
 subtitles.head Subtitles
+subtitles.notfound Subtitles not found
 subtitles.stop Stop subtitles
 timer.eventrecord.msg   The event is flagged for record.\nThe box will power on and \nswitch to this channel at the given time. 
 timer.eventrecord.title Schedule Record

@@ -134,7 +134,8 @@ int CAudioSelectMenuHandler::doMenu()
 		AudioSelector.addItem(new CMenuForwarder(g_RemoteControl->current_PIDs.APIDs[count].desc, true, NULL, &APIDChanger, apid, CRCInput::convertDigitToKey(count + 1)), (count == g_RemoteControl->current_PIDs.PIDs.selected_apid));
 	}
 
-	AudioSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
+	if(g_RemoteControl->current_PIDs.APIDs.size())
+		AudioSelector.addItem(new CMenuSeparator(CMenuSeparator::LINE));
 
 	// analogue output
 	AudioSelector.addItem(new CMenuOptionChooser(LOCALE_AUDIOMENU_ANALOGOUT, &g_settings.audio_AnalogMode, AUDIOMENU_ANALOGOUT_OPTIONS, AUDIOMENU_ANALOGOUT_OPTION_COUNT, true, audioSetupNotifier, CRCInput::RC_red, NEUTRINO_ICON_BUTTON_RED));

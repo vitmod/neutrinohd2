@@ -349,26 +349,6 @@ class CLockedMenuForwarder : public CMenuForwarder, public CPINProtection
 		virtual int exec(CMenuTarget * parent);
 };
 
-class CMenuSelectorTarget : public CMenuTarget
-{
-        public:
-                CMenuSelectorTarget(int *select) {m_select = select;};
-                int exec(CMenuTarget* parent, const std::string & actionKey);
-
-        private:
-                int *m_select;
-};
-
-// I tried a lot to use the menu.cpp as ListBox selection, and I got three solution which are all garbage. 
-//Might be replaced by somebody who is familiar with this stuff .
-class CSelectedMenu : public CMenuTarget
-{
-	public:
-		bool selected;
-		CSelectedMenu(void){selected = false;};
-		inline	int exec(CMenuTarget */*parent*/, const std::string &/*actionKey*/){selected = true; return menu_return::RETURN_EXIT;};
-};
-
 // This Class creates a menue item, which writes its caption to an given string (or an given int value to an given variable). 
 // The programm could use this class to verify, what menu was selected. 
 // A good listbox class might do the same. There might be better ways to do so.
@@ -519,6 +499,26 @@ class CMenuWidgetSelection : public CMenuWidget
 	public:
 		CMenuWidgetSelection(const neutrino_locale_t Name, const std::string & Icon = "", const int mwidth = MENU_WIDTH, const int mheight = MENU_HEIGHT) : CMenuWidget( Name, Icon, mwidth, mheight){;};
 		int getSelectedLine(void){return exit_pressed ? -1 : selected;};
+};
+
+class CMenuSelectorTarget : public CMenuTarget
+{
+        public:
+                CMenuSelectorTarget(int *select) {m_select = select;};
+                int exec(CMenuTarget* parent, const std::string & actionKey);
+
+        private:
+                int *m_select;
+};
+
+// I tried a lot to use the menu.cpp as ListBox selection, and I got three solution which are all garbage. 
+//Might be replaced by somebody who is familiar with this stuff .
+class CSelectedMenu : public CMenuTarget
+{
+	public:
+		bool selected;
+		CSelectedMenu(void){selected = false;};
+		inline	int exec(CMenuTarget */*parent*/, const std::string &/*actionKey*/){selected = true; return menu_return::RETURN_EXIT;};
 };
 
 #endif

@@ -334,7 +334,7 @@ int CBouquetList::show(bool bShowChannelList)
 
 	// foot height
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_RED, &icon_foot_w, &icon_foot_h);
-	buttonHeight = std::min(icon_foot_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 6;
+	buttonHeight = std::max(icon_foot_h, g_Font[SNeutrinoSettings::FONT_TYPE_INFOBAR_SMALL]->getHeight()) + 6;
 	
 	// head height
 	frameBuffer->getIconSize(NEUTRINO_ICON_BUTTON_SETUP, &icon_head_w, &icon_head_h);

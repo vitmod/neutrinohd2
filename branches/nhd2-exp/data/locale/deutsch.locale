@@ -1312,6 +1312,7 @@ streamingmenu.filebrowser_allow_multiselect Mehrfachauswahl im Browser
 stringinput.caps Groß-/Kleinbuchstaben
 stringinput.clear Alles löschen
 subtitles.head Untertitel
+subtitles.notfound Untertitel nicht gefunden
 subtitles.stop Stop Untertitel
 timer.eventrecord.msg Die Sendung wurde zur Aufnahme vorgemerkt.
 timer.eventrecord.title Aufnahme vormerken

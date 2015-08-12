@@ -1787,18 +1787,7 @@ int CLockedMenuForwarder::exec(CMenuTarget * parent)
 	return CMenuForwarder::exec(parent);
 }
 
-// selector
-int CMenuSelectorTarget::exec(CMenuTarget*/*parent*/, const std::string & actionKey)
-{
-        if (actionKey != "")
-                *m_select = atoi(actionKey.c_str());
-        else
-                *m_select = -1;
-	
-        return menu_return::RETURN_EXIT;
-}
-
-//
+// menuselector
 CMenuSelector::CMenuSelector(const char * OptionName, const bool Active , char * OptionValue, int* ReturnInt ,int ReturnIntValue ) : CMenuItem()
 {
 	height = g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->getHeight();
@@ -1863,8 +1852,6 @@ int CMenuSelector::paint(bool selected, bool /*AfterPulldown*/)
 	int stringstartposName = x + offx + BORDER_RIGHT;
 	g_Font[SNeutrinoSettings::FONT_TYPE_MENU]->RenderString(stringstartposName, y + height, dx - (stringstartposName - x), optionName, color, 0, true); // UTF-8
 
-	//if (selected)
-	//	CVFD::getInstance()->showMenuText(0, optionName, -1, true); // UTF-8	
 	if (selected)
 	{
 		//help bar
@@ -2101,3 +2088,13 @@ int CLockedMenuForwarderExtended::exec(CMenuTarget *parent)
 	return CMenuForwarderExtended::exec(parent);
 }
 
+// CMenuSelectorTarget
+int CMenuSelectorTarget::exec(CMenuTarget*/*parent*/, const std::string & actionKey)
+{
+        if (actionKey != "")
+                *m_select = atoi(actionKey.c_str());
+        else
+                *m_select = -1;
+	
+        return menu_return::RETURN_EXIT;
+}

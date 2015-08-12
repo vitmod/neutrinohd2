@@ -212,6 +212,8 @@ static DMX dmxCN(0x12, 512, false);
 
 // freesat
 static DMX dmxFSEIT(3842, 320);
+//viasat
+static DMX dmxVIASAT(0x39, 3000);
 
 //
 int sectionsd_stop = 0;
@@ -1373,23 +1375,20 @@ static void commandPauseScanning(int connfd, char *data, const unsigned dataLeng
 	{
 		dmxCN.request_pause();
 		dmxEIT.request_pause();
-		//freesat
 		dmxFSEIT.request_pause();
+		dmxVIASAT.request_pause();
 
 		scanning = 0;
 	}
 	else if (!pause && !scanning)
 	{
-		// cn
 		dmxCN.request_unpause();
-
-		// eit
 		dmxEIT.request_unpause();
-		
-		// freesat
 		dmxFSEIT.request_unpause();
+		dmxVIASAT.request_unpause();
 
 		writeLockEvents();
+		
 		if (myCurrentEvent) 
 		{
 			delete myCurrentEvent;
@@ -1417,8 +1416,8 @@ static void commandPauseScanning(int connfd, char *data, const unsigned dataLeng
 		scanning = 1;
 		dmxCN.change(0);
 		dmxEIT.change(0);
-		// freesat
 		dmxFSEIT.change(0);
+		dmxVIASAT.change(0);
 	}
 
 	struct sectionsd::msgResponseHeader msgResponse;
@@ -2014,8 +2013,8 @@ static void commandserviceChanged(int connfd, char *data, const unsigned dataLen
 		unlockMessaging();
 		dmxCN.setCurrentService(messaging_current_servicekey & 0xffff);
 		dmxEIT.setCurrentService(messaging_current_servicekey & 0xffff);
-		// freesat
 		dmxFSEIT.setCurrentService(messaging_current_servicekey & 0xffff);
+		dmxVIASAT.setCurrentService(messaging_current_servicekey & 0xffff);
 	}
 	else
 		printf("[sectionsd] commandserviceChanged: no change...\n");
@@ -4350,6 +4349,264 @@ static void *fseitThread(void *)
 	pthread_exit(NULL);
 }
 
+static void *viasateitThread(void *)
+{
+	struct SI_section_header *header;
+	/* 
+	 * we are holding the start_stop lock during this timeout, so don't
+	   make it too long... 
+	*/
+	unsigned timeoutInMSeconds = EIT_READ_TIMEOUT;
+	bool sendToSleepNow = false;
+	pthread_setcanceltype (PTHREAD_CANCEL_ASYNCHRONOUS, 0);
+
+	dmxVIASAT.addfilter(0x60, 0xfe); //other TS, scheduled, freesat epg is only broadcast using table_ids 0x60 (scheduled) and 0x61 (scheduled later)
+
+	int policy;
+	struct sched_param parm;
+	int rc = pthread_getschedparam(pthread_self(), &policy, &parm);
+	
+	dprintf(DEBUG_DEBUG, "viasatEitThread getschedparam: %d pol %d, prio %d\n", rc, policy, parm.sched_priority);
+
+	dprintf(DEBUG_DEBUG, "[%sThread] pid %d (%lu) start\n", "viasateit", getpid(), pthread_self());
+	
+	int timeoutsDMX = 0;
+	uint8_t *static_buf = new uint8_t[MAX_SECTION_LENGTH];
+
+	if (static_buf == NULL)
+		throw std::bad_alloc();
+
+	dmxVIASAT.start(); // -> unlock
+	
+	if (!scanning)
+		dmxVIASAT.request_pause();
+
+	waitForTimeset();
+	dmxVIASAT.lastChanged = time_monotonic();
+
+	while(!sectionsd_stop) 
+	{
+		while (!scanning) 
+		{
+			if(sectionsd_stop)
+				break;
+			sleep(1);
+		}
+		
+		if(sectionsd_stop)
+			break;
+		time_t zeit = time_monotonic();
+
+		rc = dmxVIASAT.getSection(static_buf, timeoutInMSeconds, timeoutsDMX);
+
+		if (rc < 0)
+			continue;
+
+		if (timeoutsDMX < 0)
+		{
+			if ( dmxVIASAT.filter_index + 1 < (signed) dmxVIASAT.filters.size() )
+			{
+				if (timeoutsDMX == -1)
+					printf("[viasatEitThread] skipping to next filter(%d) (> DMX_HAS_ALL_SECTIONS_SKIPPING)\n", dmxFSEIT.filter_index+1 );
+				if (timeoutsDMX == -2)
+					printf("[viasatEitThread] skipping to next filter(%d) (> DMX_HAS_ALL_CURRENT_SECTIONS_SKIPPING)\n", dmxFSEIT.filter_index+1 );
+				timeoutsDMX = 0;
+				dmxVIASAT.change(dmxFSEIT.filter_index + 1);
+			}
+			else 
+			{
+				sendToSleepNow = true;
+				timeoutsDMX = 0;
+			}
+		}
+
+		if (timeoutsDMX >= CHECK_RESTART_DMX_AFTER_TIMEOUTS - 1)
+		{
+			readLockServices();
+			readLockMessaging();
+
+			MySIservicesOrderUniqueKey::iterator si = mySIservicesOrderUniqueKey.end();
+
+			if ( messaging_current_servicekey )
+				si = mySIservicesOrderUniqueKey.find( messaging_current_servicekey );
+
+			if (si != mySIservicesOrderUniqueKey.end())
+			{
+				// 1 and 3 == scheduled
+				// 2 == current/next
+				if ((dmxVIASAT.filter_index == 2 && !si->second->eitPresentFollowingFlag()) || ((dmxVIASAT.filter_index == 1 || dmxVIASAT.filter_index == 3) && !si->second->eitScheduleFlag()))
+				{
+					timeoutsDMX = 0;
+					dprintf(DEBUG_DEBUG, "[freesatEitThread] timeoutsDMX for 0x" PRINTF_CHANNEL_ID_TYPE " reset to 0 (not broadcast)\n", messaging_current_servicekey );
+
+					dprintf(DEBUG_DEBUG, "New Filterindex: %d (ges. %d)\n", dmxVIASAT.filter_index + 1, (signed) dmxVIASAT.filters.size() );
+					dmxVIASAT.change(dmxVIASAT.filter_index + 1);
+				}
+				else if (dmxVIASAT.filter_index >= 1)
+				{
+					if (dmxVIASAT.filter_index + 1 < (signed) dmxVIASAT.filters.size() )
+					{
+						dprintf(DEBUG_DEBUG, "New Filterindex: %d (ges. %d)\n", dmxVIASAT.filter_index + 1, (signed) dmxVIASAT.filters.size() );
+						dmxVIASAT.change(dmxFSEIT.filter_index + 1);
+						
+						timeoutsDMX = 0;
+					}
+					else
+					{
+						sendToSleepNow = true;
+						dprintf(DEBUG_DEBUG, "sendToSleepNow = true\n");
+					}
+				}
+			}
+			unlockMessaging();
+			unlockServices();
+		}
+
+		if (timeoutsDMX >= CHECK_RESTART_DMX_AFTER_TIMEOUTS && scanning)
+		{
+			if ( dmxVIASAT.filter_index + 1 < (signed) dmxVIASAT.filters.size() )
+			{
+				dprintf(DEBUG_DEBUG, "[viasatEitThread] skipping to next filter(%d) (> DMX_TIMEOUT_SKIPPING)\n", dmxVIASAT.filter_index+1 );
+				dmxVIASAT.change(dmxVIASAT.filter_index + 1);
+			}
+			else
+				sendToSleepNow = true;
+
+			timeoutsDMX = 0;
+		}
+
+		if (sendToSleepNow)
+		{
+			sendToSleepNow = false;
+
+			if(sectionsd_stop)
+				break;
+			
+			dmxVIASAT.real_pause();
+			pthread_mutex_lock( &dmxVIASAT.start_stop_mutex );
+			writeLockMessaging();
+			messaging_zap_detected = false;
+			unlockMessaging();
+
+			struct timespec abs_wait;
+			struct timeval now;
+			gettimeofday(&now, NULL);
+			TIMEVAL_TO_TIMESPEC(&now, &abs_wait);
+			abs_wait.tv_sec += TIME_EIT_SCHEDULED_PAUSE;
+			
+			dprintf(DEBUG_DEBUG, "dmxVIASAT: going to sleep for %d seconds...\n", TIME_EIT_SCHEDULED_PAUSE);
+
+			int rs = pthread_cond_timedwait( &dmxVIASAT.change_cond, &dmxVIASAT.start_stop_mutex, &abs_wait );
+
+			pthread_mutex_unlock( &dmxVIASAT.start_stop_mutex );
+
+			if (rs == ETIMEDOUT)
+			{
+				dprintf(DEBUG_DEBUG, "dmxVIASAT: waking up again - timed out\n");
+				// must call dmxFSEIT.change after! unpause otherwise dev is not open,
+				// dmxFSEIT.lastChanged will not be set, and filter is advanced the next iteration
+				// maybe .change should imply .real_unpause()? -- seife
+				dprintf(DEBUG_DEBUG, "New Filterindex: %d (ges. %d)\n", 2, (signed) dmxVIASAT.filters.size() );
+				dmxVIASAT.change(1); // -> restart
+			}
+			else if (rs == 0)
+			{
+				dprintf(DEBUG_DEBUG, "dmxVIASAT: waking up again - requested from .change()\n");
+			}
+			else
+			{
+				dprintf(DEBUG_DEBUG, "dmxVIASAT:  waking up again - unknown reason %d\n",rs);
+			}
+			// update zeit after sleep
+			zeit = time_monotonic();
+		}
+		else if (zeit > dmxVIASAT.lastChanged + TIME_FSEIT_SKIPPING )
+		{
+			readLockMessaging();
+
+			if ( dmxVIASAT.filter_index + 1 < (signed) dmxVIASAT.filters.size() )
+			{
+				dprintf(DEBUG_DEBUG, "[viasatEitThread] skipping to next filter(%d) (> TIME_FSEIT_SKIPPING)\n", dmxVIASAT.filter_index+1 );
+				dmxVIASAT.change(dmxVIASAT.filter_index + 1);
+			}
+			else
+				sendToSleepNow = true;
+
+			unlockMessaging();
+		}
+
+		if (rc <= (int)sizeof(struct SI_section_header))
+		{
+			dprintf(DEBUG_DEBUG, "%s rc < sizeof(SI_Section_header) (%d < %d)\n", __FUNCTION__, rc, sizeof(struct SI_section_header));
+			continue;
+		}
+
+		header = (SI_section_header*)static_buf;
+		unsigned short section_length = header->section_length_hi << 8 | header->section_length_lo;
+
+
+
+		if ((header->current_next_indicator) && (!dmxVIASAT.real_pauseCounter ))
+		{
+			// Wir wollen nur aktuelle sections
+
+			// Houdini: added new constructor where the buffer is given as a parameter and must be allocated outside
+			// -> no allocation and copy of data into a 2nd buffer
+			//				SIsectionEIT eit(SIsection(section_length + 3, buf));
+			SIsectionEIT eit(section_length + 3, static_buf);
+			// Houdini: if section is not parsed (too short) -> no need to check events
+			if (eit.is_parsed() && eit.header())
+			{
+				// == 0 -> kein event
+
+				//dprintf(DEBUG_DEBUG, "[eitThread] adding %d events [table 0x%x] (begin)\n", eit.events().size(), header.table_id);
+				zeit = time(NULL);
+				// Nicht alle Events speichern
+				for (SIevents::iterator e = eit.events().begin(); e != eit.events().end(); e++)
+				{
+					if (!(e->times.empty()))
+					{
+						if ( ( e->times.begin()->startzeit < zeit + secondsToCache ) && ( ( e->times.begin()->startzeit + (long)e->times.begin()->dauer ) > zeit - oldEventsAre ) )
+						{
+							//fprintf(stderr, "%02x ", header.table_id);
+							addEvent(*e, zeit);
+						}
+					}
+					else
+					{
+						// pruefen ob nvod event
+						readLockServices();
+						MySIservicesNVODorderUniqueKey::iterator si = mySIservicesNVODorderUniqueKey.find(e->get_channel_id());
+
+						if (si != mySIservicesNVODorderUniqueKey.end())
+						{
+							// Ist ein nvod-event
+							writeLockEvents();
+
+							for (SInvodReferences::iterator i = si->second->nvods.begin(); i != si->second->nvods.end(); i++)
+								mySIeventUniqueKeysMetaOrderServiceUniqueKey.insert(std::make_pair(i->uniqueKey(), e->uniqueKey()));
+
+							unlockEvents();
+							addNVODevent(*e);
+						}
+						unlockServices();
+					}
+				} // for
+				//dprintf(DEBUG_DEBUG, "[eitThread] added %d events (end)\n",  eit.events().size());
+			} // if
+		} // if
+		else
+		{
+			delete[] static_buf;
+
+			//dprintf(DEBUG_DEBUG, "[eitThread] skipped sections for table 0x%x\n", header.table_id);
+		}
+	} // for
+	dprintf(DEBUG_DEBUG, "[viasatEitThread] end\n");
+
+	pthread_exit(NULL);
+}
+
 //
 // EIT-thread
 // reads EPG-datas
@@ -5117,7 +5374,7 @@ extern cDemux * dmxUTC;
 
 void sectionsd_main_thread(void */*data*/)
 {
-	pthread_t threadTOT, threadEIT, threadCN, threadHouseKeeping, threadFSEIT;
+	pthread_t threadTOT, threadEIT, threadCN, threadHouseKeeping, threadFSEIT, threadVIASATEIT;
 
 	int rc;
 
@@ -5207,6 +5464,15 @@ void sectionsd_main_thread(void */*data*/)
 		if (rc) 
 		{
 			dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create fseit-thread (rc=%d)\n", rc);
+			return;
+		}
+		
+		// viasat
+		rc = pthread_create(&threadVIASATEIT, 0, viasateitThread, 0);
+
+		if (rc) 
+		{
+			dprintf(DEBUG_NORMAL, "sectionsd_main_thread: failed to create viasateit-thread (rc=%d)\n", rc);
 			return;
 		}
 	}
@@ -5304,6 +5570,7 @@ void sectionsd_main_thread(void */*data*/)
 		dmxEIT.request_pause();
 		dmxCN.request_pause();
 		dmxFSEIT.request_pause();
+		dmxVIASAT.request_pause();
 	}
 
 	pthread_cancel(threadHouseKeeping);
@@ -5338,6 +5605,9 @@ void sectionsd_main_thread(void */*data*/)
 		
 		// close freesatdmx
 		dmxFSEIT.close();
+		
+		//
+		dmxVIASAT.close();
 	}
 
 	dprintf(DEBUG_NORMAL, "sectionsd_main_thread: ended\n");
