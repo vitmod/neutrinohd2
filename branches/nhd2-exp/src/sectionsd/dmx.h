@@ -40,7 +40,7 @@ class DMX
 {
 	private:
 
-		int             fd;
+		int fd;
 		cDemux * dmx;
 		int dmx_num;
 		pthread_mutex_t pauselock;
